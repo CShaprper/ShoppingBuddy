@@ -11,7 +11,7 @@
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
 		CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */; };
 		CF610C371F26371600B1B2DE /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C361F26371600B1B2DE /* UIColorExtension.swift */; };
-		CF610C391F263BCD00B1B2DE /* GradientBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C381F263BCD00B1B2DE /* GradientBarController.swift */; };
+		CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */; };
 		CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */; };
 		CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3C1F265ABD00B1B2DE /* DesignableUIView.swift */; };
 		CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */; };
@@ -82,7 +82,7 @@
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
 		CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarExtension.swift; sourceTree = "<group>"; };
 		CF610C361F26371600B1B2DE /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
-		CF610C381F263BCD00B1B2DE /* GradientBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientBarController.swift; sourceTree = "<group>"; };
+		CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardControllerTests.swift; sourceTree = "<group>"; };
 		CF610C3C1F265ABD00B1B2DE /* DesignableUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignableUIView.swift; sourceTree = "<group>"; };
 		CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
@@ -174,6 +174,7 @@
 		CFB2AA541F24A41200AACB5B /* ViewHelper */ = {
 			isa = PBXGroup;
 			children = (
+				CF610C361F26371600B1B2DE /* UIColorExtension.swift */,
 				CFB2AA581F24A7B900AACB5B /* UIViewAnimationExtension.swift */,
 				CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */,
 				CF610C3C1F265ABD00B1B2DE /* DesignableUIView.swift */,
@@ -188,7 +189,6 @@
 			children = (
 				CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */,
 				CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */,
-				CF610C361F26371600B1B2DE /* UIColorExtension.swift */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -269,7 +269,7 @@
 			children = (
 				CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */,
 				CFE9AB201F262DBE00D0825B /* DashboardController.swift */,
-				CF610C381F263BCD00B1B2DE /* GradientBarController.swift */,
+				CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */,
 				CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */,
 			);
 			name = Controller;
@@ -647,7 +647,7 @@
 				CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */,
 				CFE4A2141F23C9A3002A12C7 /* SegmentedControlValidationService.swift in Sources */,
 				CFE4A2171F23C9B8002A12C7 /* eValidationType.swift in Sources */,
-				CF610C391F263BCD00B1B2DE /* GradientBarController.swift in Sources */,
+				CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */,
 				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */,
 				CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */,
 				CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */,

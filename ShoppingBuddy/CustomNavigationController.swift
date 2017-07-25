@@ -12,14 +12,18 @@ class CustomNavigationController: UINavigationController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+        view.tintColor = UIColor.ColorPaletteSecondDarkest()        
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        UIApplication.shared.statusBarStyle = .default
-        UIApplication.statusBarBackgroundColor = UIColor.fromRGB(R: 215, G: 243, B: 166, alpha: 1)
-        navigationBar.backgroundColor = UIColor.fromRGB(R: 215, G: 243, B: 166, alpha: 1)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //Global NavigationBar Style
+        navigationBar.tintColor = UIColor.ColorPaletteSecondDarkest()
+        navigationBar.barTintColor = UIColor.ColorPaletteBrightest()
+        navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.ColorPaletteSecondDarkest()]
     }
     
     override func didReceiveMemoryWarning() {

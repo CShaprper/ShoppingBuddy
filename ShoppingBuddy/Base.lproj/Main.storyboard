@@ -383,10 +383,10 @@
             </objects>
             <point key="canvasLocation" x="2621.25" y="-33.75"/>
         </scene>
-        <!--Gradient Bar Controller-->
+        <!--Custom Tab Bar Controller-->
         <scene sceneID="uWU-cD-cev">
             <objects>
-                <tabBarController storyboardIdentifier="GradientBarController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Zvr-HZ-xKv" customClass="GradientBarController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="CustomTabBarController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Zvr-HZ-xKv" customClass="CustomTabBarController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="UJL-5B-eHK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -428,5 +428,5 @@
         <image name="icon-Person" width="150" height="150"/>
         <image name="logo-ShoppingBuddy" width="540" height="396"/>
     </resources>
-    <color key="tintColor" red="0.0" green="0.2053602933883667" blue="0.32999980449676514" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <color key="tintColor" red="0.39929795265197754" green="0.099868305027484894" blue="0.56534099578857422" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

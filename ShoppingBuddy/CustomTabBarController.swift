@@ -8,7 +8,7 @@
 
 import UIKit
 
-class GradientBarController: UITabBarController {
+class CustomTabBarController: UITabBarController {
     //MARK: - Outlets
 
     
@@ -19,10 +19,6 @@ class GradientBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         firebaseWebService = FirebaseWebService()
-
-        self.tabBar.tintColor = UIColor.white
-        self.tabBarController?.selectedIndex = 1    
-        
         
         //Hide back button to show custom Button
         self.navigationItem.hidesBackButton = true
@@ -30,22 +26,19 @@ class GradientBarController: UITabBarController {
         self.navigationItem.leftBarButtonItem = newBackButton
     }
     override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        super.didReceiveMemoryWarning() 
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        //Tabbar Gradient
-        let layerGradient = CAGradientLayer()
-        layerGradient.colors = [UIColor.fromRGB(R: 61, G: 193, B: 202, alpha: 1).cgColor, UIColor.fromRGB(R: 0, G: 52, B: 84, alpha: 1).cgColor]
-        layerGradient.startPoint = CGPoint(x: 0, y: 0)
-        layerGradient.endPoint = CGPoint(x: 0, y: 0.7)
-        layerGradient.frame = CGRect(x: 0, y: 0, width: self.tabBar.bounds.width,height: self.tabBar.bounds.height)
-        self.tabBar.layer.insertSublayer(layerGradient, at: 0)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        UINavigationBar.appearance().tintColor = UIColor.white
+        //TabBar customization
+        tabBar.barTintColor = UIColor.ColorPaletteDarkest()
+        tabBar.tintColor = UIColor.ColorPaletteBrightest()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     override var preferredStatusBarStyle : UIStatusBarStyle {
         return  .lightContent
@@ -69,16 +62,6 @@ class GradientBarController: UITabBarController {
     }
     func SegueToLoginController(sender: Notification) -> Void{
         self.navigationController?.popViewController(animated: true)
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    } 
 
 }

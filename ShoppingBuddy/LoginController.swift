@@ -57,6 +57,7 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         firebaseWebService.AddUserStateListener()
+        view.tintColor = UIColor.ColorPaletteSecondDarkest()
     }
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .default
@@ -182,7 +183,8 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     
     
     //MARK: - Helper Functions
-    func ConfigureViewElements() -> Void{
+    func ConfigureViewElements() -> Void{        
+        view.tintColor = UIColor.ColorPaletteSecondDarkest()
         //FirebaseWbservice
         firebaseWebService = FirebaseWebService()
         firebaseWebService.delegate = self

@@ -25,7 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         Messaging.messaging().shouldEstablishDirectChannel = true
         Messaging.messaging().delegate = self
         
-         UINavigationBar.appearance().barStyle = .blackTranslucent
+        //Global StatusBar Style
+        UIApplication.shared.statusBarStyle = .default
+        UIApplication.statusBarBackgroundColor = UIColor.ColorPaletteBrightest()
         
         return true
     }

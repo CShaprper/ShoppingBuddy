@@ -10,7 +10,6 @@ import UIKit
 
 class DashboardController: UIViewController{
     //MARK: - Outlets
-    @IBOutlet var TabBar: UIView!
     
     
     //MARK: - Member
@@ -20,9 +19,10 @@ class DashboardController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         // Firebase Webservice
-        firebaseWebService = FirebaseWebService()
+        firebaseWebService = FirebaseWebService()       
         
-         
+        //SetTitle
+        self.tabBarItem.title = "Dashboard"
         
         //Notification Listeners
         NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)        
@@ -34,6 +34,10 @@ class DashboardController: UIViewController{
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+         self.tabBarController?.navigationItem.title = "Profile Settings"
     }
     
     
