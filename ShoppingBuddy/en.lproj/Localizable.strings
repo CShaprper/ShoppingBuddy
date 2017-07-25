@@ -1,0 +1,27 @@
+/* 
+  Localizeable.strings
+  ShoppingBuddy
+
+  Created by Peter Sypek on 22.07.17.
+  Copyright © 2017 Peter Sypek. All rights reserved.
+*/
+    //Validation Service Alert
+ValidationAlert_Title = "Validation Error";
+ValidationPasswordEmptyAlert_Message = "The password should not be empty!";
+ValidationPasswordCharactersCountBelowSixAlert_Message = "The password should be at least six characters!";
+ValidationNicknameEmptyAlert_Message = "The nickname should not be empty!";
+ValidationNicknameShouldContainAtLeastSixCharacters = "Your nickname should be at least six characters!";
+ValidationEmailEmptyAlert_Message = "Your email address should not be empty!";
+ValidationEmailShouldContainAtSign = "Yor email should contain an @-sign!";
+ValidationEmailShouldContainDot = "Yor email should contain a '.'!";
+ValidationEmailContainsSpaces = "Empty spaces are not allowed in your email!";
+ValidationEmailEndingInvalid = "Invalid email. The email should end with '.com, .de' or similar!";
+ValidationEmailContainsInvalidCharacters = "The email contains invalid characters!";
+
+    //LoginController
+LogInSegmentedControll_SegmentOne = "Login";
+LogInSegmentedControll_SegmentTwo = "Sign up";
+txt_Nickname_Placeholder = "nickname";
+txt_Email_Placeholder = "email";
+txt_Password_Placeholer = "password";
+LoginResetPassword = "Reset password?";
