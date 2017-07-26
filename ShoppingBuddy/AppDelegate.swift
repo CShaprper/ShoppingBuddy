@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 import GooglePlaces
 
+var StoresArray:[Store] = []
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     

@@ -31,4 +31,16 @@ class StoresControllerTests: XCTestCase {
         super.tearDown()
     }
     
+    func test_BackgroundView_Exists(){
+        XCTAssertNotNil(sut!.BackgroundView, "BackgroundView should exist")
+    }
+    func test_StoresTableView_Exists(){
+        XCTAssertNotNil(sut!.StoresTableView, "StoresTableView should exist")
+    }
+    func test_StoresTableViewDelegate_isSet() {
+        XCTAssertNotNil(sut!.StoresTableView.delegate, "StoresTableView.delegate not set")
+    }
+    func test_StoresTableViewDatasource_isSet() {
+        XCTAssertNotNil(sut!.StoresTableView.dataSource, "StoresTableView.dataSource not set")
+    }
 }

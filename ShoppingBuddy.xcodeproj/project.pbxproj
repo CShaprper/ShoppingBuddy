@@ -28,6 +28,8 @@
 		CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */; };
 		CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */; };
 		CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */; };
+		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
+		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
 		CFD41A611F27D4CA00FB1122 /* ShoppingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
 		CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */; };
@@ -101,6 +103,8 @@
 		CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseWebService.swift; sourceTree = "<group>"; };
 		CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNameExtension.swift; sourceTree = "<group>"; };
 		CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierExtension.swift; sourceTree = "<group>"; };
+		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
+		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListController.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -212,6 +216,14 @@
 			name = Helper;
 			sourceTree = "<group>";
 		};
+		CFB4C8381F28D0A700F9FE69 /* TableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */,
+			);
+			name = TableViewCell;
+			sourceTree = "<group>";
+		};
 		CFE4A1BE1F23C0DC002A12C7 = {
 			isa = PBXGroup;
 			children = (
@@ -246,8 +258,6 @@
 				CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */,
 				CFE4A1FA1F23C432002A12C7 /* Model */,
 				CFE4A1F81F23C40B002A12C7 /* View */,
-				CFAD850B1F2779B700F207E5 /* Fonts */,
-				CFB2AA541F24A41200AACB5B /* ViewHelper */,
 				CFE4A1F91F23C420002A12C7 /* Controller */,
 				CFE4A1FD1F23C48F002A12C7 /* Localization */,
 			);
@@ -281,6 +291,8 @@
 			children = (
 				CFE4A1CE1F23C0DC002A12C7 /* Main.storyboard */,
 				CFE4A1D31F23C0DC002A12C7 /* LaunchScreen.storyboard */,
+				CFAD850B1F2779B700F207E5 /* Fonts */,
+				CFB2AA541F24A41200AACB5B /* ViewHelper */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -288,6 +300,7 @@
 		CFE4A1F91F23C420002A12C7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				CFB4C8381F28D0A700F9FE69 /* TableViewCell */,
 				CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */,
 				CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */,
 				CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */,
@@ -301,6 +314,7 @@
 		CFE4A1FA1F23C432002A12C7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				CFB4C83B1F28D12B00F9FE69 /* Store.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
@@ -665,6 +679,7 @@
 				CFE4A2131F23C9A3002A12C7 /* TextfieldIValidationService.swift in Sources */,
 				CFE4A2111F23C9A3002A12C7 /* PasswordValidationService.swift in Sources */,
 				CFE9AB1C1F26108200D0825B /* NicknameValidationService.swift in Sources */,
+				CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */,
 				CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */,
 				CF610C371F26371600B1B2DE /* UIColorExtension.swift in Sources */,
 				CFE9AB211F262DBE00D0825B /* DashboardController.swift in Sources */,
@@ -688,6 +703,7 @@
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
 				CFD41A611F27D4CA00FB1122 /* ShoppingListController.swift in Sources */,
 				CFE4A2121F23C9A3002A12C7 /* EmailValidationService.swift in Sources */,
+				CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */,
 				CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
