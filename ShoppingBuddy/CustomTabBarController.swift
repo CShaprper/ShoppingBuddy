@@ -10,23 +10,25 @@ import UIKit
 
 class CustomTabBarController: UITabBarController {
     //MARK: - Outlets
-
+    
     
     //MARK: - Member
+    var initialTabBarItemIndex:Int!
     var firebaseWebService:FirebaseWebService!
+    var mydelegate = ScrollingTabBarControllerDelegate()
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.delegate = mydelegate  
+        
         firebaseWebService = FirebaseWebService()
         
-        //Hide back button to show custom Button
-        self.navigationItem.hidesBackButton = true
-        let newBackButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
-        self.navigationItem.leftBarButtonItem = newBackButton
+         UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName:UIFont(name: "Blazed", size: 10)!], for: .normal)
     }
     override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning() 
+        super.didReceiveMemoryWarning()
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -48,13 +50,19 @@ class CustomTabBarController: UITabBarController {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         switch item.title! {
         case "Dashboard":
-            tabBar.tintColor = UIColor.fromRGB(R: 247, G: 186, B: 19, alpha: 1)
-            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.fromRGB(R: 247, G: 186, B: 19, alpha: 1)], for: .selected)
+            tabBar.tintColor = UIColor.ColorPaletteBrightest()
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteBrightest()], for: .selected)
+            break
+        case "Stores":
+            tabBar.tintColor = UIColor.ColorPaletteBrightest()
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteBrightest()], for: .selected)
             break
         default:
             break
         }
     }
+    
+    
     
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void{
@@ -62,6 +70,8 @@ class CustomTabBarController: UITabBarController {
     }
     func SegueToLoginController(sender: Notification) -> Void{
         self.navigationController?.popViewController(animated: true)
-    } 
-
+    }
+    
+    
+    //MARK: - Helper Functions
 }

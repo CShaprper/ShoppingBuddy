@@ -25,3 +25,9 @@ txt_Nickname_Placeholder = "Nickname";
 txt_Email_Placeholder = "E-mail";
 txt_Password_Placeholer = "Passwort";
 LoginResetPassword = "Passwort zurücksetzen?";
+
+    //DahboardController
+DashboardControllerTitle = "Dashboard";
+
+    //StoresController
+StoresControllerTitle = "Stores";

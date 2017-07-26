@@ -75,4 +75,14 @@ class LocalizationTests: XCTestCase {
     func test_LoginResetPassword_isLocalized(){
         XCTAssertTrue(String.LoginResetPassword != "LoginResetPassword", "LoginResetPassword is not localized in strings file!")
     }
+    
+    //DashboardController
+    func test_DashboardControllerTitle_isLocalized(){
+        XCTAssertTrue(String.DashboardControllerTitle != "DashboardControllerTitle", "DashboardControllerTitle is not localized in strings file!")
+    }
+    
+    //StoresController
+    func test_StoresControllerTitle_isLocalized(){
+        XCTAssertTrue(String.StoresControllerTitle != "StoresControllerTitle", "StoresControllerTitle is not localized in strings file!")
+    }
 }

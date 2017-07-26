@@ -31,7 +31,23 @@ class DashboardControllerTests: XCTestCase {
         super.tearDown()
     }
     
-    func test_TabBar_Exists(){
-        XCTAssertNotNil(sut!.TabBar, "TabBar should exist")
+    func test_MenuContainer_Exists(){
+        XCTAssertNotNil(sut!.MenuContainer, "MenuContainer should exist")
+    }
+    func test_RoundMenu_Exists(){
+        XCTAssertNotNil(sut!.RoundMenu, "RoundMenu should exist")
+    }
+    //Button Store
+    func test_btn_Stores_Exists(){
+        XCTAssertNotNil(sut!.btn_Stores, "btn_Stores should exist")
+    }
+    func test_btn_StoresTintColor_isSetToSecondDarkest(){
+        XCTAssertEqual(sut.btn_Stores.tintColor, UIColor.ColorPaletteSecondDarkest(), "btn_Stores tintColor should be second darkest color")
+    }
+    func test_btn_ShoppingList_Exists(){
+        XCTAssertNotNil(sut!.btn_ShoppingList, "btn_ShoppingList should exist")
+    }
+    func test_btn_ShoppingListTintColor_isSetToSecondDarkest(){
+        XCTAssertEqual(sut.btn_ShoppingList.tintColor, UIColor.ColorPaletteSecondDarkest(), "btn_ShoppingList tintColor should be second darkest color")
     }
 }

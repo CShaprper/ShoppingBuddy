@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="0ns-pu-5ib">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="5el-h7-Kap">
     <device id="retina3_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -26,13 +26,13 @@
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ma6-O0-9Lg" userLabel="Login-Container">
-                                <rect key="frame" x="32" y="70" width="256" height="340"/>
+                                <rect key="frame" x="32" y="54.5" width="256" height="371"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W8l-Mq-FU6">
-                                        <rect key="frame" x="0.0" y="70" width="256" height="267"/>
+                                        <rect key="frame" x="0.0" y="70" width="256" height="298"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g47-QV-xaK">
-                                                <rect key="frame" x="81.5" y="185" width="93" height="20"/>
+                                                <rect key="frame" x="81.5" y="216" width="93" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="Sd6-W6-5Vv"/>
                                                 </constraints>
@@ -40,7 +40,7 @@
                                                 <state key="normal" title="reset password?"/>
                                             </button>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y3H-hL-9GV" userLabel="Button Container">
-                                                <rect key="frame" x="103" y="210" width="50" height="50"/>
+                                                <rect key="frame" x="103" y="241" width="50" height="50"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="BRl-u0-Nvc">
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -77,8 +77,8 @@
                                             <constraint firstAttribute="bottom" secondItem="y3H-hL-9GV" secondAttribute="bottom" constant="7" id="qUD-Hb-mrP"/>
                                         </constraints>
                                     </view>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="D0Q-ag-Pnp">
-                                        <rect key="frame" x="12.5" y="124" width="230" height="29"/>
+                                    <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="D0Q-ag-Pnp">
+                                        <rect key="frame" x="12.5" y="155" width="230" height="29"/>
                                         <color key="backgroundColor" red="0.99194461107254028" green="0.99615627527236938" blue="0.99600595235824585" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <segments>
                                             <segment title="Login"/>
@@ -86,7 +86,7 @@
                                         </segments>
                                     </segmentedControl>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cFY-BU-BId" userLabel="Login Elements">
-                                        <rect key="frame" x="12.5" y="157" width="230" height="93"/>
+                                        <rect key="frame" x="12.5" y="188" width="230" height="93"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vhp-FF-th9">
                                                 <rect key="frame" x="0.0" y="0.0" width="230" height="93"/>
@@ -246,11 +246,11 @@
                                             <constraint firstItem="Bb1-b0-E0i" firstAttribute="top" secondItem="88G-Zb-nBP" secondAttribute="bottom" id="xIw-x3-j4r"/>
                                         </constraints>
                                     </view>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo-ShoppingBuddy" translatesAutoresizingMaskIntoConstraints="NO" id="IKe-w6-Ub1">
-                                        <rect key="frame" x="42" y="0.0" width="172" height="119"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ShoppingBuddy-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="IKe-w6-Ub1">
+                                        <rect key="frame" x="28" y="0.0" width="200" height="150"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="119" id="DEl-49-SWr"/>
-                                            <constraint firstAttribute="width" constant="172" id="FPU-w3-qte"/>
+                                            <constraint firstAttribute="height" constant="150" id="DEl-49-SWr"/>
+                                            <constraint firstAttribute="width" constant="200" id="FPU-w3-qte"/>
                                         </constraints>
                                     </imageView>
                                 </subviews>
@@ -308,12 +308,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dUf-rj-AYp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="888.75" y="305"/>
+            <point key="canvasLocation" x="699" y="740"/>
         </scene>
-        <!--Item 2-->
+        <!--Stores-->
         <scene sceneID="0GD-HV-var">
             <objects>
-                <viewController id="TXE-EF-z2B" sceneMemberID="viewController">
+                <viewController title="Stores" useStoryboardIdentifierAsRestorationIdentifier="YES" id="TXE-EF-z2B" customClass="StoresController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2kA-IM-swc"/>
                         <viewControllerLayoutGuide type="bottom" id="m0j-tV-eO3"/>
@@ -321,13 +321,111 @@
                     <view key="view" contentMode="scaleToFill" id="UEN-bi-zcW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tW0-ie-uHD" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="6qE-aS-nZC">
+                                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="zXN-8E-Xju">
+                                                <rect key="frame" x="0.0" y="28" width="320" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zXN-8E-Xju" id="pyt-XP-8tC">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            </tableViewCell>
+                                        </prototypes>
+                                    </tableView>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="6qE-aS-nZC" secondAttribute="trailing" id="Ios-NI-O2d"/>
+                                    <constraint firstItem="6qE-aS-nZC" firstAttribute="leading" secondItem="tW0-ie-uHD" secondAttribute="leading" id="UQb-y2-tDW"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="TopColor">
+                                        <color key="value" red="0.84073776010000001" green="0.95787805319999997" blue="0.63630330560000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="BottomColor">
+                                        <color key="value" red="0.44743686910000002" green="0.40853029489999998" blue="0.55340409280000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="TopLocation">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="6qE-aS-nZC" firstAttribute="top" secondItem="2kA-IM-swc" secondAttribute="bottom" id="3ag-2x-Ak4"/>
+                            <constraint firstAttribute="trailing" secondItem="tW0-ie-uHD" secondAttribute="trailing" id="IcU-8X-ajz"/>
+                            <constraint firstItem="m0j-tV-eO3" firstAttribute="top" secondItem="6qE-aS-nZC" secondAttribute="bottom" id="JTe-Ia-ZsJ"/>
+                            <constraint firstAttribute="bottom" secondItem="tW0-ie-uHD" secondAttribute="bottom" id="RB3-8l-QfS"/>
+                            <constraint firstItem="tW0-ie-uHD" firstAttribute="top" secondItem="UEN-bi-zcW" secondAttribute="top" id="ctF-zy-xTl"/>
+                            <constraint firstItem="tW0-ie-uHD" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leading" id="qWk-K2-v7c"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item 2" id="54i-OP-ifN"/>
+                    <navigationItem key="navigationItem" id="MEH-di-y52"/>
+                    <connections>
+                        <outlet property="BackgroundView" destination="tW0-ie-uHD" id="qQa-Pf-IAO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yGR-f3-Kdr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2623" y="644"/>
+            <point key="canvasLocation" x="3618.75" y="643.75"/>
+        </scene>
+        <!--Shopping List Controller-->
+        <scene sceneID="Swa-ox-URi">
+            <objects>
+                <viewController storyboardIdentifier="ShoppingListController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7as-8F-Vmr" customClass="ShoppingListController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jPR-kj-TQd"/>
+                        <viewControllerLayoutGuide type="bottom" id="1Nm-m0-bdC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="i4j-Do-l4I">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ctE-qd-adj" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="TopColor">
+                                        <color key="value" red="0.84073776010000001" green="0.95787805319999997" blue="0.63630330560000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="BottomColor">
+                                        <color key="value" red="0.44743686910000002" green="0.40853029489999998" blue="0.55340409280000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="TopLocation">
+                                        <real key="value" value="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ctE-qd-adj" firstAttribute="leading" secondItem="i4j-Do-l4I" secondAttribute="leading" id="12f-WX-J2a"/>
+                            <constraint firstItem="ctE-qd-adj" firstAttribute="top" secondItem="i4j-Do-l4I" secondAttribute="top" id="7F9-9A-nqp"/>
+                            <constraint firstAttribute="trailing" secondItem="ctE-qd-adj" secondAttribute="trailing" id="7bK-Bi-AE8"/>
+                            <constraint firstAttribute="bottom" secondItem="ctE-qd-adj" secondAttribute="bottom" id="iQS-4q-8XD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="16G-fB-jgg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uru-Dz-b3Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3619" y="1321"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Nat-6a-auh">
@@ -342,14 +440,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jjL-YO-AJX" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="TopColor">
-                                        <color key="value" red="1" green="0.79592556420000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="value" red="0.84073776006698608" green="0.95787805318832397" blue="0.63630330562591553" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="color" keyPath="BottomColor">
-                                        <color key="value" red="0.1474609375" green="0.9821777344" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="value" red="0.4474368691444397" green="0.40853029489517212" blue="0.55340409278869629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
                                         <real key="value" value="0.0"/>
@@ -359,13 +457,54 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ooM-SL-CFu" userLabel="MenuContainer">
+                                <rect key="frame" x="220" y="0.0" width="100" height="480"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="RoundMenu" translatesAutoresizingMaskIntoConstraints="NO" id="Fm4-63-gaL">
+                                        <rect key="frame" x="-89" y="0.0" width="189" height="480"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="189" id="RQ8-FC-63I"/>
+                                        </constraints>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="B9K-WZ-79D" userLabel="Button Stack">
+                                        <rect key="frame" x="0.0" y="64" width="100" height="366"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hcl-Sx-vyE">
+                                                <rect key="frame" x="0.0" y="0.0" width="100" height="183"/>
+                                                <state key="normal" image="icon-Store"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jc4-Rh-d3w">
+                                                <rect key="frame" x="0.0" y="183" width="100" height="183"/>
+                                                <state key="normal" image="icon-List"/>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="Fm4-63-gaL" secondAttribute="bottom" id="8OW-9y-nwb"/>
+                                    <constraint firstAttribute="width" constant="100" id="9Sx-tN-hm1"/>
+                                    <constraint firstItem="Fm4-63-gaL" firstAttribute="top" secondItem="ooM-SL-CFu" secondAttribute="top" id="RBh-vi-Ukw"/>
+                                    <constraint firstAttribute="trailing" secondItem="Fm4-63-gaL" secondAttribute="trailing" id="W2a-Cq-Uae"/>
+                                    <constraint firstAttribute="bottom" secondItem="Fm4-63-gaL" secondAttribute="bottom" id="XSA-h4-VQe"/>
+                                    <constraint firstItem="B9K-WZ-79D" firstAttribute="leading" secondItem="ooM-SL-CFu" secondAttribute="leading" id="amS-Wg-RrL"/>
+                                    <constraint firstAttribute="trailing" secondItem="B9K-WZ-79D" secondAttribute="trailing" id="h1Y-HY-ffo"/>
+                                    <constraint firstAttribute="trailing" secondItem="Fm4-63-gaL" secondAttribute="trailing" id="h7g-tW-7gx"/>
+                                    <constraint firstItem="Fm4-63-gaL" firstAttribute="top" secondItem="ooM-SL-CFu" secondAttribute="top" id="ovw-VM-tzO"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="jjL-YO-AJX" firstAttribute="top" secondItem="gCO-6r-kZU" secondAttribute="bottom" id="7LN-W8-yXh"/>
-                            <constraint firstItem="jjL-YO-AJX" firstAttribute="leading" secondItem="vPR-9n-r7y" secondAttribute="leading" id="DLH-cU-2JA"/>
-                            <constraint firstAttribute="trailing" secondItem="jjL-YO-AJX" secondAttribute="trailing" id="ZEi-aE-pj1"/>
-                            <constraint firstItem="3jg-Aq-zue" firstAttribute="top" secondItem="jjL-YO-AJX" secondAttribute="bottom" id="gNy-Ea-Oc9"/>
+                            <constraint firstItem="ooM-SL-CFu" firstAttribute="centerY" secondItem="vPR-9n-r7y" secondAttribute="centerY" id="JdI-IB-uDx"/>
+                            <constraint firstAttribute="trailing" secondItem="ooM-SL-CFu" secondAttribute="trailing" id="Jex-MW-WRC"/>
+                            <constraint firstItem="3jg-Aq-zue" firstAttribute="top" secondItem="B9K-WZ-79D" secondAttribute="bottom" constant="1" id="OJM-jM-R2m"/>
+                            <constraint firstItem="jjL-YO-AJX" firstAttribute="top" secondItem="vPR-9n-r7y" secondAttribute="top" id="azT-cq-f0w"/>
+                            <constraint firstAttribute="bottom" secondItem="jjL-YO-AJX" secondAttribute="bottom" id="gVl-p3-b3N"/>
+                            <constraint firstItem="jjL-YO-AJX" firstAttribute="leading" secondItem="vPR-9n-r7y" secondAttribute="leading" id="lRO-8y-SBX"/>
+                            <constraint firstItem="B9K-WZ-79D" firstAttribute="top" secondItem="gCO-6r-kZU" secondAttribute="bottom" id="rxf-n7-EYj"/>
+                            <constraint firstItem="ooM-SL-CFu" firstAttribute="height" secondItem="vPR-9n-r7y" secondAttribute="height" id="twi-iP-Gy7"/>
+                            <constraint firstAttribute="trailing" secondItem="jjL-YO-AJX" secondAttribute="trailing" id="wLu-PU-6NU"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="TopColor">
@@ -376,12 +515,21 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Dashboard" image="icon-Dashboard" id="LzV-J4-6U3"/>
+                    <navigationItem key="navigationItem" id="3Re-rQ-gfn"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <connections>
+                        <outlet property="BackgroundView" destination="jjL-YO-AJX" id="seA-1L-Z6g"/>
+                        <outlet property="ButtonStack" destination="B9K-WZ-79D" id="3bU-4U-02M"/>
+                        <outlet property="MenuContainer" destination="ooM-SL-CFu" id="Pdr-rR-XbE"/>
+                        <outlet property="RoundMenu" destination="Fm4-63-gaL" id="Say-cr-oCr"/>
+                        <outlet property="btn_ShoppingList" destination="jc4-Rh-d3w" id="NJS-CZ-pdn"/>
+                        <outlet property="btn_Stores" destination="Hcl-Sx-vyE" id="QaP-rQ-63f"/>
+                        <segue destination="5el-h7-Kap" kind="presentation" identifier="SegueToLoginController" id="nv6-pW-Gd9"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4RJ-Vf-W6a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2621.25" y="-33.75"/>
+            <point key="canvasLocation" x="3618.75" y="-33.75"/>
         </scene>
         <!--Custom Tab Bar Controller-->
         <scene sceneID="uWU-cD-cev">
@@ -393,40 +541,87 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="W3B-pI-nfF" kind="relationship" relationship="viewControllers" id="Qqy-dQ-jf9"/>
-                        <segue destination="TXE-EF-z2B" kind="relationship" relationship="viewControllers" id="f39-RR-ecN"/>
+                        <segue destination="HRu-k2-mjo" kind="relationship" relationship="viewControllers" id="Qqy-dQ-jf9"/>
+                        <segue destination="AHD-c2-dcB" kind="relationship" relationship="viewControllers" id="f39-RR-ecN"/>
+                        <segue destination="2HY-4q-0kE" kind="relationship" relationship="viewControllers" id="JlH-l0-lnM"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Akx-lZ-kmb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1611" y="305"/>
+            <point key="canvasLocation" x="1547" y="740"/>
         </scene>
-        <!--Custom Navigation Controller-->
-        <scene sceneID="KRP-zc-BXA">
+        <!--Dashboard-->
+        <scene sceneID="Fmw-Qx-fXm">
             <objects>
-                <navigationController id="0ns-pu-5ib" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ycl-N3-Br9">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HRu-k2-mjo" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Dashboard" image="iconTabBar-Dashboard" id="LzV-J4-6U3"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Im1-Yg-asK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="5el-h7-Kap" kind="relationship" relationship="rootViewController" id="3Ot-mH-5kN"/>
+                        <segue destination="W3B-pI-nfF" kind="relationship" relationship="rootViewController" id="wdh-py-3wx"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9eC-I3-FHl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="C0C-ms-MPp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="145" y="307"/>
+            <point key="canvasLocation" x="2621.25" y="-33.75"/>
+        </scene>
+        <!--Stores-->
+        <scene sceneID="uIr-tu-t98">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="AHD-c2-dcB" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Stores" image="iconTabBar-Store" id="54i-OP-ifN"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MLg-ug-Lr4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="TXE-EF-z2B" kind="relationship" relationship="rootViewController" id="Yp3-Xt-MnL"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cvc-T7-RWj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2621.25" y="643.75"/>
+        </scene>
+        <!--Shopping List-->
+        <scene sceneID="10c-zs-8Vn">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2HY-4q-0kE" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Shopping List" image="iconTabbar-List" id="A59-KR-mUP"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ttc-Wc-O1i">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="7as-8F-Vmr" kind="relationship" relationship="rootViewController" id="AZY-1U-D2a"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SSd-nU-Khq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2621" y="1320"/>
         </scene>
     </scenes>
     <resources>
         <image name="BG-Login" width="1125" height="2001"/>
-        <image name="icon-Dashboard" width="25" height="26"/>
+        <image name="RoundMenu" width="516" height="1998"/>
+        <image name="ShoppingBuddy-Logo" width="852" height="549"/>
         <image name="icon-Email" width="150" height="150"/>
         <image name="icon-Exclamation" width="75" height="150"/>
         <image name="icon-Key" width="150" height="150"/>
-        <image name="icon-Login" width="150" height="150"/>
+        <image name="icon-List" width="75" height="75"/>
+        <image name="icon-Login" width="22" height="22"/>
         <image name="icon-Person" width="150" height="150"/>
-        <image name="logo-ShoppingBuddy" width="540" height="396"/>
+        <image name="icon-Store" width="75" height="75"/>
+        <image name="iconTabBar-Dashboard" width="25" height="26"/>
+        <image name="iconTabBar-Store" width="25" height="25"/>
+        <image name="iconTabbar-List" width="25" height="25"/>
     </resources>
-    <color key="tintColor" red="0.39929795265197754" green="0.099868305027484894" blue="0.56534099578857422" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <color key="tintColor" red="0.38021710515022278" green="0.49200141429901123" blue="0.61677485704421997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

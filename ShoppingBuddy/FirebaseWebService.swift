@@ -17,6 +17,7 @@ class FirebaseWebService: IFirebaseWebService {
     internal let firebaseURL:String = "https://shoppingbuddy-1ef51.firebaseio.com/"
     private var ref:DatabaseReference!
     private var isCalled:Bool = false
+    private var isLogoutCalled:Bool = false
     var delegate: IFirebaseWebService?
     var alertTitle = ""
     var alertMessage = ""
@@ -39,19 +40,25 @@ class FirebaseWebService: IFirebaseWebService {
         if delegate != nil { DispatchQueue.main.async { self.delegate!.AlertFromFirebaseService!(title: title, message: message) }}
         else { print("IFirebaseWebService delegate for alert not set from calling class") }
     }
+    func FirebaseUserLoggedIn() {
+        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseUserLoggedIn!() }}
+        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+    }
+    func FirebaseUserLoggedOut() {
+        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseUserLoggedOut!() }}
+        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+    }
     
     //MARK: - FirebaseWebService methods
     func AddUserStateListener() -> Void {
         Auth.auth().addStateDidChangeListener { (auth, user) in
             if user != nil{
-                if !self.isCalled{
-                    print("State listener detected user loged in")
-                    NotificationCenter.default.post(name: NSNotification.Name.SegueToDashboardController, object: nil)
-                    self.isCalled = true
-                }
+                print("State listener detected user loged in")
+                self.FirebaseUserLoggedIn()
             } else {
-                print("State listener detected user loged out")
-                NotificationCenter.default.post(name: NSNotification.Name.SegueToLogInController, object: nil)
+                    print("State listener detected user loged out")
+                    self.isLogoutCalled = true
+                    NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
             }
         }
     }
@@ -96,13 +103,11 @@ class FirebaseWebService: IFirebaseWebService {
         }
     }
     func LogUserOut() {
-        self.isCalled = false
         let auth = Auth.auth()
         do{
             try  auth.signOut()
             self.FirebaseRequestFinished()
             print("Succesfully logged out")
-            self.isCalled = false
         }
         catch let error as NSError{
             print(error.localizedDescription)
@@ -111,7 +116,6 @@ class FirebaseWebService: IFirebaseWebService {
             let message = ""
             self.AlertFromFirebaseService(title: title, message: message)
         }
-        
     }
     func ResetUserPassword(email:String){
         Auth.auth().sendPasswordReset(withEmail: email) { (error) in

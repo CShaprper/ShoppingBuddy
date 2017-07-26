@@ -13,6 +13,9 @@ extension UIColor{
         return UIColor(red: R / 255, green: G / 255, blue: B / 255,  alpha: alpha
         )
     }
+    static func ColorPaletteorange() ->UIColor{
+        return UIColor(red: 249 / 255, green: 107 / 255, blue: 0 / 255,  alpha: 1)
+    }
     static func ColorPaletteDarkest() ->UIColor{
         return UIColor(red: 114 / 255, green: 105 / 255, blue: 140 / 255,  alpha: 1)
     }

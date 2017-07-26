@@ -29,4 +29,10 @@ extension String{
     static let txt_Email_Placeholder = NSLocalizedString("txt_Email_Placeholder", comment: "")
     static let txt_Password_Placeholer = NSLocalizedString("txt_Password_Placeholer", comment: "")
     static let LoginResetPassword = NSLocalizedString("LoginResetPassword", comment: "")
+    
+    //DashboardController
+    static let DashboardControllerTitle = NSLocalizedString("DashboardControllerTitle", comment: "")
+    
+    //StoresController
+    static let StoresControllerTitle = NSLocalizedString("StoresControllerTitle", comment: "")
 }

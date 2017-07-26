@@ -73,11 +73,11 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     
     
     //IFirebaseWebService Implementation
-    func FirebaseRequestStarted() {
-        
-    }
-    func FirebaseRequestFinished() {
-        
+    func FirebaseRequestStarted() {}
+    func FirebaseRequestFinished() {}
+    func FirebaseUserLoggedOut() {}
+    func FirebaseUserLoggedIn() {
+        performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
     }
     func AlertFromFirebaseService(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -112,9 +112,6 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     
     
     //MARK: - Notification Listener targets
-    func SegueToDashBoardController(sender: Notification) -> Void{
-        performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
-    }
     func KeyboardWillShow(sender: Notification) -> Void {
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             LoginContainerHolder.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
@@ -189,8 +186,6 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         firebaseWebService = FirebaseWebService()
         firebaseWebService.delegate = self
         
-        //Notification listener
-        NotificationCenter.default.addObserver(self, selector: #selector(SegueToDashBoardController), name: NSNotification.Name.SegueToDashboardController, object: nil)
         //BackgroundImage
         BackgroundImage.alpha = 1
         

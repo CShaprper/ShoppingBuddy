@@ -7,11 +7,12 @@
 //
 
 import XCTest
+@testable import ShoppingBuddy
 
 class LoginControllerUITests: XCTestCase {
     var app:XCUIApplication!
     
-    override func setUp() {
+  /*  override func setUp() {
         super.setUp()
         continueAfterFailure = false
         // UI tests must launch the application that they test. 
@@ -19,6 +20,7 @@ class LoginControllerUITests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments.append("--uitesting")
         app.launch()
+        XCUIDevice.shared().orientation = .portrait
     }
     
     override func tearDown() {
@@ -27,35 +29,29 @@ class LoginControllerUITests: XCTestCase {
     }
     
     func test_LoginButtonPressedWithout_Input(){
-        XCUIDevice.shared().orientation = .portrait
-        XCUIDevice.shared().orientation = .portrait
-        
-        let app = XCUIApplication()
-        let btnLoginButton = app.buttons["btn_login"]
-        btnLoginButton.tap()
-        
-        let okButton = app.alerts["Validierungsfehler"].buttons["OK"]
-        okButton.tap()
-        
-        let eMailTextField = app.textFields["E-mail"]
-        eMailTextField.tap()
-        eMailTextField.typeText("p.syppek")
-        btnLoginButton.tap()
-        okButton.tap()
-        eMailTextField.typeText("@")
-        btnLoginButton.tap()
-        okButton.tap()
-        eMailTextField.typeText("google.de")
-        btnLoginButton.tap()
-        okButton.tap()
-        
-        let passwortSecureTextField = app.secureTextFields["Passwort"]
-        passwortSecureTextField.tap()
-        passwortSecureTextField.typeText("aaaaa")
-        btnLoginButton.tap()
-        okButton.tap()
-        passwortSecureTextField.typeText("aaaaaa")
-        
+        app.buttons["btn_login"].tap()
+        XCTAssertNotNil(app.alerts["Validation Error"], "Alert should appear")
     }
-    
+    func test_LoginButtonPressedWithoutInput_AlertTitleIsCorrect(){
+        app.buttons["Sign up"].tap()
+        
+        let nicknameTextField = app.textFields["nickname"]
+        nicknameTextField.tap()
+        nicknameTextField.typeText("nick")
+        nicknameTextField.typeText("name")
+        
+        let emailTextField = app.textFields["email"]
+        emailTextField.tap()
+        emailTextField.typeText("p.sypek")
+        emailTextField.typeText("@")
+        emailTextField.typeText("icloud.")
+        emailTextField.typeText("com")
+
+        
+        let passwordSecureTextField = app.secureTextFields["password"]
+        passwordSecureTextField.tap()
+        passwordSecureTextField.typeText("1234")
+        app.buttons["Sign up"].tap()
+        
+    }*/
 }

@@ -50,5 +50,9 @@
 	<true/>
 	<key>UIStatusBarTintParameters</key>
 	<dict/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Blazed.ttf</string>
+	</array>
 </dict>
 </plist>
