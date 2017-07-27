@@ -15,26 +15,14 @@ class ShoppingListController: UIViewController {
         super.viewDidLoad()
         
         //SetNavigationBar Title
-        navigationItem.title = "Shopping Lists"
+        navigationItem.title = String.ShoppingListControllerTitle
         
         //SetTabBarTitle
-        self.tabBarItem.title = "Shopping Lists"
+        tabBarItem.title = String.ShoppingListControllerTitle
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

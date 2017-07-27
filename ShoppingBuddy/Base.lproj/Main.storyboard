@@ -362,6 +362,8 @@
                                                             <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="24"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
+                                                            <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <size key="shadowOffset" width="2" height="2"/>
                                                         </label>
                                                     </subviews>
                                                     <constraints>
@@ -427,6 +429,7 @@
                     <connections>
                         <outlet property="AddStoreButton" destination="h5S-bD-uMY" id="hGM-aH-abt"/>
                         <outlet property="AddStorePopUp" destination="CcB-Dx-O01" id="YBN-mq-Svy"/>
+                        <outlet property="AddStorePopUpLogo" destination="bwm-OM-gzU" id="xcd-Gg-yxo"/>
                         <outlet property="BackgroundView" destination="tW0-ie-uHD" id="qQa-Pf-IAO"/>
                         <outlet property="StoresTableView" destination="6qE-aS-nZC" id="ssk-er-MQq"/>
                         <outlet property="btn_SaveStore" destination="nWA-Hk-70X" id="Hhh-Cd-Bh0"/>
@@ -458,9 +461,9 @@
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <constraints>
                                 <constraint firstItem="nWA-Hk-70X" firstAttribute="top" secondItem="5T9-en-3Os" secondAttribute="bottom" constant="8" id="8e4-I7-Olf"/>
+                                <constraint firstAttribute="bottom" secondItem="nWA-Hk-70X" secondAttribute="bottom" constant="10" id="V5l-Gg-cs5"/>
                                 <constraint firstAttribute="trailing" secondItem="5T9-en-3Os" secondAttribute="trailing" constant="20" id="Yyv-0D-9H5"/>
                                 <constraint firstItem="nWA-Hk-70X" firstAttribute="centerX" secondItem="f25-H5-FzO" secondAttribute="centerX" id="dam-ye-t7z"/>
-                                <constraint firstAttribute="bottom" secondItem="nWA-Hk-70X" secondAttribute="bottom" constant="10" id="t9q-Wa-oyD"/>
                                 <constraint firstItem="5T9-en-3Os" firstAttribute="leading" secondItem="f25-H5-FzO" secondAttribute="leading" constant="20" id="tRe-YG-ZZb"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
@@ -469,22 +472,21 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </view>
-                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AddStore-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="bwm-OM-gzU">
-                            <rect key="frame" x="61" y="0.0" width="128" height="101"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="128" id="6vy-jR-rlO"/>
-                                <constraint firstAttribute="height" constant="101" id="sI8-3K-a42"/>
-                            </constraints>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AddStore-US-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="bwm-OM-gzU">
+                            <rect key="frame" x="50" y="0.0" width="150" height="99"/>
                         </imageView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="f25-H5-FzO" secondAttribute="trailing" id="4nh-Cv-xbA"/>
                         <constraint firstItem="bwm-OM-gzU" firstAttribute="centerX" secondItem="CcB-Dx-O01" secondAttribute="centerX" id="8Fk-tQ-k0s"/>
+                        <constraint firstItem="bwm-OM-gzU" firstAttribute="width" secondItem="f25-H5-FzO" secondAttribute="width" multiplier="0.6" id="MTW-hr-z2z"/>
+                        <constraint firstItem="5T9-en-3Os" firstAttribute="top" secondItem="bwm-OM-gzU" secondAttribute="bottom" constant="8" id="PjK-m9-h0n"/>
                         <constraint firstItem="f25-H5-FzO" firstAttribute="top" secondItem="CcB-Dx-O01" secondAttribute="top" constant="31" id="iJ7-PW-QBx"/>
                         <constraint firstAttribute="bottom" secondItem="f25-H5-FzO" secondAttribute="bottom" id="oXt-48-z2D"/>
                         <constraint firstItem="bwm-OM-gzU" firstAttribute="top" secondItem="CcB-Dx-O01" secondAttribute="top" id="sGR-Dx-Lsx"/>
                         <constraint firstItem="f25-H5-FzO" firstAttribute="leading" secondItem="CcB-Dx-O01" secondAttribute="leading" id="yaF-Jf-46s"/>
+                        <constraint firstItem="bwm-OM-gzU" firstAttribute="height" secondItem="CcB-Dx-O01" secondAttribute="height" multiplier="0.55" id="zJn-x6-6Ma"/>
                     </constraints>
                 </view>
             </objects>
@@ -623,7 +625,7 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
-                    <navigationItem key="navigationItem" id="3Re-rQ-gfn"/>
+                    <navigationItem key="navigationItem" title="Dashboard" id="3Re-rQ-gfn"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="BackgroundView" destination="jjL-YO-AJX" id="seA-1L-Z6g"/>
@@ -717,10 +719,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="AddStore-Logo" width="201" height="183"/>
+        <image name="AddStore-US-Logo" width="203" height="183"/>
         <image name="BG-Login" width="1125" height="2001"/>
         <image name="RoundMenu" width="516" height="1998"/>
-        <image name="ShoppingBuddy-Logo" width="852" height="549"/>
+        <image name="ShoppingBuddy-Logo" width="284" height="183"/>
         <image name="icon-AddStore" width="24" height="25"/>
         <image name="icon-Email" width="150" height="150"/>
         <image name="icon-Exclamation" width="75" height="150"/>
@@ -729,10 +731,10 @@
         <image name="icon-Login" width="22" height="22"/>
         <image name="icon-Person" width="150" height="150"/>
         <image name="icon-Save" width="25" height="25"/>
-        <image name="icon-Store" width="75" height="75"/>
+        <image name="icon-Store" width="160" height="130"/>
         <image name="iconTabBar-Dashboard" width="25" height="26"/>
         <image name="iconTabBar-Store" width="25" height="25"/>
         <image name="iconTabbar-List" width="25" height="25"/>
     </resources>
-    <color key="tintColor" red="0.38021710515022278" green="0.49200141429901123" blue="0.61677485704421997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+    <color key="tintColor" red="0.3762441873550415" green="0.48788219690322876" blue="0.62092471122741699" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

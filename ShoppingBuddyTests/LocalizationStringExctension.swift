@@ -46,4 +46,10 @@ extension String{
     //StoresController
     static let StoresControllerTitle = NSLocalizedString("StoresControllerTitle", comment: "")
     static let txt_AddStore_Placeholder = NSLocalizedString("txt_AddStore_Placeholder", comment: "")
+    //AddPopupLogo
+    static let AddStorePopUpLogo_Image = NSLocalizedString("AddStorePopUpLogo_Image", comment: "")
+    
+    //ShoppingListController
+    static let ShoppingListControllerTitle = NSLocalizedString("ShoppingListControllerTitle", comment: "")
+
 }

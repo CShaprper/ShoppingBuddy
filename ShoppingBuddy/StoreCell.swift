@@ -23,6 +23,8 @@ class StoreCell: UITableViewCell {
     
     func ConfigureCell(store: Store) -> Void {
         lbl_StoreName.text = store.Store != nil ? store.Store! : ""
+        lbl_StoreName.textColor = UIColor.ColorPaletteSecondDarkest()
         StoreImage?.image = store.Store != nil ? #imageLiteral(resourceName: "icon-Store") : nil
+        StoreImage?.tintColor = UIColor.ColorPaletteSecondDarkest()
     }
 }

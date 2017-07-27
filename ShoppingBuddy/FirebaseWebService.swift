@@ -56,9 +56,9 @@ class FirebaseWebService: IFirebaseWebService {
                 print("State listener detected user loged in")
                 self.FirebaseUserLoggedIn()
             } else {
-                    print("State listener detected user loged out")
-                    self.isLogoutCalled = true
-                    NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
+                print("State listener detected user loged out")
+                self.isLogoutCalled = true
+                NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
             }
         }
     }
@@ -131,6 +131,67 @@ class FirebaseWebService: IFirebaseWebService {
             return
         }
         
+    }
+    //MARK: - Firebase Read Functions
+    func ReadFirebaseStoresSection() -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        ref.child("stores").child(uid).observe(.childAdded, with: { (snapshot) in
+            if snapshot.value is NSNull{
+                return
+            }
+            print(snapshot)
+            let value = snapshot.value as? NSDictionary
+            var store = Store()
+            store.ID = value?["id"] as? String ?? ""
+            store.Store = value?["store"] as? String ?? ""
+            StoresArray.append(store)
+            self.FirebaseRequestFinished()
+        })
+    }
+    
+    //MARK: - Firebase Save Functions
+    func SaveStoreToFirebaseDatabase(storeName: String) -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        
+        let storeID =  ref.child("stores").child(uid).childByAutoId()
+        print(storeID.key)
+        storeID.updateChildValues(["store":storeName, "id":storeID.key], withCompletionBlock: { (error, dbref) in
+            if error != nil{
+                self.FirebaseRequestFinished()
+                print(error!.localizedDescription)
+                let title = ""
+                let message = ""
+                self.AlertFromFirebaseService(title: title, message: message)
+                return
+            } else {
+                self.FirebaseRequestFinished()
+                print("Succesfully saved Store to Firebase")
+            }
+        })
+    }
+    
+    //MARK: - Firebase Delete Functions
+    func DeleteStoreFromFirebase(idToDelete: String) -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        let storeRef = ref.child("stores").child(uid)
+        storeRef.child(idToDelete).removeValue { (error, dbref) in
+            if error != nil{
+                self.FirebaseRequestFinished()
+                print(error!.localizedDescription)
+                let title = ""
+                let message = ""
+                self.AlertFromFirebaseService(title: title, message: message)
+                return
+            }
+            print("Succesfully deleted Store \(dbref.key) from Firebase")
+            self.FirebaseRequestFinished()
+        }
     }
     
     //MARK: - Helpers

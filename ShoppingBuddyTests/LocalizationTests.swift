@@ -100,4 +100,11 @@ class LocalizationTests: XCTestCase {
         XCTAssertTrue(String.txt_AddStore_Placeholder != "txt_AddStore_Placeholder", "txt_AddStore_Placeholder is not localized in strings file!")
     }
     
+    
+    
+    //ShoppingListController
+    func test_ShoppingListControllerTitle_isLocalized(){
+    XCTAssertTrue(String.ShoppingListControllerTitle != "ShoppingListControllerTitle", "ShoppingListControllerTitle is not localized in strings file!")
+    }
+    
 }

@@ -47,7 +47,7 @@ class StoresControllerTests: XCTestCase {
         let cell = sut.StoresTableView.dequeueReusableCell(withIdentifier: String.StoreCell_Identifier) as! StoreCell
         XCTAssertNotNil(cell, "StoresCell should not be nil")
         XCTAssertTrue(cell.reuseIdentifier == String.StoreCell_Identifier, "TabelViewCell reuseIdentifier is \(String(describing: cell.reuseIdentifier)) and should be \(String.StoreCell_Identifier)")
-    } 
+    }
     
     //AddStorePopUp
     func test_AddStorePopUp_Exists(){
@@ -71,8 +71,13 @@ class StoresControllerTests: XCTestCase {
     func test_txt_AddStoreDelegate_isSet() {
         XCTAssertNotNil(sut!.txt_AddStore.delegate, "txt_AddStore.delegate not set")
     }
-    func test_txt_AddStore_isWired_ToAction(){
-        XCTAssertTrue(ControlTagetTester.checkTargetForOutlet(outlet: sut!.txt_AddStore, actionName: "txt_AddStore_TextChanged", event: .editingChanged, controller: sut! ))
+    
+    //btn_SaveStore
+    func test_btn_SaveStore_isWired_ToAction(){
+        XCTAssertTrue(ControlTagetTester.checkTargetForOutlet(outlet: sut!.btn_SaveStore, actionName: "btn_SaveStore_Pressed", event: .touchUpInside, controller: sut! ))
+    }
+    func test_btn_SaveStoreTextColor_isCorrect(){
+        XCTAssertEqual(sut!.btn_SaveStore.tintColor, UIColor.ColorPaletteSecondDarkest(), "btn_SaveStore.tintColor is not correct")
     }
 }
 

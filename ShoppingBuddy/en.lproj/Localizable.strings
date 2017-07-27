@@ -38,3 +38,8 @@ DashboardControllerTitle = "Dashboard";
     //StoresController
 StoresControllerTitle = "Stores";
 txt_AddStore_Placeholder = "store name";
+    //AddStorePopUpLogo
+AddStorePopUpLogo_Image = "AddStore-US-Logo";
+
+    //ShoppingListController
+ShoppingListControllerTitle = "Shopping Lists";

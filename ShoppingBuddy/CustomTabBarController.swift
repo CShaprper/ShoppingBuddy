@@ -26,6 +26,10 @@ class CustomTabBarController: UITabBarController {
         firebaseWebService = FirebaseWebService()
         
          UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName:UIFont(name: "Blazed", size: 10)!], for: .normal)
+        
+        tabBar.items?[0].title = String.DashboardControllerTitle
+        tabBar.items?[1].title = String.StoresControllerTitle
+        tabBar.items?[2].title = String.ShoppingListControllerTitle
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -60,18 +64,7 @@ class CustomTabBarController: UITabBarController {
         default:
             break
         }
-    }
-    
-    
-    
-    //MARK: - Wired Actions
-    func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void{
-        firebaseWebService.LogUserOut()
-    }
-    func SegueToLoginController(sender: Notification) -> Void{
-        self.navigationController?.popViewController(animated: true)
-    }
-    
+    } 
     
     //MARK: - Helper Functions
 }
