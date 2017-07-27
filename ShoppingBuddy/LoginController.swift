@@ -29,10 +29,13 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     @IBOutlet var LoginContainerBackground: UIView!
     @IBOutlet var LoginContainerHolder: UIView!
     @IBOutlet var btn_ResetPassword: UIButton!
+    //Activity Indicator
+    @IBOutlet var ActivityIndicatior: UIActivityIndicatorView!
     
     
     //MARK: Member
     var firebaseWebService:FirebaseWebService!
+    private var BlurrView:UIVisualEffectView?
     
     
     //MARK: - ViewController Lifecycle
@@ -73,15 +76,13 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     
     
     //IFirebaseWebService Implementation
-    func FirebaseRequestStarted() {}
-    func FirebaseRequestFinished() {}
+    func FirebaseRequestStarted() { ShowActivityIndicator() }
+    func FirebaseRequestFinished() { HideActivityIndicator() }
     func FirebaseUserLoggedOut() {}
-    func FirebaseUserLoggedIn() {
-        performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
-    }
+    func FirebaseUserLoggedIn() { performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil) }
     func AlertFromFirebaseService(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
@@ -172,7 +173,7 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         }
     }
     func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
-      let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, delegate: self)
+        let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, delegate: self)
         if isValid{
             firebaseWebService.ResetUserPassword(email: txt_Email.text!)
         }
@@ -180,7 +181,31 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     
     
     //MARK: - Helper Functions
-    func ConfigureViewElements() -> Void{        
+    func ShowActivityIndicator() -> Void {
+        if BlurrView == nil{
+            BlurrView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            BlurrView!.bounds = view.bounds
+            BlurrView!.center = view.center
+            view.addSubview(BlurrView!)
+            ActivityIndicatior.activityIndicatorViewStyle = .whiteLarge
+            
+            ActivityIndicatior.color = UIColor.ColorPaletteMiddle()
+            ActivityIndicatior.center = view.center
+            ActivityIndicatior.transform = CGAffineTransform(scaleX: 2, y: 2)
+            BlurrView!.addSubview(ActivityIndicatior)
+            ActivityIndicatior.startAnimating()
+        }
+    }
+    func HideActivityIndicator() -> Void {
+        if BlurrView != nil{
+            BlurrView!.removeFromSuperview()
+            BlurrView = nil
+            
+            ActivityIndicatior.stopAnimating()
+            ActivityIndicatior.removeFromSuperview()
+        }
+    }
+    func ConfigureViewElements() -> Void{
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
         //FirebaseWbservice
         firebaseWebService = FirebaseWebService()

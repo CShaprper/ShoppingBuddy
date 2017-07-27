@@ -8,25 +8,25 @@
 
 import UIKit
 
-class StoresController: UIViewController {
+class StoresController: UIViewController, UITextFieldDelegate {
     //MARK: - Outlets
     @IBOutlet var BackgroundView: DesignableUIView!
     @IBOutlet var StoresTableView: UITableView!
+    @IBOutlet var AddStoreButton: UIBarButtonItem!
+    //Add Store PopUp
+    @IBOutlet var AddStorePopUp: UIView!
+    @IBOutlet var txt_AddStore: UITextField!
+    @IBOutlet var btn_SaveStore: UIButton!
+    
+    
     
     //MARK: - Member
-    
+    var blurrView:UIVisualEffectView!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //SetTitle
-        navigationItem.title = String.StoresControllerTitle
-        
-        
-        //Add Store Button
-        let addStore = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-AddStore"), style: .plain, target: self, action: #selector(AddStoreBarButtonItemPressed))
-        navigationItem.rightBarButtonItem = addStore
+        ConfigureView()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -34,32 +34,81 @@ class StoresController: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.navigationItem.title = String.StoresControllerTitle
+    }
+    
+    
+    //MARK: - Textfield Delegate implementation
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    func txt_AddStore_TextChanged(sender: UITextField) -> Void {
+        
     }
     
     
     //MARK: - Wired actions
-    func AddStoreBarButtonItemPressed(sender: UIBarButtonItem) -> Void{
-        
+    func BlurrViewTapped(sender: UITapGestureRecognizer) -> Void {
+        HideAddStorePopUp()
+    }
+    @IBAction func AddStoreButton_Pressed(_ sender: Any) {
+        ShowAddStorePopUp()
     }
     
+    //MARK: - Helper Functions
+    func ShowAddStorePopUp() -> Void {
+        if blurrView == nil{
+            blurrView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            blurrView.bounds = view.bounds
+            blurrView.center = view.center
+            view.addSubview(blurrView)
+            //BlurrView Target
+            let blurrViewTap = UITapGestureRecognizer(target: self, action: #selector(BlurrViewTapped))
+            blurrView.addGestureRecognizer(blurrViewTap)
+            view.addSubview(AddStorePopUp)
+            AddStorePopUp.center = view.center
+            AddStorePopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+        }
+    }
+    func HideAddStorePopUp() -> Void{
+        if blurrView != nil{
+            blurrView.removeFromSuperview()
+            AddStorePopUp.removeFromSuperview()
+            blurrView = nil
+        }
+    }
+    func ConfigureView() -> Void{
+        //Set Navigation Bar Title
+        navigationItem.title = String.StoresControllerTitle
+        
+        //Set TabBarItem Title
+        self.tabBarController?.navigationItem.title = String.StoresControllerTitle
+        
+        //AddStore PopUp
+        txt_AddStore.layer.borderWidth = 2
+        txt_AddStore.layer.borderColor = UIColor.ColorPaletteSecondDarkest().cgColor
+        txt_AddStore.textColor = UIColor.ColorPaletteSecondDarkest()
+        txt_AddStore.layer.cornerRadius = 10
+        txt_AddStore.placeholder = String.txt_AddStore_Placeholder  
+        txt_AddStore.addTarget(self, action: #selector(txt_AddStore_TextChanged), for: .editingChanged)
+    }
 }
 extension StoresController: UITableViewDelegate, UITableViewDataSource{
     
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return StoresArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "StoreCell", for: indexPath) as! StoreCell
-        let store = StoresArray[indexPath.row]
-        cell.ConfigureCell(store: store)
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: String.StoreCell_Identifier, for: indexPath) as! StoreCell
+        if StoresArray.count > 0{
+            let store = StoresArray[indexPath.row]
+            cell.ConfigureCell(store: store)
+        }        
         return cell
     }
     

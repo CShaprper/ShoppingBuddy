@@ -16,11 +16,9 @@ class LoginControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let navigationController = storyboard.instantiateInitialViewController() as? UINavigationController
-        sut = (navigationController?.topViewController as! LoginController)
+        sut = storyboard.instantiateViewController(withIdentifier: "LoginController") as? LoginController   
         
         // Test and Load the View at the Same Time!
-        XCTAssertNotNil(navigationController?.view)
         XCTAssertNotNil(sut?.view)
         sut?.viewDidLoad()
         sut?.viewWillAppear(false)
@@ -128,18 +126,6 @@ class LoginControllerTests: XCTestCase {
         XCTAssertNotNil(sut!.btn_Login, "btn_Login should exist")
     }
     func test_btn_Login_isWired_ToAction(){
-        XCTAssertTrue(checkActionForOutlet(outlet: sut!.btn_Login, actionName: "btn_Login_Pressed", event: .touchUpInside, controller: sut! ))
-    }
-    
-    //MARK: - Button action test helper
-    func checkActionForOutlet(outlet: UIButton?, actionName: String, event: UIControlEvents, controller: UIViewController)->Bool{
-        if let unwrappedButton = outlet {
-            if unwrappedButton.actions(forTarget: controller, forControlEvent: event) != nil {
-                let actions = unwrappedButton.actions(forTarget: controller, forControlEvent: event)!
-                let myActionName:String = actionName.appending("WithSender:")
-                return actions.contains(myActionName)
-            }
-        }
-        return false
+        XCTAssertTrue(ControlTagetTester.checkTargetForOutlet(outlet: sut!.btn_Login, actionName: "btn_Login_Pressed", event: .touchUpInside, controller: sut! ))
     }
 }

@@ -7,16 +7,22 @@
 */
     //Validation Service Alert
 ValidationAlert_Title = "Validation Error";
+    //Password
 ValidationPasswordEmptyAlert_Message = "The password should not be empty!";
 ValidationPasswordCharactersCountBelowSixAlert_Message = "The password should be at least six characters!";
+    //Nickname
 ValidationNicknameEmptyAlert_Message = "The nickname should not be empty!";
 ValidationNicknameShouldContainAtLeastSixCharacters = "Your nickname should be at least six characters!";
+    //Email
 ValidationEmailEmptyAlert_Message = "Your email address should not be empty!";
 ValidationEmailShouldContainAtSign = "Yor email should contain an @-sign!";
 ValidationEmailShouldContainDot = "Yor email should contain a '.'!";
 ValidationEmailContainsSpaces = "Empty spaces are not allowed in your email!";
 ValidationEmailEndingInvalid = "Invalid email. The email should end with '.com, .de' or similar!";
 ValidationEmailContainsInvalidCharacters = "The email contains invalid characters!";
+    //Textfield
+ValidationTextFieldEmptyAlert_Message = "Textfields are not allowed to be empty!";
+ValidationTextFieldBelowTwoCharachtersAlert_Message = "Die Eingabe im Textfeld muss mindestens zwei Zeichen betragen!";
 
     //LoginController
 LogInSegmentedControll_SegmentOne = "Login";
@@ -31,3 +37,4 @@ DashboardControllerTitle = "Dashboard";
 
     //StoresController
 StoresControllerTitle = "Stores";
+txt_AddStore_Placeholder = "store name";

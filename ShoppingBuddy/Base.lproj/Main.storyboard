@@ -32,13 +32,13 @@
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ma6-O0-9Lg" userLabel="Login-Container">
-                                <rect key="frame" x="32" y="54.5" width="256" height="371"/>
+                                <rect key="frame" x="32" y="55" width="256" height="371"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W8l-Mq-FU6">
                                         <rect key="frame" x="0.0" y="70" width="256" height="298"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g47-QV-xaK">
-                                                <rect key="frame" x="81.5" y="216" width="93" height="20"/>
+                                                <rect key="frame" x="82" y="216" width="93" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="Sd6-W6-5Vv"/>
                                                 </constraints>
@@ -84,7 +84,7 @@
                                         </constraints>
                                     </view>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="D0Q-ag-Pnp">
-                                        <rect key="frame" x="12.5" y="155" width="230" height="29"/>
+                                        <rect key="frame" x="13" y="155" width="230" height="29"/>
                                         <color key="backgroundColor" red="0.99194461107254028" green="0.99615627527236938" blue="0.99600595235824585" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <segments>
                                             <segment title="Login"/>
@@ -92,7 +92,7 @@
                                         </segments>
                                     </segmentedControl>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cFY-BU-BId" userLabel="Login Elements">
-                                        <rect key="frame" x="12.5" y="188" width="230" height="93"/>
+                                        <rect key="frame" x="13" y="188" width="230" height="93"/>
                                         <subviews>
                                             <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vhp-FF-th9">
                                                 <rect key="frame" x="0.0" y="0.0" width="230" height="93"/>
@@ -292,6 +292,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="UMP-FE-bbG"/>
                     <connections>
+                        <outlet property="ActivityIndicatior" destination="sDx-46-5hG" id="e9z-Wb-K7A"/>
                         <outlet property="BackgroundImage" destination="lSF-9Y-Dog" id="xq1-QL-wkh"/>
                         <outlet property="ButtonContainer" destination="y3H-hL-9GV" id="uBZ-Jc-eox"/>
                         <outlet property="EmailContainer" destination="88G-Zb-nBP" id="ScJ-CD-3zX"/>
@@ -313,13 +314,17 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dUf-rj-AYp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" id="sDx-46-5hG">
+                    <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="699" y="740"/>
+            <point key="canvasLocation" x="761" y="644"/>
         </scene>
         <!--Stores-->
         <scene sceneID="0GD-HV-var">
             <objects>
-                <viewController title="Stores" useStoryboardIdentifierAsRestorationIdentifier="YES" id="TXE-EF-z2B" customClass="StoresController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="StoresController" title="Stores" useStoryboardIdentifierAsRestorationIdentifier="YES" id="TXE-EF-z2B" customClass="StoresController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2kA-IM-swc"/>
                         <viewControllerLayoutGuide type="bottom" id="m0j-tV-eO3"/>
@@ -336,21 +341,24 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StoreCell" rowHeight="100" id="zXN-8E-Xju">
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="StoreCell" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StoreCell" rowHeight="100" id="zXN-8E-Xju" customClass="StoreCell" customModule="ShoppingBuddy" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="28" width="320" height="100"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zXN-8E-Xju" id="pyt-XP-8tC">
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qUj-7i-xM9">
-                                                            <rect key="frame" x="8" y="8" width="83" height="83.5"/>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-Store" translatesAutoresizingMaskIntoConstraints="NO" id="qUj-7i-xM9">
+                                                            <rect key="frame" x="8" y="8" width="83" height="83"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="83" id="flQ-oT-Rda"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RLr-su-Y1v">
-                                                            <rect key="frame" x="101" y="36" width="211" height="28.5"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Store Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RLr-su-Y1v">
+                                                            <rect key="frame" x="101" y="5" width="211" height="90"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="90" id="Cly-L0-mVn"/>
+                                                            </constraints>
                                                             <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="24"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -366,6 +374,10 @@
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <connections>
+                                                    <outlet property="StoreImage" destination="qUj-7i-xM9" id="mCE-UL-kgE"/>
+                                                    <outlet property="lbl_StoreName" destination="RLr-su-Y1v" id="iQE-9r-1J0"/>
+                                                </connections>
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
@@ -405,15 +417,78 @@
                             <constraint firstItem="tW0-ie-uHD" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leading" id="qWk-K2-v7c"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="MEH-di-y52"/>
+                    <navigationItem key="navigationItem" id="MEH-di-y52">
+                        <barButtonItem key="rightBarButtonItem" image="icon-AddStore" id="h5S-bD-uMY">
+                            <connections>
+                                <action selector="AddStoreButton_Pressed:" destination="TXE-EF-z2B" id="2lF-0K-09o"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="AddStoreButton" destination="h5S-bD-uMY" id="hGM-aH-abt"/>
+                        <outlet property="AddStorePopUp" destination="CcB-Dx-O01" id="YBN-mq-Svy"/>
                         <outlet property="BackgroundView" destination="tW0-ie-uHD" id="qQa-Pf-IAO"/>
                         <outlet property="StoresTableView" destination="6qE-aS-nZC" id="ssk-er-MQq"/>
+                        <outlet property="btn_SaveStore" destination="nWA-Hk-70X" id="Hhh-Cd-Bh0"/>
+                        <outlet property="txt_AddStore" destination="5T9-en-3Os" id="dj0-hM-bs9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yGR-f3-Kdr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="CcB-Dx-O01">
+                    <rect key="frame" x="0.0" y="0.0" width="250" height="180"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f25-H5-FzO" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="31" width="250" height="149"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nWA-Hk-70X">
+                                    <rect key="frame" x="113" y="114" width="25" height="25"/>
+                                    <state key="normal" image="icon-Save"/>
+                                </button>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="store name" textAlignment="center" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="5T9-en-3Os">
+                                    <rect key="frame" x="20" y="76" width="210" height="30"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="TXE-EF-z2B" id="Lda-NR-kPD"/>
+                                    </connections>
+                                </textField>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="nWA-Hk-70X" firstAttribute="top" secondItem="5T9-en-3Os" secondAttribute="bottom" constant="8" id="8e4-I7-Olf"/>
+                                <constraint firstAttribute="trailing" secondItem="5T9-en-3Os" secondAttribute="trailing" constant="20" id="Yyv-0D-9H5"/>
+                                <constraint firstItem="nWA-Hk-70X" firstAttribute="centerX" secondItem="f25-H5-FzO" secondAttribute="centerX" id="dam-ye-t7z"/>
+                                <constraint firstAttribute="bottom" secondItem="nWA-Hk-70X" secondAttribute="bottom" constant="10" id="t9q-Wa-oyD"/>
+                                <constraint firstItem="5T9-en-3Os" firstAttribute="leading" secondItem="f25-H5-FzO" secondAttribute="leading" constant="20" id="tRe-YG-ZZb"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
+                                    <real key="value" value="20"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AddStore-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="bwm-OM-gzU">
+                            <rect key="frame" x="61" y="0.0" width="128" height="101"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="128" id="6vy-jR-rlO"/>
+                                <constraint firstAttribute="height" constant="101" id="sI8-3K-a42"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="f25-H5-FzO" secondAttribute="trailing" id="4nh-Cv-xbA"/>
+                        <constraint firstItem="bwm-OM-gzU" firstAttribute="centerX" secondItem="CcB-Dx-O01" secondAttribute="centerX" id="8Fk-tQ-k0s"/>
+                        <constraint firstItem="f25-H5-FzO" firstAttribute="top" secondItem="CcB-Dx-O01" secondAttribute="top" constant="31" id="iJ7-PW-QBx"/>
+                        <constraint firstAttribute="bottom" secondItem="f25-H5-FzO" secondAttribute="bottom" id="oXt-48-z2D"/>
+                        <constraint firstItem="bwm-OM-gzU" firstAttribute="top" secondItem="CcB-Dx-O01" secondAttribute="top" id="sGR-Dx-Lsx"/>
+                        <constraint firstItem="f25-H5-FzO" firstAttribute="leading" secondItem="CcB-Dx-O01" secondAttribute="leading" id="yaF-Jf-46s"/>
+                    </constraints>
+                </view>
             </objects>
-            <point key="canvasLocation" x="3618.75" y="643.75"/>
+            <point key="canvasLocation" x="3458" y="644"/>
         </scene>
         <!--Shopping List Controller-->
         <scene sceneID="Swa-ox-URi">
@@ -458,7 +533,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uru-Dz-b3Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3619" y="1321"/>
+            <point key="canvasLocation" x="3458" y="1681"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Nat-6a-auh">
@@ -562,7 +637,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4RJ-Vf-W6a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3618.75" y="-33.75"/>
+            <point key="canvasLocation" x="3428" y="-396"/>
         </scene>
         <!--Custom Tab Bar Controller-->
         <scene sceneID="uWU-cD-cev">
@@ -581,7 +656,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Akx-lZ-kmb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1547" y="740"/>
+            <point key="canvasLocation" x="1601" y="644"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Fmw-Qx-fXm">
@@ -600,7 +675,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C0C-ms-MPp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2621.25" y="-33.75"/>
+            <point key="canvasLocation" x="2621" y="-396"/>
         </scene>
         <!--Stores-->
         <scene sceneID="uIr-tu-t98">
@@ -638,19 +713,22 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SSd-nU-Khq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2621" y="1320"/>
+            <point key="canvasLocation" x="2621" y="1681"/>
         </scene>
     </scenes>
     <resources>
+        <image name="AddStore-Logo" width="201" height="183"/>
         <image name="BG-Login" width="1125" height="2001"/>
         <image name="RoundMenu" width="516" height="1998"/>
         <image name="ShoppingBuddy-Logo" width="852" height="549"/>
+        <image name="icon-AddStore" width="24" height="25"/>
         <image name="icon-Email" width="150" height="150"/>
         <image name="icon-Exclamation" width="75" height="150"/>
         <image name="icon-Key" width="150" height="150"/>
         <image name="icon-List" width="75" height="75"/>
         <image name="icon-Login" width="22" height="22"/>
         <image name="icon-Person" width="150" height="150"/>
+        <image name="icon-Save" width="25" height="25"/>
         <image name="icon-Store" width="75" height="75"/>
         <image name="iconTabBar-Dashboard" width="25" height="26"/>
         <image name="iconTabBar-Store" width="25" height="25"/>

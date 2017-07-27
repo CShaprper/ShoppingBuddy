@@ -25,53 +25,16 @@ class DashboardController: UIViewController, IFirebaseWebService{
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Firebase Webservice
-        firebaseWebService = FirebaseWebService()
-        
-        
-        // BackgroundView Gradient
-        BackgroundView.TopColor = UIColor.ColorPaletteBrightest()
-        BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
-        
-        //LogOut Button
-        let newBackButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
-        self.navigationItem.leftBarButtonItem = newBackButton
-        
-        //MenuButton
-        let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu"), style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))
-        navigationItem.rightBarButtonItem = menuButton
-        
-        //SetNavigationBar Title
-        navigationItem.title = String.DashboardControllerTitle
-        
-        //SetTabBarTitle
-        self.tabBarItem.title = String.DashboardControllerTitle
-        
-        //Notification Listener
-        NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
-        
-        //RoundMenu initial position
-        RoundMenu.transform = CGAffineTransform(translationX: RoundMenu.frame.size.width, y: 0)
-        
-        //Button Stores
-        btn_Stores.tintColor = UIColor.ColorPaletteSecondDarkest()
-        btn_Stores.transform = CGAffineTransform(translationX: MenuContainer.frame.width, y: 0)
-        
-        //Button ShoppingList
-        btn_ShoppingList.tintColor = UIColor.ColorPaletteSecondDarkest()
-        btn_ShoppingList.transform = CGAffineTransform(translationX: MenuContainer.frame.width, y: 0)        
-           }
+        ConfigureView()
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.navigationItem.title = String.DashboardControllerTitle
-        firebaseWebService.delegate = self 
     }
     
     //MARK: - IFirebaseWebservice Implementation
@@ -84,9 +47,9 @@ class DashboardController: UIViewController, IFirebaseWebService{
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem)->Void{
         firebaseWebService.delegate = nil
-       firebaseWebService.LogUserOut()
+        firebaseWebService.LogUserOut()
     }
-    func SegueToLoginController(sender: Notification) -> Void{        
+    func SegueToLoginController(sender: Notification) -> Void{
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
     }
     func MenuBarButtonItemPressed(sender: UIBarButtonItem) -> Void{
@@ -95,8 +58,8 @@ class DashboardController: UIViewController, IFirebaseWebService{
             UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
                 self.RoundMenu.transform = CGAffineTransform(translationX: self.RoundMenu.frame.size.width, y: 0)
             })
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: { 
-              self.btn_Stores.transform = CGAffineTransform(translationX: self.MenuContainer.frame.width, y: 0)
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                self.btn_Stores.transform = CGAffineTransform(translationX: self.MenuContainer.frame.width, y: 0)
                 self.btn_ShoppingList.transform = CGAffineTransform(translationX: self.MenuContainer.frame.width, y: 0)
             })
         } else {
@@ -111,4 +74,43 @@ class DashboardController: UIViewController, IFirebaseWebService{
         }
     }
     
+    
+    //MARK: - Helper Functions
+    func ConfigureView() -> Void {
+        // Firebase Webservice
+        firebaseWebService = FirebaseWebService()
+        firebaseWebService.delegate = self
+        
+        //SetNavigationBar Title
+        navigationItem.title = String.DashboardControllerTitle
+        
+        //SetTabBarTitle
+        tabBarItem.title = String.DashboardControllerTitle
+        
+        // BackgroundView Gradient
+        BackgroundView.TopColor = UIColor.ColorPaletteBrightest()
+        BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
+        
+        //LogOut Button
+        let newBackButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
+        self.navigationItem.leftBarButtonItem = newBackButton
+        
+        //MenuButton
+        let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu"), style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))
+        navigationItem.rightBarButtonItem = menuButton
+        
+        //Notification Listener
+        NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
+        
+        //RoundMenu initial position
+        RoundMenu.transform = CGAffineTransform(translationX: RoundMenu.frame.size.width, y: 0)
+        
+        //Button Stores
+        btn_Stores.tintColor = UIColor.ColorPaletteSecondDarkest()
+        btn_Stores.transform = CGAffineTransform(translationX: MenuContainer.frame.width, y: 0)
+        
+        //Button ShoppingList
+        btn_ShoppingList.tintColor = UIColor.ColorPaletteSecondDarkest()
+        btn_ShoppingList.transform = CGAffineTransform(translationX: MenuContainer.frame.width, y: 0)
+    }
 }

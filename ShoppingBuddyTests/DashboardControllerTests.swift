@@ -16,11 +16,9 @@ class DashboardControllerTests: XCTestCase {
     override func setUp() {
         super.setUp()
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let navigationController = storyboard.instantiateInitialViewController() as! UINavigationController
         sut = storyboard.instantiateViewController(withIdentifier: "DashboardController") as! DashboardController
         
-        // Test and Load the View at the Same Time!
-        XCTAssertNotNil(navigationController.view)
+        // Test and Load the View at the Same Time! 
         XCTAssertNotNil(sut.view)
         sut.viewDidLoad()
         sut.didReceiveMemoryWarning()

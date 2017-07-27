@@ -31,6 +31,8 @@
 		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
 		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
 		CFD41A611F27D4CA00FB1122 /* ShoppingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */; };
+		CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */; };
+		CFE330AD1F29E86200190993 /* FakeAlertMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
 		CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */; };
 		CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFE4A1CE1F23C0DC002A12C7 /* Main.storyboard */; };
@@ -106,6 +108,8 @@
 		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
 		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListController.swift; sourceTree = "<group>"; };
+		CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlTargetTester.swift; sourceTree = "<group>"; };
+		CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAlertMocks.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -273,6 +277,8 @@
 				CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */,
 				CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */,
 				CFE4A1E11F23C0DC002A12C7 /* Info.plist */,
+				CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */,
+				CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */,
 			);
 			path = ShoppingBuddyTests;
 			sourceTree = "<group>";
@@ -715,6 +721,8 @@
 				CFE4A2201F23D25A002A12C7 /* LocalizationStringExctension.swift in Sources */,
 				CFE4A2191F23CB72002A12C7 /* ValidationServiceTest.swift in Sources */,
 				CFB2AA571F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
+				CFE330AD1F29E86200190993 /* FakeAlertMocks.swift in Sources */,
+				CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */,
 				CFB2AA5A1F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
 				CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */,
 				CFAD85121F27AAD000F207E5 /* StoresControllerTests.swift in Sources */,

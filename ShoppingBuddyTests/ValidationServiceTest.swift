@@ -10,14 +10,14 @@ import XCTest
 @testable import ShoppingBuddy
 
 class ValidationServiceTest: XCTestCase {
-    var alertMock:FakeAlertMock!
+    var alertMock:FakeValidationAlertMock!
     var passwordValidation:PasswordValidationService!
     var nicknameValidation:NicknameValidationService!
     var emailValidation:EmailValidationService!
     
     override func setUp() {
         super.setUp()
-        alertMock = FakeAlertMock()
+        alertMock = FakeValidationAlertMock()
         passwordValidation = PasswordValidationService()
         nicknameValidation = NicknameValidationService()
         emailValidation = EmailValidationService()
@@ -52,6 +52,21 @@ class ValidationServiceTest: XCTestCase {
         XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is \(alertMock.title!) should be: \(String.ValidationAlert_Title)")
         XCTAssertTrue(alertMock.message! == String.ValidationPasswordCharactersCountBelowSixAlert_Message, "Alert Message is \(alertMock.message!) should be: \(String.ValidationPasswordCharactersCountBelowSixAlert_Message)")
     }
+    
+    //MARK: - Nickname Validation
+    func test_NicknameValidationFails_onEmptyString(){
+        XCTAssertFalse(nicknameValidation.Validate(validationString: ""), "Nickname validation should fail on empty string")
+    }
+    func test_NicknameValidatonFails_belowSixCharackters(){
+        XCTAssertFalse(nicknameValidation.Validate(validationString: "1"), "Nickname Validation should fail below six characters")
+        XCTAssertFalse(nicknameValidation.Validate(validationString: "12"), "Nickname Validation should fail below six characters")
+        XCTAssertFalse(nicknameValidation.Validate(validationString: "123"), "Nickname Validation should fail below six characters")
+        XCTAssertFalse(nicknameValidation.Validate(validationString: "1234"), "Nickname Validation should fail below six characters")
+        XCTAssertFalse(nicknameValidation.Validate(validationString: "12345"), "Nickname Validation should fail below six characters")
+    }
+    func test_NicknameValidatonPasses_onSixCharachters(){
+        XCTAssertTrue(nicknameValidation.Validate(validationString: "123456"), "Nickname validation should pass with six characters")
+    }
     func test_txt_NicknameEmpty_ShowsCorrectAlertMessage(){
         let _ = ValidationFactory.Validate(type: .nickname, validationString: "", delegate: alertMock)
         XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is -\(alertMock.title!)- should be: -\(String.ValidationAlert_Title)-")
@@ -62,6 +77,8 @@ class ValidationServiceTest: XCTestCase {
         XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is -\(alertMock.title!)- should be: -\(String.ValidationAlert_Title)-")
         XCTAssertTrue(alertMock.message! == String.ValidationNicknameShouldContainAtLeastSixCharacters, "Alert Message is -\(alertMock.message!)- should be: -\(String.ValidationNicknameShouldContainAtLeastSixCharacters)-")
     }
+    
+    //MARK: - Email Validation
     func test_EmailValidationEmpty_ShowsCorrectAlertMessage(){
         let _ = ValidationFactory.Validate(type: .email, validationString: "", delegate: alertMock)
         XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is -\(alertMock.title!)- should be: -\(String.ValidationAlert_Title)-")
@@ -87,31 +104,15 @@ class ValidationServiceTest: XCTestCase {
         XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is -\(alertMock.title!)- should be: -\(String.ValidationAlert_Title)-")
         XCTAssertTrue(alertMock.message! == String.ValidationEmailEndingInvalid, "Alert Message is -\(alertMock.message!)- should be: -\(String.ValidationEmailEndingInvalid)-")
     }
-    //MARK: - Fake Alert Mock
-    /*public class FakeAlertMock:IAlertMessageDelegate {
-     var title:String?
-     var message:String?
-     public func initAlertMessageDelegate(delegate: IAlertMessageDelegate) {
-     }
-     
-     public func ShowAlertMessage(title: String, message: String) {
-     self.title = title
-     self.message = message
-     }
-     }*/
     
-    
-    
-}
-
-
-//MARK: - Fake Alert Mock
-public class FakeAlertMock:IValidationService {
-    var title:String?
-    var message:String?
-    
-    public func ShowValidationAlert(title: String, message: String) {
-        self.title = title
-        self.message = message
+    //MARK: - TextField Validation
+    func test_TextFieldValidationFails_BelowTwoCharachters(){
+        XCTAssertFalse(ValidationFactory.Validate(type: .textField, validationString: "1", delegate: nil), "Textfield validation should fail below two charachters")
+    }
+    func test_TextfieldValidationServiceEmpty_ShowsCorrectAlertMessage(){
+        let _ = ValidationFactory.Validate(type: .textField, validationString: "1", delegate: alertMock)
+    XCTAssertTrue(alertMock.title! == String.ValidationAlert_Title, "Alert Title is -\(alertMock.title!)- should be: -\(String.ValidationAlert_Title)-")
+    XCTAssertTrue(alertMock.message! == String.ValidationTextFieldBelowTwoCharachtersAlert_Message, "Alert Message is -\(alertMock.message!)- should be: -\(String.ValidationTextFieldEmptyAlert_Message)-")
     }
 }
+

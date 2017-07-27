@@ -9,6 +9,8 @@
 import UIKit
 
 class StoreCell: UITableViewCell {
+    @IBOutlet var lbl_StoreName: UILabel!
+    @IBOutlet var StoreImage: UIImageView?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -20,6 +22,7 @@ class StoreCell: UITableViewCell {
     }
     
     func ConfigureCell(store: Store) -> Void {
-        
+        lbl_StoreName.text = store.Store != nil ? store.Store! : ""
+        StoreImage?.image = store.Store != nil ? #imageLiteral(resourceName: "icon-Store") : nil
     }
 }

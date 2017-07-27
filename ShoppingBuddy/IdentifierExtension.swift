@@ -8,6 +8,10 @@
 
 import Foundation
 extension String{
+    //Segue Indentifier
     static let SegueToDashboardController_Identifier = "SegueToDashboardController"
     static let SegueToLoginController_Identifier = "SegueToLoginController"
+    
+    //TableViewCell Identifier
+    static let StoreCell_Identifier = "StoreCell"
 }

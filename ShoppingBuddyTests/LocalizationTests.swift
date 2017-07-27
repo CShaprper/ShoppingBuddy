@@ -25,18 +25,24 @@ class LocalizationTests: XCTestCase {
         print(String.ValidationAlert_Title)
         XCTAssertTrue(String.ValidationAlert_Title != "ValidationAlert_Title", "ValidationAlert_Title is not localized in strings file!")
     }
+    
+    //Password validation
     func test_ValidationPasswordEmptyAlert_Message_isLocalized(){
         XCTAssertTrue(String.ValidationPasswordEmptyAlert_Message != "ValidationPasswordEmptyAlert_Message", "ValidationPasswordEmptyAlert_Message is not localized in strings file!")
     }
     func test_ValidationPasswordCharactersCountBelowSixAlert_Message_isLocalized(){
         XCTAssertTrue(String.ValidationPasswordCharactersCountBelowSixAlert_Message != "ValidationPasswordCharactersCountBelowSixAlert_Message", "ValidationPasswordCharactersCountBelowSixAlert_Message is not localized in strings file!")
     }
+    
+    //Nickname validation
     func test_ValidationNicknameEmptyAlert_Message_isLocalized(){
         XCTAssertTrue(String.ValidationNicknameEmptyAlert_Message != "ValidationNicknameEmptyAlert_Message", "ValidationNicknameEmptyAlert_Message is not localized in strings file!")
     }
     func test_ValidationNicknameShouldContainAtLeastSixCharacters_isLocalized(){
         XCTAssertTrue(String.ValidationNicknameShouldContainAtLeastSixCharacters != "ValidationNicknameShouldContainAtLeastSixCharacters", "ValidationNicknameShouldContainAtLeastSixCharacters is not localized in strings file!")
     }
+    
+    //Email validation 
     func test_ValidationEmailEmptyAlert_Message_isLocalized(){
         XCTAssertTrue(String.ValidationEmailEmptyAlert_Message != "ValidationEmailEmptyAlert_Message", "ValidationEmailEmptyAlert_Message is not localized in strings file!")
     }
@@ -54,6 +60,11 @@ class LocalizationTests: XCTestCase {
     }
     func test_ValidationEmailContainsInvalidCharacters_isLocalized(){
         XCTAssertTrue(String.ValidationEmailContainsInvalidCharacters != "ValidationEmailContainsInvalidCharacters", "ValidationEmailContainsInvalidCharacters is not localized in strings file!")
+    }
+    
+    //Textfield validation
+    func test_ValidationTextFieldEmptyAlert_Message_isLocalized(){
+        XCTAssertTrue(String.ValidationTextFieldEmptyAlert_Message != "ValidationTextFieldEmptyAlert_Message", "ValidationTextFieldEmptyAlert_Message is not localized in strings file!")
     }
     
     //LoginController
@@ -85,4 +96,8 @@ class LocalizationTests: XCTestCase {
     func test_StoresControllerTitle_isLocalized(){
         XCTAssertTrue(String.StoresControllerTitle != "StoresControllerTitle", "StoresControllerTitle is not localized in strings file!")
     }
+    func test_txt_AddStore_Placeholder_isLocalized(){
+        XCTAssertTrue(String.txt_AddStore_Placeholder != "txt_AddStore_Placeholder", "txt_AddStore_Placeholder is not localized in strings file!")
+    }
+    
 }

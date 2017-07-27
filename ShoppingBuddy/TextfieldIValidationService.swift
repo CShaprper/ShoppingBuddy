@@ -11,7 +11,7 @@ import Foundation
 
 class TextfieldValidationService: IValidationService {
     var validationServiceDelegate:IValidationService?
-    let title = ""
+    let title = String.ValidationAlert_Title
     var message = ""
     
     func Validate(validationString: String?) -> Bool {
@@ -20,13 +20,13 @@ class TextfieldValidationService: IValidationService {
         if !isValid { return isValid }
         isValid = validateStringEmpty(validationString: validationString)
         if !isValid { return isValid }
-        isValid = validateLessThanThreeCharacters(validationString: validationString)
+        isValid = validateLessThanTwoCharacters(validationString: validationString)
         return isValid
     }
     
     private func validateNotNil(validationString: String?) -> Bool {
         if validationString == nil{
-            message = ""
+            message = String.ValidationTextFieldEmptyAlert_Message
             ShowAlertMessage(title: title, message: message)
             return false
         }
@@ -36,16 +36,16 @@ class TextfieldValidationService: IValidationService {
     private func validateStringEmpty(validationString: String?) -> Bool {
         if validationString == nil { return false }
         if validationString! == ""{
-            message = ""
+            message = String.ValidationTextFieldEmptyAlert_Message
             ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
     }
-    private func validateLessThanThreeCharacters(validationString: String?) -> Bool{
+    private func validateLessThanTwoCharacters(validationString: String?) -> Bool{
         if validationString == nil { return false }
-        if validationString!.characters.count < 3{
-            message = ""
+        if validationString!.characters.count < 2{
+            message = String.ValidationTextFieldBelowTwoCharachtersAlert_Message
             ShowAlertMessage(title: title, message: message)
             return false
         }
