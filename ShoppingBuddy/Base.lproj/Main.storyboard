@@ -13,6 +13,9 @@
         <array key="Blazed.ttf">
             <string>Blazed</string>
         </array>
+        <array key="Sarina-Regular.ttf">
+            <string>Sarina-Regular</string>
+        </array>
     </customFonts>
     <scenes>
         <!--Login Controller-->
@@ -348,36 +351,26 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-Store" translatesAutoresizingMaskIntoConstraints="NO" id="qUj-7i-xM9">
-                                                            <rect key="frame" x="8" y="8" width="83" height="83"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="83" id="flQ-oT-Rda"/>
-                                                            </constraints>
-                                                        </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Store Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RLr-su-Y1v">
-                                                            <rect key="frame" x="101" y="5" width="211" height="90"/>
+                                                            <rect key="frame" x="20" y="4" width="282" height="90"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="90" id="Cly-L0-mVn"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="24"/>
-                                                            <nil key="textColor"/>
+                                                            <fontDescription key="fontDescription" name="Sarina-Regular" family="Sarina" pointSize="20"/>
+                                                            <color key="textColor" red="0.97782987356185913" green="0.75535517930984497" blue="0.50807994604110718" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                             <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                             <size key="shadowOffset" width="2" height="2"/>
                                                         </label>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstAttribute="bottomMargin" secondItem="qUj-7i-xM9" secondAttribute="bottom" id="DWd-Hu-Lya"/>
-                                                        <constraint firstItem="RLr-su-Y1v" firstAttribute="trailing" secondItem="pyt-XP-8tC" secondAttribute="trailingMargin" id="HKv-BJ-3eU"/>
-                                                        <constraint firstItem="qUj-7i-xM9" firstAttribute="leading" secondItem="pyt-XP-8tC" secondAttribute="leadingMargin" id="O0I-db-yNO"/>
+                                                        <constraint firstItem="RLr-su-Y1v" firstAttribute="leading" secondItem="pyt-XP-8tC" secondAttribute="leading" constant="20" id="QSW-Li-Rb0"/>
                                                         <constraint firstItem="RLr-su-Y1v" firstAttribute="centerY" secondItem="pyt-XP-8tC" secondAttribute="centerY" id="aBU-tz-7vr"/>
-                                                        <constraint firstItem="qUj-7i-xM9" firstAttribute="top" secondItem="pyt-XP-8tC" secondAttribute="topMargin" id="fGy-JH-RFf"/>
-                                                        <constraint firstItem="RLr-su-Y1v" firstAttribute="leading" secondItem="qUj-7i-xM9" secondAttribute="trailing" constant="10" id="uVE-9h-brx"/>
+                                                        <constraint firstAttribute="trailingMargin" secondItem="RLr-su-Y1v" secondAttribute="trailing" constant="10" id="aFr-RK-3Cv"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <connections>
-                                                    <outlet property="StoreImage" destination="qUj-7i-xM9" id="mCE-UL-kgE"/>
                                                     <outlet property="lbl_StoreName" destination="RLr-su-Y1v" id="iQE-9r-1J0"/>
                                                 </connections>
                                             </tableViewCell>
@@ -419,7 +412,7 @@
                             <constraint firstItem="tW0-ie-uHD" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leading" id="qWk-K2-v7c"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="MEH-di-y52">
+                    <navigationItem key="navigationItem" title="Stores" id="MEH-di-y52">
                         <barButtonItem key="rightBarButtonItem" image="icon-AddStore" id="h5S-bD-uMY">
                             <connections>
                                 <action selector="AddStoreButton_Pressed:" destination="TXE-EF-z2B" id="2lF-0K-09o"/>
@@ -445,11 +438,15 @@
                             <rect key="frame" x="0.0" y="31" width="250" height="149"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nWA-Hk-70X">
-                                    <rect key="frame" x="113" y="114" width="25" height="25"/>
+                                    <rect key="frame" x="110.5" y="109" width="30" height="30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="30" id="cP2-b3-4Lm"/>
+                                        <constraint firstAttribute="width" constant="30" id="eYd-P6-F4g"/>
+                                    </constraints>
                                     <state key="normal" image="icon-Save"/>
                                 </button>
                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="store name" textAlignment="center" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="5T9-en-3Os">
-                                    <rect key="frame" x="20" y="76" width="210" height="30"/>
+                                    <rect key="frame" x="20" y="76" width="210" height="25"/>
                                     <nil key="textColor"/>
                                     <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="14"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
@@ -490,9 +487,9 @@
                     </constraints>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3458" y="644"/>
+            <point key="canvasLocation" x="3457.5" y="643.75"/>
         </scene>
-        <!--Shopping List Controller-->
+        <!--Shopping Lists-->
         <scene sceneID="Swa-ox-URi">
             <objects>
                 <viewController storyboardIdentifier="ShoppingListController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7as-8F-Vmr" customClass="ShoppingListController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
@@ -506,7 +503,65 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ctE-qd-adj" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <subviews>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8Sg-Xs-ibo">
+                                        <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="LAk-uW-R3s">
+                                            <size key="itemSize" width="100" height="100"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells>
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ShoppingListCollectionViewCell" id="2al-7x-Cs9" customClass="ShoppingListCollectionViewCell" customModule="ShoppingBuddy" customModuleProvider="target">
+                                                <rect key="frame" x="10" y="0.0" width="100" height="100"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Byh-0u-fLs">
+                                                            <rect key="frame" x="8" y="18" width="84" height="75"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="75" id="vqp-UD-mFQ"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="Sarina-Regular" family="Sarina" pointSize="14"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Listpad-small" translatesAutoresizingMaskIntoConstraints="NO" id="LUv-NR-7Q9">
+                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                </view>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstItem="Byh-0u-fLs" firstAttribute="leading" secondItem="2al-7x-Cs9" secondAttribute="leadingMargin" id="95e-Az-MO1"/>
+                                                    <constraint firstAttribute="trailing" secondItem="LUv-NR-7Q9" secondAttribute="trailing" id="QIq-6M-loQ"/>
+                                                    <constraint firstItem="Byh-0u-fLs" firstAttribute="top" secondItem="2al-7x-Cs9" secondAttribute="topMargin" constant="10" id="VBz-FL-Cwe"/>
+                                                    <constraint firstAttribute="bottom" secondItem="LUv-NR-7Q9" secondAttribute="bottom" id="VI1-Ce-wAZ"/>
+                                                    <constraint firstItem="Byh-0u-fLs" firstAttribute="centerX" secondItem="2al-7x-Cs9" secondAttribute="centerX" id="Wb6-tr-Uir"/>
+                                                    <constraint firstItem="LUv-NR-7Q9" firstAttribute="top" secondItem="2al-7x-Cs9" secondAttribute="top" id="cAh-8L-4Ow"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="Byh-0u-fLs" secondAttribute="trailing" id="kID-Mw-vbB"/>
+                                                    <constraint firstItem="LUv-NR-7Q9" firstAttribute="leading" secondItem="2al-7x-Cs9" secondAttribute="leading" id="qyQ-wW-6Qu"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="BackgroundImage" destination="LUv-NR-7Q9" id="M53-S4-Tia"/>
+                                                </connections>
+                                            </collectionViewCell>
+                                        </cells>
+                                        <connections>
+                                            <outlet property="dataSource" destination="7as-8F-Vmr" id="wpT-Id-sIU"/>
+                                            <outlet property="delegate" destination="7as-8F-Vmr" id="RJi-1J-mPS"/>
+                                        </connections>
+                                    </collectionView>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="8Sg-Xs-ibo" firstAttribute="leading" secondItem="ctE-qd-adj" secondAttribute="leading" id="I7L-Jo-9MH"/>
+                                    <constraint firstAttribute="trailing" secondItem="8Sg-Xs-ibo" secondAttribute="trailing" id="nsK-2p-JK2"/>
+                                </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="TopColor">
                                         <color key="value" red="0.84073776010000001" green="0.95787805319999997" blue="0.63630330560000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -528,14 +583,162 @@
                             <constraint firstItem="ctE-qd-adj" firstAttribute="leading" secondItem="i4j-Do-l4I" secondAttribute="leading" id="12f-WX-J2a"/>
                             <constraint firstItem="ctE-qd-adj" firstAttribute="top" secondItem="i4j-Do-l4I" secondAttribute="top" id="7F9-9A-nqp"/>
                             <constraint firstAttribute="trailing" secondItem="ctE-qd-adj" secondAttribute="trailing" id="7bK-Bi-AE8"/>
+                            <constraint firstItem="8Sg-Xs-ibo" firstAttribute="top" secondItem="jPR-kj-TQd" secondAttribute="bottom" id="SPO-vc-blb"/>
+                            <constraint firstItem="1Nm-m0-bdC" firstAttribute="top" secondItem="8Sg-Xs-ibo" secondAttribute="bottom" id="fAS-Lx-mVH"/>
                             <constraint firstAttribute="bottom" secondItem="ctE-qd-adj" secondAttribute="bottom" id="iQS-4q-8XD"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="16G-fB-jgg"/>
+                    <navigationItem key="navigationItem" title="Shopping Lists" id="16G-fB-jgg">
+                        <barButtonItem key="rightBarButtonItem" image="icon-AddList" style="plain" id="2bb-ZV-VUv">
+                            <connections>
+                                <action selector="btn_AddList_Pressed:" destination="7as-8F-Vmr" id="zL5-Oh-et6"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="AddShoppingListPopUp" destination="JuM-Wr-izQ" id="Tkt-cn-esY"/>
+                        <outlet property="ListDetailBackgroundImage" destination="AHA-rO-YAN" id="HTF-19-JJF"/>
+                        <outlet property="ListDetailTableView" destination="spv-64-59b" id="a6L-PU-8b5"/>
+                        <outlet property="ListDetailView" destination="nbB-Bs-xce" id="d1J-yD-Q1s"/>
+                        <outlet property="ShoppingListCollectionView" destination="8Sg-Xs-ibo" id="Xsy-4v-nhy"/>
+                        <outlet property="btn_AddList" destination="2bb-ZV-VUv" id="mVJ-w2-NoF"/>
+                        <outlet property="btn_SaveList" destination="Nil-kW-FHc" id="LO2-wF-5RJ"/>
+                        <outlet property="lbl_ListName" destination="aSM-o5-8cy" id="IaX-xa-imX"/>
+                        <outlet property="txt_ListName" destination="aSM-o5-8cy" id="fI2-HS-GoO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uru-Dz-b3Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="nbB-Bs-xce">
+                    <rect key="frame" x="0.0" y="0.0" width="280" height="400"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Listpad" translatesAutoresizingMaskIntoConstraints="NO" id="AHA-rO-YAN">
+                            <rect key="frame" x="0.0" y="0.0" width="280" height="400"/>
+                        </imageView>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="spv-64-59b">
+                            <rect key="frame" x="0.0" y="60" width="280" height="280"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <prototypes>
+                                <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" rowHeight="48" id="eY5-AJ-Fhm" customClass="ShoppingListItemTableViewCell" customModule="ShoppingBuddy" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="28" width="280" height="48"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eY5-AJ-Fhm" id="5dm-bv-FBV">
+                                        <rect key="frame" x="0.0" y="0.0" width="280" height="47.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Oym-FZ-S9y">
+                                                <rect key="frame" x="8" y="8" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="25" id="Va9-uW-Tzm"/>
+                                                    <constraint firstAttribute="width" constant="25" id="XaV-iP-5Lx"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shopping List Item" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1e6-SP-iC2">
+                                                <rect key="frame" x="51" y="13" width="213" height="15"/>
+                                                <fontDescription key="fontDescription" name="Sarina-Regular" family="Sarina" pointSize="16"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="1e6-SP-iC2" firstAttribute="top" secondItem="5dm-bv-FBV" secondAttribute="topMargin" constant="5" id="3pq-v0-1xN"/>
+                                            <constraint firstItem="Oym-FZ-S9y" firstAttribute="leading" secondItem="5dm-bv-FBV" secondAttribute="leading" constant="8" id="70t-eZ-iLB"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="1e6-SP-iC2" secondAttribute="trailing" constant="8" id="9qC-q5-qNi"/>
+                                            <constraint firstItem="1e6-SP-iC2" firstAttribute="leading" secondItem="Oym-FZ-S9y" secondAttribute="trailing" constant="18" id="CQb-aP-smW"/>
+                                            <constraint firstAttribute="bottom" secondItem="Oym-FZ-S9y" secondAttribute="bottom" constant="8" id="Ibb-Tq-MvR"/>
+                                            <constraint firstItem="Oym-FZ-S9y" firstAttribute="centerY" secondItem="5dm-bv-FBV" secondAttribute="centerY" id="P45-KQ-idT"/>
+                                            <constraint firstItem="Oym-FZ-S9y" firstAttribute="top" secondItem="5dm-bv-FBV" secondAttribute="top" constant="8" id="dwL-QY-PiV"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="1e6-SP-iC2" secondAttribute="bottom" constant="5" id="rgH-nM-mP8"/>
+                                        </constraints>
+                                    </tableViewCellContentView>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <connections>
+                                        <outlet property="CheckmarkImage" destination="Oym-FZ-S9y" id="cx5-hg-R4b"/>
+                                        <outlet property="lbl_ShoppingListItem" destination="1e6-SP-iC2" id="UXJ-HP-Sch"/>
+                                    </connections>
+                                </tableViewCell>
+                            </prototypes>
+                            <connections>
+                                <outlet property="dataSource" destination="7as-8F-Vmr" id="pvJ-TS-lZq"/>
+                                <outlet property="delegate" destination="7as-8F-Vmr" id="Vx6-rb-PuC"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="AHA-rO-YAN" firstAttribute="centerX" secondItem="nbB-Bs-xce" secondAttribute="centerX" id="1eB-K3-W0h"/>
+                        <constraint firstAttribute="trailing" secondItem="AHA-rO-YAN" secondAttribute="trailing" id="CwK-vE-0be"/>
+                        <constraint firstItem="AHA-rO-YAN" firstAttribute="centerY" secondItem="nbB-Bs-xce" secondAttribute="centerY" id="Dgg-9x-QTb"/>
+                        <constraint firstAttribute="bottom" secondItem="AHA-rO-YAN" secondAttribute="bottom" id="KLd-mH-6as"/>
+                        <constraint firstItem="spv-64-59b" firstAttribute="leading" secondItem="nbB-Bs-xce" secondAttribute="leading" id="SJr-ML-e7f"/>
+                        <constraint firstItem="AHA-rO-YAN" firstAttribute="top" secondItem="nbB-Bs-xce" secondAttribute="top" id="cXO-5l-kvL"/>
+                        <constraint firstAttribute="trailing" secondItem="spv-64-59b" secondAttribute="trailing" id="dFb-0s-fG3"/>
+                        <constraint firstItem="spv-64-59b" firstAttribute="height" secondItem="AHA-rO-YAN" secondAttribute="height" multiplier="0.7" id="mbx-Pq-67F"/>
+                        <constraint firstItem="spv-64-59b" firstAttribute="centerX" secondItem="nbB-Bs-xce" secondAttribute="centerX" id="n7E-QM-2oL"/>
+                        <constraint firstItem="spv-64-59b" firstAttribute="centerY" secondItem="nbB-Bs-xce" secondAttribute="centerY" id="obF-pR-LSl"/>
+                        <constraint firstItem="AHA-rO-YAN" firstAttribute="leading" secondItem="nbB-Bs-xce" secondAttribute="leading" id="vh3-96-nnf"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" id="JuM-Wr-izQ" userLabel="AddListView">
+                    <rect key="frame" x="0.0" y="0.0" width="250" height="180"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9fm-ks-4dh" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="31" width="250" height="149"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nil-kW-FHc">
+                                    <rect key="frame" x="110.5" y="109" width="30" height="30"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="30" id="gFD-uZ-9yn"/>
+                                        <constraint firstAttribute="width" constant="30" id="t7i-Cv-y8v"/>
+                                    </constraints>
+                                    <state key="normal" image="icon-Save"/>
+                                </button>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="list name" textAlignment="center" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="aSM-o5-8cy">
+                                    <rect key="frame" x="20" y="76" width="210" height="25"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" name="Blazed" family="Blazed" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="TXE-EF-z2B" id="h4v-eO-E4q"/>
+                                    </connections>
+                                </textField>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="Nil-kW-FHc" firstAttribute="top" secondItem="aSM-o5-8cy" secondAttribute="bottom" constant="8" id="5LN-Qc-6Tp"/>
+                                <constraint firstItem="Nil-kW-FHc" firstAttribute="centerX" secondItem="9fm-ks-4dh" secondAttribute="centerX" id="Qzs-Kr-2HZ"/>
+                                <constraint firstAttribute="bottom" secondItem="Nil-kW-FHc" secondAttribute="bottom" constant="10" id="TYO-Nb-Dzw"/>
+                                <constraint firstItem="aSM-o5-8cy" firstAttribute="leading" secondItem="9fm-ks-4dh" secondAttribute="leading" constant="20" id="iqd-A8-95Q"/>
+                                <constraint firstAttribute="trailing" secondItem="aSM-o5-8cy" secondAttribute="trailing" constant="20" id="v52-Eu-BC7"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="CornerRadius">
+                                    <real key="value" value="20"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </view>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AddList-US-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="SC3-7p-Xth">
+                            <rect key="frame" x="25" y="0.0" width="200" height="99"/>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="SC3-7p-Xth" firstAttribute="height" secondItem="JuM-Wr-izQ" secondAttribute="height" multiplier="0.55" id="2wu-Pu-Fb5"/>
+                        <constraint firstAttribute="trailing" secondItem="9fm-ks-4dh" secondAttribute="trailing" id="66j-9O-DJM"/>
+                        <constraint firstItem="SC3-7p-Xth" firstAttribute="centerX" secondItem="JuM-Wr-izQ" secondAttribute="centerX" id="CNp-qP-18k"/>
+                        <constraint firstAttribute="bottom" secondItem="9fm-ks-4dh" secondAttribute="bottom" id="NgI-G0-AyE"/>
+                        <constraint firstItem="SC3-7p-Xth" firstAttribute="width" secondItem="9fm-ks-4dh" secondAttribute="width" multiplier="0.8" id="Zeu-XH-dsf"/>
+                        <constraint firstItem="9fm-ks-4dh" firstAttribute="leading" secondItem="JuM-Wr-izQ" secondAttribute="leading" id="Zyt-zq-x6h"/>
+                        <constraint firstItem="aSM-o5-8cy" firstAttribute="top" secondItem="SC3-7p-Xth" secondAttribute="bottom" constant="8" id="b0d-Bx-VCD"/>
+                        <constraint firstItem="9fm-ks-4dh" firstAttribute="top" secondItem="JuM-Wr-izQ" secondAttribute="top" constant="31" id="fiD-2x-C3S"/>
+                        <constraint firstItem="SC3-7p-Xth" firstAttribute="top" secondItem="JuM-Wr-izQ" secondAttribute="top" id="uMP-Ds-Ytv"/>
+                    </constraints>
+                </view>
             </objects>
-            <point key="canvasLocation" x="3458" y="1681"/>
+            <point key="canvasLocation" x="3458" y="1906"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Nat-6a-auh">
@@ -715,26 +918,30 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SSd-nU-Khq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2621" y="1681"/>
+            <point key="canvasLocation" x="2619" y="1906"/>
         </scene>
     </scenes>
     <resources>
-        <image name="AddStore-US-Logo" width="203" height="183"/>
+        <image name="AddList-US-Logo" width="361" height="183"/>
+        <image name="AddStore-US-Logo" width="279" height="183"/>
         <image name="BG-Login" width="1125" height="2001"/>
+        <image name="Listpad" width="400" height="600"/>
+        <image name="Listpad-small" width="102" height="100"/>
         <image name="RoundMenu" width="516" height="1998"/>
-        <image name="ShoppingBuddy-Logo" width="284" height="183"/>
-        <image name="icon-AddStore" width="24" height="25"/>
+        <image name="ShoppingBuddy-Logo" width="235" height="183"/>
+        <image name="icon-AddList" width="28" height="27"/>
+        <image name="icon-AddStore" width="27" height="28"/>
         <image name="icon-Email" width="150" height="150"/>
         <image name="icon-Exclamation" width="75" height="150"/>
         <image name="icon-Key" width="150" height="150"/>
-        <image name="icon-List" width="75" height="75"/>
+        <image name="icon-List" width="29" height="28"/>
         <image name="icon-Login" width="22" height="22"/>
         <image name="icon-Person" width="150" height="150"/>
-        <image name="icon-Save" width="25" height="25"/>
+        <image name="icon-Save" width="53" height="53"/>
         <image name="icon-Store" width="160" height="130"/>
         <image name="iconTabBar-Dashboard" width="25" height="26"/>
-        <image name="iconTabBar-Store" width="25" height="25"/>
-        <image name="iconTabbar-List" width="25" height="25"/>
+        <image name="iconTabBar-Store" width="26" height="26"/>
+        <image name="iconTabbar-List" width="26" height="25"/>
     </resources>
     <color key="tintColor" red="0.3762441873550415" green="0.48788219690322876" blue="0.62092471122741699" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

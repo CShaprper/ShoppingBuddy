@@ -150,6 +150,24 @@ class FirebaseWebService: IFirebaseWebService {
             self.FirebaseRequestFinished()
         })
     }
+    func ReadFirebaseShoppingListsSection() -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        ref.child("shopping-lists").child(uid).observe(.childAdded, with: { (snapshot) in
+            if snapshot.value is NSNull{
+                return
+            }
+            print(snapshot)
+            let value = snapshot.value as? NSDictionary
+            var list = ShoppingList()
+            list.ID = value?["id"] as? String ?? ""
+            list.Name = value?["name"] as? String ?? ""
+            ShoppingListsArray.append(list)
+            self.FirebaseRequestFinished()
+        })
+
+    }
     
     //MARK: - Firebase Save Functions
     func SaveStoreToFirebaseDatabase(storeName: String) -> Void {
@@ -170,6 +188,26 @@ class FirebaseWebService: IFirebaseWebService {
             } else {
                 self.FirebaseRequestFinished()
                 print("Succesfully saved Store to Firebase")
+            }
+        })
+    }
+    func SaveListTiForebaseDatabase(listName:String) -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        
+        let listID =  ref.child("shopping-lists").child(uid).childByAutoId()
+        listID.updateChildValues(["store":listName, "id":listID.key], withCompletionBlock: { (error, dbref) in
+            if error != nil{
+                self.FirebaseRequestFinished()
+                print(error!.localizedDescription)
+                let title = ""
+                let message = ""
+                self.AlertFromFirebaseService(title: title, message: message)
+                return
+            } else {
+                self.FirebaseRequestFinished()
+                print("Succesfully saved Shopping List to Firebase")
             }
         })
     }

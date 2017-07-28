@@ -18,6 +18,11 @@
 		CFAD850D1F2779EC00F207E5 /* Blazed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFAD850C1F2779EC00F207E5 /* Blazed.ttf */; };
 		CFAD85101F27AAB500F207E5 /* StoresController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD850F1F27AAB500F207E5 /* StoresController.swift */; };
 		CFAD85121F27AAD000F207E5 /* StoresControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */; };
+		CFB137151F2B2BCF0076476D /* KrinkesRegularPERSONAL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFB137141F2B2BCF0076476D /* KrinkesRegularPERSONAL.ttf */; };
+		CFB137171F2B2C420076476D /* Sarina-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFB137161F2B2C420076476D /* Sarina-Regular.ttf */; };
+		CFB137191F2B40800076476D /* ShoppingListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */; };
+		CFB1371B1F2B425A0076476D /* ShoppingListControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */; };
+		CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */; };
 		CFB2AA511F2494C800AACB5B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */; };
 		CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */; };
 		CFB2AA571F24A42200AACB5B /* DesignableTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */; };
@@ -30,7 +35,7 @@
 		CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */; };
 		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
 		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
-		CFD41A611F27D4CA00FB1122 /* ShoppingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */; };
+		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
 		CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */; };
 		CFE330AD1F29E86200190993 /* FakeAlertMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
@@ -53,6 +58,7 @@
 		CFE4A2201F23D25A002A12C7 /* LocalizationStringExctension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A21A1F23CE19002A12C7 /* LocalizationStringExctension.swift */; };
 		CFE4A2221F23D7D0002A12C7 /* LocalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A2211F23D7D0002A12C7 /* LocalizationTests.swift */; };
 		CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFE4A2381F23DC62002A12C7 /* Localizable.strings */; };
+		CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */; };
 		CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFE9AB191F25F43300D0825B /* Artwork.xcassets */; };
 		CFE9AB1C1F26108200D0825B /* NicknameValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE9AB1B1F26108200D0825B /* NicknameValidationService.swift */; };
 		CFE9AB211F262DBE00D0825B /* DashboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE9AB201F262DBE00D0825B /* DashboardController.swift */; };
@@ -98,6 +104,11 @@
 		CFAD850C1F2779EC00F207E5 /* Blazed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Blazed.ttf; sourceTree = "<group>"; };
 		CFAD850F1F27AAB500F207E5 /* StoresController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresController.swift; sourceTree = "<group>"; };
 		CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresControllerTests.swift; sourceTree = "<group>"; };
+		CFB137141F2B2BCF0076476D /* KrinkesRegularPERSONAL.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = KrinkesRegularPERSONAL.ttf; sourceTree = "<group>"; };
+		CFB137161F2B2C420076476D /* Sarina-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sarina-Regular.ttf"; sourceTree = "<group>"; };
+		CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListCollectionViewCell.swift; sourceTree = "<group>"; };
+		CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListControllerTests.swift; sourceTree = "<group>"; };
+		CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListItemTableViewCell.swift; sourceTree = "<group>"; };
 		CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignableTextfield.swift; sourceTree = "<group>"; };
 		CFB2AA581F24A7B900AACB5B /* UIViewAnimationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewAnimationExtension.swift; sourceTree = "<group>"; };
@@ -107,7 +118,7 @@
 		CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierExtension.swift; sourceTree = "<group>"; };
 		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
 		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListController.swift; sourceTree = "<group>"; };
+		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
 		CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlTargetTester.swift; sourceTree = "<group>"; };
 		CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAlertMocks.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -141,6 +152,7 @@
 		CFE4A2351F23DC3A002A12C7 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		CFE4A2371F23DC62002A12C7 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CFE4A2391F23DC78002A12C7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListController.swift; sourceTree = "<group>"; };
 		CFE9AB191F25F43300D0825B /* Artwork.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Artwork.xcassets; sourceTree = "<group>"; };
 		CFE9AB1B1F26108200D0825B /* NicknameValidationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameValidationService.swift; sourceTree = "<group>"; };
 		CFE9AB201F262DBE00D0825B /* DashboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardController.swift; sourceTree = "<group>"; };
@@ -192,6 +204,8 @@
 		CFAD850B1F2779B700F207E5 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				CFB137141F2B2BCF0076476D /* KrinkesRegularPERSONAL.ttf */,
+				CFB137161F2B2C420076476D /* Sarina-Regular.ttf */,
 				CFAD850C1F2779EC00F207E5 /* Blazed.ttf */,
 			);
 			name = Fonts;
@@ -224,6 +238,8 @@
 			isa = PBXGroup;
 			children = (
 				CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */,
+				CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */,
+				CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */,
 			);
 			name = TableViewCell;
 			sourceTree = "<group>";
@@ -276,6 +292,7 @@
 				CFE4A1DF1F23C0DC002A12C7 /* LoginControllerTests.swift */,
 				CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */,
 				CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */,
+				CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */,
 				CFE4A1E11F23C0DC002A12C7 /* Info.plist */,
 				CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */,
 				CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */,
@@ -312,7 +329,7 @@
 				CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */,
 				CFE9AB201F262DBE00D0825B /* DashboardController.swift */,
 				CFAD850F1F27AAB500F207E5 /* StoresController.swift */,
-				CFD41A601F27D4CA00FB1122 /* ShoppingListController.swift */,
+				CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -321,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				CFB4C83B1F28D12B00F9FE69 /* Store.swift */,
+				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
@@ -513,12 +531,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFAD850D1F2779EC00F207E5 /* Blazed.ttf in Resources */,
+				CFB137171F2B2C420076476D /* Sarina-Regular.ttf in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
 				CFE4A1D51F23C0DC002A12C7 /* LaunchScreen.storyboard in Resources */,
 				CFE9AB231F2630D500D0825B /* Icons.xcassets in Resources */,
 				CFE4A1D21F23C0DC002A12C7 /* Backgrounds.xcassets in Resources */,
 				CFB2AA511F2494C800AACB5B /* GoogleService-Info.plist in Resources */,
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
+				CFB137151F2B2BCF0076476D /* KrinkesRegularPERSONAL.ttf in Resources */,
 				CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -698,6 +718,8 @@
 				CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */,
 				CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */,
 				CFE4A20B1F23C974002A12C7 /* ValidationFactory.swift in Sources */,
+				CFB137191F2B40800076476D /* ShoppingListCollectionViewCell.swift in Sources */,
+				CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */,
 				CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */,
 				CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
@@ -707,10 +729,11 @@
 				CFAD85101F27AAB500F207E5 /* StoresController.swift in Sources */,
 				CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */,
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
-				CFD41A611F27D4CA00FB1122 /* ShoppingListController.swift in Sources */,
+				CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */,
 				CFE4A2121F23C9A3002A12C7 /* EmailValidationService.swift in Sources */,
 				CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */,
 				CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
+				CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +748,7 @@
 				CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */,
 				CFB2AA5A1F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
 				CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */,
+				CFB1371B1F2B425A0076476D /* ShoppingListControllerTests.swift in Sources */,
 				CFAD85121F27AAD000F207E5 /* StoresControllerTests.swift in Sources */,
 				CFE4A1E01F23C0DC002A12C7 /* LoginControllerTests.swift in Sources */,
 				CFE4A2221F23D7D0002A12C7 /* LocalizationTests.swift in Sources */,

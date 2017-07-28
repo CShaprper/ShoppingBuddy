@@ -26,6 +26,10 @@ class DashboardController: UIViewController, IFirebaseWebService{
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
+        
+        //Load all Stores
+        firebaseWebService.ReadFirebaseStoresSection()
+        firebaseWebService.ReadFirebaseShoppingListsSection()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -92,8 +96,13 @@ class DashboardController: UIViewController, IFirebaseWebService{
         BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
         
         //LogOut Button
-        let newBackButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
-        self.navigationItem.leftBarButtonItem = newBackButton
+        let logoutButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
+        let shadow = NSShadow()
+        shadow.shadowColor = UIColor.black
+        shadow.shadowBlurRadius = 2
+        shadow.shadowOffset =  CGSize(width: -2, height: -2)
+        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Blazed", size: 17)!], for: .normal)
+        self.navigationItem.leftBarButtonItem = logoutButton
         
         //MenuButton
         let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu"), style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))

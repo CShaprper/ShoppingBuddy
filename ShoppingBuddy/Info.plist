@@ -53,6 +53,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Blazed.ttf</string>
+		<string>KrinkesRegularPERSONAL.ttf</string>
+		<string>Sarina-Regular.ttf</string>
 	</array>
 </dict>
 </plist>

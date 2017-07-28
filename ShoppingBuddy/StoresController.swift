@@ -144,7 +144,9 @@ class StoresController: UIViewController, UITextFieldDelegate, IValidationServic
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
         
-        firebaseWebService.ReadFirebaseStoresSection()
+        //Stores TableView
+        StoresTableView.tintColor = UIColor.ColorPaletteTintColor()
+        StoresTableView.reloadData()
     }
 }
 extension StoresController: UITableViewDelegate, UITableViewDataSource{

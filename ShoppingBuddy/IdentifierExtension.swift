@@ -14,4 +14,10 @@ extension String{
     
     //TableViewCell Identifier
     static let StoreCell_Identifier = "StoreCell"
+    
+    //Shopping List CollectionView Cell
+    static let ShoppingListCollectionViewCell_Identifier = "ShoppingListCollectionViewCell"
+    
+    //ShoppingListDetailsView Cell
+    static let ShoppingListItemTableViewCell_Identifier = "ShoppingListItemTableViewCell"
 }

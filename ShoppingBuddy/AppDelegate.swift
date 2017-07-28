@@ -11,6 +11,8 @@ import Firebase
 import GooglePlaces
 
 var StoresArray:[Store] = []
+var ShoppingListsArray:[ShoppingList] = []
+var ShoppingListDetailsArray:[ShoppingListDetail] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {

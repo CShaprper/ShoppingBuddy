@@ -23,7 +23,11 @@ class CustomNavigationController: UINavigationController {
         //Global NavigationBar Style
         navigationBar.tintColor = UIColor.ColorPaletteSecondDarkest()
         navigationBar.barTintColor = UIColor.ColorPaletteBrightest()
-        navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.ColorPaletteSecondDarkest(), NSFontAttributeName:UIFont(name: "Blazed", size: 20)!]
+        let shadow = NSShadow()
+        shadow.shadowColor = UIColor.black
+        shadow.shadowBlurRadius = 2
+        shadow.shadowOffset =  CGSize(width: -2, height: -2)
+        navigationBar.titleTextAttributes = [NSShadowAttributeName:shadow, NSForegroundColorAttributeName:UIColor.ColorPaletteSecondDarkest(), NSFontAttributeName:UIFont(name: "Blazed", size: 20)!]
     }
     
     override func didReceiveMemoryWarning() {
