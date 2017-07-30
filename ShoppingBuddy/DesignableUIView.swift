@@ -44,6 +44,7 @@ public class DesignableUIView:UIView{
         self.layer.cornerRadius = CornerRadius
         layer.colors = [TopColor.cgColor, BottomColor.cgColor]
         layer.locations = [NSNumber(floatLiteral: TopLocation)]
-        layer.bounds = self.layer.bounds 
+        layer.bounds = self.layer.bounds
+        setNeedsDisplay()   
     }
 }

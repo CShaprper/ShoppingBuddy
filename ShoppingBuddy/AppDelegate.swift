@@ -12,7 +12,8 @@ import GooglePlaces
 
 var StoresArray:[Store] = []
 var ShoppingListsArray:[ShoppingList] = []
-var ShoppingListDetailsArray:[ShoppingListDetail] = []
+var ShoppingListTotalItemsArray:[ShoppingListItem] = []
+var ShoppingListDetailItemsArray:[ShoppingListItem] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
@@ -31,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         
         //Global StatusBar Style
         UIApplication.shared.statusBarStyle = .default
-        UIApplication.statusBarBackgroundColor = UIColor.ColorPaletteBrightest()
+        UIApplication.statusBarBackgroundColor = UIColor.ColorPaletteSecondBrightest()
         
         return true
     }
@@ -42,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         //Refresh Token for Push Notification
         if let uid = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
-            ref.child("users").child(uid).child(Messaging.messaging().fcmToken!).setValue(token)
+            ref.child("users").child(uid).child("fcmToken").setValue(token)
         }
     }
     

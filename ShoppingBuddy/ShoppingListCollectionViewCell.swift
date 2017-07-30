@@ -10,5 +10,9 @@ import UIKit
 
 class ShoppingListCollectionViewCell: UICollectionViewCell {
     @IBOutlet var BackgroundImage: UIImageView!
+    @IBOutlet var lbl_ListName: UILabel!
     
+    func ConfigureCell(shoppingList: ShoppingList) -> Void {
+        lbl_ListName.text = shoppingList.Name != nil ? shoppingList.Name! : ""
+    }
 }

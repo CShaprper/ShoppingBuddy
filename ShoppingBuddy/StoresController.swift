@@ -43,6 +43,17 @@ class StoresController: UIViewController, UITextFieldDelegate, IValidationServic
         self.view.endEditing(true)
         return true
     }
+    //MARK: Keyboard Notification Listener targets
+    func KeyboardWillShow(sender: Notification) -> Void {
+        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
+        }
+    }
+    func KeyboardWillHide(sender: Notification) -> Void {
+        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
+        }
+    }
     
     //MARK: IValidationService implementation
     func ShowValidationAlert(title: String, message: String) {
@@ -64,19 +75,6 @@ class StoresController: UIViewController, UITextFieldDelegate, IValidationServic
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
-    }
-    
-    
-    //MARK: - Notification Listener targets
-    func KeyboardWillShow(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
-        }
-    }
-    func KeyboardWillHide(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
-        }
     }
     
     //MARK: - Wired actions

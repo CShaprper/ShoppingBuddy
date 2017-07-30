@@ -9,12 +9,25 @@
 import UIKit 
 
 extension UIView {
-    func shake() {
+    func shake() { 
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
         animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
         animation.duration = 0.3
         animation.values = [-8.0, 8.0, -6.0, 6.0, -3.0, 3.0, -1.5, 1.5, 0.0 ]
         layer.add(animation, forKey: "shake")
+    }
+    
+    func shakeAndHide() {
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            self.alpha = 0
+        }
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+        animation.duration = 0.3
+        animation.values = [-8.0, 8.0, -6.0, 6.0, -3.0, 3.0, -1.5, 1.5, 0.0 ]
+        layer.add(animation, forKey: "shake")
+        CATransaction.commit()
     }
     
     func HangingEffectBounce(duration:Double, delay:Double, spring:CGFloat){

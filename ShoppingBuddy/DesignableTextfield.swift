@@ -107,7 +107,7 @@ public class DesignableTextField: UITextField {
         } else {
             leftViewMode = .never
         }
-        
+        setNeedsDisplay()
     }
     
     func updateRightView() {
@@ -131,7 +131,7 @@ public class DesignableTextField: UITextField {
         } else {
             rightViewMode = .never
         }
+        setNeedsDisplay()
     }
-    
 
 }

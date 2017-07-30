@@ -32,7 +32,7 @@ class LoginControllerTests: XCTestCase {
     
     //BackgroundImage
     func test_BackgroundImage_Exists(){
-        XCTAssertNotNil(sut!.BackgroundImage, "BackgroundImage should exist")
+        XCTAssertNotNil(sut!.BackgroundView, "BackgroundView should exist")
     }
     
     //Login Container

@@ -10,6 +10,7 @@
 		91935E9AC1DADD7A09CEB2FD /* Pods_ShoppingBuddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
 		CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */; };
+		CF3806971F2E2AAA005B3E15 /* ShoppingListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */; };
 		CF610C371F26371600B1B2DE /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C361F26371600B1B2DE /* UIColorExtension.swift */; };
 		CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */; };
 		CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */; };
@@ -96,6 +97,7 @@
 		C311ECDB5A403F720F0B0183 /* Pods-ShoppingBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
 		CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarExtension.swift; sourceTree = "<group>"; };
+		CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListItem.swift; sourceTree = "<group>"; };
 		CF610C361F26371600B1B2DE /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardControllerTests.swift; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 			children = (
 				CFB4C83B1F28D12B00F9FE69 /* Store.swift */,
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
+				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
@@ -703,6 +706,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFE4A2131F23C9A3002A12C7 /* TextfieldIValidationService.swift in Sources */,
+				CF3806971F2E2AAA005B3E15 /* ShoppingListItem.swift in Sources */,
 				CFE4A2111F23C9A3002A12C7 /* PasswordValidationService.swift in Sources */,
 				CFE9AB1C1F26108200D0825B /* NicknameValidationService.swift in Sources */,
 				CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */,

@@ -42,7 +42,7 @@ class LocalizationTests: XCTestCase {
         XCTAssertTrue(String.ValidationNicknameShouldContainAtLeastSixCharacters != "ValidationNicknameShouldContainAtLeastSixCharacters", "ValidationNicknameShouldContainAtLeastSixCharacters is not localized in strings file!")
     }
     
-    //Email validation 
+    //Email validation
     func test_ValidationEmailEmptyAlert_Message_isLocalized(){
         XCTAssertTrue(String.ValidationEmailEmptyAlert_Message != "ValidationEmailEmptyAlert_Message", "ValidationEmailEmptyAlert_Message is not localized in strings file!")
     }
@@ -104,7 +104,10 @@ class LocalizationTests: XCTestCase {
     
     //ShoppingListController
     func test_ShoppingListControllerTitle_isLocalized(){
-    XCTAssertTrue(String.ShoppingListControllerTitle != "ShoppingListControllerTitle", "ShoppingListControllerTitle is not localized in strings file!")
+        XCTAssertTrue(String.ShoppingListControllerTitle != "ShoppingListControllerTitle", "ShoppingListControllerTitle is not localized in strings file!")
+    }
+    func test_CustomRefreshControlImage_isLocalized(){
+        XCTAssertTrue(String.CustomRefreshControlImage != "CustomRefreshControlImage", "CustomRefreshControlImage is not localized in strings file!")
     }
     
 }

@@ -22,12 +22,17 @@ class CustomNavigationController: UINavigationController {
         
         //Global NavigationBar Style
         navigationBar.tintColor = UIColor.ColorPaletteSecondDarkest()
-        navigationBar.barTintColor = UIColor.ColorPaletteBrightest()
+        navigationBar.barTintColor = UIColor.ColorPaletteSecondBrightest()
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black
-        shadow.shadowBlurRadius = 2
+        shadow.shadowBlurRadius = 1
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        navigationBar.titleTextAttributes = [NSShadowAttributeName:shadow, NSForegroundColorAttributeName:UIColor.ColorPaletteSecondDarkest(), NSFontAttributeName:UIFont(name: "Blazed", size: 20)!]
+        let textAttributes = [NSShadowAttributeName:shadow,
+                              NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(),
+                              NSStrokeColorAttributeName : UIColor.black,
+                              NSStrokeWidthAttributeName : -1.0,
+                              NSFontAttributeName:UIFont(name: "Blazed", size: 20)!] as [String : Any]
+        navigationBar.titleTextAttributes = textAttributes
     }
     
     override func didReceiveMemoryWarning() {

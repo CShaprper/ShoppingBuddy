@@ -10,7 +10,7 @@ import UIKit
 
 class LoginController: UIViewController, UITextFieldDelegate, IValidationService, IFirebaseWebService {
     //MARK: - Outlets
-    @IBOutlet var BackgroundImage: UIImageView!
+    @IBOutlet var BackgroundView: DesignableUIView!
     //Segmented Control
     @IBOutlet var LoginSignUpSegmentedControl: UISegmentedControl!
     //LoginContainer
@@ -211,8 +211,9 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         firebaseWebService = FirebaseWebService()
         firebaseWebService.delegate = self
         
-        //BackgroundImage
-        BackgroundImage.alpha = 1
+        // BackgroundView Gradient
+        BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()
+        BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
         
         //LoginContainer
         LoginContainer.clipsToBounds = true
@@ -258,6 +259,13 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         EmailContainer.transform = CGAffineTransform(translationX: 0, y: -EmailContainer.frame.size.height)
         PasswordContainer.transform = CGAffineTransform(translationX: 0, y: -PasswordContainer.frame.size.height)
         LoginContainerHeight.constant = 62
+        LoginContainerBackground.layer.shadowColor = UIColor.ColorPaletteDarkest().cgColor
+        LoginContainerBackground.layer.shadowOffset = CGSize.zero
+        LoginContainerBackground.layer.shadowRadius = 10
+        LoginContainerBackground.layer.shadowOpacity = 1
+        LoginContainerBackground.layer.shadowPath = UIBezierPath(rect: LoginContainerBackground.bounds).cgPath
+        LoginContainerBackground.layer.borderColor = UIColor.black.cgColor
+        LoginContainerBackground.layer.borderWidth = 2
         
         //Reset password Button
         btn_ResetPassword.addTarget(self, action: #selector(btn_ResetPassword_Pressed), for: .touchDown)

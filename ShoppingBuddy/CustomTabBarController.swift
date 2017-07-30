@@ -24,12 +24,17 @@ class CustomTabBarController: UITabBarController {
         self.delegate = mydelegate  
         
         firebaseWebService = FirebaseWebService()
-        
-         UITabBarItem.appearance().setTitleTextAttributes([NSFontAttributeName:UIFont(name: "Blazed", size: 10)!], for: .normal)
+        let shadow = NSShadow()
+        shadow.shadowColor = UIColor.black
+        shadow.shadowBlurRadius = 1
+        shadow.shadowOffset =  CGSize(width: -2, height: -2)
+        let textAttributes = [NSFontAttributeName:UIFont(name: "Blazed", size: 10)!,
+                              NSShadowAttributeName:shadow] as [String : Any]
+         UITabBarItem.appearance().setTitleTextAttributes(textAttributes, for: .normal)
         
         tabBar.items?[0].title = String.DashboardControllerTitle
-        tabBar.items?[1].title = String.StoresControllerTitle
-        tabBar.items?[2].title = String.ShoppingListControllerTitle
+        tabBar.items?[1].title = String.ShoppingListControllerTitle
+        tabBar.items?[2].title = String.StoresControllerTitle
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -41,7 +46,7 @@ class CustomTabBarController: UITabBarController {
         super.viewWillAppear(animated)
         //TabBar customization
         tabBar.barTintColor = UIColor.ColorPaletteDarkest()
-        tabBar.tintColor = UIColor.ColorPaletteBrightest()
+        tabBar.tintColor = UIColor.ColorPaletteTintColor()
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -54,12 +59,12 @@ class CustomTabBarController: UITabBarController {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         switch item.title! {
         case "Dashboard":
-            tabBar.tintColor = UIColor.ColorPaletteBrightest()
-            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteBrightest()], for: .selected)
+            tabBar.tintColor = UIColor.ColorPaletteTintColor()
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break
         case "Stores":
-            tabBar.tintColor = UIColor.ColorPaletteBrightest()
-            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteBrightest()], for: .selected)
+            tabBar.tintColor = UIColor.ColorPaletteTintColor()
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break
         default:
             break

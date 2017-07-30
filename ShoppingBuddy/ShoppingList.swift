@@ -11,15 +11,8 @@ import Foundation
 struct ShoppingList {
     var ID:String?
     var Name:String?
-    var ListDetails:[ShoppingListDetail]
+    var ItemsArray:[ShoppingListItem]
     init() {
-        ListDetails = []
+        ItemsArray = []
     }
-}
-
-struct ShoppingListDetail {
-    var ShoppingListID:String?
-    var ID:String?
-    var DetailName:String?
-    var isSelected:String?
 }

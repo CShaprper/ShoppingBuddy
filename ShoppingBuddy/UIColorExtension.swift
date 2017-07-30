@@ -32,6 +32,6 @@ extension UIColor{
         return UIColor(red: 216 / 255, green: 243 / 255, blue: 166 / 255,  alpha: 1)
     }
     static func ColorPaletteTintColor() ->UIColor{
-        return UIColor(red: 247 / 255, green: 153 / 255, blue: 19 / 255,  alpha: 1)
+        return UIColor(red: 47 / 255, green: 249 / 255, blue: 255 / 255,  alpha: 1)
     }
 }

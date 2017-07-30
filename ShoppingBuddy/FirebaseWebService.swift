@@ -48,6 +48,10 @@ class FirebaseWebService: IFirebaseWebService {
         if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseUserLoggedOut!() }}
         else { print("IFirebaseWebService delegate for alert not set from calling class") }
     }
+    func ReloadItems() {
+        if delegate != nil { DispatchQueue.main.async { self.delegate!.ReloadItems!() }}
+        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+    }
     
     //MARK: - FirebaseWebService methods
     func AddUserStateListener() -> Void {
@@ -132,6 +136,8 @@ class FirebaseWebService: IFirebaseWebService {
         }
         
     }
+    
+    
     //MARK: - Firebase Read Functions
     func ReadFirebaseStoresSection() -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
@@ -154,27 +160,68 @@ class FirebaseWebService: IFirebaseWebService {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
+        var newLists = [ShoppingList]()
+        var newItems = [ShoppingListItem]()
         ref.child("shopping-lists").child(uid).observe(.childAdded, with: { (snapshot) in
-            if snapshot.value is NSNull{
-                return
-            }
+            if snapshot.value is NSNull{ return }
             print(snapshot)
             let value = snapshot.value as? NSDictionary
             var list = ShoppingList()
             list.ID = value?["id"] as? String ?? ""
             list.Name = value?["name"] as? String ?? ""
-            ShoppingListsArray.append(list)
+            newLists.append(list)
+            
+            let items = snapshot.childSnapshot(forPath: "items")
+            if items.value is NSNull{ return }
+            for item in items.children{
+                let item2 = item as! DataSnapshot
+                if let dict = item2.value as? [String: AnyObject]{
+                    var listItem:ShoppingListItem = ShoppingListItem()
+                    listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
+                    listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
+                    listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
+                    listItem.ShoppingListID = list.ID!
+                    newItems.append(listItem)
+                }
+            }
+            ShoppingListsArray = newLists
+            ShoppingListTotalItemsArray = newItems
             self.FirebaseRequestFinished()
         })
-
     }
+    func ReadSingleShoppingList(listID:String) -> Void{
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        ref.child("shopping-lists").child(uid).child(listID).child("items").observe(.value, with: { (snapshot) in
+            if snapshot.value is NSNull{ return }
+            print(snapshot)
+            if let dict = snapshot.value as? [String: AnyObject]{
+                var listItem = ShoppingListItem()
+                listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
+                listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
+                listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
+                listItem.ShoppingListID = listID
+                ShoppingListTotalItemsArray.append(listItem)
+            }
+            self.FirebaseRequestFinished()
+        })
+    }
+    
+    //MARK: - Edit Functions
+    func EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListItem) -> Void{
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        ref.child("shopping-lists").child(uid).child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
+    }
+    
     
     //MARK: - Firebase Save Functions
     func SaveStoreToFirebaseDatabase(storeName: String) -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        
         let storeID =  ref.child("stores").child(uid).childByAutoId()
         print(storeID.key)
         storeID.updateChildValues(["store":storeName, "id":storeID.key], withCompletionBlock: { (error, dbref) in
@@ -185,19 +232,17 @@ class FirebaseWebService: IFirebaseWebService {
                 let message = ""
                 self.AlertFromFirebaseService(title: title, message: message)
                 return
-            } else {
-                self.FirebaseRequestFinished()
-                print("Succesfully saved Store to Firebase")
             }
+            self.FirebaseRequestFinished()
+            print("Succesfully saved Store to Firebase")
         })
     }
-    func SaveListTiForebaseDatabase(listName:String) -> Void {
+    func SaveListToFirebaseDatabase(listName:String, relatedStore:String) -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        
         let listID =  ref.child("shopping-lists").child(uid).childByAutoId()
-        listID.updateChildValues(["store":listName, "id":listID.key], withCompletionBlock: { (error, dbref) in
+        listID.updateChildValues(["id":listID.key, "name":listName, "relatedStore":relatedStore], withCompletionBlock: { (error, dbref) in
             if error != nil{
                 self.FirebaseRequestFinished()
                 print(error!.localizedDescription)
@@ -205,12 +250,31 @@ class FirebaseWebService: IFirebaseWebService {
                 let message = ""
                 self.AlertFromFirebaseService(title: title, message: message)
                 return
-            } else {
-                self.FirebaseRequestFinished()
-                print("Succesfully saved Shopping List to Firebase")
             }
+            self.FirebaseRequestFinished()
+            print("Succesfully saved Shopping List to Firebase")
         })
     }
+    func SaveListItemToFirebaseDatabase(shoppingListID:String, itemName:String) -> Void {
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        let itemID =  ref.child("shopping-lists").child(uid).child(shoppingListID).child("items").childByAutoId()
+        itemID.updateChildValues(["id":itemID.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingListID], withCompletionBlock: {(error, dbref) in
+            if error != nil{
+                self.FirebaseRequestFinished()
+                print(error!.localizedDescription)
+                let title = ""
+                let message = ""
+                self.AlertFromFirebaseService(title: title, message: message)
+                return
+            }
+            self.FirebaseRequestFinished()
+            self.ReadFirebaseShoppingListsSection()
+            print("Succesfully saved ShoppingListItem to Firebase")
+        })
+    }
+    
     
     //MARK: - Firebase Delete Functions
     func DeleteStoreFromFirebase(idToDelete: String) -> Void {

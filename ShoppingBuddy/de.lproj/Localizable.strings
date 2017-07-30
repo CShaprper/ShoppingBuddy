@@ -43,3 +43,11 @@ AddStorePopUpLogo_Image = "AddStore-DE-Logo";
 
     //ShoppingListController
 ShoppingListControllerTitle = "Shopping Listen";
+CustomRefreshControlImage = "AddItemRefreshControl-DE";
+
+    //Add Shopping  List PopUp
+txt_RelatedStore_Placeholder = "Verknüpfter Shop";
+txt_ListName_Placeholder = "Liste Name";
+    //Add Item PopUp
+txt_ItemName_Placeholer = "Element Name";
+CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-DE";

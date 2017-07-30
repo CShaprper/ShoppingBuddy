@@ -92,7 +92,7 @@ class DashboardController: UIViewController, IFirebaseWebService{
         tabBarItem.title = String.DashboardControllerTitle
         
         // BackgroundView Gradient
-        BackgroundView.TopColor = UIColor.ColorPaletteBrightest()
+        BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()
         BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
         
         //LogOut Button
@@ -101,11 +101,11 @@ class DashboardController: UIViewController, IFirebaseWebService{
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 2
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Blazed", size: 17)!], for: .normal)
+        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Blazed", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
         
-        //MenuButton
-        let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu"), style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))
+        //MenuButton 
+        let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu") , style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))
         navigationItem.rightBarButtonItem = menuButton
         
         //Notification Listener

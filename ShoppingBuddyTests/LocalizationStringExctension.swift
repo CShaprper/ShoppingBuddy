@@ -51,5 +51,11 @@ extension String{
     
     //ShoppingListController
     static let ShoppingListControllerTitle = NSLocalizedString("ShoppingListControllerTitle", comment: "")
-
+    static let CustomRefreshControlImage = NSLocalizedString("CustomRefreshControlImage", comment: "")
+    // Add Shopping List PopUp
+    static let txt_RelatedStore_Placeholder = NSLocalizedString("txt_RelatedStore_Placeholder", comment: "")
+    static let txt_ListName_Placeholder = NSLocalizedString("txt_ListName_Placeholder", comment: "")
+    //Add Item PopUp
+    static let txt_ItemName_Placeholer = NSLocalizedString("txt_ItemName_Placeholer", comment: "")
+    static let CustomAddShoppingListRefreshControlImage = NSLocalizedString("CustomAddShoppingListRefreshControlImage", comment: "")
 }
