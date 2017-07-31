@@ -53,7 +53,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     var SelectedList:ShoppingList?
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
-    var checkedIndex:Int!
+    var swipedCellIndex:Int!
     var panRecognizer:UIPanGestureRecognizer!
     
     //MARK: - ViewController Lifecycle
@@ -141,38 +141,76 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             firebaseWebService.SaveListItemToFirebaseDatabase(shoppingListID: SelectedList!.ID!, itemName: txt_ItemName.text!)
         }
     }
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            let translation = panGestureRecognizer.translation(in: view)
+            if fabs(translation.x) > fabs(translation.y) {
+                return true
+            }
+            return false
+        }
+        return false
+    }
     func HandleShoppingItemPan(sender: UIPanGestureRecognizer) -> Void {
         let swipeLocation = panRecognizer.location(in: self.ShoppingListDetailTableView)
         if let swipedIndexPath = ShoppingListDetailTableView.indexPathForRow(at: swipeLocation) {
-            if let swipedCell = self.ShoppingListDetailTableView.cellForRow(at: swipedIndexPath) {              
+            if let swipedCell = self.ShoppingListDetailTableView.cellForRow(at: swipedIndexPath) {
+                
+                //remember the index of the swiped cell to reset after animation
+                swipedCellIndex = swipedIndexPath.row
+                
+                //Get swiped item isSelected value
+                let isSelected = ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected
+                
+                //translation of thumb in view
                 let point = sender.translation(in: ShoppingListDetailTableView)
-                let xFromCenter = swipedCell.center.x - view.center.x
-                let degree:Double = Double(xFromCenter / view.frame.size.width * 0.1)
-                swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0).rotated(by: degree.degreesToRadians)
-                swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0).rotated(by: degree.degreesToRadians)
                 
+                //percent of movement according the view size
+                let xPercentFromCenter = point.x / view.center.x
                 
-                let swipeLimitLeft = ShoppingListDetailTableView.frame.width * 0.4
-                let swipeLimitRight = ShoppingListDetailTableView.frame.width * 0.6
+                //calculate distance to drop item
+                let dropHeight = ShoppingListDetailTableView.frame.height - swipeLocation.y
+                
+                let xTranslationToCart = view.center.x * 0.9
+                
+                //Stop translation of cell at 25% movement over view 
+                //&& allow swipe left only on unselected items
+                if abs(xPercentFromCenter) < 0.25 && isSelected! == "false"{
+                    swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
+                }
+                
+                //Shopping cart image should bo on top
                 view.bringSubview(toFront: ShoppingCartImage)
-                ShoppingCartImage.alpha =  swipedCell.center.x < swipeLimitLeft ? 0 : 1
-                
+                ShoppingCartImage.alpha =  xPercentFromCenter < -0.2 && isSelected! == "false" ? 1 : 0
                 if panRecognizer.state == UIGestureRecognizerState.ended {
-                    if swipedCell.center.x > swipeLimitLeft{
-                        //Drop to cart
-                        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            swipedCell.transform = CGAffineTransform(rotationAngle: Double(-90).degreesToRadians)
-                            swipedCell.transform = CGAffineTransform.init(translationX: 0, y: 300)
-                        }, completion: { (true) in
-                            self.ShoppingCartImage.shakeAndHide()          
+                    if xPercentFromCenter <= -0.25 && isSelected! == "false"{
+                        //Shake Cart
+                        UIView.animate(withDuration: 0.2, delay: 0.3, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: { 
+                            self.ShoppingCartImage.transform = .identity
                         })
+                        //Drop to cart                    
+                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            swipedCell.transform = CGAffineTransform.init(translationX: -xTranslationToCart, y: dropHeight).rotated(by: -90)
+                        }, completion: { (true) in
+                            self.ShoppingCartImage.alpha = 0
+                            swipedCell.transform = .identity
+                            //Edit isSelected local
+                            ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected = "true"
+                            //Edit isSelected in Firebase
+                            self.firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[self.swipedCellIndex])
+                            self.SortShoppingListItemsArrayBy_isSelected()
+                        })
+                        ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
                         return
-                    } else if swipedCell.center.x > swipeLimitRight{
+                    } else if xPercentFromCenter >= 0.25{
                         //Drop to trash
                         return
                     } else {
-                    ShoppingCartImage.alpha = 0
-                    swipedCell.transform = .identity
+                        ShoppingCartImage.alpha = 0
+                        swipedCell.transform = .identity
                     }
                 }
             }
@@ -302,6 +340,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         }
         
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(HandleShoppingItemPan))
+        panRecognizer.delegate = self
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
         
         //SetNavigationBar Title
@@ -416,12 +455,10 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        checkedIndex = indexPath.row
         if ShoppingListDetailItemsArray.count > 0 {
             ShoppingListDetailItemsArray[indexPath.row].isSelected = ShoppingListDetailItemsArray[indexPath.row].isSelected == "false" ? "true" : "false"
             firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
-            ShoppingListDetailItemsArray = ShoppingListDetailItemsArray.sorted {return $0.isSelected! < $1.isSelected!}
-            ShoppingListDetailTableView.reloadData()
+            SortShoppingListItemsArrayBy_isSelected()
         }
     }
     /*

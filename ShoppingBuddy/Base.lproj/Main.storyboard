@@ -731,7 +731,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="280" height="400"/>
                         </imageView>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="spv-64-59b">
-                            <rect key="frame" x="0.0" y="60" width="280" height="280"/>
+                            <rect key="frame" x="0.0" y="60" width="280" height="320"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -823,9 +823,9 @@
                         <constraint firstAttribute="trailing" secondItem="spv-64-59b" secondAttribute="trailing" id="dFb-0s-fG3"/>
                         <constraint firstAttribute="trailing" secondItem="xR9-xZ-cBh" secondAttribute="trailing" constant="10" id="e9f-hX-oRV"/>
                         <constraint firstItem="krP-5X-8hg" firstAttribute="height" secondItem="AHA-rO-YAN" secondAttribute="height" multiplier="0.12" id="eTl-BY-KmX"/>
-                        <constraint firstItem="spv-64-59b" firstAttribute="height" secondItem="AHA-rO-YAN" secondAttribute="height" multiplier="0.7" id="mbx-Pq-67F"/>
+                        <constraint firstAttribute="bottom" secondItem="spv-64-59b" secondAttribute="bottom" constant="20" id="fW1-L4-TTW"/>
+                        <constraint firstItem="spv-64-59b" firstAttribute="height" secondItem="AHA-rO-YAN" secondAttribute="height" multiplier="0.8" id="mbx-Pq-67F"/>
                         <constraint firstItem="spv-64-59b" firstAttribute="centerX" secondItem="nbB-Bs-xce" secondAttribute="centerX" id="n7E-QM-2oL"/>
-                        <constraint firstItem="spv-64-59b" firstAttribute="centerY" secondItem="nbB-Bs-xce" secondAttribute="centerY" id="obF-pR-LSl"/>
                         <constraint firstItem="AHA-rO-YAN" firstAttribute="leading" secondItem="nbB-Bs-xce" secondAttribute="leading" id="vh3-96-nnf"/>
                     </constraints>
                 </view>
