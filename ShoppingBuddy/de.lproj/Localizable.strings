@@ -36,7 +36,7 @@ LoginResetPassword = "Passwort zurücksetzen?";
 DashboardControllerTitle = "Dashboard";
 
     //StoresController
-StoresControllerTitle = "Shops";
+SettingsControllerTitle = "Einstellungen";
 txt_AddStore_Placeholder = "Shop Name";
     //AddStorePopUpLogo
 AddStorePopUpLogo_Image = "AddStore-DE-Logo";
@@ -46,8 +46,10 @@ ShoppingListControllerTitle = "Shopping Listen";
 CustomRefreshControlImage = "AddItemRefreshControl-DE";
 
     //Add Shopping  List PopUp
+lbl_AddListPopUpTitle = "Neue Liste Einfügen";
 txt_RelatedStore_Placeholder = "Verknüpfter Shop";
 txt_ListName_Placeholder = "Liste Name";
     //Add Item PopUp
+lbl_AddItemPopUpTitle = "Element Einfügen";
 txt_ItemName_Placeholer = "Element Name";
 CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-DE";

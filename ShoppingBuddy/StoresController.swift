@@ -121,10 +121,10 @@ class StoresController: UIViewController, UITextFieldDelegate, IValidationServic
         firebaseWebService.delegate = self
         
         //Set Navigation Bar Title
-        navigationItem.title = String.StoresControllerTitle
+        navigationItem.title = String.SettingsControllerTitle
         
         //Set TabBarItem Title
-        tabBarItem.title = String.StoresControllerTitle
+        tabBarItem.title = String.SettingsControllerTitle   
         
         //AddStore PopUp
         txt_AddStore.layer.borderWidth = 2
@@ -132,7 +132,6 @@ class StoresController: UIViewController, UITextFieldDelegate, IValidationServic
         txt_AddStore.textColor = UIColor.ColorPaletteSecondDarkest()
         txt_AddStore.layer.cornerRadius = 10
         txt_AddStore.placeholder = String.txt_AddStore_Placeholder
-        AddStorePopUpLogo.image = UIImage(named: String.AddStorePopUpLogo_Image)
         
         //btn_SaveStore
         btn_SaveStore.tintColor = UIColor.ColorPaletteSecondDarkest()

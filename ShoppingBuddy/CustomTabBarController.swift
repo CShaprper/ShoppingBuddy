@@ -28,13 +28,12 @@ class CustomTabBarController: UITabBarController {
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 1
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        let textAttributes = [NSFontAttributeName:UIFont(name: "Blazed", size: 10)!,
-                              NSShadowAttributeName:shadow] as [String : Any]
+        let textAttributes = [NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 10)!] as [String : Any]
          UITabBarItem.appearance().setTitleTextAttributes(textAttributes, for: .normal)
         
         tabBar.items?[0].title = String.DashboardControllerTitle
         tabBar.items?[1].title = String.ShoppingListControllerTitle
-        tabBar.items?[2].title = String.StoresControllerTitle
+        tabBar.items?[2].title = String.SettingsControllerTitle
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

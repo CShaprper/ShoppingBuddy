@@ -53,6 +53,9 @@ class ShoppingListControllerTests: XCTestCase {
      XCTAssertTrue(cell.reuseIdentifier == String.ShoppingListItemTableViewCell_Identifier, "TabelViewCell reuseIdentifier is \(String(describing: cell.reuseIdentifier)) and should be \(String.ShoppingListItemTableViewCell_Identifier)")
      }*/
     //Add List PopUp
+    func test_lbl_AddListPopUpTitle_Exists(){
+        XCTAssertNotNil(sut!.lbl_AddListPopUpTitle, "lbl_AddListPopUpTitle should exist")
+    }
     func test_txt_RelatedStore_Exists(){
         XCTAssertNotNil(sut!.txt_RelatedStore, "txt_RelatedStore should exist")
     }
@@ -63,7 +66,7 @@ class ShoppingListControllerTests: XCTestCase {
         XCTAssertTrue(sut!.txt_RelatedStore.placeholder != "", "txt_RelatedStore Missing placeholder value")
     }
     func test_txt_RelatedStoreTextColor_isSet(){
-        XCTAssertEqual(sut!.txt_RelatedStore.textColor, UIColor.ColorPaletteSecondDarkest(), "txt_RelatedStore.textColor should be set")
+        XCTAssertEqual(sut!.txt_RelatedStore.textColor, UIColor.black, "txt_RelatedStore.textColor should be set")
     }
     func test_txt_RelatedStore_Placeholder_ShowsLocalizedString(){
         XCTAssertEqual(sut!.txt_RelatedStore.placeholder, String.txt_RelatedStore_Placeholder, "txt_RelatedStore_Placeholer not localized")
@@ -81,7 +84,7 @@ class ShoppingListControllerTests: XCTestCase {
         XCTAssertTrue(sut!.txt_ListName.placeholder != "", "txt_ListName Missing placeholder value")
     }
     func test_txt_ListNameTextColor_isSet(){
-        XCTAssertEqual(sut!.txt_ListName.textColor, UIColor.ColorPaletteSecondDarkest(), "txt_ListName.textColor should be set")
+        XCTAssertEqual(sut!.txt_ListName.textColor, UIColor.black, "txt_ListName.textColor should be set")
     }
     func test_txt_ListName_Placeholder_ShowsLocalizedString(){
         XCTAssertEqual(sut!.txt_ListName.placeholder, String.txt_ListName_Placeholder, "txt_ListName_Placeholer not localized")
@@ -94,6 +97,9 @@ class ShoppingListControllerTests: XCTestCase {
     }
     
     //Add Item PopUp
+    func test_lbl_AddItemPopUpTitle_Exists(){
+        XCTAssertNotNil(sut!.lbl_AddItemPopUpTitle, "lbl_AddItemPopUpTitle should exist")
+    }
     func test_AddItemPopUp_Exists(){
         XCTAssertNotNil(sut!.AddItemPopUp, "AddItemPopUp should exist")
     }

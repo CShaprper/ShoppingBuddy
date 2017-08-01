@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class DashboardController: UIViewController, IFirebaseWebService{
     //MARK: - Outlets
@@ -16,6 +17,7 @@ class DashboardController: UIViewController, IFirebaseWebService{
     @IBOutlet var ButtonStack: UIStackView!
     @IBOutlet var btn_Stores: UIButton!
     @IBOutlet var btn_ShoppingList: UIButton!
+    @IBOutlet var MapView: MKMapView!
     
     
     //MARK: - Member
@@ -30,6 +32,7 @@ class DashboardController: UIViewController, IFirebaseWebService{
         //Load all Stores
         firebaseWebService.ReadFirebaseStoresSection()
         firebaseWebService.ReadFirebaseShoppingListsSection()
+        // MapView.mask = UIImageView(image: #imageLiteral(resourceName: "AddList-US-Logo"))
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -80,6 +83,14 @@ class DashboardController: UIViewController, IFirebaseWebService{
     
     
     //MARK: - Helper Functions
+    func MaskView(view:UIView, mask:(UIImage))->UIView{
+        let refView = view
+        let imageView = UIImageView(image: mask)
+        imageView.frame = refView.frame
+        imageView.contentMode = .scaleAspectFit
+        refView.mask = imageView
+        return refView
+    }
     func ConfigureView() -> Void {
         // Firebase Webservice
         firebaseWebService = FirebaseWebService()
@@ -101,7 +112,7 @@ class DashboardController: UIViewController, IFirebaseWebService{
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 2
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Blazed", size: 17)!], for: .normal)
+        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Kalam-Bold", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
         
         //MenuButton 

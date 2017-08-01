@@ -10,7 +10,6 @@ import UIKit
 
 class ShoppingListController: UIViewController, IFirebaseWebService, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate {
     //MARK: - Outlets
-    @IBOutlet var btn_AddList: UIBarButtonItem!
     @IBOutlet var ShoppingListDetailView: UIView!
     @IBOutlet var ListDetailBackgroundImage: UIImageView!
     //ShoppingListCollectionView
@@ -19,7 +18,6 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     
     //List Detail PopUp
     @IBOutlet var btn_CloseListDetailView: UIButton!
-    @IBOutlet var btn_AddListItem: UIButton!
     @IBOutlet var lbl_ShoppingListDetailTitle: UILabel!
     
     //DetailViewTableView
@@ -28,31 +26,32 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var CustomRefreshControlImage: UIImageView!
     @IBOutlet var CustomAddShoppingListRefreshControl: UIView!
     @IBOutlet var CustomAddShoppingListRefreshControlImage: UIImageView!
+    @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
     
     //Add Shopping List PopUp
     @IBOutlet var AddShoppingListPopUp: UIView!
+    @IBOutlet var AddShoppingListPopUpRoundView: DesignableUIView!
     @IBOutlet var AddShoppingListPopUpBackground: DesignableUIView!
-    @IBOutlet var lbl_ListName: UITextField!
     @IBOutlet var btn_SaveList: UIButton!
     @IBOutlet var txt_ListName: UITextField!
     @IBOutlet var txt_RelatedStore: UITextField!
+    @IBOutlet var lbl_AddListPopUpTitle: UILabel!
     
     //Add Item PopUp
     @IBOutlet var AddItemPopUp: UIView!
     @IBOutlet var AddItemPopUpBackground: DesignableUIView!
     @IBOutlet var txt_ItemName: UITextField!
     @IBOutlet var btn_SaveItem: UIButton!
+    @IBOutlet var lbl_AddItemPopUpTitle: UILabel!
     
     //Shopping cart and Trash
     @IBOutlet var ShoppingCartImage: UIImageView!
     @IBOutlet var TrashImage: UIImageView!
-    @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
     
     
     
     //MARK:- Member
     var blurrView:UIVisualEffectView?
-    var addItemBlurrView:UIVisualEffectView?
     var firebaseWebService:FirebaseWebService!
     var SelectedList:ShoppingList?
     var refreshControl:UIRefreshControl!
@@ -98,9 +97,6 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     
     
     //MARK: - Wired Actions
-    @IBAction func btn_AddList_Pressed(_ sender: UIBarButtonItem) {
-        ShowListDetailView()
-    }
     func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
         HideAddListPopUp()
         ShoppingListDetailView.removeFromSuperview()
@@ -114,17 +110,12 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             firebaseWebService.SaveListToFirebaseDatabase(listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
         }
     }
-    func btn_AddListItem_Pressed(sender: UIButton) -> Void {
-        ShowAddItemPopUp()
-    }
     func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
         HideBlurrView()
         HideListDetailView()
-        ShoppingListDetailView.removeFromSuperview()
+        HideAddItemPopUp()
     }
     func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
-        addItemBlurrView?.removeFromSuperview()
-        addItemBlurrView = nil
         HideAddListPopUp()
     }
     func AddItemPopUp_OutsideTouch(sender: UITapGestureRecognizer) -> Void {
@@ -179,15 +170,18 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 let xPercentFromCenter = point.x / view.center.x
                 
                 //calculate distance to drop item
-                let dropHeight = (ShoppingListDetailTableView.frame.height - swipeLocation.y) * 1.4
+                let dropHeight = (ShoppingListDetailTableView.frame.height - swipeLocation.y) * 1.5
                 
-                if abs(xPercentFromCenter) < 0.75 && velocity.x > 0{
+                let rightDropLimit:CGFloat = 0.9
+                let leftDropLimit:CGFloat = 0.25
+                
+                if abs(xPercentFromCenter) < rightDropLimit && velocity.x > 0{
                     swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
                 }
                 
                 //Stop translation of cell at 25% movement over view
                 //&& allow swipe left only on unselected items
-                if abs(xPercentFromCenter) < 0.25 && velocity.x < 0 && isSelected! == "false"{
+                if abs(xPercentFromCenter) < leftDropLimit && velocity.x < 0 && isSelected! == "false"{
                     swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
                 }
                 
@@ -198,7 +192,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 
                 //Trash can image should bo on top
                 view.bringSubview(toFront: TrashImage)
-                TrashImage.alpha =  xPercentFromCenter > 0.75 ? 1 : 0
+                TrashImage.alpha =  xPercentFromCenter > rightDropLimit ? 1 : 0
                 
                 //Perform animations on gesture .ended state
                 if panRecognizer.state == UIGestureRecognizerState.ended {
@@ -209,13 +203,16 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                         })
                         //Drop item to cart
                         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45)
+                            swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45).scaledBy(x: 0.3, y: 0.3)
                         }, completion: { (true) in
                             self.ShoppingCartImage.alpha = 0
                             self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
                             //Edit isSelected local
                             ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected = "true"
+                            if let indextoedit = ShoppingListTotalItemsArray.index(where: {$0.ID ==  ShoppingListDetailItemsArray[self.swipedCellIndex].ID}){
+                                ShoppingListTotalItemsArray[indextoedit].isSelected = "true"
+                            }
                             //Edit isSelected in Firebase
                             self.firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[self.swipedCellIndex])
                             self.SortShoppingListItemsArrayBy_isSelected()
@@ -229,7 +226,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                         })
                         //Drop item to Trash
                         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            swipedCell.transform = CGAffineTransform.init(translationX: (self.view.frame.width * 0.6), y: dropHeight).rotated(by: 45)
+                            swipedCell.transform = CGAffineTransform.init(translationX: (self.view.frame.width * 0.5), y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
                         }, completion: { (true) in
                             self.TrashImage.alpha = 0
                             self.TrashImage.transform = .identity
@@ -314,7 +311,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     func HideListDetailView() -> Void{
         SelectedList = nil
-        AddShoppingListPopUp.removeFromSuperview()
+        ShoppingListDetailView.removeFromSuperview()
     }
     func HideAddListPopUp() -> Void {
         HideBlurrView()
@@ -355,19 +352,25 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         
         //RefreshControl AddListItem
         refreshControl = UIRefreshControl()
-        CustomRefreshView.frame.size.width = 150
-        CustomRefreshView.frame.size.height = 45
-        CustomRefreshView.center.x = refreshControl.center.x
-        CustomRefreshControlImage.image = UIImage(named: String.CustomRefreshControlImage)
+        CustomRefreshView.frame.size.width = 60
+        CustomRefreshView.frame.size.height = 60
+        CustomRefreshView.layer.shadowColor  = UIColor.black.cgColor
+        CustomRefreshView.layer.shadowOffset  = CGSize(width: 30, height:30)
+        CustomRefreshView.layer.shadowOpacity  = 1
+        CustomRefreshView.layer.shadowRadius  = 10
+        CustomRefreshView.center.x = view.center.x
         refreshControl.addSubview(CustomRefreshView)
         refreshControl.addTarget(self, action: #selector(ShoppingListController.ShowAddItemPopUp), for: UIControlEvents.allEvents)
         
         //RefreshControl Add Shopping List
         refreshShoppingListControl = UIRefreshControl()
-        CustomAddShoppingListRefreshControl.frame.size.width = 150
-        CustomAddShoppingListRefreshControl.frame.size.height = 40
-        CustomAddShoppingListRefreshControl.center.x = refreshShoppingListControl.center.x
-        CustomAddShoppingListRefreshControlImage.image = UIImage(named: String.CustomAddShoppingListRefreshControlImage)
+        CustomAddShoppingListRefreshControl.layer.shadowColor  = UIColor.black.cgColor
+        CustomAddShoppingListRefreshControl.layer.shadowOffset  = CGSize(width: 30, height:30)
+        CustomAddShoppingListRefreshControl.layer.shadowOpacity  = 1
+        CustomAddShoppingListRefreshControl.layer.shadowRadius  = 10
+        CustomAddShoppingListRefreshControl.frame.size.width = 60
+        CustomAddShoppingListRefreshControl.frame.size.height = 60
+        CustomAddShoppingListRefreshControl.center.x = view.center.x
         refreshShoppingListControl.addSubview(CustomAddShoppingListRefreshControl)
         refreshShoppingListControl.addTarget(self, action: #selector(ShoppingListController.ShowAddShoppingListPopUp), for: .allEvents)
         
@@ -394,28 +397,33 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
         
         //Add Shopping List PopUp
-        AddShoppingListPopUpBackground.layer.borderWidth = 2
-        AddShoppingListPopUpBackground.layer.borderColor = UIColor.black.cgColor
+        AddShoppingListPopUp.layer.shadowColor  = UIColor.black.cgColor
+        AddShoppingListPopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+        AddShoppingListPopUp.layer.shadowOpacity  = 1
+        AddShoppingListPopUp.layer.shadowRadius  = 10
+        lbl_AddListPopUpTitle.text = String.lbl_AddListPopUpTitle
         txt_RelatedStore.delegate = self
         txt_RelatedStore.placeholder = String.txt_RelatedStore_Placeholder
-        txt_RelatedStore.textColor = UIColor.ColorPaletteSecondDarkest()
+        txt_RelatedStore.textColor = UIColor.black
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
-        txt_ListName.textColor = UIColor.ColorPaletteSecondDarkest()
+        txt_ListName.textColor = UIColor.black
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
         AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
         
         //Detail ListView
-        btn_AddListItem.addTarget(self, action: #selector(btn_AddListItem_Pressed), for: .touchUpInside)
         btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)
         
         //Add Item PopUp
-        AddItemPopUpBackground.layer.borderWidth = 2
-        AddItemPopUpBackground.layer.borderColor = UIColor.black.cgColor
+        AddItemPopUp.layer.shadowColor  = UIColor.black.cgColor
+        AddItemPopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+        AddItemPopUp.layer.shadowOpacity  = 1
+        AddItemPopUp.layer.shadowRadius  = 10
+        lbl_AddItemPopUpTitle.text = String.lbl_AddItemPopUpTitle
         txt_ItemName.delegate = self
         txt_ItemName.placeholder = String.txt_ItemName_Placeholer
-        txt_ItemName.textColor = UIColor.ColorPaletteSecondDarkest()
+        txt_ItemName.tintColor = UIColor.black
         btn_SaveItem.addTarget(self, action: #selector(btn_SaveItem_Pressed), for: .touchUpInside)
         let outsideAddItemPopUpTouch = UITapGestureRecognizer(target: self, action: #selector(AddItemPopUp_OutsideTouch))
         ShoppingListDetailView.addGestureRecognizer(outsideAddItemPopUpTouch)
@@ -425,7 +433,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         TrashImage.alpha = 0
         
         //Set Detailtableview bottom constraint
-        DetailTableViewBottomConstraint.constant = view.frame.height * 0.05
+        DetailTableViewBottomConstraint.constant = view.frame.height * 0.115
     }
 }
 extension Double {
@@ -508,6 +516,9 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
             firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
             SortShoppingListItemsArrayBy_isSelected()
         }
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return tableView.frame.height / 7
     }
     /*
      // conditional editing of the table view.

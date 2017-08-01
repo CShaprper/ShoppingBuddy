@@ -43,19 +43,19 @@ extension String{
     //DashboardController
     static let DashboardControllerTitle = NSLocalizedString("DashboardControllerTitle", comment: "")
     
-    //StoresController
-    static let StoresControllerTitle = NSLocalizedString("StoresControllerTitle", comment: "")
+    //SettingsController
+    static let SettingsControllerTitle = NSLocalizedString("SettingsControllerTitle", comment: "")
     static let txt_AddStore_Placeholder = NSLocalizedString("txt_AddStore_Placeholder", comment: "")
-    //AddPopupLogo
-    static let AddStorePopUpLogo_Image = NSLocalizedString("AddStorePopUpLogo_Image", comment: "")
     
     //ShoppingListController
     static let ShoppingListControllerTitle = NSLocalizedString("ShoppingListControllerTitle", comment: "")
     static let CustomRefreshControlImage = NSLocalizedString("CustomRefreshControlImage", comment: "")
     // Add Shopping List PopUp
+    static let lbl_AddListPopUpTitle = NSLocalizedString("lbl_AddListPopUpTitle", comment: "")
     static let txt_RelatedStore_Placeholder = NSLocalizedString("txt_RelatedStore_Placeholder", comment: "")
     static let txt_ListName_Placeholder = NSLocalizedString("txt_ListName_Placeholder", comment: "")
     //Add Item PopUp
+    static let lbl_AddItemPopUpTitle = NSLocalizedString("lbl_AddItemPopUpTitle", comment: "")
     static let txt_ItemName_Placeholer = NSLocalizedString("txt_ItemName_Placeholer", comment: "")
     static let CustomAddShoppingListRefreshControlImage = NSLocalizedString("CustomAddShoppingListRefreshControlImage", comment: "")
 }

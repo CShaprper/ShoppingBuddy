@@ -25,8 +25,8 @@ class ShoppingListItemTableViewCell: UITableViewCell {
     }
     
     func ConfigureCell(shoppingListItem: ShoppingListItem){
-        TickImageLeadingConstraint.constant = self.contentView.frame.width * 0.1
-        ListItemLabelLeadingConstraint.constant = self.contentView.frame.width * 0.1
+        TickImageLeadingConstraint.constant = self.contentView.frame.width * 0.03
+        ListItemLabelLeadingConstraint.constant = self.contentView.frame.width * 0.08
         
         lbl_ShoppingListItem.text = shoppingListItem.ItemName != nil ? shoppingListItem.ItemName! : ""
         CheckmarkImage.image = (shoppingListItem.isSelected != nil && shoppingListItem.isSelected == "false") ? #imageLiteral(resourceName: "TickBox") : #imageLiteral(resourceName: "TRickBox-checked")
@@ -38,8 +38,8 @@ class ShoppingListItemTableViewCell: UITableViewCell {
              attributeString.addAttribute(NSStrikethroughColorAttributeName, value: UIColor.gray, range: NSMakeRange(0, attributeString.length))
              textLabel?.attributedText = attributeString*/
             
-            lbl_ShoppingListItem.alpha = 0.5
-            CheckmarkImage.alpha = 0.5
+            lbl_ShoppingListItem.alpha = 0.4
+            CheckmarkImage.alpha = 0.4
         }
         else if shoppingListItem.isSelected != nil && shoppingListItem.isSelected == "false"
         {

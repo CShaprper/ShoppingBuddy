@@ -25,14 +25,13 @@ class CustomNavigationController: UINavigationController {
         navigationBar.barTintColor = UIColor.ColorPaletteSecondBrightest()
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black
-        shadow.shadowBlurRadius = 1
+        shadow.shadowBlurRadius = 35
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
         let textAttributes = [NSShadowAttributeName:shadow,
                               NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(),
-                              NSStrokeColorAttributeName : UIColor.black,
-                              NSStrokeWidthAttributeName : -1.0,
-                              NSFontAttributeName:UIFont(name: "Blazed", size: 20)!] as [String : Any]
+                              NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 20)!] as [String : Any]
         navigationBar.titleTextAttributes = textAttributes
+        navigationBar.clipsToBounds = false
     }
     
     override func didReceiveMemoryWarning() {
