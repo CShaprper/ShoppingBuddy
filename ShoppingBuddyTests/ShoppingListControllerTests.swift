@@ -44,6 +44,9 @@ class ShoppingListControllerTests: XCTestCase {
     func test_ListDetailTableViewDatasource_isSet() {
         XCTAssertNotNil(sut!.ShoppingListDetailTableView.dataSource, "ListDetailTableView.dataSource not set")
     }
+    func test_DetailTableViewBottomConstraint_Exists(){
+        XCTAssertNotNil(sut!.DetailTableViewBottomConstraint, "DetailTableViewBottomConstraint should exist")
+    }
     /* func test_ListDetailTableViewCell_hasCorrectResuseIdentifier(){
      let cell = sut.ListDetailTableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier) as! ShoppingListItemTableViewCell
      XCTAssertNotNil(cell, "ShoppingListItemTableViewCell_Identifier should not be nil")
@@ -114,5 +117,13 @@ class ShoppingListControllerTests: XCTestCase {
     }
     func test_btn_SaveItem_isWired_ToAction(){
         XCTAssertTrue(ControlTagetTester.checkTargetForOutlet(outlet: sut!.btn_SaveItem, actionName: "btn_SaveItem_Pressed", event: .touchUpInside, controller: sut! ))
+    }
+    
+    //Trash && Shopping cart images
+    func test_TrashImage_Exists(){
+        XCTAssertNotNil(sut!.TrashImage, "TrashImage should exist")
+    }
+    func test_ShoppingCartImage_Exists(){
+        XCTAssertNotNil(sut!.ShoppingCartImage, "ShoppingCartImage should exist")
     }
 }

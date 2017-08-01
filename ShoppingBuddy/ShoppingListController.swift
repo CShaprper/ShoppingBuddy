@@ -42,7 +42,11 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var AddItemPopUpBackground: DesignableUIView!
     @IBOutlet var txt_ItemName: UITextField!
     @IBOutlet var btn_SaveItem: UIButton!
+    
+    //Shopping cart and Trash
     @IBOutlet var ShoppingCartImage: UIImageView!
+    @IBOutlet var TrashImage: UIImageView!
+    @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
     
     
     
@@ -162,6 +166,9 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 //remember the index of the swiped cell to reset after animation
                 swipedCellIndex = swipedIndexPath.row
                 
+                //velocity can detect direction of movement
+                let velocity = panRecognizer.velocity(in: ShoppingListDetailTableView)
+                
                 //Get swiped item isSelected value
                 let isSelected = ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected
                 
@@ -172,30 +179,40 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 let xPercentFromCenter = point.x / view.center.x
                 
                 //calculate distance to drop item
-                let dropHeight = ShoppingListDetailTableView.frame.height - swipeLocation.y
+                let dropHeight = (ShoppingListDetailTableView.frame.height - swipeLocation.y) * 1.4
                 
-                let xTranslationToCart = view.center.x * 0.9
-                
-                //Stop translation of cell at 25% movement over view 
-                //&& allow swipe left only on unselected items
-                if abs(xPercentFromCenter) < 0.25 && isSelected! == "false"{
+                if abs(xPercentFromCenter) < 0.75 && velocity.x > 0{
                     swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
                 }
                 
+                //Stop translation of cell at 25% movement over view
+                //&& allow swipe left only on unselected items
+                if abs(xPercentFromCenter) < 0.25 && velocity.x < 0 && isSelected! == "false"{
+                    swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
+                }
+                
+                print(xPercentFromCenter)
                 //Shopping cart image should bo on top
                 view.bringSubview(toFront: ShoppingCartImage)
-                ShoppingCartImage.alpha =  xPercentFromCenter < -0.2 && isSelected! == "false" ? 1 : 0
+                ShoppingCartImage.alpha =  xPercentFromCenter < -0.25 && isSelected! == "false" ? 1 : 0
+                
+                //Trash can image should bo on top
+                view.bringSubview(toFront: TrashImage)
+                TrashImage.alpha =  xPercentFromCenter > 0.75 ? 1 : 0
+                
+                //Perform animations on gesture .ended state
                 if panRecognizer.state == UIGestureRecognizerState.ended {
                     if xPercentFromCenter <= -0.25 && isSelected! == "false"{
                         //Shake Cart
-                        UIView.animate(withDuration: 0.2, delay: 0.3, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: { 
-                            self.ShoppingCartImage.transform = .identity
+                        UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                            self.ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
                         })
-                        //Drop to cart                    
-                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            swipedCell.transform = CGAffineTransform.init(translationX: -xTranslationToCart, y: dropHeight).rotated(by: -90)
+                        //Drop item to cart
+                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45)
                         }, completion: { (true) in
                             self.ShoppingCartImage.alpha = 0
+                            self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
                             //Edit isSelected local
                             ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected = "true"
@@ -203,12 +220,35 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                             self.firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[self.swipedCellIndex])
                             self.SortShoppingListItemsArrayBy_isSelected()
                         })
-                        ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
                         return
-                    } else if xPercentFromCenter >= 0.25{
-                        //Drop to trash
+                    }
+                    if xPercentFromCenter >= 0.75{
+                        //Shake Trash
+                        UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                            self.TrashImage.transform = CGAffineTransform(translationX: -20, y: 0)
+                        })
+                        //Drop item to Trash
+                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            swipedCell.transform = CGAffineTransform.init(translationX: (self.view.frame.width * 0.6), y: dropHeight).rotated(by: 45)
+                        }, completion: { (true) in
+                            self.TrashImage.alpha = 0
+                            self.TrashImage.transform = .identity
+                            swipedCell.alpha = 0
+                            swipedCell.transform = .identity
+                            //remove item in Firebase
+                            self.firebaseWebService.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListDetailItemsArray[self.swipedCellIndex])
+                            //remove item local form Total and Detail array
+                            if let indextoremove = ShoppingListTotalItemsArray.index(where: {$0.ID ==  ShoppingListDetailItemsArray[self.swipedCellIndex].ID}){
+                                ShoppingListTotalItemsArray.remove(at: indextoremove)
+                            }
+                            ShoppingListDetailItemsArray.remove(at: self.swipedCellIndex)
+                            self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
+                            self.ShoppingListDetailTableView.reloadData()
+                        })
                         return
                     } else {
+                        // reset to initial state
+                        TrashImage.alpha = 0
                         ShoppingCartImage.alpha = 0
                         swipedCell.transform = .identity
                     }
@@ -382,6 +422,10 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         AddItemPopUp.addGestureRecognizer(outsideAddItemPopUpTouch)
         
         ShoppingCartImage.alpha = 0
+        TrashImage.alpha = 0
+        
+        //Set Detailtableview bottom constraint
+        DetailTableViewBottomConstraint.constant = view.frame.height * 0.05
     }
 }
 extension Double {
@@ -450,12 +494,16 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier, for: indexPath) as! ShoppingListItemTableViewCell
         if ShoppingListDetailItemsArray.count > 0 {
+            cell.selectionStyle = .none
             cell.ConfigureCell(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
         }
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if ShoppingListDetailItemsArray.count > 0 {
+            //Allow only select on checked items => unchecked must be dropped to basket
+            if ShoppingListDetailItemsArray[indexPath.row].isSelected == "false" { return }
+            
             ShoppingListDetailItemsArray[indexPath.row].isSelected = ShoppingListDetailItemsArray[indexPath.row].isSelected == "false" ? "true" : "false"
             firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
             SortShoppingListItemsArrayBy_isSelected()
@@ -466,8 +514,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
      func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
      // Return false if you do not want the specified item to be editable.
      return true
-     }
-     */
+     }*/
     
     /*
      // editing the table view.

@@ -295,6 +295,25 @@ class FirebaseWebService: IFirebaseWebService {
             self.FirebaseRequestFinished()
         }
     }
+    func DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListItem){
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
+        let itemRef = ref.child("shopping-lists").child(uid).child(itemToDelete.ShoppingListID!).child("items").child(itemToDelete.ID!)
+        itemRef.removeValue { (error, dbref) in
+            if error != nil{
+                self.FirebaseRequestFinished()
+                print(error!.localizedDescription)
+                let title = ""
+                let message = ""
+                self.AlertFromFirebaseService(title: title, message: message)
+                return
+            }
+            print("Succesfully deleted item of shopping list from Firebase")
+            self.FirebaseRequestFinished()
+        }
+
+    }
     
     //MARK: - Helpers
     private func SaveNewUserWithUIDtoFirebase(nickname:String, user: User?, firebaseURL: String){

@@ -602,15 +602,24 @@
                                     <constraint firstAttribute="height" constant="80" id="LWq-i9-Piz"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="garbage" translatesAutoresizingMaskIntoConstraints="NO" id="BxM-1H-rtX">
+                                <rect key="frame" x="240" y="351" width="80" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="2gE-BL-6Kb"/>
+                                    <constraint firstAttribute="height" constant="80" id="sI5-Ye-BM0"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ctE-qd-adj" firstAttribute="leading" secondItem="i4j-Do-l4I" secondAttribute="leading" id="12f-WX-J2a"/>
+                            <constraint firstAttribute="trailing" secondItem="BxM-1H-rtX" secondAttribute="trailing" id="6Oa-pA-DNe"/>
                             <constraint firstItem="ctE-qd-adj" firstAttribute="top" secondItem="i4j-Do-l4I" secondAttribute="top" id="7F9-9A-nqp"/>
                             <constraint firstAttribute="trailing" secondItem="ctE-qd-adj" secondAttribute="trailing" id="7bK-Bi-AE8"/>
                             <constraint firstAttribute="leadingMargin" secondItem="kLt-7S-Zzx" secondAttribute="leading" constant="15" id="Ept-2O-0Qn"/>
                             <constraint firstItem="8Sg-Xs-ibo" firstAttribute="top" secondItem="jPR-kj-TQd" secondAttribute="bottom" id="SPO-vc-blb"/>
                             <constraint firstItem="1Nm-m0-bdC" firstAttribute="top" secondItem="8Sg-Xs-ibo" secondAttribute="bottom" id="fAS-Lx-mVH"/>
+                            <constraint firstItem="1Nm-m0-bdC" firstAttribute="top" secondItem="BxM-1H-rtX" secondAttribute="bottom" id="gzN-cf-Jiq"/>
                             <constraint firstAttribute="bottom" secondItem="ctE-qd-adj" secondAttribute="bottom" id="iQS-4q-8XD"/>
                             <constraint firstItem="1Nm-m0-bdC" firstAttribute="top" secondItem="kLt-7S-Zzx" secondAttribute="bottom" id="l3O-DJ-JUE"/>
                         </constraints>
@@ -631,12 +640,14 @@
                         <outlet property="CustomAddShoppingListRefreshControlImage" destination="Xqh-d5-859" id="muN-j3-mTI"/>
                         <outlet property="CustomRefreshControlImage" destination="mfh-9S-gHV" id="NPc-pW-PLY"/>
                         <outlet property="CustomRefreshView" destination="IKT-J4-K9c" id="qu7-aC-CxR"/>
+                        <outlet property="DetailTableViewBottomConstraint" destination="fW1-L4-TTW" id="Jr6-ez-peD"/>
                         <outlet property="ListDetailBackgroundImage" destination="AHA-rO-YAN" id="HTF-19-JJF"/>
                         <outlet property="ShoppingCartImage" destination="kLt-7S-Zzx" id="ZEq-Cg-Xqa"/>
                         <outlet property="ShoppingListCollectionView" destination="8Sg-Xs-ibo" id="Xsy-4v-nhy"/>
                         <outlet property="ShoppingListCollectionViewBackground" destination="ctE-qd-adj" id="ahd-65-pZZ"/>
                         <outlet property="ShoppingListDetailTableView" destination="spv-64-59b" id="s4k-Yd-qj1"/>
                         <outlet property="ShoppingListDetailView" destination="nbB-Bs-xce" id="Koc-ft-Xoj"/>
+                        <outlet property="TrashImage" destination="BxM-1H-rtX" id="nlU-6K-yFc"/>
                         <outlet property="btn_AddList" destination="2bb-ZV-VUv" id="mVJ-w2-NoF"/>
                         <outlet property="btn_AddListItem" destination="xR9-xZ-cBh" id="qVa-ZB-szY"/>
                         <outlet property="btn_CloseListDetailView" destination="5b2-W2-QaN" id="QEZ-uv-6Z7"/>
@@ -769,6 +780,8 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <connections>
                                         <outlet property="CheckmarkImage" destination="Oym-FZ-S9y" id="cx5-hg-R4b"/>
+                                        <outlet property="ListItemLabelLeadingConstraint" destination="CQb-aP-smW" id="nBm-H2-hqw"/>
+                                        <outlet property="TickImageLeadingConstraint" destination="70t-eZ-iLB" id="K8Z-M8-cQL"/>
                                         <outlet property="lbl_ShoppingListItem" destination="1e6-SP-iC2" id="UXJ-HP-Sch"/>
                                     </connections>
                                 </tableViewCell>
@@ -1112,6 +1125,7 @@
         <image name="RoundMenu" width="516" height="1998"/>
         <image name="ShoppingBuddy-Logo" width="235" height="183"/>
         <image name="empty shopping cart" width="128" height="121"/>
+        <image name="garbage" width="127" height="127"/>
         <image name="icon-AddList" width="30" height="30"/>
         <image name="icon-AddStore" width="31" height="30"/>
         <image name="icon-Email" width="150" height="150"/>

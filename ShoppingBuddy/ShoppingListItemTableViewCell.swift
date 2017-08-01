@@ -11,8 +11,9 @@ import UIKit
 class ShoppingListItemTableViewCell: UITableViewCell {
     //MARK: - Outlets
     @IBOutlet var CheckmarkImage: UIImageView!
-    @IBOutlet var lbl_ShoppingListItem: UILabel!
-    
+    @IBOutlet var lbl_ShoppingListItem: UILabel!    
+    @IBOutlet weak var TickImageLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var ListItemLabelLeadingConstraint: NSLayoutConstraint!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -24,6 +25,9 @@ class ShoppingListItemTableViewCell: UITableViewCell {
     }
     
     func ConfigureCell(shoppingListItem: ShoppingListItem){
+        TickImageLeadingConstraint.constant = self.contentView.frame.width * 0.1
+        ListItemLabelLeadingConstraint.constant = self.contentView.frame.width * 0.1
+        
         lbl_ShoppingListItem.text = shoppingListItem.ItemName != nil ? shoppingListItem.ItemName! : ""
         CheckmarkImage.image = (shoppingListItem.isSelected != nil && shoppingListItem.isSelected == "false") ? #imageLiteral(resourceName: "TickBox") : #imageLiteral(resourceName: "TRickBox-checked")
         
