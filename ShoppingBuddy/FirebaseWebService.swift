@@ -163,7 +163,7 @@ class FirebaseWebService: IFirebaseWebService {
             var list = ShoppingList()
             list.ID = value?["id"] as? String ?? ""
             list.Name = value?["name"] as? String ?? ""
-            list.RelatedStore = value?["relatdStore"] as? String ?? ""
+            list.RelatedStore = value?["relatedStore"] as? String ?? ""
             // newLists.append(list)
             
             let items = snapshot.childSnapshot(forPath: "items")

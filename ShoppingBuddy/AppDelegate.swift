@@ -12,7 +12,6 @@ import GooglePlaces
 import UserNotifications
 
 var ShoppingListsArray:[ShoppingList] = []
-var ShoppingListItemsArray:[ShoppingListItem] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {

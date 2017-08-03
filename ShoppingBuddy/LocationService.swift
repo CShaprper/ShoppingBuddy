@@ -89,14 +89,24 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
         return pinView
     }
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        var region = MKCoordinateRegion(center: userLocation.coordinate, span: MKCoordinateSpanMake(0.05, 0.05)) //0.01° = 1100 meter
-        region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: 5000)!, CLLocationDistance(exactly: 5000)!)
+        let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: 3000)!, CLLocationDistance(exactly: 3000)!)
         mapView.setRegion(region, animated: false)
+        //Search nearby Shops
+        PerformLocalShopSearch()
+    }
+    //MARK: MKMapViewDelegate Helper
+    func PerformLocalShopSearch() -> Void{
+        if ShoppingListsArray.count > 0 {
+            for item in ShoppingListsArray{
+                let store = item.RelatedStore != nil ? item.RelatedStore! : ""
+                if store != "" { PerformLocalSearchRequest(queryString: store) }
+            }
+        }
     }
     
     //MARK: - Helper Functions
     func RequestGPSAuthorization() -> Void{
-        if CLLocationManager.authorizationStatus() == .notDetermined{
+        if CLLocationManager.authorizationStatus() == .notDetermined {
             self.requestAlwaysAuthorization()
         }
         if CLLocationManager.authorizationStatus() == .authorizedAlways{
@@ -108,8 +118,8 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             self.ShowAlertMessage(title: title, message: message)
         }
     }
-    func GeofenceRegion(coorodinate: CLLocationCoordinate2D, radius: CLLocationDistance) -> Void{
-        let region = CLCircularRegion(center: coorodinate, radius: radius, identifier: "geofence region")
+   private func GeofenceRegion(coorodinate: CLLocationCoordinate2D, radius: CLLocationDistance, identifier: String) -> Void{
+        let region = CLCircularRegion(center: coorodinate, radius: radius, identifier: identifier)
         self.startMonitoring(for: region)
         let circle = MKCircle(center: coorodinate, radius: region.radius)
         mapView.add(circle)
@@ -129,7 +139,7 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             // Fallback on earlier versions
         }
     }
-    func LocalSearchRequest(queryString: String){
+    func PerformLocalSearchRequest(queryString: String){
         let request = MKLocalSearchRequest()
         request.naturalLanguageQuery = queryString
         request.region = mapView.region
@@ -144,15 +154,24 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
                 return
             }
             print("Matches found")
-            for item in response!.mapItems {
-                print("Name = \(String(describing: item.name))")
-                
-                let annotation = CustomMapAnnotation()
-                annotation.image = #imageLiteral(resourceName: "map-Marker-green")
-                annotation.coordinate = item.placemark.coordinate
-                annotation.title = item.name
-                self.mapView.addAnnotation(annotation)
-            }
+            self.SetMapAnnotations(response: response!)
+        }
+    }
+    private func IterateAnnotaitons(userCoordinate: CLLocationCoordinate2D){
+        for annotation in self.mapView.annotations{
+           GeofenceRegion(coorodinate: annotation.coordinate, radius: 2000, identifier: "test")
+        }
+    }
+    
+    private func SetMapAnnotations(response: MKLocalSearchResponse){
+        for item in response.mapItems {
+            print("Name = \(String(describing: item.name))")
+            
+            let annotation = CustomMapAnnotation()
+            annotation.image = #imageLiteral(resourceName: "map-Marker-green")
+            annotation.coordinate = item.placemark.coordinate
+            annotation.title = item.name
+            self.mapView.addAnnotation(annotation)
         }
     }
 }

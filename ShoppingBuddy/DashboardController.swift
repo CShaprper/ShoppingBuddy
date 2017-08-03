@@ -47,9 +47,6 @@ class DashboardController: UIViewController, IFirebaseWebService{
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        locationService.LocalSearchRequest(queryString: "Burger King")
-        locationService.LocalSearchRequest(queryString: "Mc Donalds")
-        locationService.LocalSearchRequest(queryString: "Rewe")
     }
     
     //MARK: - IFirebaseWebservice Implementation
