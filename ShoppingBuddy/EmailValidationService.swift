@@ -2,6 +2,7 @@
 import Foundation
 
 class EmailValidationService: IValidationService{
+    var alertMessageDelegate: IAlertMessageDelegate?
     var validationServiceDelegate:IValidationService?
     let title = String.ValidationAlert_Title
     var message = ""
@@ -30,7 +31,7 @@ class EmailValidationService: IValidationService{
     private func validateNotNil(validationString: String?) -> Bool{
         if validationString == nil {
             message = String.ValidationEmailEmptyAlert_Message
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -39,7 +40,7 @@ class EmailValidationService: IValidationService{
         if validationString == nil { return false }
         if validationString!.isEmpty {
             message = String.ValidationEmailEmptyAlert_Message
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -48,7 +49,7 @@ class EmailValidationService: IValidationService{
         if validationString == nil { return false }
         if !validationString!.contains("@") {
             message = String.ValidationEmailShouldContainAtSign
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -57,7 +58,7 @@ class EmailValidationService: IValidationService{
         if validationString == nil { return false }
         if !validationString!.contains(".") {
             message = String.ValidationEmailShouldContainDot
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -66,7 +67,7 @@ class EmailValidationService: IValidationService{
         if validationString == nil { return false }
         if validationString!.contains(" ") {
             message = String.ValidationEmailContainsSpaces
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -77,7 +78,7 @@ class EmailValidationService: IValidationService{
         if ending == nil { return false }
         if ending!.range(of: ".") == nil{
             message = String.ValidationEmailEndingInvalid
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -90,7 +91,7 @@ class EmailValidationService: IValidationService{
         if endOfEnding == nil { return false }
         if endOfEnding!.characters.count < 2 {
             message = String.ValidationEmailEndingInvalid
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -101,16 +102,16 @@ class EmailValidationService: IValidationService{
         let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailFormat)
         if !emailPredicate.evaluate(with: validationString){
             message = String.ValidationEmailContainsInvalidCharacters
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
     }
-    func ShowValidationAlert(title: String, message: String) {
-        if validationServiceDelegate != nil{
-            validationServiceDelegate!.ShowValidationAlert!(title: title, message: message)
-        } else {
-            print("TextfieldValidationService: alertMessageDelegate not set from calling class")
+    internal func ShowAlertMessage(title: String, message: String) {
+        if alertMessageDelegate != nil{
+            alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+        } else{
+            print("AlertMessageDelegate not set from calling class in EmailValidationService")
         }
     }
 }

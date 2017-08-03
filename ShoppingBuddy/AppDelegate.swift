@@ -9,17 +9,15 @@
 import UIKit
 import Firebase
 import GooglePlaces
+import UserNotifications
 
-var StoresArray:[Store] = []
 var ShoppingListsArray:[ShoppingList] = []
-var ShoppingListTotalItemsArray:[ShoppingListItem] = []
-var ShoppingListDetailItemsArray:[ShoppingListItem] = []
+var ShoppingListItemsArray:[ShoppingListItem] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     
     var window: UIWindow?
-    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         //Google places
@@ -31,11 +29,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         Messaging.messaging().delegate = self
         
         //Global StatusBar Style
-        UIApplication.shared.statusBarStyle = .default
-        UIApplication.statusBarBackgroundColor = UIColor.ColorPaletteSecondBrightest()
+        UIApplication.shared.statusBarStyle = .lightContent
+        UIApplication.statusBarBackgroundColor = UIColor.black
+        
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
+                if error != nil{ print(error!.localizedDescription); return }
+                if granted { application.registerForRemoteNotifications() }
+                else { application.unregisterForRemoteNotifications() //todo: remove token from firebase
+                }
+            })
+        } else {
+            // Fallback on earlier versions
+            application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+        }
         
         return true
-    }
+    } 
     
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
         let token:[String:AnyObject] = [Messaging.messaging().fcmToken!:Messaging.messaging().fcmToken as AnyObject]

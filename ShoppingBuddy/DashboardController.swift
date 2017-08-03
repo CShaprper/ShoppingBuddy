@@ -8,10 +8,11 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
 class DashboardController: UIViewController, IFirebaseWebService{
     //MARK: - Outlets
-    @IBOutlet var BackgroundView: DesignableUIView!
+    @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MenuContainer: UIView!
     @IBOutlet var RoundMenu: UIImageView!
     @IBOutlet var ButtonStack: UIStackView!
@@ -21,6 +22,7 @@ class DashboardController: UIViewController, IFirebaseWebService{
     
     
     //MARK: - Member
+    var locationService:LocationService!
     var firebaseWebService:FirebaseWebService!
     private var isMenuOpened:Bool = false
     
@@ -29,9 +31,8 @@ class DashboardController: UIViewController, IFirebaseWebService{
         super.viewDidLoad()
         ConfigureView()
         
-        //Load all Stores
-        firebaseWebService.ReadFirebaseStoresSection()
-        firebaseWebService.ReadFirebaseShoppingListsSection()
+        //Setup LocationService Class
+        locationService = LocationService(mapView: MapView, alertDelegate: self)
         // MapView.mask = UIImageView(image: #imageLiteral(resourceName: "AddList-US-Logo"))
     }
     override func didReceiveMemoryWarning() {
@@ -42,6 +43,13 @@ class DashboardController: UIViewController, IFirebaseWebService{
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        locationService.RequestGPSAuthorization()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        locationService.LocalSearchRequest(queryString: "Burger King")
+        locationService.LocalSearchRequest(queryString: "Mc Donalds")
+        locationService.LocalSearchRequest(queryString: "Rewe")
     }
     
     //MARK: - IFirebaseWebservice Implementation
@@ -50,10 +58,24 @@ class DashboardController: UIViewController, IFirebaseWebService{
     func FirebaseRequestFinished() {}
     func FirebaseUserLoggedIn() {}
     
+    //MARK: - IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        if title != String.GPSAuthorizationRequestDenied_AlertTitle{
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        } else {
+            alert.addAction(UIAlertAction(title: String.GPSAuthorizationRequestDenied_AlertActionSettingsTitle, style: .default, handler: { (action) in
+                let url:URL! = URL(string : "App-Prefs:root=LOCATION_SERVICES")
+                UIApplication.shared.openURL(url)
+            }))
+            alert.addAction(UIAlertAction(title: String.GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle, style: .cancel, handler: nil))
+        }
+        present(alert, animated: true, completion: nil)
+    }
     
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem)->Void{
-        firebaseWebService.delegate = nil
+        firebaseWebService.firebaseWebServiceDelegate  = nil
         firebaseWebService.LogUserOut()
     }
     func SegueToLoginController(sender: Notification) -> Void{
@@ -83,18 +105,14 @@ class DashboardController: UIViewController, IFirebaseWebService{
     
     
     //MARK: - Helper Functions
-    func MaskView(view:UIView, mask:(UIImage))->UIView{
-        let refView = view
-        let imageView = UIImageView(image: mask)
-        imageView.frame = refView.frame
-        imageView.contentMode = .scaleAspectFit
-        refView.mask = imageView
-        return refView
-    }
     func ConfigureView() -> Void {
         // Firebase Webservice
         firebaseWebService = FirebaseWebService()
-        firebaseWebService.delegate = self
+        firebaseWebService.firebaseWebServiceDelegate  = self
+        firebaseWebService.alertMessageDelegate = self
+        
+        //Load all Stores
+        firebaseWebService.ReadFirebaseShoppingListsSection()
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle
@@ -102,20 +120,16 @@ class DashboardController: UIViewController, IFirebaseWebService{
         //SetTabBarTitle
         tabBarItem.title = String.DashboardControllerTitle
         
-        // BackgroundView Gradient
-        BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()
-        BackgroundView.BottomColor = UIColor.ColorPaletteDarkest()
-        
         //LogOut Button
         let logoutButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 2
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Kalam-Bold", size: 17)!], for: .normal)
+        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
         
-        //MenuButton 
+        //MenuButton
         let menuButton = UIBarButtonItem(image: #imageLiteral(resourceName: "icon-HamburgerMenu") , style: .plain, target: self, action: #selector(MenuBarButtonItemPressed))
         navigationItem.rightBarButtonItem = menuButton
         

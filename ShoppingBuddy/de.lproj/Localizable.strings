@@ -53,3 +53,11 @@ txt_ListName_Placeholder = "Liste Name";
 lbl_AddItemPopUpTitle = "Element Einfügen";
 txt_ItemName_Placeholer = "Element Name";
 CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-DE";
+
+    //LocationService
+GPSAuthorizationRequestDenied_AlertTitle = "Hinweis";
+GPSAuthorizationRequestDenied_AlertMessage = "Ohne GPS Autorisierung kannst Du die ortsgebundenen Funktionen nicht nutzen. Du wirst nicht auf naheliegende Shops aktiver Shopping Listen hingewiesen. Du kannst die Autorisierung jederzeit in den Einstellungen ";
+GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Einstellungen";
+GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "Nein Danke";
+LocationManagerEnteredRegion_AlertTitle = " in der Nähe";
+LocationManagerEnteredRegion_AlertMessage = "Du befindest Dich in der Nähe eines Shops Deiner aktiven Shopping Listen. Möchtest Du zum Shop navigiert werden?";

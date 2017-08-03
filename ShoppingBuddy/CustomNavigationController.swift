@@ -31,7 +31,8 @@ class CustomNavigationController: UINavigationController {
                               NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(),
                               NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 20)!] as [String : Any]
         navigationBar.titleTextAttributes = textAttributes
-        navigationBar.clipsToBounds = false
+        navigationBar.clipsToBounds = false 
+        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "UpperNavBar"), for: .default)
     }
     
     override func didReceiveMemoryWarning() {
@@ -40,6 +41,6 @@ class CustomNavigationController: UINavigationController {
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
+        return .lightContent
     }
 }

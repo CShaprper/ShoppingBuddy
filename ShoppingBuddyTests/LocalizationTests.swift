@@ -110,4 +110,23 @@ class LocalizationTests: XCTestCase {
         XCTAssertTrue(String.CustomRefreshControlImage != "CustomRefreshControlImage", "CustomRefreshControlImage is not localized in strings file!")
     }
     
+    //LocationService
+    func test_GPSAuthorizationRequestDenied_AlertTitle_isLocalized(){
+        XCTAssertTrue(String.GPSAuthorizationRequestDenied_AlertTitle != "GPSAuthorizationRequestDenied_AlertTitle", "GPSAuthorizationRequestDenied_AlertTitle is not localized in strings file!")
+    }
+    func test_GPSAuthorizationRequestDenied_AlertMessage_isLocalized(){
+        XCTAssertTrue(String.GPSAuthorizationRequestDenied_AlertMessage != "GPSAuthorizationRequestDenied_AlertMessage", "GPSAuthorizationRequestDenied_AlertMessage is not localized in strings file!")
+    }
+    func test_GPSAuthorizationRequestDenied_AlertActionSettingsTitle_isLocalized(){
+        XCTAssertTrue(String.GPSAuthorizationRequestDenied_AlertActionSettingsTitle != "GPSAuthorizationRequestDenied_AlertActionSettingsTitle", "<#name of string#> is not localized in strings file!")
+    }
+    func test_GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle_isLocalized(){
+        XCTAssertTrue(String.GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle != "GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle", "GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle is not localized in strings file!")
+    }
+    func test_LocationManagerEnteredRegion_AlertTitle_isLocalized(){
+        XCTAssertTrue(String.LocationManagerEnteredRegion_AlertTitle != "LocationManagerEnteredRegion_AlertTitle", "LocationManagerEnteredRegion_AlertTitle is not localized in strings file!")
+    }
+    func test_LocationManagerEnteredRegion_AlertMessage_isLocalized(){
+        XCTAssertTrue(String.LocationManagerEnteredRegion_AlertMessage != "LocationManagerEnteredRegion_AlertMessage", "LocationManagerEnteredRegion_AlertMessage is not localized in strings file!")
+    }
 }

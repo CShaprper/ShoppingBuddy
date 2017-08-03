@@ -10,11 +10,11 @@ import UIKit
 
 class ShoppingListController: UIViewController, IFirebaseWebService, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate {
     //MARK: - Outlets
+    @IBOutlet var BackgroundImage: UIImageView!
     @IBOutlet var ShoppingListDetailView: UIView!
     @IBOutlet var ListDetailBackgroundImage: UIImageView!
     //ShoppingListCollectionView
     @IBOutlet var ShoppingListCollectionView: UICollectionView!
-    @IBOutlet var ShoppingListCollectionViewBackground: DesignableUIView!
     
     //List Detail PopUp
     @IBOutlet var btn_CloseListDetailView: UIButton!
@@ -76,8 +76,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     func FirebaseRequestStarted() { }
     func FirebaseRequestFinished() {
         ShoppingListCollectionView.reloadData()
-        FilterShoppingListTotalItemsArray()
-        SortShoppingListItemsArrayBy_isSelected()
+        ShoppingListDetailTableView.reloadData()
+        // SortShoppingListItemsArrayBy_isSelected()
     }
     func FirebaseUserLoggedIn() { }
     func FirebaseUserLoggedOut() { }
@@ -88,8 +88,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     
     
-    //MARK: - IValidationService implementation
-    func ShowValidationAlert(title: String, message: String) {
+    //MARK: - IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -103,8 +103,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, delegate: self)
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, delegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
         if isValid{
             HideAddListPopUp()
             firebaseWebService.SaveListToFirebaseDatabase(listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
@@ -130,7 +130,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     func btn_SaveItem_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, delegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
         if isValid{
             HideAddItemPopUp()
             firebaseWebService.SaveListItemToFirebaseDatabase(shoppingListID: SelectedList!.ID!, itemName: txt_ItemName.text!)
@@ -161,7 +161,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 let velocity = panRecognizer.velocity(in: ShoppingListDetailTableView)
                 
                 //Get swiped item isSelected value
-                let isSelected = ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected
+                let isSelected = SelectedList!.ItemsArray![self.swipedCellIndex].isSelected
                 
                 //translation of thumb in view
                 let point = sender.translation(in: ShoppingListDetailTableView)
@@ -208,14 +208,14 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                             self.ShoppingCartImage.alpha = 0
                             self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
-                            //Edit isSelected local
-                            ShoppingListDetailItemsArray[self.swipedCellIndex].isSelected = "true"
-                            if let indextoedit = ShoppingListTotalItemsArray.index(where: {$0.ID ==  ShoppingListDetailItemsArray[self.swipedCellIndex].ID}){
-                                ShoppingListTotalItemsArray[indextoedit].isSelected = "true"
+                            if let index = ShoppingListsArray.index(where: {$0.ID == self.SelectedList!.ID!}){
+                                if ShoppingListsArray[index].ItemsArray!.count > self.swipedCellIndex{
+                                    ShoppingListsArray[index].ItemsArray![self.swipedCellIndex].isSelected = "true"
+                                    //Edit isSelected in Firebase
+                                    self.firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
+                                    self.SortShoppingListItemsArrayBy_isSelected()
+                                }
                             }
-                            //Edit isSelected in Firebase
-                            self.firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[self.swipedCellIndex])
-                            self.SortShoppingListItemsArrayBy_isSelected()
                         })
                         return
                     }
@@ -224,23 +224,23 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                             self.TrashImage.transform = CGAffineTransform(translationX: -20, y: 0)
                         })
-                        //Drop item to Trash
-                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            swipedCell.transform = CGAffineTransform.init(translationX: (self.view.frame.width * 0.5), y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+                        UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            swipedCell.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.8, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
                         }, completion: { (true) in
                             self.TrashImage.alpha = 0
                             self.TrashImage.transform = .identity
                             swipedCell.alpha = 0
                             swipedCell.transform = .identity
-                            //remove item in Firebase
-                            self.firebaseWebService.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListDetailItemsArray[self.swipedCellIndex])
-                            //remove item local form Total and Detail array
-                            if let indextoremove = ShoppingListTotalItemsArray.index(where: {$0.ID ==  ShoppingListDetailItemsArray[self.swipedCellIndex].ID}){
-                                ShoppingListTotalItemsArray.remove(at: indextoremove)
+                            
+                            if self.SelectedList != nil{
+                                if let index = ShoppingListsArray.index(where: {$0.ID == self.SelectedList!.ID!}){
+                                    if ShoppingListsArray[index].ItemsArray!.count > self.swipedCellIndex{
+                                        self.firebaseWebService.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
+                                        ShoppingListsArray[index].ItemsArray!.remove(at: self.swipedCellIndex)
+                                        self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
+                                    }
+                                }
                             }
-                            ShoppingListDetailItemsArray.remove(at: self.swipedCellIndex)
-                            self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
-                            self.ShoppingListDetailTableView.reloadData()
                         })
                         return
                     } else {
@@ -332,23 +332,29 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             ShoppingListDetailView.center = view.center
             lbl_ShoppingListDetailTitle.text = (SelectedList != nil && SelectedList?.Name != nil) ? SelectedList?.Name! : ""
             view.addSubview(ShoppingListDetailView)
-            FilterShoppingListTotalItemsArray()
             SortShoppingListItemsArrayBy_isSelected()
         }
     }
-    func FilterShoppingListTotalItemsArray(){
-        ShoppingListDetailItemsArray = ShoppingListTotalItemsArray.filter({$0.ShoppingListID == SelectedList!.ID!})
-    }
     func SortShoppingListItemsArrayBy_isSelected() -> Void {
-        if ShoppingListDetailItemsArray.count > 0{
-            ShoppingListDetailItemsArray = ShoppingListDetailItemsArray.sorted {return $0.isSelected! < $1.isSelected!}
-            ShoppingListDetailTableView.reloadData()
+        if SelectedList != nil && SelectedList!.ItemsArray!.count > 0{
+            if let index = ShoppingListsArray.index(where: {$0.ID == SelectedList!.ID!}){
+                let newitems = ShoppingListsArray[index].ItemsArray!.sorted(by: {return $0.isSelected! < $1.isSelected!})
+                ShoppingListsArray[index].ItemsArray = newitems
+            }
+            self.ShoppingListDetailTableView.reloadData()
         }
     }
     func ConfigureView() -> Void {
         //FirebaseWebservice
         firebaseWebService = FirebaseWebService()
-        firebaseWebService.delegate = self
+        firebaseWebService.firebaseWebServiceDelegate = self
+        firebaseWebService.alertMessageDelegate = self
+        
+        //Datasource & Delegate
+        ShoppingListDetailTableView.dataSource = self
+        ShoppingListDetailTableView.delegate = self
+        ShoppingListCollectionView.dataSource = self
+        ShoppingListCollectionView.delegate = self
         
         //RefreshControl AddListItem
         refreshControl = UIRefreshControl()
@@ -360,6 +366,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         CustomRefreshView.layer.shadowRadius  = 10
         CustomRefreshView.center.x = view.center.x
         refreshControl.addSubview(CustomRefreshView)
+        refreshControl.alpha = 0
         refreshControl.addTarget(self, action: #selector(ShoppingListController.ShowAddItemPopUp), for: UIControlEvents.allEvents)
         
         //RefreshControl Add Shopping List
@@ -372,6 +379,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         CustomAddShoppingListRefreshControl.frame.size.height = 60
         CustomAddShoppingListRefreshControl.center.x = view.center.x
         refreshShoppingListControl.addSubview(CustomAddShoppingListRefreshControl)
+        refreshShoppingListControl.alpha = 0
         refreshShoppingListControl.addTarget(self, action: #selector(ShoppingListController.ShowAddShoppingListPopUp), for: .allEvents)
         
         if #available(iOS 10.0, *){
@@ -496,25 +504,35 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return ShoppingListDetailItemsArray.count
+        if SelectedList != nil && SelectedList!.ItemsArray != nil{
+            if let index = ShoppingListsArray.index(where: {$0.ID == SelectedList!.ID!}){
+                return ShoppingListsArray[index].ItemsArray!.count
+            }
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier, for: indexPath) as! ShoppingListItemTableViewCell
-        if ShoppingListDetailItemsArray.count > 0 {
-            cell.selectionStyle = .none
-            cell.ConfigureCell(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
+        if SelectedList != nil && SelectedList!.ItemsArray != nil{
+            if let index = ShoppingListsArray.index(where: {$0.ID == SelectedList!.ID!}){
+                cell.selectionStyle = .none
+                cell.ConfigureCell(shoppingListItem: ShoppingListsArray[index].ItemsArray![indexPath.row])
+            }
         }
         return cell
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if ShoppingListDetailItemsArray.count > 0 {
-            //Allow only select on checked items => unchecked must be dropped to basket
-            if ShoppingListDetailItemsArray[indexPath.row].isSelected == "false" { return }
-            
-            ShoppingListDetailItemsArray[indexPath.row].isSelected = ShoppingListDetailItemsArray[indexPath.row].isSelected == "false" ? "true" : "false"
-            firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListDetailItemsArray[indexPath.row])
-            SortShoppingListItemsArrayBy_isSelected()
+        if SelectedList != nil{
+            if let index = ShoppingListsArray.index(where: {$0.ID == SelectedList!.ID!}){
+                if ShoppingListsArray[index].ItemsArray!.count > 0 {
+                    //Allow only select on checked items => unchecked must be dropped to basket
+                    if ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected == "false" { return }
+                    ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected  = ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected == "false" ? "true" : "false"
+                    firebaseWebService.EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListsArray[index].ItemsArray![indexPath.row])
+                    SortShoppingListItemsArrayBy_isSelected()
+                }
+            }
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

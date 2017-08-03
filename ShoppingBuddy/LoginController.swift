@@ -66,9 +66,8 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         return .default
     }
     
-    
-    //IvalidationService implementation
-    func ShowValidationAlert(title: String, message: String) {
+    //IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -79,12 +78,10 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     func FirebaseRequestStarted() { ShowActivityIndicator() }
     func FirebaseRequestFinished() { HideActivityIndicator() }
     func FirebaseUserLoggedOut() {}
-    func FirebaseUserLoggedIn() { performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil) }
-    func AlertFromFirebaseService(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+    func FirebaseUserLoggedIn() {
+        performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
     }
+    
     
     
     //Textfield Delegate implementation
@@ -93,19 +90,19 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         return true
     }
     func txt_Nickname_TetxChanged(sender: DesignableTextField) -> Void {
-        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.textField, validationString: sender.text!, delegate: nil)
+        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.textField, validationString: sender.text!, alertDelegate: nil)
         txt_Nickname.RightImageVisibility = !isValid
         if isValid == false { txt_Nickname.rightView?.shake() }
         if txt_Nickname.text! == "" { txt_Nickname.RightImageVisibility = false }
     }
     func txt_Email_TextChanged(sender: DesignableTextField) -> Void{
-        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.email, validationString: sender.text!, delegate: nil)
+        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.email, validationString: sender.text!, alertDelegate: nil)
         txt_Email.RightImageVisibility = !isValid
         if isValid == false { txt_Email.rightView?.shake() }
         if txt_Email.text! == "" { txt_Email.RightImageVisibility = false }
     }
     func txt_Password_TextChanged(sender: DesignableTextField) -> Void{
-        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.password, validationString: sender.text!, delegate: nil)
+        let isValid:Bool = ValidationFactory.Validate(type: eValidationType.password, validationString: sender.text!, alertDelegate: nil)
         txt_Password.RightImageVisibility = !isValid
         if isValid == false { txt_Password.rightView?.shake() }
         if txt_Password.text! == "" { txt_Password.RightImageVisibility = false }
@@ -154,16 +151,16 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         var isValid:Bool = false
         switch LoginSignUpSegmentedControl.selectedSegmentIndex {
         case 0:
-            isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, delegate: self)
-            isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, delegate: self)
+            isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
+            isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
                 firebaseWebService.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         case 1:
-            isValid = ValidationFactory.Validate(type: eValidationType.textField, validationString: txt_Nickname.text, delegate: self)
-            isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, delegate: self)
-            isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, delegate: self)
+            isValid = ValidationFactory.Validate(type: eValidationType.textField, validationString: txt_Nickname.text, alertDelegate: self)
+            isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
+            isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
                 firebaseWebService.CreateNewFirebaseUser(nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
             }
@@ -173,7 +170,7 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         }
     }
     func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
-        let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, delegate: self)
+        let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, alertDelegate: self)
         if isValid{
             firebaseWebService.ResetUserPassword(email: txt_Email.text!)
         }
@@ -209,7 +206,8 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
         //FirebaseWbservice
         firebaseWebService = FirebaseWebService()
-        firebaseWebService.delegate = self
+        firebaseWebService.firebaseWebServiceDelegate = self
+        firebaseWebService.alertMessageDelegate = self
         
         // BackgroundView Gradient
         BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()

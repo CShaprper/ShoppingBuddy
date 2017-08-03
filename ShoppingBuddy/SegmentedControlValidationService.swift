@@ -9,6 +9,7 @@
 import UIKit
 
 class SegmentedControlValidationService: IValidationService {
+    var alertMessageDelegate: IAlertMessageDelegate?
     var validationServiceDelegate:IValidationService?
     let title = ""
     var message = ""
@@ -23,7 +24,7 @@ class SegmentedControlValidationService: IValidationService {
     
     private func validateNotNil(segmentedControl: UISegmentedControl?) -> Bool{
         if segmentedControl == nil {
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
              return false
         }
         return true
@@ -31,17 +32,16 @@ class SegmentedControlValidationService: IValidationService {
     private func validateIsSet(segmentedControl: UISegmentedControl?) -> Bool{
         if segmentedControl == nil { return false }
         if segmentedControl!.selectedSegmentIndex == -1 {
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
     }
-    
-    internal func ShowValidationAlert(title: String, message: String) {
-        if validationServiceDelegate != nil{
-            validationServiceDelegate!.ShowValidationAlert!(title: title, message: message)
-        } else {
-            print("SegmentedControlValidationService: alertMessageDelegate not set from calling class")
+    internal func ShowAlertMessage(title: String, message: String) {
+        if alertMessageDelegate != nil{
+            alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+        } else{
+            print("AlertMessageDelegate not set from calling class in TextfieldValidationService")
         }
     }
 }

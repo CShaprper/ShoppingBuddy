@@ -11,7 +11,9 @@ import Foundation
 struct ShoppingList {
     var ID:String?
     var Name:String?
-    var ItemsArray:[ShoppingListItem]
+    var RelatedStore:String?
+    var ItemsArray:[ShoppingListItem]?
+    
     init() {
         ItemsArray = []
     }

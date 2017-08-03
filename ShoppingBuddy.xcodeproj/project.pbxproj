@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		91935E9AC1DADD7A09CEB2FD /* Pods_ShoppingBuddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */; };
-		CF1301F41F30C193002FD4D1 /* Kalam-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F11F30C193002FD4D1 /* Kalam-Bold.ttf */; };
-		CF1301F51F30C193002FD4D1 /* Kalam-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F21F30C193002FD4D1 /* Kalam-Light.ttf */; };
-		CF1301F61F30C193002FD4D1 /* Kalam-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F31F30C193002FD4D1 /* Kalam-Regular.ttf */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
 		CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */; };
@@ -20,7 +17,7 @@
 		CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */; };
 		CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3C1F265ABD00B1B2DE /* DesignableUIView.swift */; };
 		CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */; };
-		CFAD85101F27AAB500F207E5 /* StoresController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD850F1F27AAB500F207E5 /* StoresController.swift */; };
+		CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD850F1F27AAB500F207E5 /* SettingsController.swift */; };
 		CFAD85121F27AAD000F207E5 /* StoresControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */; };
 		CFB137191F2B40800076476D /* ShoppingListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */; };
 		CFB1371B1F2B425A0076476D /* ShoppingListControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */; };
@@ -38,6 +35,10 @@
 		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
 		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
+		CFC6BCD51F32503900366553 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD41F32503900366553 /* LocationService.swift */; };
+		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
+		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
+		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
 		CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */; };
 		CFE330AD1F29E86200190993 /* FakeAlertMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
@@ -65,6 +66,8 @@
 		CFE9AB1C1F26108200D0825B /* NicknameValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE9AB1B1F26108200D0825B /* NicknameValidationService.swift */; };
 		CFE9AB211F262DBE00D0825B /* DashboardController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE9AB201F262DBE00D0825B /* DashboardController.swift */; };
 		CFE9AB231F2630D500D0825B /* Icons.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CFE9AB221F2630D500D0825B /* Icons.xcassets */; };
+		CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */; };
+		CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319451F33742700F91272 /* eUserDefaultKey.swift */; };
 		CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */; };
 		E0407F4D03681341E67EFCEB /* Pods_ShoppingBuddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6889D91D870DC8FA7B49A9 /* Pods_ShoppingBuddy.framework */; };
 		EA24853A5DE17E0D796D796A /* Pods_ShoppingBuddyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2993D9BF9625D8B09C225620 /* Pods_ShoppingBuddyUITests.framework */; };
@@ -96,9 +99,6 @@
 		8351E8393FE8EBB4708741EA /* Pods-ShoppingBuddyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B8AFA10CA9BF18DA81630E5D /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 		C311ECDB5A403F720F0B0183 /* Pods-ShoppingBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
-		CF1301F11F30C193002FD4D1 /* Kalam-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kalam-Bold.ttf"; sourceTree = "<group>"; };
-		CF1301F21F30C193002FD4D1 /* Kalam-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kalam-Light.ttf"; sourceTree = "<group>"; };
-		CF1301F31F30C193002FD4D1 /* Kalam-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kalam-Regular.ttf"; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
 		CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarExtension.swift; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 		CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardControllerTests.swift; sourceTree = "<group>"; };
 		CF610C3C1F265ABD00B1B2DE /* DesignableUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignableUIView.swift; sourceTree = "<group>"; };
 		CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
-		CFAD850F1F27AAB500F207E5 /* StoresController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresController.swift; sourceTree = "<group>"; };
+		CFAD850F1F27AAB500F207E5 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		CFAD85111F27AAD000F207E5 /* StoresControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresControllerTests.swift; sourceTree = "<group>"; };
 		CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListCollectionViewCell.swift; sourceTree = "<group>"; };
 		CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListControllerTests.swift; sourceTree = "<group>"; };
@@ -123,6 +123,11 @@
 		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
 		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
+		CFC6BCD41F32503900366553 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
+		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CFC8CE531F3289400032AA9F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlTargetTester.swift; sourceTree = "<group>"; };
 		CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAlertMocks.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +166,8 @@
 		CFE9AB1B1F26108200D0825B /* NicknameValidationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameValidationService.swift; sourceTree = "<group>"; };
 		CFE9AB201F262DBE00D0825B /* DashboardController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardController.swift; sourceTree = "<group>"; };
 		CFE9AB221F2630D500D0825B /* Icons.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Icons.xcassets; sourceTree = "<group>"; };
+		CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
+		CFF319451F33742700F91272 /* eUserDefaultKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eUserDefaultKey.swift; sourceTree = "<group>"; };
 		CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTabBarControllerDelegate.swift; sourceTree = "<group>"; };
 		E345DCBAB49D07D0CF33EA5D /* Pods-ShoppingBuddy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -171,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0407F4D03681341E67EFCEB /* Pods_ShoppingBuddy.framework in Frameworks */,
+				CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */,
 				CFE4A2021F23C4DE002A12C7 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +205,7 @@
 		55A8AE304596379E3A027B98 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CFC8CE531F3289400032AA9F /* MapKit.framework */,
 				CFE4A2011F23C4DE002A12C7 /* StoreKit.framework */,
 				4C6889D91D870DC8FA7B49A9 /* Pods_ShoppingBuddy.framework */,
 				1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */,
@@ -209,9 +218,6 @@
 			isa = PBXGroup;
 			children = (
 				CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */,
-				CF1301F11F30C193002FD4D1 /* Kalam-Bold.ttf */,
-				CF1301F21F30C193002FD4D1 /* Kalam-Light.ttf */,
-				CF1301F31F30C193002FD4D1 /* Kalam-Regular.ttf */,
 			);
 			name = Fonts;
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 			children = (
 				CFE4A2001F23C4D3002A12C7 /* ShoppingBuddy.entitlements */,
 				CFE4A1D61F23C0DC002A12C7 /* Info.plist */,
+				CFC6BCDC1F3264B500366553 /* InfoPlist.strings */,
 				CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */,
 				CFE4A1D11F23C0DC002A12C7 /* Backgrounds.xcassets */,
 				CFE9AB191F25F43300D0825B /* Artwork.xcassets */,
@@ -333,7 +340,7 @@
 				CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */,
 				CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */,
 				CFE9AB201F262DBE00D0825B /* DashboardController.swift */,
-				CFAD850F1F27AAB500F207E5 /* StoresController.swift */,
+				CFAD850F1F27AAB500F207E5 /* SettingsController.swift */,
 				CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */,
 			);
 			name = Controller;
@@ -346,6 +353,8 @@
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
+				CFC6BCD41F32503900366553 /* LocationService.swift */,
+				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
 				CFE4A2071F23C8DC002A12C7 /* Protocols */,
@@ -366,6 +375,7 @@
 		CFE4A2071F23C8DC002A12C7 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */,
 				CFE4A2081F23C8EB002A12C7 /* IValidationService.swift */,
 				CFB2AA5C1F24B56000AACB5B /* IFirebaseWebService.swift */,
 			);
@@ -389,6 +399,7 @@
 			isa = PBXGroup;
 			children = (
 				CFE4A2161F23C9B8002A12C7 /* eValidationType.swift */,
+				CFF319451F33742700F91272 /* eUserDefaultKey.swift */,
 			);
 			name = Enum;
 			sourceTree = "<group>";
@@ -492,6 +503,9 @@
 							com.apple.InAppPurchase = {
 								enabled = 1;
 							};
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -518,6 +532,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = CFE4A1BE1F23C0DC002A12C7;
 			productRefGroup = CFE4A1C81F23C0DC002A12C7 /* Products */;
@@ -536,13 +551,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CF1301F61F30C193002FD4D1 /* Kalam-Regular.ttf in Resources */,
+				CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
 				CFE4A1D51F23C0DC002A12C7 /* LaunchScreen.storyboard in Resources */,
 				CFE9AB231F2630D500D0825B /* Icons.xcassets in Resources */,
 				CFE4A1D21F23C0DC002A12C7 /* Backgrounds.xcassets in Resources */,
-				CF1301F51F30C193002FD4D1 /* Kalam-Light.ttf in Resources */,
-				CF1301F41F30C193002FD4D1 /* Kalam-Bold.ttf in Resources */,
 				CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */,
 				CFB2AA511F2494C800AACB5B /* GoogleService-Info.plist in Resources */,
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
@@ -733,14 +746,18 @@
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
+				CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */,
+				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
-				CFAD85101F27AAB500F207E5 /* StoresController.swift in Sources */,
+				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
 				CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */,
+				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
 				CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */,
 				CFE4A2121F23C9A3002A12C7 /* EmailValidationService.swift in Sources */,
 				CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */,
 				CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
+				CFC6BCD51F32503900366553 /* LocationService.swift in Sources */,
 				CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -788,6 +805,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		CFC6BCDC1F3264B500366553 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CFC6BCDB1F3264B500366553 /* en */,
+				CFC8CE501F326D650032AA9F /* de */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		CFE4A1CE1F23C0DC002A12C7 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

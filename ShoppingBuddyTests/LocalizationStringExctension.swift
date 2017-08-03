@@ -58,4 +58,12 @@ extension String{
     static let lbl_AddItemPopUpTitle = NSLocalizedString("lbl_AddItemPopUpTitle", comment: "")
     static let txt_ItemName_Placeholer = NSLocalizedString("txt_ItemName_Placeholer", comment: "")
     static let CustomAddShoppingListRefreshControlImage = NSLocalizedString("CustomAddShoppingListRefreshControlImage", comment: "")
+    
+    //LocationService
+    static let GPSAuthorizationRequestDenied_AlertTitle = NSLocalizedString("GPSAuthorizationRequestDenied_AlertTitle", comment: "")
+    static let GPSAuthorizationRequestDenied_AlertMessage = NSLocalizedString("GPSAuthorizationRequestDenied_AlertMessage", comment: "")
+    static let GPSAuthorizationRequestDenied_AlertActionSettingsTitle = NSLocalizedString("GPSAuthorizationRequestDenied_AlertActionSettingsTitle", comment: "")
+    static let GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = NSLocalizedString("GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle", comment: "")
+    static let LocationManagerEnteredRegion_AlertTitle = NSLocalizedString("LocationManagerEnteredRegion_AlertTitle", comment: "")
+    static let LocationManagerEnteredRegion_AlertMessage = NSLocalizedString("LocationManagerEnteredRegion_AlertMessage", comment: "")
 }

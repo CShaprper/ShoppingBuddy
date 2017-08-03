@@ -10,6 +10,7 @@ import Foundation
 
 
 class TextfieldValidationService: IValidationService {
+    var alertMessageDelegate: IAlertMessageDelegate?
     var validationServiceDelegate:IValidationService?
     let title = String.ValidationAlert_Title
     var message = ""
@@ -52,10 +53,10 @@ class TextfieldValidationService: IValidationService {
         return true
     }
     internal func ShowAlertMessage(title: String, message: String) {
-        if validationServiceDelegate != nil {
-            validationServiceDelegate!.ShowValidationAlert!(title: title, message: message)
-        } else {
-            print("TextfieldInputValidationService: alertMessageDelegate not set from calling class")
+        if alertMessageDelegate != nil{
+            alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+        } else{
+            print("AlertMessageDelegate not set from calling class in TextfieldValidationService")
         }
     }
 }

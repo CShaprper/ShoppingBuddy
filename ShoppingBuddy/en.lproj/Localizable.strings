@@ -53,3 +53,11 @@ txt_ListName_Placeholder = "list name";
 lbl_AddItemPopUpTitle = "Add List Item";
 txt_ItemName_Placeholer = "item name";
 CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-US";
+
+    //LocationService
+GPSAuthorizationRequestDenied_AlertTitle = "GPS Comment";
+GPSAuthorizationRequestDenied_AlertMessage = "Without GPS authorization location services are disabled. You will not get informed about nearby stores of your active shopping lists.";
+GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Settings";
+GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "No Thanks";
+LocationManagerEnteredRegion_AlertTitle = " Nearby";
+LocationManagerEnteredRegion_AlertMessage = "You are close to a store of your active shopping lists. Do you wish to be navigated?";

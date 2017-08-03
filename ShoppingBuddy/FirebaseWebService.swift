@@ -14,11 +14,12 @@ import FirebaseMessaging
 
 class FirebaseWebService: IFirebaseWebService {
     //MARK: - Member
+    var alertMessageDelegate: IAlertMessageDelegate?
     internal let firebaseURL:String = "https://shoppingbuddy-1ef51.firebaseio.com/"
     private var ref:DatabaseReference!
     private var isCalled:Bool = false
     private var isLogoutCalled:Bool = false
-    var delegate: IFirebaseWebService?
+    var firebaseWebServiceDelegate:IFirebaseWebService?
     var alertTitle = ""
     var alertMessage = ""
     
@@ -29,28 +30,38 @@ class FirebaseWebService: IFirebaseWebService {
     
     //MARK: - IFirebaseWebService implementation
     func FirebaseRequestFinished() {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseRequestFinished!() }}
+        if firebaseWebServiceDelegate != nil {
+            DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseRequestFinished!() }}
         else { print("IFirebaseWebService delegate for FirebaseRequestFinished not set from calling class") }
     }
     func FirebaseRequestStarted() {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseRequestStarted!() }}
+        if firebaseWebServiceDelegate != nil {
+            DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseRequestStarted!() }}
         else { print("IFirebaseWebService delegate for FirebaseRequestStarted not set from calling class") }
     }
-    func AlertFromFirebaseService(title: String, message: String) {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.AlertFromFirebaseService!(title: title, message: message) }}
-        else { print("IFirebaseWebService delegate for alert not set from calling class") }
-    }
     func FirebaseUserLoggedIn() {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseUserLoggedIn!() }}
+        if firebaseWebServiceDelegate != nil {
+            DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseUserLoggedIn!() }}
         else { print("IFirebaseWebService delegate for alert not set from calling class") }
     }
     func FirebaseUserLoggedOut() {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.FirebaseUserLoggedOut!() }}
+        if firebaseWebServiceDelegate != nil {
+            DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseUserLoggedOut!() }}
         else { print("IFirebaseWebService delegate for alert not set from calling class") }
     }
     func ReloadItems() {
-        if delegate != nil { DispatchQueue.main.async { self.delegate!.ReloadItems!() }}
+        if firebaseWebServiceDelegate != nil {
+            DispatchQueue.main.async { self.firebaseWebServiceDelegate!.ReloadItems!() }}
         else { print("IFirebaseWebService delegate for alert not set from calling class") }
+    }
+    func ShowAlertMessage(title: String, message: String) {
+        if alertMessageDelegate != nil{
+            DispatchQueue.main.async {
+                self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+            }
+        } else{
+            print("AlertMessageDelegate not set from calling class in FirebaseWebService")
+        }
     }
     
     //MARK: - FirebaseWebService methods
@@ -77,7 +88,7 @@ class FirebaseWebService: IFirebaseWebService {
                     self.FirebaseRequestFinished()
                     let title = ""
                     let message = ""
-                    self.AlertFromFirebaseService(title: title, message: message)
+                    self.ShowAlertMessage(title: title, message: message)
                 }
                 return
             } else {
@@ -97,7 +108,7 @@ class FirebaseWebService: IFirebaseWebService {
                     self.FirebaseRequestFinished()
                     let title = ""
                     let message = ""
-                    self.AlertFromFirebaseService(title: title, message: message)
+                    self.ShowAlertMessage(title: title, message: message)
                 }
                 return
             } else {
@@ -118,7 +129,7 @@ class FirebaseWebService: IFirebaseWebService {
             self.FirebaseRequestFinished()
             let title = ""
             let message = ""
-            self.AlertFromFirebaseService(title: title, message: message)
+            self.ShowAlertMessage(title: title, message: message)
         }
     }
     func ResetUserPassword(email:String){
@@ -128,7 +139,7 @@ class FirebaseWebService: IFirebaseWebService {
                 self.FirebaseRequestFinished()
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             print("Succesfully sent password reset mail")
@@ -139,23 +150,6 @@ class FirebaseWebService: IFirebaseWebService {
     
     
     //MARK: - Firebase Read Functions
-    func ReadFirebaseStoresSection() -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("stores").child(uid).observe(.childAdded, with: { (snapshot) in
-            if snapshot.value is NSNull{
-                return
-            }
-            print(snapshot)
-            let value = snapshot.value as? NSDictionary
-            var store = Store()
-            store.ID = value?["id"] as? String ?? ""
-            store.Store = value?["store"] as? String ?? ""
-            StoresArray.append(store)
-            self.FirebaseRequestFinished()
-        })
-    }
     func ReadFirebaseShoppingListsSection() -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
@@ -169,7 +163,8 @@ class FirebaseWebService: IFirebaseWebService {
             var list = ShoppingList()
             list.ID = value?["id"] as? String ?? ""
             list.Name = value?["name"] as? String ?? ""
-            newLists.append(list)
+            list.RelatedStore = value?["relatdStore"] as? String ?? ""
+            // newLists.append(list)
             
             let items = snapshot.childSnapshot(forPath: "items")
             if items.value is NSNull{ return }
@@ -184,11 +179,12 @@ class FirebaseWebService: IFirebaseWebService {
                     newItems.append(listItem)
                 }
             }
+            list.ItemsArray = newItems.filter({$0.ShoppingListID == list.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
+            newLists.append(list)
             ShoppingListsArray = newLists
-            ShoppingListTotalItemsArray = newItems
             self.FirebaseRequestFinished()
         })
-    }
+    } 
     func ReadSingleShoppingList(listID:String) -> Void{
         guard let uid = Auth.auth().currentUser?.uid else{
             return
@@ -202,7 +198,9 @@ class FirebaseWebService: IFirebaseWebService {
                 listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
                 listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
                 listItem.ShoppingListID = listID
-                ShoppingListTotalItemsArray.append(listItem)
+                if let index = ShoppingListsArray.index(where: {$0.ID == listItem.ShoppingListID}){
+                    ShoppingListsArray[index].ItemsArray!.append(listItem)
+                }
             }
             self.FirebaseRequestFinished()
         })
@@ -230,7 +228,7 @@ class FirebaseWebService: IFirebaseWebService {
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             self.FirebaseRequestFinished()
@@ -248,7 +246,7 @@ class FirebaseWebService: IFirebaseWebService {
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             self.FirebaseRequestFinished()
@@ -266,7 +264,7 @@ class FirebaseWebService: IFirebaseWebService {
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             self.FirebaseRequestFinished()
@@ -288,7 +286,7 @@ class FirebaseWebService: IFirebaseWebService {
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             print("Succesfully deleted Store \(dbref.key) from Firebase")
@@ -306,7 +304,7 @@ class FirebaseWebService: IFirebaseWebService {
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
-                self.AlertFromFirebaseService(title: title, message: message)
+                self.ShowAlertMessage(title: title, message: message)
                 return
             }
             print("Succesfully deleted item of shopping list from Firebase")

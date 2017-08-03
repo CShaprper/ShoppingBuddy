@@ -30,6 +30,7 @@ class CustomTabBarController: UITabBarController {
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
         let textAttributes = [NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 10)!] as [String : Any]
          UITabBarItem.appearance().setTitleTextAttributes(textAttributes, for: .normal)
+        tabBar.backgroundImage = #imageLiteral(resourceName: "BottomNavBar")
         
         tabBar.items?[0].title = String.DashboardControllerTitle
         tabBar.items?[1].title = String.ShoppingListControllerTitle
@@ -49,9 +50,6 @@ class CustomTabBarController: UITabBarController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-    }
-    override var preferredStatusBarStyle : UIStatusBarStyle {
-        return  .lightContent
     }
     
     //MARK: - TabBar

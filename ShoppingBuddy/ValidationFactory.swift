@@ -11,32 +11,32 @@ import UIKit
 class ValidationFactory {
     static var segmentedControl:UISegmentedControl?
     
-    static func Validate(type: eValidationType, validationString: String?, delegate: IValidationService?) -> Bool{
+    static func Validate(type: eValidationType, validationString: String?, alertDelegate: IAlertMessageDelegate?) -> Bool{
         switch type {
             
         case .email:
             let validationService = EmailValidationService()
-            validationService.validationServiceDelegate = delegate
+            validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(validationString: validationString)
             
         case .password:
             let validationService = PasswordValidationService()
-            validationService.validationServiceDelegate = delegate
+            validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(validationString: validationString)
             
         case .textField:
             let validationService = TextfieldValidationService()
-            validationService.validationServiceDelegate = delegate
+            validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(validationString: validationString)
             
         case .segmentedControl:
             let validationService = SegmentedControlValidationService()
-            validationService.validationServiceDelegate = delegate
+            validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(segmentedControl: segmentedControl)
             
         case .nickname:
             let validationService = NicknameValidationService()
-            validationService.validationServiceDelegate = delegate
+            validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(validationString: validationString)
             
         default:

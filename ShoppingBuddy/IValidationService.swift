@@ -8,9 +8,7 @@
 
 import UIKit
 
-@objc protocol IValidationService: class {
-    @objc optional var validationServiceDelegate:IValidationService? { get  set }
+@objc protocol IValidationService: class , IAlertMessageDelegate{
     @objc optional func Validate(validationString: String?) -> Bool
     @objc optional func Validate(segmentedControl: UISegmentedControl?) -> Bool
-    @objc optional func ShowValidationAlert(title: String, message:String) -> Void
 }

@@ -9,6 +9,7 @@
 import Foundation
 
 class PasswordValidationService:IValidationService  {
+    var alertMessageDelegate: IAlertMessageDelegate?
     var validationServiceDelegate:IValidationService?
     let title = String.ValidationAlert_Title
     var message = ""
@@ -26,7 +27,7 @@ class PasswordValidationService:IValidationService  {
     private func validateNotNil(validationString: String?) -> Bool{
         if validationString == nil {
             message = String.ValidationPasswordEmptyAlert_Message
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -35,7 +36,7 @@ class PasswordValidationService:IValidationService  {
         if validationString == nil { return false }
         if validationString! == "" {
             message = String.ValidationPasswordEmptyAlert_Message
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
@@ -44,16 +45,16 @@ class PasswordValidationService:IValidationService  {
         if validationString == nil { return false }
         if validationString!.characters.count < 6 {
             message = String.ValidationPasswordCharactersCountBelowSixAlert_Message
-            ShowValidationAlert(title: title, message: message)
+            ShowAlertMessage(title: title, message: message)
             return false
         }
         return true
     }
-    func ShowValidationAlert(title: String, message: String) {
-        if validationServiceDelegate != nil{
-            validationServiceDelegate!.ShowValidationAlert!(title: title, message: message)
-        } else {
-            print("TextfieldValidationService: alertMessageDelegate not set from calling class")
+    internal func ShowAlertMessage(title: String, message: String) {
+        if alertMessageDelegate != nil{
+            alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+        } else{
+            print("AlertMessageDelegate not set from calling class in PasswordValidationService")
         }
-    }
+    } 
 } 
