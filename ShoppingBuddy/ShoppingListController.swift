@@ -77,7 +77,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     func FirebaseRequestFinished() {
         ShoppingListCollectionView.reloadData()
         ShoppingListDetailTableView.reloadData()
-        // SortShoppingListItemsArrayBy_isSelected()
+        //SortShoppingListItemsArrayBy_isSelected()
     }
     func FirebaseUserLoggedIn() { }
     func FirebaseUserLoggedOut() { }
@@ -106,8 +106,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
         if isValid{
-            HideAddListPopUp()
             firebaseWebService.SaveListToFirebaseDatabase(listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
+            HideAddListPopUp()
         }
     }
     func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
@@ -132,8 +132,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
         if isValid{
-            HideAddItemPopUp()
             firebaseWebService.SaveListItemToFirebaseDatabase(shoppingListID: SelectedList!.ID!, itemName: txt_ItemName.text!)
+            HideAddItemPopUp()
         }
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -219,7 +219,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                         })
                         return
                     }
-                    if xPercentFromCenter >= 0.75{
+                    else if xPercentFromCenter >= 0.75{
                         //Shake Trash
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                             self.TrashImage.transform = CGAffineTransform(translationX: -20, y: 0)
@@ -315,9 +315,12 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     func HideAddListPopUp() -> Void {
         HideBlurrView()
-        HideListDetailView()
+        txt_ListName.text = ""
+        txt_RelatedStore.text = ""
+        AddShoppingListPopUp.removeFromSuperview()
     }
     func HideAddItemPopUp() -> Void {
+        txt_ItemName.text = ""
         AddItemPopUp.removeFromSuperview()
     }
     func HideBlurrView() -> Void{
@@ -341,8 +344,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                 let newitems = ShoppingListsArray[index].ItemsArray!.sorted(by: {return $0.isSelected! < $1.isSelected!})
                 ShoppingListsArray[index].ItemsArray = newitems
             }
-            self.ShoppingListDetailTableView.reloadData()
         }
+        ShoppingListDetailTableView.reloadData()
     }
     func ConfigureView() -> Void {
         //FirebaseWebservice

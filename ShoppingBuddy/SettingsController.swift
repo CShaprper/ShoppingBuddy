@@ -11,6 +11,7 @@ import UIKit
 class SettingsController: UIViewController, UITextFieldDelegate, IValidationService, IFirebaseWebService{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
+    @IBOutlet var GeofenceRadiusSlider: UISlider!
     
     
     
@@ -22,6 +23,8 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
+        
+        GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning() 
@@ -63,7 +66,10 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     func FirebaseUserLoggedOut() {}
     
     //MARK: - Wired actions
-
+    func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
+        let value = roundf(sender.value)
+        GeofenceRadiusSlider.value = value
+    }
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void{

@@ -55,12 +55,16 @@ class CustomTabBarController: UITabBarController {
     //MARK: - TabBar
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         switch item.title! {
-        case "Dashboard":
-            tabBar.tintColor = UIColor.ColorPaletteTintColor()
+        case String.DashboardControllerTitle:
+            tabBar.tintColor = UIColor.black
             item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break
-        case "Stores":
-            tabBar.tintColor = UIColor.ColorPaletteTintColor()
+        case String.ShoppingListControllerTitle:
+            tabBar.tintColor = UIColor.black
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
+            break
+        case String.SettingsControllerTitle:
+            tabBar.tintColor = UIColor.black
             item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break
         default:

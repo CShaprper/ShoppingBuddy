@@ -31,6 +31,9 @@ class DashboardController: UIViewController, IFirebaseWebService{
         super.viewDidLoad()
         ConfigureView()
         
+        //Load all Stores
+        firebaseWebService.ReadFirebaseShoppingListsSection()
+        
         //Setup LocationService Class
         locationService = LocationService(mapView: MapView, alertDelegate: self)
         // MapView.mask = UIImageView(image: #imageLiteral(resourceName: "AddList-US-Logo"))
@@ -107,9 +110,6 @@ class DashboardController: UIViewController, IFirebaseWebService{
         firebaseWebService = FirebaseWebService()
         firebaseWebService.firebaseWebServiceDelegate  = self
         firebaseWebService.alertMessageDelegate = self
-        
-        //Load all Stores
-        firebaseWebService.ReadFirebaseShoppingListsSection()
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle

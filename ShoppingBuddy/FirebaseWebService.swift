@@ -154,54 +154,39 @@ class FirebaseWebService: IFirebaseWebService {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        var newLists = [ShoppingList]()
-        var newItems = [ShoppingListItem]()
-        ref.child("shopping-lists").child(uid).observe(.childAdded, with: { (snapshot) in
+        ref.child("shopping-lists").child(uid).observe(.value, with: { (snapshot) in
             if snapshot.value is NSNull{ return }
-            print(snapshot)
-            let value = snapshot.value as? NSDictionary
-            var list = ShoppingList()
-            list.ID = value?["id"] as? String ?? ""
-            list.Name = value?["name"] as? String ?? ""
-            list.RelatedStore = value?["relatedStore"] as? String ?? ""
-            // newLists.append(list)
-            
-            let items = snapshot.childSnapshot(forPath: "items")
-            if items.value is NSNull{ return }
-            for item in items.children{
-                let item2 = item as! DataSnapshot
-                if let dict = item2.value as? [String: AnyObject]{
-                    var listItem:ShoppingListItem = ShoppingListItem()
-                    listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
-                    listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
-                    listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
-                    listItem.ShoppingListID = list.ID!
-                    newItems.append(listItem)
+            for sList in snapshot.children{
+                let list = sList as! DataSnapshot
+                var newShoppinglist = ShoppingList()
+                if let dict = list.value as? NSDictionary{
+                    newShoppinglist.ID = dict["id"] as? String ?? ""
+                    newShoppinglist.Name = dict["name"] as? String ?? ""
+                    newShoppinglist.RelatedStore = dict["relatedStore"] as? String ?? ""
                 }
-            }
-            list.ItemsArray = newItems.filter({$0.ShoppingListID == list.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
-            newLists.append(list)
-            ShoppingListsArray = newLists
-            self.FirebaseRequestFinished()
-        })
-    } 
-    func ReadSingleShoppingList(listID:String) -> Void{
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("shopping-lists").child(uid).child(listID).child("items").observe(.value, with: { (snapshot) in
-            if snapshot.value is NSNull{ return }
-            print(snapshot)
-            if let dict = snapshot.value as? [String: AnyObject]{
-                var listItem = ShoppingListItem()
-                listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
-                listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
-                listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
-                listItem.ShoppingListID = listID
-                if let index = ShoppingListsArray.index(where: {$0.ID == listItem.ShoppingListID}){
-                    ShoppingListsArray[index].ItemsArray!.append(listItem)
+                let itemDataSnapshot = list.childSnapshot(forPath: "items")
+                var newItems = [ShoppingListItem]()
+                for snap in itemDataSnapshot.children{
+                    let item = snap as! DataSnapshot
+                    if let dict = item.value as? [String: AnyObject]{
+                        var listItem:ShoppingListItem = ShoppingListItem()
+                        listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
+                        listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
+                        listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
+                        listItem.ShoppingListID = newShoppinglist.ID!
+                        newItems.append(listItem)
+                    }
                 }
-            }
+                newShoppinglist.ItemsArray = newItems.filter({$0.ShoppingListID == newShoppinglist.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
+                if let index = ShoppingListsArray.index(where: {$0.ID == newShoppinglist.ID!}){
+                    ShoppingListsArray[index].ID = newShoppinglist.ID
+                    ShoppingListsArray[index].Name = newShoppinglist.Name
+                    ShoppingListsArray[index].RelatedStore = newShoppinglist.RelatedStore
+                    ShoppingListsArray[index].ItemsArray = newShoppinglist.ItemsArray
+                } else {
+                    ShoppingListsArray.append(newShoppinglist)
+                }
+            }            
             self.FirebaseRequestFinished()
         })
     }
@@ -216,25 +201,6 @@ class FirebaseWebService: IFirebaseWebService {
     
     
     //MARK: - Firebase Save Functions
-    func SaveStoreToFirebaseDatabase(storeName: String) -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        let storeID =  ref.child("stores").child(uid).childByAutoId()
-        print(storeID.key)
-        storeID.updateChildValues(["store":storeName, "id":storeID.key], withCompletionBlock: { (error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
-                print(error!.localizedDescription)
-                let title = ""
-                let message = ""
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            self.FirebaseRequestFinished()
-            print("Succesfully saved Store to Firebase")
-        })
-    }
     func SaveListToFirebaseDatabase(listName:String, relatedStore:String) -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
