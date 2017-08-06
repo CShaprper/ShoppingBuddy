@@ -346,7 +346,7 @@
         <!--Settings-->
         <scene sceneID="0GD-HV-var">
             <objects>
-                <viewController storyboardIdentifier="StoresController" title="Settings" useStoryboardIdentifierAsRestorationIdentifier="YES" id="TXE-EF-z2B" customClass="SettingsController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SettingsController" title="Settings" useStoryboardIdentifierAsRestorationIdentifier="YES" id="TXE-EF-z2B" customClass="SettingsController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2kA-IM-swc"/>
                         <viewControllerLayoutGuide type="bottom" id="m0j-tV-eO3"/>
@@ -358,8 +358,8 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="ZRi-cE-IPO">
                                 <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="2" minValue="0.0" maxValue="4" translatesAutoresizingMaskIntoConstraints="NO" id="iQH-d2-eko" customClass="DesignableUISlider" customModule="ShoppingBuddy" customModuleProvider="target">
-                                <rect key="frame" x="44" y="99" width="232" height="46"/>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="iQH-d2-eko" customClass="DesignableUISlider" customModule="ShoppingBuddy" customModuleProvider="target">
+                                <rect key="frame" x="34" y="99" width="252" height="31"/>
                                 <color key="minimumTrackTintColor" red="1" green="0.79592556420000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="maximumTrackTintColor" red="0.84073776010000001" green="0.95787805319999997" blue="0.63630330560000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="thumbTintColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -369,59 +369,86 @@
                                 </userDefinedRuntimeAttributes>
                             </slider>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="Ryd-KK-7dp">
-                                <rect key="frame" x="36" y="152" width="248" height="21.5"/>
+                                <rect key="frame" x="26" y="137" width="268" height="21"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9A5-88-vbD">
-                                        <rect key="frame" x="54.5" y="0.0" width="34.5" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="off" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9A5-88-vbD">
+                                        <rect key="frame" x="0.0" y="0.0" width="22" height="21"/>
+                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
+                                        <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p4y-xN-qHm">
-                                        <rect key="frame" x="105.5" y="0.0" width="36.5" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0,5 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="p4y-xN-qHm">
+                                        <rect key="frame" x="36.5" y="0.0" width="48.5" height="21"/>
+                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
+                                        <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mxz-oD-92b">
-                                        <rect key="frame" x="158" y="0.0" width="37" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1,0 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mxz-oD-92b">
+                                        <rect key="frame" x="99" y="0.0" width="46.5" height="21"/>
+                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
+                                        <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4 km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FG7-Ih-HZ3">
-                                        <rect key="frame" x="211" y="0.0" width="37" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1,5 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FG7-Ih-HZ3">
+                                        <rect key="frame" x="160" y="0.0" width="45.5" height="21"/>
+                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
+                                        <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 km" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULZ-KK-Hbc" userLabel="0 km">
-                                        <rect key="frame" x="0.0" y="0.0" width="38.5" height="21.5"/>
-                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2,0 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULZ-KK-Hbc" userLabel="0 km">
+                                        <rect key="frame" x="219.5" y="0.0" width="48.5" height="21"/>
+                                        <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
+                                        <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
                                 </subviews>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence Radius" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGc-eJ-fvr">
+                                <rect key="frame" x="36" y="69" width="248" height="27"/>
+                                <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
+                                <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                                <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <size key="shadowOffset" width="-2" height="-2"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Ryd-KK-7dp" firstAttribute="top" secondItem="iQH-d2-eko" secondAttribute="bottom" constant="8" id="4gN-HC-Zk3"/>
                             <constraint firstAttribute="trailing" secondItem="ZRi-cE-IPO" secondAttribute="trailing" id="AOT-sd-egU"/>
-                            <constraint firstItem="iQH-d2-eko" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leadingMargin" constant="30" id="KTE-46-BMB"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="iQH-d2-eko" secondAttribute="trailing" constant="30" id="Wqv-sG-KMJ"/>
+                            <constraint firstItem="iQH-d2-eko" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leadingMargin" constant="20" id="KTE-46-BMB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="VGc-eJ-fvr" secondAttribute="trailing" constant="20" id="KyJ-Kl-ER6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="iQH-d2-eko" secondAttribute="trailing" constant="20" id="Wqv-sG-KMJ"/>
                             <constraint firstItem="m0j-tV-eO3" firstAttribute="top" secondItem="ZRi-cE-IPO" secondAttribute="bottom" id="bLG-Oi-af4"/>
                             <constraint firstItem="ZRi-cE-IPO" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leading" id="e5Z-KM-ldp"/>
                             <constraint firstItem="ZRi-cE-IPO" firstAttribute="top" secondItem="2kA-IM-swc" secondAttribute="bottom" id="haJ-DX-Qm5"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Ryd-KK-7dp" secondAttribute="trailing" constant="20" id="m56-zK-YT5"/>
-                            <constraint firstItem="Ryd-KK-7dp" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leadingMargin" constant="20" id="rMA-Xz-FdR"/>
+                            <constraint firstItem="VGc-eJ-fvr" firstAttribute="top" secondItem="2kA-IM-swc" secondAttribute="bottom" constant="5" id="iST-KQ-mXJ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ryd-KK-7dp" secondAttribute="trailing" constant="10" id="m56-zK-YT5"/>
+                            <constraint firstItem="VGc-eJ-fvr" firstAttribute="centerX" secondItem="UEN-bi-zcW" secondAttribute="centerX" id="qeD-Xf-fH2"/>
+                            <constraint firstItem="Ryd-KK-7dp" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leadingMargin" constant="10" id="rMA-Xz-FdR"/>
                             <constraint firstItem="iQH-d2-eko" firstAttribute="top" secondItem="2kA-IM-swc" secondAttribute="bottom" constant="35" id="sPA-jY-77x"/>
+                            <constraint firstItem="VGc-eJ-fvr" firstAttribute="leading" secondItem="UEN-bi-zcW" secondAttribute="leadingMargin" constant="20" id="xO3-RM-7Xp"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="MEH-di-y52"/>
                     <connections>
                         <outlet property="BackgroundView" destination="ZRi-cE-IPO" id="Hbv-z1-PC0"/>
                         <outlet property="GeofenceRadiusSlider" destination="iQH-d2-eko" id="MDW-Oi-DJ2"/>
+                        <outlet property="lbl_RadiusFour" destination="ULZ-KK-Hbc" id="DG9-iL-Tft"/>
+                        <outlet property="lbl_RadiusOne" destination="p4y-xN-qHm" id="b00-09-DPW"/>
+                        <outlet property="lbl_RadiusThree" destination="FG7-Ih-HZ3" id="Qys-sm-chb"/>
+                        <outlet property="lbl_RadiusTwo" destination="mxz-oD-92b" id="TeI-OS-CjS"/>
+                        <outlet property="lbl_RadiusZero" destination="9A5-88-vbD" id="Get-aQ-jan"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yGR-f3-Kdr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -522,28 +549,64 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="Listpad-small" translatesAutoresizingMaskIntoConstraints="NO" id="LUv-NR-7Q9">
                                                     <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Byh-0u-fLs">
-                                                    <rect key="frame" x="7" y="30" width="135" height="120"/>
-                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="16"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="16" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Byh-0u-fLs">
+                                                    <rect key="frame" x="7.5" y="14.5" width="135" height="97.5"/>
+                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="32"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="JMO-f5-DgP">
+                                                    <rect key="frame" x="7.5" y="112" width="135" height="20"/>
+                                                    <subviews>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_store" translatesAutoresizingMaskIntoConstraints="NO" id="Y2a-Xu-2AS">
+                                                            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="20" id="DkM-cV-1qk"/>
+                                                                <constraint firstAttribute="width" constant="20" id="gzi-ha-lgL"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Store" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bdm-KL-KET">
+                                                            <rect key="frame" x="25" y="0.0" width="68.5" height="20"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_list" translatesAutoresizingMaskIntoConstraints="NO" id="gYh-ji-B5z">
+                                                            <rect key="frame" x="98.5" y="0.0" width="20" height="20"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="20" id="QT5-9N-WVS"/>
+                                                                <constraint firstAttribute="height" constant="20" id="rsR-uq-t5v"/>
+                                                            </constraints>
+                                                        </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="13" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ADQ-Oz-dGI">
+                                                            <rect key="frame" x="123.5" y="0.0" width="11.5" height="20"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
                                             </subviews>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstItem="JMO-f5-DgP" firstAttribute="width" secondItem="Byh-0u-fLs" secondAttribute="width" id="5CM-3N-1fQ"/>
+                                            <constraint firstItem="JMO-f5-DgP" firstAttribute="top" secondItem="Byh-0u-fLs" secondAttribute="bottom" id="7EI-bc-y4G"/>
                                             <constraint firstAttribute="bottom" secondItem="LUv-NR-7Q9" secondAttribute="bottom" id="Pbe-jn-h37"/>
-                                            <constraint firstItem="Byh-0u-fLs" firstAttribute="height" secondItem="LUv-NR-7Q9" secondAttribute="height" multiplier="0.8" id="Qjq-6y-0eG"/>
+                                            <constraint firstItem="JMO-f5-DgP" firstAttribute="centerX" secondItem="Byh-0u-fLs" secondAttribute="centerX" id="Q3T-L1-0g9"/>
+                                            <constraint firstItem="Byh-0u-fLs" firstAttribute="height" secondItem="LUv-NR-7Q9" secondAttribute="height" multiplier="0.65" id="Qjq-6y-0eG"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="JMO-f5-DgP" secondAttribute="bottom" constant="10" id="TUD-YB-eh4"/>
                                             <constraint firstAttribute="trailing" secondItem="LUv-NR-7Q9" secondAttribute="trailing" id="XWB-tm-v30"/>
                                             <constraint firstItem="LUv-NR-7Q9" firstAttribute="leading" secondItem="2al-7x-Cs9" secondAttribute="leading" id="XiU-zh-hGX"/>
                                             <constraint firstItem="Byh-0u-fLs" firstAttribute="centerX" secondItem="2al-7x-Cs9" secondAttribute="centerX" id="b7U-fX-9Qw"/>
                                             <constraint firstItem="LUv-NR-7Q9" firstAttribute="top" secondItem="2al-7x-Cs9" secondAttribute="top" id="ldm-tG-fUE"/>
-                                            <constraint firstAttribute="bottom" secondItem="Byh-0u-fLs" secondAttribute="bottom" id="vMb-ex-Mpp"/>
                                             <constraint firstItem="Byh-0u-fLs" firstAttribute="width" secondItem="LUv-NR-7Q9" secondAttribute="width" multiplier="0.9" id="xlx-US-bY5"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="BackgroundImage" destination="LUv-NR-7Q9" id="M53-S4-Tia"/>
+                                            <outlet property="lbl_ItemsCount" destination="ADQ-Oz-dGI" id="tp0-Od-of2"/>
                                             <outlet property="lbl_ListName" destination="Byh-0u-fLs" id="6DG-sO-QBi"/>
+                                            <outlet property="lbl_Store" destination="bdm-KL-KET" id="tgN-m6-S7z"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -1101,7 +1164,7 @@
         <scene sceneID="uIr-tu-t98">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="AHD-c2-dcB" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Stores" image="iconTabBar-Store" id="54i-OP-ifN"/>
+                    <tabBarItem key="tabBarItem" title="Stores" image="icon-TabBar-Settings" id="54i-OP-ifN"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="MLg-ug-Lr4">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -1144,7 +1207,7 @@
         <image name="Listpad-small" width="179" height="170"/>
         <image name="RoundMenu" width="516" height="1998"/>
         <image name="ShoppingBuddy-Logo" width="235" height="183"/>
-        <image name="Slider Thumb" width="46" height="46"/>
+        <image name="Slider Thumb" width="50" height="50"/>
         <image name="empty shopping cart" width="128" height="121"/>
         <image name="garbage" width="127" height="127"/>
         <image name="icon-AddList50x50" width="55" height="52"/>
@@ -1157,9 +1220,11 @@
         <image name="icon-Person" width="150" height="150"/>
         <image name="icon-Save" width="54" height="54"/>
         <image name="icon-Store" width="31" height="30"/>
+        <image name="icon-TabBar-Settings" width="25" height="25"/>
         <image name="iconTabBar-Dashboard" width="25" height="26"/>
-        <image name="iconTabBar-Store" width="26" height="26"/>
         <image name="iconTabbar-List" width="26" height="25"/>
+        <image name="icon_list" width="82" height="81"/>
+        <image name="icon_store" width="73" height="63"/>
     </resources>
     <color key="tintColor" red="0.21112695340000001" green="0.99378865959999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

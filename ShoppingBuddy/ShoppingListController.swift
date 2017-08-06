@@ -50,7 +50,10 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     
     
     
+    
     //MARK:- Member
+    var collectionViewItemsPerRow:CGFloat = 2
+    let collectionViewSectionsInsets:UIEdgeInsets = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
     var blurrView:UIVisualEffectView?
     var firebaseWebService:FirebaseWebService!
     var SelectedList:ShoppingList?
@@ -58,6 +61,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     var refreshShoppingListControl:UIRefreshControl!
     var swipedCellIndex:Int!
     var panRecognizer:UIPanGestureRecognizer!
+    var LongPressShoppingList:UILongPressGestureRecognizer!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -77,7 +81,6 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     func FirebaseRequestFinished() {
         ShoppingListCollectionView.reloadData()
         ShoppingListDetailTableView.reloadData()
-        //SortShoppingListItemsArrayBy_isSelected()
     }
     func FirebaseUserLoggedIn() { }
     func FirebaseUserLoggedOut() { }
@@ -114,6 +117,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         HideBlurrView()
         HideListDetailView()
         HideAddItemPopUp()
+        ShoppingListCollectionView.reloadData()
     }
     func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
         HideAddListPopUp()
@@ -251,6 +255,25 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                     }
                 }
             }
+        }
+    }
+    func HandleLongPressShoppingList(sender: UILongPressGestureRecognizer) -> Void {
+        let swipeLocation = LongPressShoppingList.location(in: self.ShoppingListCollectionView)
+        if let swipedIndexPath = ShoppingListCollectionView.indexPathForItem(at: swipeLocation) {
+            if let swipedCell = self.ShoppingListCollectionView.cellForItem(at: swipedIndexPath) {
+                
+                //remember the index of the swiped cell to reset after animation
+                swipedCellIndex = swipedIndexPath.row
+                
+                //calculate distance to drop item
+                let dropHeight = (ShoppingListCollectionView.frame.height - swipeLocation.y) * 1.5
+                
+                let rightDropLimit:CGFloat = 0.9
+                //Trash can image should bo on top
+                view.bringSubview(toFront: TrashImage)
+                TrashImage.alpha =  1
+            }
+            
         }
     }
     
@@ -393,9 +416,16 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             ShoppingListCollectionView.addSubview(refreshShoppingListControl)
         }
         
+        //Pan on List Item
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(HandleShoppingItemPan))
         panRecognizer.delegate = self
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
+        
+        //Pan on List
+        LongPressShoppingList = UILongPressGestureRecognizer(target: self, action: #selector(HandleLongPressShoppingList))
+        LongPressShoppingList.delegate = self
+        ShoppingListCollectionView.addGestureRecognizer(LongPressShoppingList)
+        
         
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
@@ -445,6 +475,23 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         
         //Set Detailtableview bottom constraint
         DetailTableViewBottomConstraint.constant = view.frame.height * 0.115
+    }
+}
+extension ShoppingListController: UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let paddingSpace = collectionViewSectionsInsets.left * (collectionViewItemsPerRow + 1)
+        let availableWidth = view.frame.width - paddingSpace
+        let widthPerItem = availableWidth / collectionViewItemsPerRow
+        
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return collectionViewSectionsInsets
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return collectionViewSectionsInsets.left
     }
 }
 extension Double {

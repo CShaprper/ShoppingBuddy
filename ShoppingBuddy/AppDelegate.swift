@@ -31,20 +31,57 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         UIApplication.shared.statusBarStyle = .lightContent
         UIApplication.statusBarBackgroundColor = UIColor.black
         
+        //Set Badegcount to zero
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
+        
+        let firstAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        firstAction.identifier = "startNavigation"
+        firstAction.title = "Start Navigation"
+        firstAction.activationMode = UIUserNotificationActivationMode.background
+        firstAction.isDestructive = false
+        firstAction.isAuthenticationRequired = false
+        
+        let secondAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        secondAction.identifier = "cancel"
+        secondAction.title = "Cancel"
+        secondAction.activationMode = UIUserNotificationActivationMode.background
+        secondAction.isDestructive = true
+        secondAction.isAuthenticationRequired = false
+        
+        let notificationActions = [firstAction, secondAction]
+        
+        let category = UIMutableUserNotificationCategory()
+        category.identifier = "CATEGORY_IDENTIFIER"
+        category.setActions(notificationActions, for: .default)
+        
+        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category])
+        
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
                 if error != nil{ print(error!.localizedDescription); return }
-                if granted { application.registerForRemoteNotifications() }
-                else { application.unregisterForRemoteNotifications() //todo: remove token from firebase
+                if granted {
+                    application.registerForRemoteNotifications()
+                    application.registerUserNotificationSettings(notificationSettings)
+                }
+                else {
+                    application.unregisterForRemoteNotifications() //todo: remove token from firebase
+                    application.registerUserNotificationSettings(notificationSettings)
                 }
             })
         } else {
             // Fallback on earlier versions
             application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+            application.registerUserNotificationSettings(notificationSettings)
+        }
+        
+        //Set standard Map Zoom
+        if UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue) == 0{
+            UserDefaults.standard.set(5000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
         
         return true
-    } 
+    }
     
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
         let token:[String:AnyObject] = [Messaging.messaging().fcmToken!:Messaging.messaging().fcmToken as AnyObject]

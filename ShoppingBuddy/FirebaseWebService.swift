@@ -241,12 +241,12 @@ class FirebaseWebService: IFirebaseWebService {
     
     
     //MARK: - Firebase Delete Functions
-    func DeleteStoreFromFirebase(idToDelete: String) -> Void {
+    func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        let storeRef = ref.child("stores").child(uid)
-        storeRef.child(idToDelete).removeValue { (error, dbref) in
+        let storeRef = ref.child("shopping-lists").child(uid).child(listToDelete.ID!)
+        storeRef.removeValue { (error, dbref) in
             if error != nil{
                 self.FirebaseRequestFinished()
                 print(error!.localizedDescription)
@@ -255,7 +255,7 @@ class FirebaseWebService: IFirebaseWebService {
                 self.ShowAlertMessage(title: title, message: message)
                 return
             }
-            print("Succesfully deleted Store \(dbref.key) from Firebase")
+            print("Succesfully deleted Shopping List from Firebase")
             self.FirebaseRequestFinished()
         }
     }

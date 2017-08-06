@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:mapstogpx20170806_145102.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:Aldi.gpx">
+   </FileRef>
+   <FileRef
       location = "group:ShoppingBuddy.xcodeproj">
    </FileRef>
    <FileRef

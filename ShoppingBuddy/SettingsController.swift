@@ -12,6 +12,11 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var GeofenceRadiusSlider: UISlider!
+    @IBOutlet var lbl_RadiusZero: UILabel!
+    @IBOutlet var lbl_RadiusOne: UILabel!
+    @IBOutlet var lbl_RadiusTwo: UILabel!
+    @IBOutlet var lbl_RadiusThree: UILabel!
+    @IBOutlet var lbl_RadiusFour: UILabel!
     
     
     
@@ -25,9 +30,12 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         ConfigureView()
         
         GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
+        
+        let savedSilderValue = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        SetGeofenceRadiusSliderValue(value: savedSilderValue)
     }
     override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning() 
+        super.didReceiveMemoryWarning()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -67,8 +75,12 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     
     //MARK: - Wired actions
     func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
-        let value = roundf(sender.value)
-        GeofenceRadiusSlider.value = value
+        
+        let value = roundf(sender.value * 2) / 2
+        print(value)
+       GeofenceRadiusSlider.value = value
+        UserDefaults.standard.set(value, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        SetGeofenceRadiusSliderValue(value: value)
     }
     
     //MARK: - Helper Functions
@@ -77,6 +89,46 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         firebaseWebService = FirebaseWebService()
         firebaseWebService.firebaseWebServiceDelegate = self
         firebaseWebService.alertMessageDelegate = self
+    }
+    func SetGeofenceRadiusSliderValue(value: Float) -> Void{
+        GeofenceRadiusSlider.value = value
+        switch value {
+        case 0:
+            lbl_RadiusZero.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
+            break
+        case 0.5:
+            lbl_RadiusOne.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
+            break
+        case 1.0:
+            lbl_RadiusTwo.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
+            break
+        case 1.5:
+            lbl_RadiusThree.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
+        case 2.0:
+            lbl_RadiusFour.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
+            lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
+        default:
+            break
+        }
     }
 }
 

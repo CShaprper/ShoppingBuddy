@@ -11,4 +11,5 @@ import Foundation
 enum eUserDefaultKey:String {
     case MonitoredRadius = "MonitoredRadius"
     case MonitoredRegions = "MonitoredRegions"
+    case MapSpan = "MapSpan"
 }

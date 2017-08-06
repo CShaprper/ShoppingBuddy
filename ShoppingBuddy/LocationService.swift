@@ -13,7 +13,9 @@ import UserNotifications
 
 class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDelegate, IAlertMessageDelegate {
     private var mapView:MKMapView!
+    private var mapSpan:Int!
     var alertMessageDelegate: IAlertMessageDelegate?
+    private var userLocation:CLLocationCoordinate2D!
     
     //Constructor
     init(mapView:MKMapView, alertDelegate: IAlertMessageDelegate) {
@@ -22,12 +24,12 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
         self.delegate = self
         self.allowsBackgroundLocationUpdates = true
         self.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        self.distanceFilter = CLLocationDistance(exactly: 1000)!
-        //self.monitoredRegions
+        self.distanceFilter = CLLocationDistance(exactly: 5000)!
         self.mapView = mapView
         self.mapView.delegate = self
         self.mapView.userTrackingMode = .follow
         self.mapView.showsUserLocation = true
+        mapSpan = UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue)
     }
     
     //MARK: - IAlertMessageDelegate implementation
@@ -42,21 +44,30 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     //MARK: - LocationManagerDelegate implementation
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         self.stopUpdatingLocation() //Battery saving
-        self.mapView.centerCoordinate = locations[0].coordinate
+        self.userLocation = locations[0].coordinate
+        self.mapView.centerCoordinate = userLocation
     }
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        let title = "\(region.identifier) \(String.LocationManagerEnteredRegion_AlertTitle)"
+        let regionStr = region.identifier.replacingOccurrences(of: "SB_", with: "")
+        let title = "\(regionStr) \(String.LocationManagerEnteredRegion_AlertTitle)"
         let message = String.LocationManagerEnteredRegion_AlertMessage
-        if alertMessageDelegate != nil{
+        if alertMessageDelegate != nil
+        {
             alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
-        } else {
+        }
+        else
+        {
             print("Alert message delegate not set from calling class in LocationService")
         }
         ShowNotification(title: title, message: message)
     }
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        //toDo: remove monitored region
         print("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
+        for reg in self.monitoredRegions{
+            if reg.identifier == region!.identifier{
+                self.stopMonitoring(for: reg)
+            }
+        }
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("locationManager failed with error \(error.localizedDescription)")
@@ -89,7 +100,8 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
         return pinView
     }
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: 3000)!, CLLocationDistance(exactly: 3000)!)
+        self.StopMonitoringForRegions()
+        let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
         mapView.setRegion(region, animated: false)
         //Search nearby Shops
         PerformLocalShopSearch()
@@ -110,7 +122,7 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             self.requestAlwaysAuthorization()
         }
         if CLLocationManager.authorizationStatus() == .authorizedAlways{
-            self.startUpdatingLocation()
+            self.startMonitoringSignificantLocationChanges()
         }
         if CLLocationManager.authorizationStatus() == .denied{
             let title = String.GPSAuthorizationRequestDenied_AlertTitle
@@ -118,11 +130,32 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             self.ShowAlertMessage(title: title, message: message)
         }
     }
-   private func GeofenceRegion(coorodinate: CLLocationCoordinate2D, radius: CLLocationDistance, identifier: String) -> Void{
-        let region = CLCircularRegion(center: coorodinate, radius: radius, identifier: identifier)
-        self.startMonitoring(for: region)
-        let circle = MKCircle(center: coorodinate, radius: region.radius)
-        mapView.add(circle)
+    private func GeofenceRegions(response: MKLocalSearchResponse) -> Void{
+        if UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) > 0{
+            let radius = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+            if radius == 0 { StopMonitoringForRegions(); return }
+            for item in response.mapItems {
+                let coord1 = CLLocation(latitude: item.placemark.coordinate.latitude, longitude: item.placemark.coordinate.longitude)
+                let coord2 = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                let distanceInMeters = coord1.distance(from: coord2)
+                if distanceInMeters <= Double(mapSpan){
+                    let region = CLCircularRegion(center: item.placemark.coordinate, radius: CLLocationDistance(radius) * 1000, identifier: "\("SB_")\(item.name!)")
+                    self.startMonitoring(for: region)
+                    let circle = MKCircle(center: item.placemark.coordinate, radius: region.radius)
+                    mapView.add(circle)
+                }
+            }
+        }
+    }
+    func StopMonitoringForRegions(){
+        for region in self.monitoredRegions {
+            if let circularRegion = region as? CLCircularRegion {
+                print(circularRegion.identifier)
+                if circularRegion.identifier.contains("SB_"){
+                    self.stopMonitoring(for: circularRegion)
+                } 
+            }
+        }
     }
     func ShowNotification(title:String, message:String) -> Void{
         if #available(iOS 10.0, *) {
@@ -155,11 +188,8 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             }
             print("Matches found")
             self.SetMapAnnotations(response: response!)
-        }
-    }
-    private func IterateAnnotaitons(userCoordinate: CLLocationCoordinate2D){
-        for annotation in self.mapView.annotations{
-           GeofenceRegion(coorodinate: annotation.coordinate, radius: 2000, identifier: "test")
+            
+            self.GeofenceRegions(response: response!)
         }
     }
     
