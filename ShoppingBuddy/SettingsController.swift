@@ -75,7 +75,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     
     //MARK: - Wired actions
     func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
-        
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
         let value = roundf(sender.value * 2) / 2
         print(value)
        GeofenceRadiusSlider.value = value

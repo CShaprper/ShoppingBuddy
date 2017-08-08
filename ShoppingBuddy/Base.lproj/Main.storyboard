@@ -506,7 +506,7 @@
                     </constraints>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3408.75" y="1588.75"/>
+            <point key="canvasLocation" x="3304" y="1589"/>
         </scene>
         <!--Shopping Lists-->
         <scene sceneID="Swa-ox-URi">
@@ -551,7 +551,7 @@
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="List name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="16" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Byh-0u-fLs">
                                                     <rect key="frame" x="7.5" y="14.5" width="135" height="97.5"/>
-                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="32"/>
+                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="26"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>

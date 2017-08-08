@@ -442,6 +442,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         AddShoppingListPopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
         AddShoppingListPopUp.layer.shadowOpacity  = 1
         AddShoppingListPopUp.layer.shadowRadius  = 10
+        AddShoppingListPopUp.bringSubview(toFront: btn_SaveList)
         lbl_AddListPopUpTitle.text = String.lbl_AddListPopUpTitle
         txt_RelatedStore.delegate = self
         txt_RelatedStore.placeholder = String.txt_RelatedStore_Placeholder

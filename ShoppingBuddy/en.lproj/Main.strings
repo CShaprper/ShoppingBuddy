@@ -1,2 +1,97 @@
 
- 
+/* Class = "UITextField"; placeholder = "email"; ObjectID = "0bc-5S-3Sh"; */
+"0bc-5S-3Sh.placeholder" = "email";
+
+/* Class = "UINavigationItem"; title = "Shopping Lists"; ObjectID = "16G-fB-jgg"; */
+"16G-fB-jgg.title" = "Shopping Lists";
+
+/* Class = "UILabel"; text = "Shopping List Item"; ObjectID = "1e6-SP-iC2"; */
+"1e6-SP-iC2.text" = "Shopping List Item";
+
+/* Class = "UINavigationItem"; title = "Dashboard"; ObjectID = "3Re-rQ-gfn"; */
+"3Re-rQ-gfn.title" = "Dashboard";
+
+/* Class = "UITabBarItem"; title = "Stores"; ObjectID = "54i-OP-ifN"; */
+"54i-OP-ifN.title" = "Stores";
+
+/* Class = "UITextField"; placeholder = "store name"; ObjectID = "5T9-en-3Os"; */
+"5T9-en-3Os.placeholder" = "store name";
+
+/* Class = "UIButton"; normalTitle = "x"; ObjectID = "5b2-W2-QaN"; */
+"5b2-W2-QaN.normalTitle" = "x";
+
+/* Class = "UILabel"; text = "off"; ObjectID = "9A5-88-vbD"; */
+"9A5-88-vbD.text" = "off";
+
+/* Class = "UITabBarItem"; title = "Shopping List"; ObjectID = "A59-KR-mUP"; */
+"A59-KR-mUP.title" = "Shopping List";
+
+/* Class = "UILabel"; text = "13"; ObjectID = "ADQ-Oz-dGI"; */
+"ADQ-Oz-dGI.text" = "13";
+
+/* Class = "UITextField"; placeholder = "password"; ObjectID = "Buk-3I-Z7d"; */
+"Buk-3I-Z7d.placeholder" = "password";
+
+/* Class = "UILabel"; text = "List name"; ObjectID = "Byh-0u-fLs"; */
+"Byh-0u-fLs.text" = "List name";
+
+/* Class = "UISegmentedControl"; D0Q-ag-Pnp.segmentTitles[0] = "Login"; ObjectID = "D0Q-ag-Pnp"; */
+"D0Q-ag-Pnp.segmentTitles[0]" = "Login";
+
+/* Class = "UISegmentedControl"; D0Q-ag-Pnp.segmentTitles[1] = "Sign up"; ObjectID = "D0Q-ag-Pnp"; */
+"D0Q-ag-Pnp.segmentTitles[1]" = "Sign up";
+
+/* Class = "UILabel"; text = "1,5 km"; ObjectID = "FG7-Ih-HZ3"; */
+"FG7-Ih-HZ3.text" = "1,5 km";
+
+/* Class = "UILabel"; text = "Add List Item"; ObjectID = "GCd-nj-6iB"; */
+"GCd-nj-6iB.text" = "Add List Item";
+
+/* Class = "UITabBarItem"; title = "Dashboard"; ObjectID = "LzV-J4-6U3"; */
+"LzV-J4-6U3.title" = "Dashboard";
+
+/* Class = "UINavigationItem"; title = "Settings"; ObjectID = "MEH-di-y52"; */
+"MEH-di-y52.title" = "Settings";
+
+/* Class = "UILabel"; text = "Add Shopping List"; ObjectID = "Ot9-4g-1ti"; */
+"Ot9-4g-1ti.text" = "Add Shopping List";
+
+/* Class = "UIViewController"; title = "Settings"; ObjectID = "TXE-EF-z2B"; */
+"TXE-EF-z2B.title" = "Settings";
+
+/* Class = "UILabel"; text = "2,0 km"; ObjectID = "ULZ-KK-Hbc"; */
+"ULZ-KK-Hbc.text" = "2,0 km";
+
+/* Class = "UILabel"; text = "Geofence Radius"; ObjectID = "VGc-eJ-fvr"; */
+"VGc-eJ-fvr.text" = "Geofence Radius";
+
+/* Class = "UIViewController"; title = "Dashboard"; ObjectID = "W3B-pI-nfF"; */
+"W3B-pI-nfF.title" = "Dashboard";
+
+/* Class = "UITextField"; placeholder = "item name"; ObjectID = "aSM-o5-8cy"; */
+"aSM-o5-8cy.placeholder" = "item name";
+
+/* Class = "UILabel"; text = "Store"; ObjectID = "bdm-KL-KET"; */
+"bdm-KL-KET.text" = "Store";
+
+/* Class = "UIButton"; normalTitle = "reset password?"; ObjectID = "g47-QV-xaK"; */
+"g47-QV-xaK.normalTitle" = "reset password?";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "krP-5X-8hg"; */
+"krP-5X-8hg.text" = "Label";
+
+/* Class = "UILabel"; text = "1,0 km"; ObjectID = "mxz-oD-92b"; */
+"mxz-oD-92b.text" = "1,0 km";
+
+/* Class = "UILabel"; text = "0,5 km"; ObjectID = "p4y-xN-qHm"; */
+"p4y-xN-qHm.text" = "0,5 km";
+
+/* Class = "UITextField"; placeholder = "related store"; ObjectID = "tDy-7J-Qnu"; */
+"tDy-7J-Qnu.placeholder" = "related store";
+
+/* Class = "UITextField"; placeholder = "nickname"; ObjectID = "uTY-0R-IOp"; */
+"uTY-0R-IOp.placeholder" = "nickname";
+
+/* Class = "UITextField"; placeholder = "list name"; ObjectID = "w0Q-RJ-8o8"; */
+"w0Q-RJ-8o8.placeholder" = "list name";
+

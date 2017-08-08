@@ -1,0 +1,65 @@
+/*
+ Localizeable.strings
+ ShoppingBuddy
+ 
+ Created by Peter Sypek on 22.07.17.
+ Copyright © 2017 Peter Sypek. All rights reserved.
+ */
+    //Validation Service Alert
+ValidationAlert_Title = "Error de autentificaciÛn";
+    //Password
+ValidationPasswordEmptyAlert_Message = "Por favor ° introduzca una contraseÒa !";
+ValidationPasswordCharactersCountBelowSixAlert_Message = "° Su contraseÒa debe contener al menos 6 car·cteres !";
+    //Nickname
+ValidationNicknameEmptyAlert_Message = "Por favor ° introduzca su apodo !";
+ValidationNicknameShouldContainAtLeastSixCharacters = "° Su apodo debe contener al menos 6 car·cteres !";
+    //Email
+ValidationEmailEmptyAlert_Message = "Por favor ° introduzca su correo electrÛnico !";
+ValidationEmailShouldContainAtSign = "° Su correo electrÛnico debe contener un '@' !";
+ValidationEmailShouldContainDot = "° Su correo electrÛnico debe contener un '.' !";
+ValidationEmailContainsSpaces = "° No deberia hay espacios en su correo electrÛnico !";
+ValidationEmailEndingInvalid = "Correo electrÛnico inv·lido. ° Su correo electrÛnico debe acabar con .com o .de o otro !";
+ValidationEmailContainsInvalidCharacters = "° Su correo electrÛnico contiene uno o m·s car·cteres inv·lidos !";
+    //Textfield
+ValidationTextFieldEmptyAlert_Message = "° Los campos de textos deben ser rellenados !";
+ValidationTextFieldBelowTwoCharachtersAlert_Message = "El campo de texto debe contener al menos 2 car·cteres !";
+
+    //LoginController
+LogInSegmentedControll_SegmentOne = "Conectarse";
+LogInSegmentedControll_SegmentTwo = "Inscribirse";
+txt_Nickname_Placeholder = "Apodo"; //nickname text input field
+txt_Email_Placeholder = "Correo electrÛnico"; //email text input field
+txt_Password_Placeholer = "ContraseÒa"; //password text input field
+LoginResetPassword = "ø Restablecer la contraseÒa ?";
+
+    //DahboardController
+DashboardControllerTitle = "Tablero"; //Dashboard view of the app
+
+    //SettingsController
+SettingsControllerTitle = "Configuraciones"; //parameters of the app
+txt_AddStore_Placeholder = "Nombre de la tienda"; //name of a store that is bound to a shopping list
+
+    //ShoppingListController
+ShoppingListControllerTitle = "Listas de compras";
+
+    //Add Shopping  List PopUp
+lbl_AddListPopUpTitle = "Agregar une nueva lista";
+txt_RelatedStore_Placeholder = "Tienda relacionada"; //means the store the list is bound to
+txt_ListName_Placeholder = "Nombre de la lista";  //name of shopping list
+    //Add Item PopUp
+lbl_AddItemPopUpTitle = "Agregar un artÌculo"; //means grocery item
+txt_ItemName_Placeholer = "Nombre del artÌculo"; //means grocery item
+
+    //LocationService
+GPSAuthorizationRequestDenied_AlertTitle = "Comentario GPS";
+GPSAuthorizationRequestDenied_AlertMessage = "Sin autorizaciÛn GPS, los servicios de localizaciÛn estan desactivados. No estara informado de sus listas de compras cuando estara a proximidad de une tienda.";
+GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Configuraciones";  //parameters of the app
+GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "No gracias";
+LocationManagerEnteredRegion_AlertTitle = "A proximidad"; // Alert title when a store is nearby
+LocationManagerEnteredRegion_AlertMessage = "ø Quiere empezar la navegaciÛn ?";
+
+    //InApp Purchase
+lbl_Abonnement_Monthly = "SuscripciÛn mensual";
+lbl_Abonnement_Monthly = "SuscripciÛn trimestral";
+lbl_Abonnement_Monthly = "SuscripciÛn anual";
+lbl_RestorePurchases = "Restablecer las compras";

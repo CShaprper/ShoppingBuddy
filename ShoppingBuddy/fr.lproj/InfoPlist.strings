@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  ShoppingBuddy
+
+  Created by Peter Sypek on 02.08.17.
+  Copyright © 2017 Peter Sypek. All rights reserved.
+*/
+NSLocationAlwaysUsageDescription = "Shopping Buddy want's to inform you when your close to stores of your shopping lists.";

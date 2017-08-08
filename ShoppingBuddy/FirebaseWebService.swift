@@ -163,6 +163,8 @@ class FirebaseWebService: IFirebaseWebService {
                     newShoppinglist.ID = dict["id"] as? String ?? ""
                     newShoppinglist.Name = dict["name"] as? String ?? ""
                     newShoppinglist.RelatedStore = dict["relatedStore"] as? String ?? ""
+                    let store = dict["relatedStore"] as? String ?? ""
+                    self.AppendToStoresArray(store: store)
                 }
                 let itemDataSnapshot = list.childSnapshot(forPath: "items")
                 var newItems = [ShoppingListItem]()
@@ -186,9 +188,18 @@ class FirebaseWebService: IFirebaseWebService {
                 } else {
                     ShoppingListsArray.append(newShoppinglist)
                 }
-            }            
+            }
             self.FirebaseRequestFinished()
         })
+    }
+    private func AppendToStoresArray(store: String){
+        if store != ""{
+            if !StoresArray.contains(store){
+                StoresArray.append(store)
+                //Save Stores Array to UserDefaults
+                UserDefaults.standard.setValue(StoresArray, forKey: eUserDefaultKey.StoresArray.rawValue)
+            }
+        }
     }
     
     //MARK: - Edit Functions
@@ -276,7 +287,7 @@ class FirebaseWebService: IFirebaseWebService {
             print("Succesfully deleted item of shopping list from Firebase")
             self.FirebaseRequestFinished()
         }
-
+        
     }
     
     //MARK: - Helpers

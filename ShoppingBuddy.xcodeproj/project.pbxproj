@@ -125,6 +125,13 @@
 		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
 		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
+		CFB6359B1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
+		CFB6359C1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		CFB6359D1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CFB6359E1F3A26FB00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CFB6359F1F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CFB635A01F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CFB635A21F3A279000D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		CFC6BCD41F32503900366553 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -536,6 +543,8 @@
 				en,
 				Base,
 				de,
+				fr,
+				es,
 			);
 			mainGroup = CFE4A1BE1F23C0DC002A12C7;
 			productRefGroup = CFE4A1C81F23C0DC002A12C7 /* Products */;
@@ -814,6 +823,8 @@
 			children = (
 				CFC6BCDB1F3264B500366553 /* en */,
 				CFC8CE501F326D650032AA9F /* de */,
+				CFB6359D1F3A26FA00D8C592 /* fr */,
+				CFB6359F1F3A276700D8C592 /* es */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -824,6 +835,8 @@
 				CFE4A2291F23DA9C002A12C7 /* Base */,
 				CFE4A22B1F23DAB6002A12C7 /* en */,
 				CFE4A2341F23DC3A002A12C7 /* de */,
+				CFB6359B1F3A26FA00D8C592 /* fr */,
+				CFB635A21F3A279000D8C592 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -834,6 +847,7 @@
 				CFE4A1D41F23C0DC002A12C7 /* Base */,
 				CFE4A22F1F23DAD9002A12C7 /* en */,
 				CFE4A2351F23DC3A002A12C7 /* de */,
+				CFB6359C1F3A26FA00D8C592 /* fr */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -843,6 +857,8 @@
 			children = (
 				CFE4A2371F23DC62002A12C7 /* de */,
 				CFE4A2391F23DC78002A12C7 /* en */,
+				CFB6359E1F3A26FB00D8C592 /* fr */,
+				CFB635A01F3A276700D8C592 /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

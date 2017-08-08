@@ -12,6 +12,7 @@ import GooglePlaces
 import UserNotifications
 
 var ShoppingListsArray:[ShoppingList] = []
+var StoresArray:[String] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
@@ -77,8 +78,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         
         //Set standard Map Zoom
         if UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue) == 0{
-            UserDefaults.standard.set(5000, forKey: eUserDefaultKey.MapSpan.rawValue)
+            UserDefaults.standard.set(10000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
+        //Set standard value
+        UserDefaults.standard.set(false, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
         
         return true
     }
