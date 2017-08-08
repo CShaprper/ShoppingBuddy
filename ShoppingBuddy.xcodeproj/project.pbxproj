@@ -36,6 +36,7 @@
 		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
 		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
+		CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */; };
 		CFC6BCD51F32503900366553 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD41F32503900366553 /* LocationService.swift */; };
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
@@ -132,6 +133,7 @@
 		CFB6359F1F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFB635A01F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CFB635A21F3A279000D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
+		CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseUser.swift; sourceTree = "<group>"; };
 		CFC6BCD41F32503900366553 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 				CFB4C83B1F28D12B00F9FE69 /* Store.swift */,
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
+				CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFC6BCD41F32503900366553 /* LocationService.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
@@ -760,6 +763,7 @@
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
 				CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */,
+				CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */,
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
