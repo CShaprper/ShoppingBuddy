@@ -36,6 +36,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var txt_ListName: UITextField!
     @IBOutlet var txt_RelatedStore: UITextField!
     @IBOutlet var lbl_AddListPopUpTitle: UILabel!
+    @IBOutlet var btn_DeleteList: UIButton!
     
     //Add Item PopUp
     @IBOutlet var AddItemPopUp: UIView!
@@ -138,6 +139,11 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         if isValid{
             firebaseWebService.SaveListItemToFirebaseDatabase(shoppingListID: SelectedList!.ID!, itemName: txt_ItemName.text!)
             HideAddItemPopUp()
+        }
+    }
+    func btn_DeleteList_Pressed(sender: UIButton) -> Void {
+        if SelectedList != nil{
+            firebaseWebService.DeleteShoppingListFromFirebase(listToDelete: SelectedList!)
         }
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -450,6 +456,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
         txt_ListName.textColor = UIColor.black
+        btn_DeleteList.addTarget(self, action: #selector(btn_DeleteList_Pressed), for: .touchUpInside)
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
         AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
