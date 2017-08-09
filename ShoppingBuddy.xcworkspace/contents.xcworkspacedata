@@ -2,10 +2,19 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:mapstogpx20170806_145102.gpx">
+      location = "group:/Users/petersypek/Desktop/ShoppingBuddy/Weiden.gpx">
    </FileRef>
    <FileRef
-      location = "group:Aldi.gpx">
+      location = "group:Ehrenfeld.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:Widdersdorf.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:Zollstock.gpx">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/petersypek/Desktop/ShoppingBuddy/AldiFrechen.gpx">
    </FileRef>
    <FileRef
       location = "group:ShoppingBuddy.xcodeproj">

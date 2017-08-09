@@ -11,7 +11,8 @@ import CoreLocation
 import MapKit
 import UserNotifications
 
-class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDelegate, IAlertMessageDelegate {
+class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IAlertMessageDelegate {
+    private var locationManager:CLLocationManager!
     private var mapView:MKMapView!
     private var mapSpan:Int!
     var alertMessageDelegate: IAlertMessageDelegate?
@@ -20,17 +21,18 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     //Constructor
     init(mapView:MKMapView, alertDelegate: IAlertMessageDelegate) {
         super.init()
+        mapSpan = UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue)
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         self.alertMessageDelegate  = alertDelegate
-        self.delegate = self
-        self.allowsBackgroundLocationUpdates = true
-        self.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        self.distanceFilter = CLLocationDistance(exactly: 5000)!
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = CLLocationDistance(exactly: Double(mapSpan!) * 0.5)!
         self.mapView = mapView
         self.mapView.delegate = self
         self.mapView.userTrackingMode = .follow
         self.mapView.showsUserLocation = true
-        mapSpan = UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue)
-        UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
     }
     
     //MARK: - IAlertMessageDelegate implementation
@@ -44,7 +46,7 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     
     //MARK: - LocationManagerDelegate implementation
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first{
+        if let location = locations.last{
             self.userLocation = location.coordinate
             self.mapView.centerCoordinate = location.coordinate
             
@@ -53,7 +55,7 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             if latitude > 0 && longitude > 0{
                 let coord1 = CLLocation(latitude: CLLocationDegrees(floatLiteral: latitude), longitude: CLLocationDegrees(floatLiteral: longitude))
                 let distance = coord1.distance(from: location)
-                if distance > Double(mapSpan) * 0.6{
+                if distance > Double(mapSpan){
                     SaveNewValueAsLastUserPosition(location: location)
                 }
             } else {
@@ -66,7 +68,11 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
         UserDefaults.standard.set(location.coordinate.longitude, forKey: eUserDefaultKey.LastUserLongitude.rawValue)
     }
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        let regionStr = region.identifier.replacingOccurrences(of: "SB_", with: "")
+        let str:[String] = region.identifier.components(separatedBy: "SB_")
+        var regionStr:String = ""
+        if str.count > 0{
+            regionStr = str.last!
+        }
         let title = "\(regionStr) \(String.LocationManagerEnteredRegion_AlertTitle)"
         let message = String.LocationManagerEnteredRegion_AlertMessage
         if alertMessageDelegate != nil { alertMessageDelegate?.ShowAlertMessage(title: title, message: message)}
@@ -75,17 +81,15 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     }
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         print("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
-        for reg in self.monitoredRegions{
-            if reg.identifier == region!.identifier{
-                self.stopMonitoring(for: reg)
-            }
-        }
+        locationManager.stopMonitoring(for: region!)
     }
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        print("Monitored Regions: \(locationManager.monitoredRegions.count)")
         if let reg = region as? CLCircularRegion{
             let circle = MKCircle(center: reg.center, radius: reg.radius)
             self.mapView.add(circle)
         }
+        print(locationManager.monitoredRegions)
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("locationManager failed with error")
@@ -98,7 +102,7 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             return MKOverlayRenderer()
         }
         let circleRenderer = MKCircleRenderer(circle: circleOverlay)
-        circleRenderer.strokeColor = UIColor.ColorPaletteorange()
+        circleRenderer.strokeColor = UIColor.red
         circleRenderer.alpha = 1
         circleRenderer.lineWidth = 1
         return circleRenderer
@@ -127,20 +131,10 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             //Set hasUserChangedGeofenceRadius false
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
             
-            //Remove old Overlays from Map
-            self.RemoveOldGeofenceOverlays()
-            
-            // Stop monitoring old regions
-            self.StopMonitoringForRegions()
-            
             //Search nearby Shops
             PerformLocalShopSearch()
-        } else if HasUserMovedDistanceGreaterMapSpan(userLocation: userLocation){
-            //Remove old Overlays from Map
-            self.RemoveOldGeofenceOverlays()
-            
-            // Stop monitoring old regions
-            self.StopMonitoringForRegions()
+        }
+        else if HasUserMovedDistanceGreaterMapSpan(userLocation: userLocation){
             
             //Search nearby Shops
             PerformLocalShopSearch()
@@ -157,14 +151,23 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool{
         if  let lastUserLocation = ReadLastUserLocationFromUserDefaults(){
             let distance = userLocation.location?.distance(from: lastUserLocation)
-            if distance != nil && distance! > Double(mapSpan) * 0.6{
+            if distance != nil && distance! > Double(mapSpan){
                 return true
             }
         }
         return false
     }
+    
+    
+    
     //MARK: MKMapViewDelegate Helper
     func PerformLocalShopSearch() -> Void{
+        // Stop monitoring old regions
+        self.StopMonitoringForOldRegions()
+        
+        //Remove old Geofence Overlays
+        self.RemoveOldGeofenceOverlays()
+        
         //Get UserDefaults Array
         let savedStores = UserDefaults.standard.object(forKey: eUserDefaultKey.StoresArray.rawValue) as? [String] ?? [String]()
         for store in savedStores{
@@ -184,11 +187,11 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
                 }
                 print("Matches found")
                 
-                //Start monitoring Geofence regions
-                self.GeofenceRegions(response: response)
-                
                 //Set map Annotations
                 self.SetMapAnnotations(response: response)
+                
+                //Start monitoring Geofence regions
+                self.StartMonitoringGeofenceRegions(response: response)
             }
         }
     }
@@ -196,10 +199,10 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
     //MARK: - Helper Functions
     func RequestGPSAuthorization() -> Void{
         if CLLocationManager.authorizationStatus() == .notDetermined {
-            self.requestAlwaysAuthorization()
+            locationManager.requestAlwaysAuthorization()
         }
         if CLLocationManager.authorizationStatus() == .authorizedAlways{
-            self.startMonitoringSignificantLocationChanges()
+            locationManager.startMonitoringSignificantLocationChanges()
         }
         if CLLocationManager.authorizationStatus() == .denied{
             let title = String.GPSAuthorizationRequestDenied_AlertTitle
@@ -226,14 +229,10 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
             // Fallback on earlier versions
         }
     }
-    func StopMonitoringForRegions(){
-        for region in self.monitoredRegions {
-            if let circularRegion = region as? CLCircularRegion {
-                print("removing Region: " + circularRegion.identifier)
-                if circularRegion.identifier.contains("SB_"){
-                    self.stopMonitoring(for: circularRegion)
-                }
-            }
+    func StopMonitoringForOldRegions(){
+        for region in locationManager.monitoredRegions {
+            print("removing Region: " + region.identifier)
+            locationManager.stopMonitoring(for: region)
         }
     }
     private func CalculateDistanceBetweenTwoCoordinates(location1: CLLocationCoordinate2D, location2: CLLocationCoordinate2D) -> CLLocationDistance {
@@ -241,26 +240,34 @@ class LocationService:CLLocationManager, CLLocationManagerDelegate, MKMapViewDel
         let coord2 = CLLocation(latitude: location2.latitude, longitude: location2.longitude)
         return coord1.distance(from: coord2)
     }
-    private func GeofenceRegions(response: MKLocalSearchResponse?) -> Void{
+    private func StartMonitoringGeofenceRegions(response: MKLocalSearchResponse?) -> Void{
         if response == nil { return }
-        if UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) > 0{
-            let radius = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) * 1000
-            if radius == 0 { StopMonitoringForRegions(); return }
-            for item in response!.mapItems {
-                let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation, location2: item.placemark.coordinate)
-                if distanceToUser <= Double(mapSpan) * 0.6{
-                    let region = CLCircularRegion(center: item.placemark.coordinate, radius: CLLocationDistance(radius), identifier: "\("SB_")\(item.name!)")
-                    self.startMonitoring(for: region)
-                    print("Start monitoring for region: \(region.identifier)")
-                }
+        let radius = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) * 1000
+        if radius == 0 { StopMonitoringForOldRegions(); return }
+        for item in response!.mapItems {
+            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation, location2: item.placemark.coordinate)
+            if distanceToUser <= Double(mapSpan) * 0.5{
+                print("distance to User: \(distanceToUser)")
+                print("Monitored Regions: \(locationManager.monitoredRegions.count)")
+                print("MapSpan: \(mapSpan)")
+                let region = CLCircularRegion(center: item.placemark.coordinate, radius: CLLocationDistance(radius), identifier: "\(UUID().uuidString)\("SB_")\(item.name!)")
+                locationManager.startMonitoring(for: region)
             }
         }
     }
     private func RemoveOldGeofenceOverlays() -> Void{
-        self.mapView.overlays.forEach{
-            if !($0 is MKUserLocation){
-                self.mapView.remove($0)
-            }
+        for overlay in self.mapView.overlays{
+            if overlay is MKUserLocation{ }
+            else { mapView.remove(overlay)}
+        }
+    }
+    private func SetUserOldPositionMarker(){
+        if  let lastUserLocation = ReadLastUserLocationFromUserDefaults(){
+            let annotation = CustomMapAnnotation()
+            annotation.image = #imageLiteral(resourceName: "map-Marker-red")
+            annotation.coordinate = lastUserLocation.coordinate
+            annotation.title = "User"
+            self.mapView.addAnnotation(annotation)
         }
     }
     private func SetMapAnnotations(response: MKLocalSearchResponse?){
