@@ -77,10 +77,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         }
         
         //Set standard Map Zoom
+        if UserDefaults.standard.value(forKey: eUserDefaultKey.MonitoredRadius.rawValue) == nil{
             UserDefaults.standard.set(5000, forKey: eUserDefaultKey.MapSpan.rawValue)
+        }
         
         //Set standard value
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         
         return true
     }
@@ -114,7 +117,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.        
+        
+        //Set Badegcount to zero
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
     }
     
     func applicationWillTerminate(_ application: UIApplication) {

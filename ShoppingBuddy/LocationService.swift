@@ -16,25 +16,21 @@ import os
 class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IAlertMessageDelegate {
     private var locationManager:CLLocationManager!
     private var mapView:MKMapView!
-    private var mapSpan:Int!
+    private var mapSpan:Double!
+    private var radiusToMonitore:Double!
     var alertMessageDelegate: IAlertMessageDelegate?
-    private var userLocation:CLLocationCoordinate2D!
+    private var userLocation:CLLocationCoordinate2D?
     
     //Constructor
     init(mapView:MKMapView, alertDelegate: IAlertMessageDelegate) {
         super.init()
-        mapSpan = UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue)
-        if #available(iOS 10.0, *) {
-            os_log("Initial mapSpan is: %s", mapSpan)
-        } else {
-            NSLog("Initial mapSpan is: %s", mapSpan)
-        }
+        radiusToMonitore = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         alertMessageDelegate  = alertDelegate
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.allowsBackgroundLocationUpdates = true
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = CLLocationDistance(exactly: Double(mapSpan!) * 0.5)!
         self.mapView = mapView
         self.mapView.delegate = self
         self.mapView.userTrackingMode = .follow
@@ -46,7 +42,7 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
         if alertMessageDelegate != nil{
             alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
         } else {
-            print("Alert message delegate not set from calling class in LocationService")
+            NSLog("Alert message delegate not set from calling class in LocationService", "")
         }
     }
     
@@ -61,7 +57,7 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
             if latitude > 0 && longitude > 0{
                 let coord1 = CLLocation(latitude: CLLocationDegrees(floatLiteral: latitude), longitude: CLLocationDegrees(floatLiteral: longitude))
                 let distance = coord1.distance(from: location)
-                if distance > Double(mapSpan){
+                if distance > mapSpan{
                     SaveNewValueAsLastUserPosition(location: location)
                 }
             } else {
@@ -82,24 +78,26 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
         let title = "\(regionStr) \(String.LocationManagerEnteredRegion_AlertTitle)"
         let message = String.LocationManagerEnteredRegion_AlertMessage
         if alertMessageDelegate != nil { alertMessageDelegate?.ShowAlertMessage(title: title, message: message)}
-        else { print("AlertMessage delegate not set from calling class in LocationService") }
+        else { NSLog("AlertMessage delegate not set from calling class in LocationService") }
         ShowNotification(title: title, message: message)
     }
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        print("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
+        NSLog("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
         locationManager.stopMonitoring(for: region!)
     }
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        print("Monitored Regions: \(locationManager.monitoredRegions.count)")
-        if let reg = region as? CLCircularRegion{
-            let circle = MKCircle(center: reg.center, radius: reg.radius)
+        NSLog("Started monitoring for Region: \(region.identifier)")
+        NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
+        // Add region overlay circel
+        if let circularRegion = region as? CLCircularRegion{
+            let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
             self.mapView.add(circle)
+            NSLog("Adding circular Overlay")
         }
-        print(locationManager.monitoredRegions)
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("locationManager failed with error")
-        print(error.localizedDescription)
+        NSLog("locationManager failed with error")
+        NSLog(error.localizedDescription)
     }
     
     //MARK: - MKMapViewDelegate implementation
@@ -172,7 +170,10 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
         self.StopMonitoringForOldRegions()
         
         //Remove old Geofence Overlays
-        self.RemoveOldGeofenceOverlays()
+        //self.RemoveOldGeofenceOverlays()
+        
+        radiusToMonitore = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        if radiusToMonitore == 0 { return }
         
         //Get UserDefaults Array
         let savedStores = UserDefaults.standard.object(forKey: eUserDefaultKey.StoresArray.rawValue) as? [String] ?? [String]()
@@ -193,11 +194,12 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
                 }
                 print("Matches found")
                 
-                //Set map Annotations
-                self.SetMapAnnotations(response: response)
-                
-                //Start monitoring Geofence regions
-                self.StartMonitoringGeofenceRegions(response: response)
+                for mapItem in response!.mapItems{
+                    //Set map Annotations
+                    self.SetAnnotations(mapItem: mapItem)
+                    //Start monitoring Geofence regions
+                    self.StartMonitoringGeofenceRegions(mapItem: mapItem)
+                }
             }
         }
     }
@@ -237,8 +239,9 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
     }
     func StopMonitoringForOldRegions(){
         for region in locationManager.monitoredRegions {
-            print("removing Region: " + region.identifier)
             locationManager.stopMonitoring(for: region)
+            NSLog("removing Region: " + region.identifier) 
+            NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
         }
     }
     private func CalculateDistanceBetweenTwoCoordinates(location1: CLLocationCoordinate2D, location2: CLLocationCoordinate2D) -> CLLocationDistance {
@@ -246,18 +249,25 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
         let coord2 = CLLocation(latitude: location2.latitude, longitude: location2.longitude)
         return coord1.distance(from: coord2)
     }
-    private func StartMonitoringGeofenceRegions(response: MKLocalSearchResponse?) -> Void{
-        if response == nil { return }
-        let radius = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) * 1000
-        if radius == 0 { StopMonitoringForOldRegions(); return }
-        for item in response!.mapItems {
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation, location2: item.placemark.coordinate)
-            if distanceToUser <= Double(mapSpan) * 0.5{
-                print("distance to User: \(distanceToUser)")
-                print("Monitored Regions: \(locationManager.monitoredRegions.count)")
-                print("MapSpan: \(mapSpan)")
-                let region = CLCircularRegion(center: item.placemark.coordinate, radius: CLLocationDistance(radius), identifier: "\(UUID().uuidString)\("SB_")\(item.name!)")
-                locationManager.startMonitoring(for: region)
+    private func StartMonitoringGeofenceRegions(mapItem: MKMapItem) -> Void{
+        if userLocation == nil { return }
+        let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
+        if distanceToUser > Double(mapSpan) * 0.5 { return }
+        let region = CLCircularRegion(center: mapItem.placemark.coordinate, radius: CLLocationDistance(radiusToMonitore), identifier: "\(UUID().uuidString)\("SB_")\(mapItem.name!)")
+        locationManager.startMonitoring(for: region)
+        
+        NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
+        NSLog("MapSpan: \(mapSpan)")
+        NSLog("Current MapSpan: \(mapSpan) distance to User:\(distanceToUser)")
+        NSLog("Start monitoring for Region: %A", region)
+    }
+    private func AddNewCircleOverlayForMonitoredRegions(){
+        for region in locationManager.monitoredRegions{
+            if let circularRegion = region as? CLCircularRegion{
+                let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
+                self.mapView.add(circle)
+                NSLog("Adding cirlce overlay to Region \(circularRegion.identifier)")
+                NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
             }
         }
     }
@@ -276,14 +286,16 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
             self.mapView.addAnnotation(annotation)
         }
     }
-    private func SetMapAnnotations(response: MKLocalSearchResponse?){
-        if response == nil { return }
-        for item in response!.mapItems {
-            print("Adding Annotation: \(String(describing: item.name!))")
+    private func SetAnnotations(mapItem: MKMapItem){
+        if !mapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}){
+            NSLog("Adding Annotation at location: \(String(describing: mapItem.placemark.coordinate))")
+            NSLog("Adding Annotation Title: \(String(describing: mapItem.name))")
+            NSLog("Adding Annotation Subtitle: \(String(describing: mapItem.placemark.title))")
             let annotation = CustomMapAnnotation()
             annotation.image = #imageLiteral(resourceName: "map-Marker-green")
-            annotation.coordinate = item.placemark.coordinate
-            annotation.title = item.name
+            annotation.coordinate = mapItem.placemark.coordinate
+            annotation.title = mapItem.name
+            annotation.subtitle = mapItem.placemark.title
             self.mapView.addAnnotation(annotation)
         }
     }
