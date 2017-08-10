@@ -10,6 +10,8 @@ import Foundation
 import CoreLocation
 import MapKit
 import UserNotifications
+import os
+
 
 class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IAlertMessageDelegate {
     private var locationManager:CLLocationManager!
@@ -22,8 +24,12 @@ class LocationService:NSObject, CLLocationManagerDelegate, MKMapViewDelegate, IA
     init(mapView:MKMapView, alertDelegate: IAlertMessageDelegate) {
         super.init()
         mapSpan = UserDefaults.standard.integer(forKey: eUserDefaultKey.MapSpan.rawValue)
-        UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
-        self.alertMessageDelegate  = alertDelegate
+        if #available(iOS 10.0, *) {
+            os_log("Initial mapSpan is: %s", mapSpan)
+        } else {
+            NSLog("Initial mapSpan is: %s", mapSpan)
+        }
+        alertMessageDelegate  = alertDelegate
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.allowsBackgroundLocationUpdates = true

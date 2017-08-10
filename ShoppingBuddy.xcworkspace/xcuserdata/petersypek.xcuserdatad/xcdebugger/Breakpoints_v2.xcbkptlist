@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "523998417.287113"
+            timestampString = "524069320.499388"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "PerformLocalShopSearch()"
             landmarkType = "7">
             <Locations>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "523998417.287113"
+            timestampString = "524069320.499388"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
             landmarkName = "PerformLocalShopSearch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -266,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "523998506.089269"
+            timestampString = "524069320.499388"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
             landmarkName = "RemoveOldGeofenceOverlays()"
             landmarkType = "7">
          </BreakpointContent>
