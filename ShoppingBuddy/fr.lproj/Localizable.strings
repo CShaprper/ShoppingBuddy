@@ -63,3 +63,13 @@ lbl_Abonnement_Monthly = "Abonnement mensuel";
 lbl_Abonnement_Monthly = "Abonnement trimestriel";
 lbl_Abonnement_Monthly = "Abonnement annuel";
 lbl_RestorePurchases = "Restaurer les achats";
+
+
+    //Shopping Cards
+lbl_ShoppingCardTotalItems_Label = "Total items:";
+lbl_ShoppingCardOpenItems_Label = "Open items:";
+
+
+    //ShareListPopUp
+lbl_ShareListTitle = "Share liste";
+txt_ShareOpponentEmailPlaceholder = "friends email";

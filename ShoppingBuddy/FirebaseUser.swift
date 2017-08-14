@@ -53,41 +53,52 @@ class FirebaseUser: IFirebaseWebService {
     
     func CreateNewFirebaseUser(firebaseUser: FirebaseUser) {
         //self.isCalled = false
-        
         Auth.auth().createUser(withEmail: firebaseUser.Email!, password: firebaseUser.Password!, completion: { (user, error) in
             if error != nil{
-                print(error!.localizedDescription)
-                DispatchQueue.main.async {
-                    self.FirebaseRequestFinished()
-                    let title = ""
-                    let message = ""
-                    self.ShowAlertMessage(title: title, message: message)
-                }
-                return
-            } else {
-                self.SaveNewUserWithUIDtoFirebase(firebaseUser: firebaseUser, user: user)
+                NSLog(error!.localizedDescription)
                 self.FirebaseRequestFinished()
-                print("Succesfully created new Firebase User")
+                let title = ""
+                let message = ""
+                self.ShowAlertMessage(title: title, message: message)
+                return
             }
+            self.SaveNewUserWithUIDtoFirebase(firebaseUser: firebaseUser, user: user)
+            self.FirebaseRequestFinished()
+            NSLog("Succesfully created new Firebase User")
         })
     }
+    func SetNewFcmToken(token:String){
+        userRef.child("fcmToken").setValue(token) { (error, dbRef) in
+            if error != nil{
+                NSLog(error!.localizedDescription)
+                self.FirebaseRequestFinished()
+                let title = ""
+                let message = ""
+                self.ShowAlertMessage(title: title, message: message)
+                return
+            }
+            self.FirebaseRequestFinished()
+            NSLog("Refreshed User fcmToken")
+        }
+    }
+    
     //MARK: - Helpers
     private func SaveNewUserWithUIDtoFirebase(firebaseUser:FirebaseUser, user: User?){
         DispatchQueue.main.async {
-            let token:[String:AnyObject] = [Messaging.messaging().fcmToken!:Messaging.messaging().fcmToken as AnyObject]
-            print(token)
+            let token:String = Messaging.messaging().fcmToken!
+            NSLog("\(token)")
             let values = (["nickname": firebaseUser.Nickname!, "email": user!.email!, "fcmToken":token] as [String : Any])
             self.userRef.updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                 if err != nil{
                     self.FirebaseRequestFinished()
-                    print(err!.localizedDescription)
+                    NSLog(err!.localizedDescription)
                     return
                 } else {
                     self.FirebaseRequestFinished()
-                    print("Succesfully saved user to Firebase")
+                    NSLog("Succesfully saved user to Firebase")
                 }
             })
         }
     }
-
+    
 }

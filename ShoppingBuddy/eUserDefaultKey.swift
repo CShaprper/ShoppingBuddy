@@ -12,9 +12,9 @@ enum eUserDefaultKey:String {
     case MonitoredRadius = "MonitoredRadius"
     case MonitoredRegions = "MonitoredRegions"
     case MapSpan = "MapSpan"
-    case StoresArray = "StoresArray"
+    case ListIDsArray = "ListIDsArray"
     case LastUserLatitude = "LastUserLatitude"
     case LastUserLongitude = "LastUserLongitude"
     case isInitialLocationUpdate = "isInitialLocationUpdate"
-    case hasUserChangedGeofenceRadius = "hasUserChangedGeofenceRadius"
+    case NeedToUpdateGeofence = "NeedToUpdateGeofence"
 }

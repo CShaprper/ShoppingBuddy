@@ -32,27 +32,27 @@ class FirebaseWebService: IFirebaseWebService {
     func FirebaseRequestFinished() {
         if firebaseWebServiceDelegate != nil {
             DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseRequestFinished!() }}
-        else { print("IFirebaseWebService delegate for FirebaseRequestFinished not set from calling class") }
+        else { NSLog("IFirebaseWebService delegate for FirebaseRequestFinished not set from calling class") }
     }
     func FirebaseRequestStarted() {
         if firebaseWebServiceDelegate != nil {
             DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseRequestStarted!() }}
-        else { print("IFirebaseWebService delegate for FirebaseRequestStarted not set from calling class") }
+        else { NSLog("IFirebaseWebService delegate for FirebaseRequestStarted not set from calling class") }
     }
     func FirebaseUserLoggedIn() {
         if firebaseWebServiceDelegate != nil {
             DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseUserLoggedIn!() }}
-        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+        else { NSLog("IFirebaseWebService delegate for alert not set from calling class") }
     }
     func FirebaseUserLoggedOut() {
         if firebaseWebServiceDelegate != nil {
             DispatchQueue.main.async { self.firebaseWebServiceDelegate!.FirebaseUserLoggedOut!() }}
-        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+        else { NSLog("IFirebaseWebService delegate for alert not set from calling class") }
     }
     func ReloadItems() {
         if firebaseWebServiceDelegate != nil {
             DispatchQueue.main.async { self.firebaseWebServiceDelegate!.ReloadItems!() }}
-        else { print("IFirebaseWebService delegate for alert not set from calling class") }
+        else { NSLog("IFirebaseWebService delegate for alert not set from calling class") }
     }
     func ShowAlertMessage(title: String, message: String) {
         if alertMessageDelegate != nil{
@@ -60,7 +60,7 @@ class FirebaseWebService: IFirebaseWebService {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
             }
         } else{
-            print("AlertMessageDelegate not set from calling class in FirebaseWebService")
+            NSLog("AlertMessageDelegate not set from calling class in FirebaseWebService")
         }
     }
     
@@ -68,10 +68,10 @@ class FirebaseWebService: IFirebaseWebService {
     func AddUserStateListener() -> Void {
         Auth.auth().addStateDidChangeListener { (auth, user) in
             if user != nil{
-                print("State listener detected user loged in")
+                NSLog("State listener detected user loged in")
                 self.FirebaseUserLoggedIn()
             } else {
-                print("State listener detected user loged out")
+                NSLog("State listener detected user loged out")
                 self.isLogoutCalled = true
                 NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
             }
@@ -94,7 +94,7 @@ class FirebaseWebService: IFirebaseWebService {
             } else {
                 self.SaveNewUserWithUIDtoFirebase(nickname: nickname, user: user, firebaseURL: self.firebaseURL)
                 self.FirebaseRequestFinished()
-                print("Succesfully created new Firebase User")
+                NSLog("Succesfully created new Firebase User")
             }
         })
     }
@@ -113,7 +113,7 @@ class FirebaseWebService: IFirebaseWebService {
                 return
             } else {
                 self.FirebaseRequestFinished()
-                print("Succesfully loged user in to Firebase")
+                NSLog("Succesfully loged user in to Firebase")
             }
         }
     }
@@ -122,10 +122,10 @@ class FirebaseWebService: IFirebaseWebService {
         do{
             try  auth.signOut()
             self.FirebaseRequestFinished()
-            print("Succesfully logged out")
+            NSLog("Succesfully logged out")
         }
         catch let error as NSError{
-            print(error.localizedDescription)
+            NSLog(error.localizedDescription)
             self.FirebaseRequestFinished()
             let title = ""
             let message = ""
@@ -135,157 +135,15 @@ class FirebaseWebService: IFirebaseWebService {
     func ResetUserPassword(email:String){
         Auth.auth().sendPasswordReset(withEmail: email) { (error) in
             if error == nil {
-                print(error!.localizedDescription)
+                NSLog(error!.localizedDescription)
                 self.FirebaseRequestFinished()
                 let title = ""
                 let message = ""
                 self.ShowAlertMessage(title: title, message: message)
                 return
             }
-            print("Succesfully sent password reset mail")
+            NSLog("Succesfully sent password reset mail")
             return
-        }
-        
-    }
-    
-    
-    //MARK: - Firebase Read Functions
-    func ReadFirebaseShoppingListsSection() -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("shopping-lists").child(uid).observe(.value, with: { (snapshot) in
-            if snapshot.value is NSNull{ return }
-            for sList in snapshot.children{
-                let list = sList as! DataSnapshot
-                var newShoppinglist = ShoppingList()
-                if let dict = list.value as? NSDictionary{
-                    newShoppinglist.ID = dict["id"] as? String ?? ""
-                    newShoppinglist.Name = dict["name"] as? String ?? ""
-                    newShoppinglist.RelatedStore = dict["relatedStore"] as? String ?? ""
-                    let store = dict["relatedStore"] as? String ?? ""
-                    self.AppendToStoresArray(store: store)
-                }
-                let itemDataSnapshot = list.childSnapshot(forPath: "items")
-                var newItems = [ShoppingListItem]()
-                for snap in itemDataSnapshot.children{
-                    let item = snap as! DataSnapshot
-                    if let dict = item.value as? [String: AnyObject]{
-                        var listItem:ShoppingListItem = ShoppingListItem()
-                        listItem.ID = dict["id"] as? String != nil ? (dict["id"] as? String)! : ""
-                        listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
-                        listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
-                        listItem.ShoppingListID = newShoppinglist.ID!
-                        newItems.append(listItem)
-                    }
-                }
-                newShoppinglist.ItemsArray = newItems.filter({$0.ShoppingListID == newShoppinglist.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
-                if let index = ShoppingListsArray.index(where: {$0.ID == newShoppinglist.ID!}){
-                    ShoppingListsArray[index].ID = newShoppinglist.ID
-                    ShoppingListsArray[index].Name = newShoppinglist.Name
-                    ShoppingListsArray[index].RelatedStore = newShoppinglist.RelatedStore
-                    ShoppingListsArray[index].ItemsArray = newShoppinglist.ItemsArray
-                } else {
-                    ShoppingListsArray.append(newShoppinglist)
-                }
-            }
-            self.FirebaseRequestFinished()
-        })
-    }
-    private func AppendToStoresArray(store: String){
-        if store != ""{
-            if !StoresArray.contains(store){
-                StoresArray.append(store)
-                //Save Stores Array to UserDefaults
-                UserDefaults.standard.setValue(StoresArray, forKey: eUserDefaultKey.StoresArray.rawValue)
-            }
-        }
-    }
-    
-    //MARK: - Edit Functions
-    func EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListItem) -> Void{
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("shopping-lists").child(uid).child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
-    }
-    
-    
-    //MARK: - Firebase Save Functions
-    func SaveListToFirebaseDatabase(listName:String, relatedStore:String) -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        let listID =  ref.child("shopping-lists").child(uid).childByAutoId()
-        listID.updateChildValues(["id":listID.key, "name":listName, "relatedStore":relatedStore], withCompletionBlock: { (error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
-                print(error!.localizedDescription)
-                let title = ""
-                let message = ""
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            self.FirebaseRequestFinished()
-            print("Succesfully saved Shopping List to Firebase")
-        })
-    }
-    func SaveListItemToFirebaseDatabase(shoppingListID:String, itemName:String) -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        let itemID =  ref.child("shopping-lists").child(uid).child(shoppingListID).child("items").childByAutoId()
-        itemID.updateChildValues(["id":itemID.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingListID], withCompletionBlock: {(error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
-                print(error!.localizedDescription)
-                let title = ""
-                let message = ""
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            self.FirebaseRequestFinished()
-            self.ReadFirebaseShoppingListsSection()
-            print("Succesfully saved ShoppingListItem to Firebase")
-        })
-    }
-    
-    
-    //MARK: - Firebase Delete Functions
-    func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        let storeRef = ref.child("shopping-lists").child(uid).child(listToDelete.ID!)
-        storeRef.removeValue { (error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
-                print(error!.localizedDescription)
-                let title = ""
-                let message = ""
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            print("Succesfully deleted Shopping List from Firebase")
-            self.FirebaseRequestFinished()
-        }
-    }
-    func DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListItem){
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        let itemRef = ref.child("shopping-lists").child(uid).child(itemToDelete.ShoppingListID!).child("items").child(itemToDelete.ID!)
-        itemRef.removeValue { (error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
-                print(error!.localizedDescription)
-                let title = ""
-                let message = ""
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            print("Succesfully deleted item of shopping list from Firebase")
-            self.FirebaseRequestFinished()
         }
         
     }
@@ -296,18 +154,18 @@ class FirebaseWebService: IFirebaseWebService {
             guard let uid = user?.uid else{
                 return
             }
-            let token:[String:AnyObject] = [Messaging.messaging().fcmToken!:Messaging.messaging().fcmToken as AnyObject]
-            print(token)
+            let token:String = Messaging.messaging().fcmToken!
+            NSLog(token)
             let usersReference = self.ref.child("users").child(uid)
             let values = (["nickname": nickname, "email": user!.email!, "fcmToken":token] as [String : Any])
             usersReference.updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                 if err != nil{
                     self.FirebaseRequestFinished()
-                    print(err!.localizedDescription)
+                    NSLog(err!.localizedDescription)
                     return
                 } else {
                     self.FirebaseRequestFinished()
-                    print("Succesfully saved user to Firebase")
+                    NSLog("Succesfully saved user to Firebase")
                 }
             })
         }

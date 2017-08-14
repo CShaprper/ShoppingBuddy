@@ -61,3 +61,12 @@ GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Settings";
 GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "No Thanks";
 LocationManagerEnteredRegion_AlertTitle = " Nearby";
 LocationManagerEnteredRegion_AlertMessage = "You are close to a store of your active shopping lists. Do you wish to be navigated?";
+
+
+    //Shopping Cards
+lbl_ShoppingCardTotalItems_Label = "Total items:";
+lbl_ShoppingCardOpenItems_Label = "Open items:";
+
+    //ShareListPopUp
+lbl_ShareListTitle = "Share list with friend";
+txt_ShareOpponentEmailPlaceholder = "friends email";

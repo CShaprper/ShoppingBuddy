@@ -31,7 +31,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         
         GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
         
-        let savedSilderValue = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        let savedSilderValue = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) / 1000
         SetGeofenceRadiusSliderValue(value: savedSilderValue)
     }
     override func didReceiveMemoryWarning() {
@@ -77,9 +77,9 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
         let value = roundf(sender.value * 2) / 2
         print(value)
-       GeofenceRadiusSlider.value = value
-        UserDefaults.standard.set(value, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        GeofenceRadiusSlider.value = value
         SetGeofenceRadiusSliderValue(value: value)
+        UserDefaults.standard.set(value * 1000, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
     }
     
     //MARK: - Helper Functions
@@ -93,43 +93,43 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         GeofenceRadiusSlider.value = value
         switch value {
         case 0:
-            lbl_RadiusZero.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusZero.textColor = UIColor.white
             lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
             break
         case 0.5:
-            lbl_RadiusOne.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusOne.textColor = UIColor.white
             lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
             break
         case 1.0:
-            lbl_RadiusTwo.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusTwo.textColor = UIColor.white
             lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
             break
         case 1.5:
-            lbl_RadiusThree.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusThree.textColor = UIColor.white
             lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusFour.textColor = UIColor.ColorPaletteTintColor()
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         case 2.0:
-            lbl_RadiusFour.textColor = UIColor.ColorPaletteorange()
+            lbl_RadiusFour.textColor = UIColor.white
             lbl_RadiusZero.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusOne.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusTwo.textColor = UIColor.ColorPaletteTintColor()
             lbl_RadiusThree.textColor = UIColor.ColorPaletteTintColor()
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.hasUserChangedGeofenceRadius.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         default:
             break
         }

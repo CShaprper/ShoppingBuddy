@@ -66,4 +66,12 @@ extension String{
     static let GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = NSLocalizedString("GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle", comment: "")
     static let LocationManagerEnteredRegion_AlertTitle = NSLocalizedString("LocationManagerEnteredRegion_AlertTitle", comment: "")
     static let LocationManagerEnteredRegion_AlertMessage = NSLocalizedString("LocationManagerEnteredRegion_AlertMessage", comment: "")
+    
+    //ShoppingCards
+    static let lbl_ShoppingCardTotalItems_Label = NSLocalizedString("lbl_ShoppingCardTotalItems_Label", comment: "")
+    static let lbl_ShoppingCardOpenItems_Label = NSLocalizedString("lbl_ShoppingCardOpenItems_Label", comment: "")
+    
+    //ShareListPopUp
+    static let lbl_ShareListTitle = NSLocalizedString("lbl_ShareListTitle", comment: "")
+    static let txt_ShareOpponentEmailPlaceholder = NSLocalizedString("txt_ShareOpponentEmailPlaceholder", comment: "")
 }

@@ -14,7 +14,6 @@ class CustomTabBarController: UITabBarController {
     
     //MARK: - Member
     var initialTabBarItemIndex:Int!
-    var firebaseWebService:FirebaseWebService!
     var mydelegate = ScrollingTabBarControllerDelegate()
     
     //MARK: - ViewController Lifecycle
@@ -23,7 +22,6 @@ class CustomTabBarController: UITabBarController {
         
         self.delegate = mydelegate  
         
-        firebaseWebService = FirebaseWebService()
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 1

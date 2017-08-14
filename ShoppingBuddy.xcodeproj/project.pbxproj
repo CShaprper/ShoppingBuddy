@@ -33,11 +33,8 @@
 		CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */; };
 		CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */; };
 		CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */; };
-		CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */; };
-		CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB4C83B1F28D12B00F9FE69 /* Store.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
 		CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */; };
-		CFC6BCD51F32503900366553 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD41F32503900366553 /* LocationService.swift */; };
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
@@ -71,6 +68,9 @@
 		CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */; };
 		CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319451F33742700F91272 /* eUserDefaultKey.swift */; };
 		CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */; };
+		CFF8239C1F408040002F369A /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CFF8239A1F408040002F369A /* Model.xcdatamodeld */; };
+		CFF824051F4083D5002F369A /* ListID+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF824031F4083D5002F369A /* ListID+CoreDataClass.swift */; };
+		CFF824061F4083D5002F369A /* ListID+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF824041F4083D5002F369A /* ListID+CoreDataProperties.swift */; };
 		E0407F4D03681341E67EFCEB /* Pods_ShoppingBuddy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6889D91D870DC8FA7B49A9 /* Pods_ShoppingBuddy.framework */; };
 		EA24853A5DE17E0D796D796A /* Pods_ShoppingBuddyUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2993D9BF9625D8B09C225620 /* Pods_ShoppingBuddyUITests.framework */; };
 /* End PBXBuildFile section */
@@ -123,8 +123,6 @@
 		CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseWebService.swift; sourceTree = "<group>"; };
 		CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNameExtension.swift; sourceTree = "<group>"; };
 		CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierExtension.swift; sourceTree = "<group>"; };
-		CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreCell.swift; sourceTree = "<group>"; };
-		CFB4C83B1F28D12B00F9FE69 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
 		CFB6359B1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
 		CFB6359C1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 		CFB635A01F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CFB635A21F3A279000D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseUser.swift; sourceTree = "<group>"; };
-		CFC6BCD41F32503900366553 /* LocationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -180,6 +177,9 @@
 		CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
 		CFF319451F33742700F91272 /* eUserDefaultKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eUserDefaultKey.swift; sourceTree = "<group>"; };
 		CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTabBarControllerDelegate.swift; sourceTree = "<group>"; };
+		CFF8239B1F408040002F369A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		CFF824031F4083D5002F369A /* ListID+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ListID+CoreDataClass.swift"; path = "../ListID+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CFF824041F4083D5002F369A /* ListID+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ListID+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		E345DCBAB49D07D0CF33EA5D /* Pods-ShoppingBuddy.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -260,7 +260,6 @@
 		CFB4C8381F28D0A700F9FE69 /* TableViewCell */ = {
 			isa = PBXGroup;
 			children = (
-				CFB4C8391F28D0DF00F9FE69 /* StoreCell.swift */,
 				CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */,
 				CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */,
 			);
@@ -270,6 +269,7 @@
 		CFE4A1BE1F23C0DC002A12C7 = {
 			isa = PBXGroup;
 			children = (
+				CFF824041F4083D5002F369A /* ListID+CoreDataProperties.swift */,
 				CFE4A1C91F23C0DC002A12C7 /* ShoppingBuddy */,
 				CFE4A1DE1F23C0DC002A12C7 /* ShoppingBuddyTests */,
 				CFE4A1E91F23C0DC002A12C7 /* ShoppingBuddyUITests */,
@@ -292,6 +292,8 @@
 		CFE4A1C91F23C0DC002A12C7 /* ShoppingBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				CFF824031F4083D5002F369A /* ListID+CoreDataClass.swift */,
+				CFF8239A1F408040002F369A /* Model.xcdatamodeld */,
 				CFE4A2001F23C4D3002A12C7 /* ShoppingBuddy.entitlements */,
 				CFE4A1D61F23C0DC002A12C7 /* Info.plist */,
 				CFC6BCDC1F3264B500366553 /* InfoPlist.strings */,
@@ -361,12 +363,10 @@
 		CFE4A1FA1F23C432002A12C7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				CFB4C83B1F28D12B00F9FE69 /* Store.swift */,
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
 				CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
-				CFC6BCD41F32503900366553 /* LocationService.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
@@ -741,13 +741,13 @@
 				CF3806971F2E2AAA005B3E15 /* ShoppingListItem.swift in Sources */,
 				CFE4A2111F23C9A3002A12C7 /* PasswordValidationService.swift in Sources */,
 				CFE9AB1C1F26108200D0825B /* NicknameValidationService.swift in Sources */,
-				CFB4C83A1F28D0DF00F9FE69 /* StoreCell.swift in Sources */,
 				CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */,
 				CF610C371F26371600B1B2DE /* UIColorExtension.swift in Sources */,
 				CFE9AB211F262DBE00D0825B /* DashboardController.swift in Sources */,
 				CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */,
 				CFE4A2141F23C9A3002A12C7 /* SegmentedControlValidationService.swift in Sources */,
 				CFE4A2171F23C9B8002A12C7 /* eValidationType.swift in Sources */,
+				CFF8239C1F408040002F369A /* Model.xcdatamodeld in Sources */,
 				CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */,
 				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */,
 				CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */,
@@ -759,6 +759,7 @@
 				CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */,
 				CF9A7FCC1F35303300DB401A /* DesignableUISlider.swift in Sources */,
 				CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */,
+				CFF824061F4083D5002F369A /* ListID+CoreDataProperties.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
@@ -770,11 +771,10 @@
 				CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */,
 				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
+				CFF824051F4083D5002F369A /* ListID+CoreDataClass.swift in Sources */,
 				CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */,
 				CFE4A2121F23C9A3002A12C7 /* EmailValidationService.swift in Sources */,
-				CFB4C83C1F28D12B00F9FE69 /* Store.swift in Sources */,
 				CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
-				CFC6BCD51F32503900366553 /* LocationService.swift in Sources */,
 				CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -975,7 +975,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = petersypek.com.ShoppingBuddy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -992,7 +992,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = petersypek.com.ShoppingBuddy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1103,6 +1103,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		CFF8239A1F408040002F369A /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				CFF8239B1F408040002F369A /* Model.xcdatamodel */,
+			);
+			currentVersion = CFF8239B1F408040002F369A /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = CFE4A1BF1F23C0DC002A12C7 /* Project object */;
 }

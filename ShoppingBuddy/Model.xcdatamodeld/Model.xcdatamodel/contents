@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16G29" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ListID" representedClassName=".ListID" syncable="YES">
+        <attribute name="listID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="relatedStore" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userID" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ListID" positionX="-63" positionY="-18" width="128" height="90"/>
+    </elements>
+</model>
