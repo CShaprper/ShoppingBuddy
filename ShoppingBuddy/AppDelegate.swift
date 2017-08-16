@@ -12,7 +12,7 @@ import GooglePlaces
 import UserNotifications
 import CoreData
 
-var ShoppingListsArray:[ShoppingList] = [] 
+var ShoppingListsArray:[ShoppingList] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {

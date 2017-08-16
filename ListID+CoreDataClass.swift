@@ -19,7 +19,7 @@ public class ListID: NSManagedObject {
         return obj
     }
 
-    static func SaveListID(userID:String, listID:ListID, context:NSManagedObjectContext) -> Void {
+    static func SaveListID(listID:ListID, context:NSManagedObjectContext) -> Void {
         do{
             try context.save()
             NSLog("successfully saved \(listID.listID!) to CoreData")

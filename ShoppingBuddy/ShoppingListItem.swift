@@ -13,7 +13,8 @@ import FirebaseDatabase
 import FirebaseMessaging
 
 class ShoppingListItem: IFirebaseWebService {
-    private var listItemRef = Database.database().reference().child("shoppinglists")
+    private var ref = Database.database().reference()
+    private var shoppingListRef = Database.database().reference().child("shoppinglists")
     var alertMessageDelegate: IAlertMessageDelegate?
     var firebaseWebServiceDelegate: IFirebaseWebService?
     
@@ -56,15 +57,15 @@ class ShoppingListItem: IFirebaseWebService {
     }
     
     //MARK: - Edit Functions
-    func EditIsSelectedOnShoppingListItem(shoppingListItem: ShoppingListItem) -> Void{
-        listItemRef.child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
+    func EditIsSelectedOnShoppingListItem(listOwnerID:String, shoppingListItem: ShoppingListItem) -> Void {
+        shoppingListRef.child(listOwnerID).child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
     }
     
     
     //MARK: - Save functions
-    func SaveListItemToFirebaseDatabase(shoppingListID:String, itemName:String) -> Void { 
-       let itemref = listItemRef.child(shoppingListID).child("items").childByAutoId()
-        itemref.updateChildValues(["id":itemref.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingListID], withCompletionBlock: {(error, dbref) in
+    func SaveListItemToFirebaseDatabase(shoppingList:ShoppingList, itemName:String) -> Void {
+        let itemref = shoppingListRef.child(shoppingList.OwnerID!).child(shoppingList.ID!).child("items").childByAutoId()
+        itemref.updateChildValues(["itemID":itemref.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingList.ID!], withCompletionBlock: {(error, dbref) in
             if error != nil{
                 self.FirebaseRequestFinished()
                 NSLog(error!.localizedDescription)
@@ -80,9 +81,8 @@ class ShoppingListItem: IFirebaseWebService {
     }
     
     //MARK: - Delete Functions
-    func DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListItem){
-        let itemRef = listItemRef.child(itemToDelete.ShoppingListID!).child("items").child(itemToDelete.ID!)
-        itemRef.removeValue { (error, dbref) in
+    func DeleteShoppingListItemFromFirebase(list:ShoppingList, itemToDelete: ShoppingListItem){
+        shoppingListRef.child(list.OwnerID!).child(list.ID!).child("items").child(itemToDelete.ID!).removeValue { (error, dbref) in
             if error != nil{
                 self.FirebaseRequestFinished()
                 print(error!.localizedDescription)

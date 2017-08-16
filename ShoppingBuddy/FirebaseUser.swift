@@ -77,9 +77,42 @@ class FirebaseUser: IFirebaseWebService {
                 self.ShowAlertMessage(title: title, message: message)
                 return
             }
-            self.FirebaseRequestFinished()
             NSLog("Refreshed User fcmToken")
         }
+    }
+    func SearchUserByEmail(listID:String, email:String) -> Void {
+        Auth.auth().fetchProviders(forEmail: email) { (test, error) in
+            if error != nil {
+                NSLog(error!.localizedDescription)
+                self.FirebaseRequestFinished()
+                let title = ""
+                let message = ""
+                self.ShowAlertMessage(title: title, message: message)
+                return
+            }
+            NSLog("Refreshed User fcmToken")
+            if test != nil {
+                self.GetuidByEmail(listID: listID, email: email)
+            } else {
+                let title = "User not found"
+                let message = "\(email) is not a registered address!"
+                self.ShowAlertMessage(title: title, message: message)
+            }
+        }
+    }
+    private func GetuidByEmail(listID:String, email:String) -> Void {
+        ref.child("users").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: { (snapshot) in
+            if snapshot.value == nil { return }
+            if snapshot.childrenCount > 1 { return }
+            for user in snapshot.children{
+                let u = user as! DataSnapshot
+                NSLog(u.key)
+                self.userRef.child("friends").child(u.key).setValue("pending")
+                self.ref.child("shoppinglists").child(Auth.auth().currentUser!.uid).child(listID).child("members").child(u.key).setValue("pending")
+                self.ref.child("users").child(u.key).child(Auth.auth().currentUser!.uid).setValue("pending")
+            }
+            self.FirebaseRequestFinished()  
+        })
     }
     
     //MARK: - Helpers

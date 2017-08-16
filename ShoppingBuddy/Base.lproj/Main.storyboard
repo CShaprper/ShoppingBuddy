@@ -893,9 +893,9 @@
                                     </constraints>
                                     <nil key="textColor"/>
                                     <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                    <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress"/>
                                     <connections>
-                                        <outlet property="delegate" destination="7as-8F-Vmr" id="OCl-WT-hAa"/>
+                                        <outlet property="delegate" destination="7as-8F-Vmr" id="uPA-wt-Y3h"/>
                                     </connections>
                                 </textField>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WJc-Nf-GeN">
@@ -1072,7 +1072,7 @@
                                                 <rect key="frame" x="20" y="8" width="28" height="34.5"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shopping List Item" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1e6-SP-iC2">
-                                                <rect key="frame" x="78" y="9.5" width="194" height="31.5"/>
+                                                <rect key="frame" x="78" y="10.5" width="194" height="29.5"/>
                                                 <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="25"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
