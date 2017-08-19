@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MobileCoreServices
 
-class LoginController: UIViewController, UITextFieldDelegate, IValidationService, IFirebaseWebService {
+class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IFirebaseWebService {
     //MARK: - Outlets
     @IBOutlet var BackgroundView: DesignableUIView!
     //Segmented Control
@@ -31,6 +32,7 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
     @IBOutlet var btn_ResetPassword: UIButton!
     //Activity Indicator
     @IBOutlet var ActivityIndicatior: UIActivityIndicatorView!
+    @IBOutlet var LogInLogoImage: UIImageView!
     
     
     //MARK: Member
@@ -129,10 +131,16 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
                 self.EmailContainer.transform = CGAffineTransform(translationX: 0, y: -self.EmailContainer.frame.size.height)
                 self.PasswordContainer.transform = CGAffineTransform(translationX: 0, y: -self.PasswordContainer.frame.size.height)
                 self.LoginContainerHeight.constant = 62
+                self.LogInLogoImage.image = #imageLiteral(resourceName: "ShoppingBuddy-Logo")
             })
             UIView.animate(withDuration: 0.5, delay: 0, options: .allowUserInteraction, animations: {
                 self.NicknameContainer.transform = CGAffineTransform(translationX: 0, y: -self.NicknameContainer.frame.size.height)
                 self.NicknameContainer.alpha = 0
+            })
+                self.LogInLogoImage.alpha = 0
+            UIView.animate(withDuration: 0.8, delay: 0, options: .allowUserInteraction, animations: {
+                self.LogInLogoImage.alpha = 1
+                self.LogInLogoImage.image = #imageLiteral(resourceName: "ShoppingBuddy-Logo")
             })
         } else {
             //Show Nickname Container
@@ -144,6 +152,11 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
             UIView.animate(withDuration: 0.5, delay: 0.2, options: .allowUserInteraction, animations: {
                 self.NicknameContainer.alpha = 1
                 self.NicknameContainer.transform = .identity
+            })
+            self.LogInLogoImage.alpha = 0
+            UIView.animate(withDuration: 0.8, delay: 0, options: .allowUserInteraction, animations: {
+                self.LogInLogoImage.alpha = 1
+                self.LogInLogoImage.image = #imageLiteral(resourceName: "userPlaceholder")
             })
         }
     }
@@ -162,12 +175,21 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
-                firebaseWebService.CreateNewFirebaseUser(nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
+                firebaseWebService.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         default:
             break
         }
+    }
+    @IBAction func LoginLOGO_Pressed(_ sender: Any) {
+        if LoginSignUpSegmentedControl.selectedSegmentIndex == 0 { return }
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) == false { return }
+        let imgPicker = UIImagePickerController()
+        imgPicker.sourceType = .photoLibrary
+        imgPicker.allowsEditing = true
+        imgPicker.delegate = self
+        self.present(imgPicker, animated: true, completion: nil)
     }
     func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
         let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, alertDelegate: self)
@@ -265,6 +287,7 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         LoginContainerBackground.layer.borderColor = UIColor.black.cgColor
         LoginContainerBackground.layer.borderWidth = 2
         
+        
         //Reset password Button
         btn_ResetPassword.addTarget(self, action: #selector(btn_ResetPassword_Pressed), for: .touchDown)
         btn_ResetPassword.setTitle(String.LoginResetPassword, for: .normal)
@@ -281,4 +304,33 @@ class LoginController: UIViewController, UITextFieldDelegate, IValidationService
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
     }
 }
-
+//Image Compression
+extension UIImage
+{
+    var highestQualityJPEGNSData: NSData? { return UIImageJPEGRepresentation(self, 1.0)! as NSData }
+    var highQualityJPEGNSData: NSData?    { return UIImageJPEGRepresentation(self, 0.75)! as NSData}
+    var mediumQualityJPEGNSData: NSData?  { return UIImageJPEGRepresentation(self, 0.5)! as NSData }
+    var lowQualityJPEGNSData: NSData?     { return UIImageJPEGRepresentation(self, 0.25)! as NSData}
+    var lowestQualityJPEGNSData: NSData?  { return UIImageJPEGRepresentation(self, 0.0)! as NSData }
+}
+extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let mediaType = info[UIImagePickerControllerMediaType] as! String
+        if mediaType == kUTTypeImage as String {
+            var image : UIImage!
+            if let img = info[UIImagePickerControllerEditedImage] as? UIImage
+            {
+                image = img
+                
+            }
+            else if let img = info[UIImagePickerControllerOriginalImage] as? UIImage
+            {
+                image = img
+            }
+            self.LogInLogoImage.image = image
+            self.LogInLogoImage.layer.cornerRadius = self.LogInLogoImage.frame.width * 0.5
+            self.LogInLogoImage.clipsToBounds = true
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
+}

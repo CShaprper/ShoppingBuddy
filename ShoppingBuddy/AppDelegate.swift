@@ -13,6 +13,9 @@ import UserNotifications
 import CoreData
 
 var ShoppingListsArray:[ShoppingList] = []
+var StoresArray:[String] = []
+var CurrentUserProfileImage:UIImage?
+var ProfileImageCache:[CacheUserProfileImage] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
@@ -56,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         category.identifier = "CATEGORY_IDENTIFIER"
         category.setActions(notificationActions, for: .default)
         
-        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category])
+        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category]) 
         
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
@@ -72,17 +75,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
             })
         } else {
             // Fallback on earlier versions
-            application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-            application.registerUserNotificationSettings(notificationSettings)
+            //If user is not on iOS 10 use the old methods
+            let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
+            let setting = UIUserNotificationSettings(types: type, categories: [category])
+            UIApplication.shared.registerUserNotificationSettings(setting)
+            UIApplication.shared.registerForRemoteNotifications()
         }
         
         //Set standard Map Zoom
         if UserDefaults.standard.value(forKey: eUserDefaultKey.MonitoredRadius.rawValue) == nil{
-            UserDefaults.standard.set(5000, forKey: eUserDefaultKey.MapSpan.rawValue)
+            UserDefaults.standard.set(7000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
         
         //Set standard value
-        UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         
         return true
@@ -92,7 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         let token:String = Messaging.messaging().fcmToken!
         print(token)
         let fbUser = FirebaseUser()
-        fbUser.SetNewFcmToken(token: token) 
+        fbUser.SetNewFcmToken(token: token)
     }
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
@@ -114,7 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.        
+        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
         //Set Badegcount to zero
         UIApplication.shared.applicationIconBadgeNumber = 0
@@ -123,52 +129,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-    
-    // MARK: - Core Data stack
-    
-
-    lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-         */
-        let container = NSPersistentContainer(name: "Model")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-    
-    // MARK: - Core Data Saving support
-    
-    func saveContext () {
-            let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
     }
 }
 

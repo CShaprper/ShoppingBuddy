@@ -6,3 +6,6 @@
   Copyright © 2017 Peter Sypek. All rights reserved.
 */
 NSLocationAlwaysUsageDescription = "Shopping Buddy möchte Dich gerne informieren wenn Du Dich in der Nähe eines Shops Deiner aktiven Shopping Listen befindest.";
+
+
+NSPhotoLibraryUsageDescription = "Wir möchten ein User Photo für Dein Profil auswählen.";

@@ -12,41 +12,64 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseMessaging
 
-class ShoppingListItem: IFirebaseWebService {
+class ShoppingListItem: IShoppingBuddyListItemWebService, IAlertMessageDelegate, IActivityAnimationService{
     private var ref = Database.database().reference()
     private var shoppingListRef = Database.database().reference().child("shoppinglists")
     var alertMessageDelegate: IAlertMessageDelegate?
     var firebaseWebServiceDelegate: IFirebaseWebService?
+    var shoppingListItemWebServiceDelegate: IShoppingBuddyListItemWebService?
+    var activityAnimationServiceDelegate: IActivityAnimationService?
     
     var ID:String?
     var ItemName:String?
     var ShoppingListID:String?
     var isSelected:String?
     
-    //MARK: - IFirebaseWebService implementation
-    func FirebaseRequestFinished() {
-        if firebaseWebServiceDelegate != nil{
-            DispatchQueue.main.async {
-                self.firebaseWebServiceDelegate!.FirebaseRequestFinished!()
-            }
+    //MARK: - IShoppingBuddyListItemWebService
+    func ListItemSaved() {
+        self.HideActivityIndicator()
+        if shoppingListItemWebServiceDelegate != nil {
+            shoppingListItemWebServiceDelegate?.ListItemSaved!()
         } else {
-            NSLog("firebaseWebServiceDelegate not set from calling class. FirebaseRequestFinished in ShoppingListItem")
+            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemSaved in ShoppingListItem")
         }
     }
-    func FirebaseRequestStarted() {
-        if firebaseWebServiceDelegate != nil{
-            DispatchQueue.main.async {
-                self.firebaseWebServiceDelegate!.FirebaseRequestStarted!()
-            }
+    func ListItemDeleted() {
+        self.HideActivityIndicator()
+        if shoppingListItemWebServiceDelegate != nil {
+            shoppingListItemWebServiceDelegate?.ListItemDeleted!()
         } else {
-            NSLog("firebaseWebServiceDelegate not set from calling class. FirebaseRequestStarted in ShoppingList")
+            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemDeleted in ShoppingListItem")
         }
     }
-    func FirebaseUserLoggedIn() { }
-    func FirebaseUserLoggedOut() {}
+    func ListItemChanged() {
+        self.HideActivityIndicator()
+        if shoppingListItemWebServiceDelegate != nil {
+            shoppingListItemWebServiceDelegate?.ListItemChanged!()
+        } else {
+            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemChanged in ShoppingListItem")
+        }
+    }
+    
+    //MARK: - IActivityAnimationService implementation
+    func ShowActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            activityAnimationServiceDelegate!.ShowActivityIndicator!()
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingListItem")
+        }
+    }
+    func HideActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            activityAnimationServiceDelegate!.HideActivityIndicator!()
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingListItem")
+        }
+    }
     
     //MARK: IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
+        self.HideActivityIndicator()
         if alertMessageDelegate != nil {
             DispatchQueue.main.async {
                 self.alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
@@ -59,32 +82,32 @@ class ShoppingListItem: IFirebaseWebService {
     //MARK: - Edit Functions
     func EditIsSelectedOnShoppingListItem(listOwnerID:String, shoppingListItem: ShoppingListItem) -> Void {
         shoppingListRef.child(listOwnerID).child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
+        self.ListItemChanged()
     }
     
     
     //MARK: - Save functions
     func SaveListItemToFirebaseDatabase(shoppingList:ShoppingList, itemName:String) -> Void {
+        self.ShowActivityIndicator()
         let itemref = shoppingListRef.child(shoppingList.OwnerID!).child(shoppingList.ID!).child("items").childByAutoId()
         itemref.updateChildValues(["itemID":itemref.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingList.ID!], withCompletionBlock: {(error, dbref) in
             if error != nil{
-                self.FirebaseRequestFinished()
                 NSLog(error!.localizedDescription)
                 let title = ""
                 let message = ""
                 self.ShowAlertMessage(title: title, message: message)
                 return
             }
-            self.FirebaseRequestFinished()
-            // self.ReadFirebaseShoppingListsSection()
+            self.ListItemSaved()
             NSLog("Succesfully saved ShoppingListItem to Firebase")
         })
     }
     
     //MARK: - Delete Functions
     func DeleteShoppingListItemFromFirebase(list:ShoppingList, itemToDelete: ShoppingListItem){
+        self.ShowActivityIndicator()
         shoppingListRef.child(list.OwnerID!).child(list.ID!).child("items").child(itemToDelete.ID!).removeValue { (error, dbref) in
-            if error != nil{
-                self.FirebaseRequestFinished()
+            if error != nil{ 
                 print(error!.localizedDescription)
                 let title = ""
                 let message = ""
@@ -92,7 +115,7 @@ class ShoppingListItem: IFirebaseWebService {
                 return
             }
             NSLog("Succesfully deleted item of shopping list from Firebase")
-            self.FirebaseRequestFinished()
+            self.ListItemDeleted()
         }
         
     }

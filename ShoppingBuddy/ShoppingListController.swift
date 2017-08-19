@@ -9,8 +9,9 @@
 import UIKit
 import FirebaseAuth
 
-class ShoppingListController: UIViewController, IFirebaseWebService, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IShoppingBuddyListWebService {
+class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IShoppingBuddyListWebService, IActivityAnimationService {
     //MARK: - Outlets
+    @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
     @IBOutlet var ShoppingListDetailView: UIView!
     @IBOutlet var ListDetailBackgroundImage: UIImageView!
@@ -61,6 +62,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var lbl_ShoppingCardOpenItemsLabel: UILabel!
     @IBOutlet var lbl_ShoppingCardOpenItems: UILabel!
     @IBOutlet var btn_ShoppingCardShareList: UIButton!
+    @IBOutlet var ShoppingListOwnerImage: UIImageView!
     
     //Shopping List Card2
     @IBOutlet var ShoppingListCard2: UIView!
@@ -75,6 +77,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var lbl_ShoppingCard2OpenItemsLabel: UILabel!
     @IBOutlet var lbl_ShoppingCard2OpenItems: UILabel!
     @IBOutlet var btn_ShoppingCard2ShareList: UIButton!
+    @IBOutlet var ShoppingListCard2OwnerImage: UIImageView!
     
     //Share List PopUp
     @IBOutlet var ShareListPopUp: UIView!
@@ -83,22 +86,27 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     @IBOutlet var btn_ShareListSave: UIButton!
     
     //MARK:- Member
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var blurrView:UIVisualEffectView?
     //var firebaseWebService:FirebaseWebService!
     var SelectedList:ShoppingList?
-    var shoppingList:ShoppingList!
+    var firebaseShoppingList:ShoppingList!
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
     var swipedCellIndex:Int!
     var panRecognizer:UIPanGestureRecognizer!
     var currentUpperCardIndex:Int!
     var currentUpperCard:Int!
+    var firebaseShoppingListItem:ShoppingListItem!
+    var firebaseUser:FirebaseUser!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
+        for list in ShoppingListsArray {
+            NSLog(list.OwnerProfileImageURL!)
+            firebaseShoppingList.DownloadImage(url: list.OwnerProfileImageURL!)
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -111,30 +119,51 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         super.viewDidAppear(animated)
         view.bringSubview(toFront: TrashImage)
     }
-    //MARK: - IFirebaseWebService implementation
+    
+    //MARK: - IShoppingBuddyListItemWebService implementation
+    func ListItemSaved() {
+        ShoppingListDetailTableView.reloadData()
+        lbl_ShoppingCardTotalItems.text = String(ShoppingListsArray[currentUpperCardIndex].ItemsArray!.count)
+        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentUpperCardIndex].ItemsArray!.filter({$0.isSelected! == "false"}).count)
+    }
+    func ListItemDeleted() {
+        ShoppingListDetailTableView.reloadData()
+        lbl_ShoppingCardTotalItems.text = String(ShoppingListsArray[currentUpperCardIndex].ItemsArray!.count)
+        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentUpperCardIndex].ItemsArray!.filter({$0.isSelected! == "false"}).count)
+    }
+    func ListItemChanged() {
+        ShoppingListDetailTableView.reloadData()
+    }
+    
+    //MARK: - IActivityAnimationService implementation
+    func ShowActivityIndicator() {
+        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
+        ActivityIndicator.center = view.center
+        ActivityIndicator.color = UIColor.green
+        ActivityIndicator.startAnimating()
+        view.addSubview(ActivityIndicator)
+    }
+    func HideActivityIndicator() {
+        if view.subviews.contains(ActivityIndicator) {
+            ActivityIndicator.removeFromSuperview()
+        }
+    }
+    
+    //MARK: - IFirebaseListWebService implementation
     func ShoppingBuddyListDataReceived() {
+        for list in ShoppingListsArray {
+            NSLog(list.OwnerProfileImageURL!)
+            firebaseShoppingList.DownloadImage(url: list.OwnerProfileImageURL!)
+        }
         ShoppingListDetailTableView.reloadData()
         RefreshCardView()
         ShoppingListCard.alpha = 1
         ShoppingListCard2.alpha = 1
     }
-    
-    //MARK: - IFirebaseWebService implementation
-    func FirebaseRequestStarted() { }
-    func FirebaseRequestFinished() {
-        ShoppingListDetailTableView.reloadData()
-        RefreshCardView()
-        ShoppingListCard.alpha = 1
-        ShoppingListCard2.alpha = 1
+    func ShoppingBuddyImageReceived() {
+        ShoppingListCard2OwnerImage.alpha = 1
+        ShoppingListOwnerImage.alpha = 1
     }
-    func FirebaseUserLoggedIn() { }
-    func FirebaseUserLoggedOut() { }
-    func AlertFromFirebaseService(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -152,10 +181,10 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
     }
     func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: firebaseShoppingList.Name, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: firebaseShoppingList.RelatedStore, alertDelegate: self)
         if isValid{
-            shoppingList.SaveListToFirebaseDatabase(listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
+            firebaseShoppingList.SaveListToFirebaseDatabase()
             HideAddListPopUp()
         }
     }
@@ -185,10 +214,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
         if isValid{
-            let listItem = ShoppingListItem()
-            listItem.alertMessageDelegate = self
-            listItem.firebaseWebServiceDelegate = self
-            listItem.SaveListItemToFirebaseDatabase(shoppingList: SelectedList!, itemName: txt_ItemName.text!)
+            firebaseShoppingListItem.SaveListItemToFirebaseDatabase(shoppingList: SelectedList!, itemName: txt_ItemName.text!)
             HideAddItemPopUp()
         }
     }
@@ -196,11 +222,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
-            let fbUser = FirebaseUser()
-            fbUser.alertMessageDelegate = self
-            fbUser.firebaseWebServiceDelegate = self
-            fbUser.SearchUserByEmail(listID: SelectedList!.ID!, email: txt_ShareListOpponentEmail.text!)
-            HideShareListPopUp()    
+            firebaseUser.SearchUserByEmail(listID: SelectedList!.ID!, email: txt_ShareListOpponentEmail.text!)
+            HideShareListPopUp()
         }
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -285,10 +308,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                                 if ShoppingListsArray[index].ItemsArray!.count > self.swipedCellIndex{
                                     ShoppingListsArray[index].ItemsArray![self.swipedCellIndex].isSelected = "true"
                                     //Edit isSelected in Firebase
-                                    let listItem = ShoppingListItem()
-                                    listItem.alertMessageDelegate  = self
-                                    listItem.firebaseWebServiceDelegate = self
-                                    listItem.EditIsSelectedOnShoppingListItem(listOwnerID: ShoppingListsArray[index].OwnerID!, shoppingListItem: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
+                                    self.firebaseShoppingListItem.EditIsSelectedOnShoppingListItem(listOwnerID: ShoppingListsArray[index].OwnerID!, shoppingListItem: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
                                     self.SortShoppingListItemsArrayBy_isSelected()
                                 }
                             }
@@ -311,10 +331,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
                             if self.SelectedList != nil{
                                 if let index = ShoppingListsArray.index(where: {$0.ID == self.SelectedList!.ID!}){
                                     if ShoppingListsArray[index].ItemsArray!.count > self.swipedCellIndex{
-                                        let listItem = ShoppingListItem()
-                                        listItem.alertMessageDelegate  = self
-                                        listItem.firebaseWebServiceDelegate = self
-                                        listItem.DeleteShoppingListItemFromFirebase(list: ShoppingListsArray[index], itemToDelete: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
+                                        self.firebaseShoppingListItem.DeleteShoppingListItemFromFirebase(list: ShoppingListsArray[index], itemToDelete: ShoppingListsArray[index].ItemsArray![self.swipedCellIndex])
                                         ShoppingListsArray[index].ItemsArray!.remove(at: self.swipedCellIndex)
                                         self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
                                     }
@@ -481,7 +498,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         }, completion: { (true) in
             //Card arise in Center for new view
             if self.SelectedList!.OwnerID == Auth.auth().currentUser!.uid{
-                self.shoppingList.DeleteShoppingListFromFirebase(listToDelete: self.SelectedList!)
+                self.firebaseShoppingList.DeleteShoppingListFromFirebase(listToDelete: self.SelectedList!)
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
                 self.SetNewCardProdcutAfterSwipe(card: card, bringCardToFront: bringCardToFront)
             } else {
@@ -543,6 +560,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             SetCardTwoValues(index: 0)
         } else {
             SelectedList = ShoppingListsArray[currentUpperCardIndex]
+            SetCardOneValues(index: currentUpperCardIndex!)
+            SetCardTwoValues(index: currentUpperCardIndex + 1)
         }
     }
     private func SetCardOneValues(index: Int) -> Void{
@@ -552,6 +571,8 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].ItemsArray!.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].ItemsArray!))"
+        print(ShoppingListsArray[index].OwnerProfileImage )
+        ShoppingListOwnerImage.image = ShoppingListsArray[index].OwnerProfileImage! // != nil ?  ShoppingListsArray[index].OwnerProfileImage! : nil
     }
     
     private func SetCardTwoValues(index: Int) -> Void{
@@ -561,12 +582,20 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[index].ItemsArray!.count)"
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].ItemsArray!))"
+        print(ShoppingListsArray[index].OwnerProfileImage )
+        ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].OwnerProfileImage! // != nil ?  ShoppingListsArray[index].OwnerProfileImage! : nil
     }
     
     //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return true
+    }
+    func txt_ListName_TextChanged(sender: UITextField) -> Void {
+        firebaseShoppingList.Name = sender.text!
+    }
+    func txt_RelatedStore_TextChanged(sender: UITextField) -> Void {
+        firebaseShoppingList.RelatedStore = sender.text!
     }
     //MARK: Keyboard Notification Listener targets
     func KeyboardWillShow(sender: Notification) -> Void {
@@ -583,6 +612,7 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
             ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
         }
     }
+    
     
     //MARK: - Helper Functions
     func ShowAddShoppingListPopUp() -> Void {
@@ -668,9 +698,23 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         return shoppingItems.filter({$0.isSelected! == "false"}).count
     }
     func ConfigureView() -> Void {
-        shoppingList = ShoppingList()
-        shoppingList.alertMessageDelegate = self
-        shoppingList.shoppingBuddyListWebServiceDelegate = self
+        //FirebaseUser
+        firebaseUser = FirebaseUser()
+        firebaseUser.activityAnimationServiceDelegate = self
+        firebaseUser.alertMessageDelegate = self
+        firebaseUser.firebaseUserWebServiceDelegate = nil
+        
+        //Firebase Shopping list item
+        firebaseShoppingListItem = ShoppingListItem()
+        firebaseShoppingListItem.activityAnimationServiceDelegate = self
+        firebaseShoppingListItem.alertMessageDelegate = self
+        firebaseShoppingListItem.shoppingListItemWebServiceDelegate = self
+        
+        //Firebase Shopping list
+        firebaseShoppingList = ShoppingList()
+        firebaseShoppingList.alertMessageDelegate = self
+        firebaseShoppingList.activityAnimationServiceDelegate = self
+        firebaseShoppingList.shoppingBuddyListWebServiceDelegate = self
         
         if ShoppingListsArray.count == 0{
             ShoppingListCard.alpha = 0
@@ -726,9 +770,11 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         txt_RelatedStore.delegate = self
         txt_RelatedStore.placeholder = String.txt_RelatedStore_Placeholder
         txt_RelatedStore.textColor = UIColor.black
+        txt_RelatedStore.addTarget(self, action: #selector(txt_RelatedStore_TextChanged), for: .editingChanged)
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
         txt_ListName.textColor = UIColor.black
+        txt_ListName.addTarget(self, action: #selector(txt_ListName_TextChanged), for: .editingChanged)
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
         AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
@@ -777,6 +823,17 @@ class ShoppingListController: UIViewController, IFirebaseWebService, IValidation
         
         btn_ShoppingCardShareList.addTarget(self, action: #selector(btn_ShoppingCardShareList_Pressed), for: .touchUpInside)
         btn_ShoppingCard2ShareList.addTarget(self, action: #selector(btn_ShoppingCard2ShareList_Pressed), for: .touchUpInside)
+        
+        //Shopping List Cards owner Profile Images
+        ShoppingListCard2OwnerImage.layer.cornerRadius = ShoppingListCard2OwnerImage.frame.width * 0.5
+        ShoppingListCard2OwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        ShoppingListCard2OwnerImage.layer.borderWidth = 3
+        ShoppingListCard2OwnerImage.alpha = 0
+        
+        ShoppingListOwnerImage.layer.cornerRadius = ShoppingListOwnerImage.frame.width * 0.5
+        ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        ShoppingListOwnerImage.layer.borderWidth = 3
+        ShoppingListOwnerImage.alpha = 0
         
         if ShoppingListsArray.count > 1{
             SelectedList = ShoppingListsArray[0]
@@ -848,10 +905,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
                     //Allow only select on checked items => unchecked must be dropped to basket
                     if ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected == "false" { return }
                     ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected  = ShoppingListsArray[index].ItemsArray![indexPath.row].isSelected == "false" ? "true" : "false"
-                    let listItem = ShoppingListItem()
-                    listItem.alertMessageDelegate = self
-                    listItem.firebaseWebServiceDelegate = self
-                    listItem.EditIsSelectedOnShoppingListItem(listOwnerID: SelectedList!.OwnerID!, shoppingListItem: ShoppingListsArray[index].ItemsArray![indexPath.row])
+                    firebaseShoppingListItem.EditIsSelectedOnShoppingListItem(listOwnerID: SelectedList!.OwnerID!, shoppingListItem: ShoppingListsArray[index].ItemsArray![indexPath.row])
                     SortShoppingListItemsArrayBy_isSelected()
                 }
             }
@@ -859,6 +913,11 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.height / 7
+    }
+    // conditional rearranging of the table view.
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the item to be re-orderable.
+        return true
     }
     /*
      // conditional editing of the table view.
@@ -876,14 +935,6 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
      } else if editingStyle == .insert {
      // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
      }
-     }
-     */
-    
-    /*
-     // conditional rearranging of the table view.
-     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
      }
      */
 }

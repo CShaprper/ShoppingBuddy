@@ -12,55 +12,29 @@ import CoreLocation
 import UserNotifications
 import FirebaseAuth
 
-class DashboardController: UIViewController, IFirebaseWebService{
+class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMessageDelegate{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MapView: MKMapView!
     @IBOutlet var lbl_DebugMonitoredRegions: UILabel!
     @IBOutlet var lbl_DebugHasUserMovedDistance: UILabel!
+    @IBOutlet var UserProfileImage: UIImageView!
+    @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
     
     //MARK: - Member
-    //private var locationService:LocationService!
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var debugcounter:Int = 0 //can be removed in release
     internal var locationManager:CLLocationManager!
     internal var radiusToMonitore:CLLocationDistance!
     internal var mapSpan:Double!
-    var userLocation:CLLocationCoordinate2D?
-    private var isMenuOpened:Bool = false
-    var firebaseWebService:FirebaseWebService!
-    var shoppingList:ShoppingList!
-    var listIDs:[ListID]?
+    internal var userLocation:CLLocationCoordinate2D?
+    private var firebaseUser:FirebaseUser!
+    var firebaseShoppingList:ShoppingList!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
-        //Load all Stores
-        shoppingList = ShoppingList()
-        shoppingList.alertMessageDelegate = self
-        shoppingList.ObserveShoppingList()
-       /* listIDs = ListID.FetchListID(userID:Auth.auth().currentUser!.uid, context: context)
-        if listIDs != nil {
-            for id in listIDs!{
-                shoppingList.ObserveShoppingList(listID: id.listID!)
-            }
-        }*/
-        
-        MapView.delegate = self
-        MapView.userTrackingMode = .follow
-        MapView.showsUserLocation = true
-        let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
-        radiusToMonitore = CLLocationDistance(exactly: rad)
-        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
-        
-        // MapView.mask = UIImageView(image: #imageLiteral(resourceName: "AddList-US-Logo"))
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = CLLocationDistance(exactly: mapSpan * 0.25)!
-        self.RequestGPSAuthorization()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -76,11 +50,38 @@ class DashboardController: UIViewController, IFirebaseWebService{
         super.viewDidAppear(animated)
     }
     
-    //MARK: - IFirebaseWebservice Implementation
-    func FirebaseUserLoggedOut() {}
-    func FirebaseRequestStarted() {}
-    func FirebaseRequestFinished() {}
+    
+    
+    //MARK: - IActivityAnimationService implementation
+    func ShowActivityIndicator() {
+        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
+        ActivityIndicator.center = view.center
+        ActivityIndicator.color = UIColor.green
+        ActivityIndicator.startAnimating()
+        view.addSubview(ActivityIndicator)
+    }
+    func HideActivityIndicator() {
+        if view.subviews.contains(ActivityIndicator) {
+            ActivityIndicator.removeFromSuperview()
+        }
+    }
+    
+    
+    //MARK: - IFirebaseUserWebservice Implementation
+    func FirebaseUserLoggedOut() {
+        ShoppingListsArray = []
+        CurrentUserProfileImage = nil
+    }
     func FirebaseUserLoggedIn() {}
+    func UserProfileImageDownloadFinished() {
+        UserProfileImage.alpha = 1
+        UserProfileImage.image = CurrentUserProfileImage
+        for list in ShoppingListsArray {
+            list.OwnerProfileImage = list.ID! == Auth.auth().currentUser!.uid ? CurrentUserProfileImage : #imageLiteral(resourceName: "ShoppingBuddy-Logo")
+        }
+    }
+    
+    
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -97,27 +98,62 @@ class DashboardController: UIViewController, IFirebaseWebService{
         present(alert, animated: true, completion: nil)
     }
     
+    
+    
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem)->Void{
-        firebaseWebService.firebaseWebServiceDelegate  = nil
-        firebaseWebService.LogUserOut()
+        firebaseUser.LogFirebaseUserOut()
     }
     func SegueToLoginController(sender: Notification) -> Void{
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
     }
     
+    
+    
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
-        // Firebase Webservice
-        firebaseWebService = FirebaseWebService()
-        firebaseWebService.firebaseWebServiceDelegate  = self
-        firebaseWebService.alertMessageDelegate = self
+        //Firebase User
+        firebaseUser = FirebaseUser()
+        firebaseUser.alertMessageDelegate = self
+        firebaseUser.firebaseUserWebServiceDelegate = self
+        firebaseUser.activityAnimationServiceDelegate = self
+        firebaseUser.DownloadUserProfileImage()
+        
+        //UserProfileImage
+        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
+        UserProfileImage.clipsToBounds = true
+        UserProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        UserProfileImage.layer.borderWidth = 3
+        UserProfileImage.alpha = 0
+        UserProfileImage.image = CurrentUserProfileImage
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle
         
         //SetTabBarTitle
         tabBarItem.title = String.DashboardControllerTitle
+        
+        //Load all Stores
+        firebaseShoppingList = ShoppingList()
+        firebaseShoppingList.alertMessageDelegate = self
+        firebaseShoppingList.shoppingBuddyListWebServiceDelegate = self
+        firebaseShoppingList.ObserveShoppingList()
+        
+        
+        MapView.delegate = self
+        MapView.userTrackingMode = .follow
+        MapView.showsUserLocation = true
+        let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        radiusToMonitore = CLLocationDistance(exactly: rad)
+        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        
+        // MapView.mask = UIImageView(image: #imageLiteral(resourceName: "AddList-US-Logo"))
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.allowsBackgroundLocationUpdates = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = CLLocationDistance(exactly: mapSpan * 0.25)!
+        self.RequestGPSAuthorization()
         
         //LogOut Button
         let logoutButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
@@ -151,7 +187,20 @@ class DashboardController: UIViewController, IFirebaseWebService{
         }
     }
 }
-extension DashboardController: MKMapViewDelegate{
+extension DashboardController: UNUserNotificationCenterDelegate{
+    //Called in foreground
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        NSLog("NotificationReceived in Foreground")
+        
+    }
+    //Lets you know action decision from Notification
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+    }
+}
+extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
         self.userLocation = userLocation.coordinate
@@ -163,12 +212,6 @@ extension DashboardController: MKMapViewDelegate{
             
             //Update initial User Position
             UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
-            
-            //Set isInitialLocationUpdate false
-            UserDefaults.standard.set(false, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
-            
-            //Set hasUserChangedGeofenceRadius false
-            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
             
             // Stop monitoring old regions
             self.StopMonitoringForOldRegions()
@@ -190,42 +233,47 @@ extension DashboardController: MKMapViewDelegate{
             PerformLocalShopSearch()
         }
     }
-    //MARK: MKMapViewDelegate Helper
-    private func PerformLocalShopSearch() -> Void{
-        let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
-        radiusToMonitore = CLLocationDistance(exactly: rad)
-        if radiusToMonitore == 0 { return }
-        
-        //Get UserDefaults Array
-        listIDs = ListID.FetchListID(userID:Auth.auth().currentUser!.uid, context: context)
-        if listIDs == nil { return }
-        for id in listIDs!{
+    //MARK: - IShoppingBuddyListWebService implementation
+    func ShoppingBuddyListDataReceived() {
+        //firebaseShoppingList.loadImageUsingCacheWithURLString(urlString: <#T##String#>)
+    }
+    func ShoppingBuddyStoresCollectionReceived() {
+        for store in StoresArray {
             let request = MKLocalSearchRequest()
-            request.naturalLanguageQuery = id.relatedStore!
+            request.naturalLanguageQuery = store
             request.region = MapView.region
             let search = MKLocalSearch(request: request)
-            
             search.start { (response, error) in
                 if error != nil {
                     print(error!.localizedDescription)
                     return
                 }
                 if response!.mapItems.count == 0 {
-                    NSLog("No local search matches found")
+                    NSLog("No local search matches found for \(store)")
                     return
                 }
-                NSLog("Matches found for \(id.relatedStore!)")
+                NSLog("Matches found for \(store)")
                 
-                self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)                
+                self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
             }
         }
     }
-    private func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
+    //MARK: MKMapViewDelegate Helper
+    private func PerformLocalShopSearch() -> Void{
+        let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        radiusToMonitore = CLLocationDistance(exactly: rad)
+        if radiusToMonitore == 0 { return }
+        
+        firebaseShoppingList.GetStoresForGeofencing()
+    }
+    internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
         if self.userLocation == nil { return }
         var itemsCount = 0
         for mapItem:MKMapItem in mapItems{
             self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
+            var possibleRegionsPerStore = Int(round(Double(StoresArray.count / 20)))
+            possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
+            if itemsCount == possibleRegionsPerStore { return }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
             //Monitore nearest stores first
             if locationManager.monitoredRegions.count < 20 && distanceToUser < mapSpan * 0.1 {
@@ -343,15 +391,15 @@ extension DashboardController: MKMapViewDelegate{
         pinView.image =  myAnnotation.image
         return pinView
     }
+    //HasUserMovedDistanceGreaterMapSpan
     private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool{
         if  let lastUserLocation = ReadLastUserLocationFromUserDefaults(){
             let distance = userLocation.location?.distance(from: lastUserLocation)
             if distance != nil && distance! > mapSpan * 0.25{
-                lbl_DebugHasUserMovedDistance.text = "User moved > mapSpan: true"
+                lbl_DebugHasUserMovedDistance.text = "User moved > mapSpan: \(debugcounter += 1)"
                 UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
                 return true
             }
-            lbl_DebugHasUserMovedDistance.text = "User moved > mapSpan: false"
         }
         return false
     }
@@ -364,6 +412,11 @@ extension DashboardController: MKMapViewDelegate{
         else { return nil }
     }
     private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void{
+        //Set hasUserChangedGeofenceRadius false
+        UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        //Set isInitialLocationUpdate false
+        UserDefaults.standard.set(false, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
+        //SaveNew position
         UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.LastUserLatitude.rawValue)
         UserDefaults.standard.set(coordinate.longitude, forKey: eUserDefaultKey.LastUserLongitude.rawValue)
     }

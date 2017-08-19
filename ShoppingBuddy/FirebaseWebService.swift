@@ -11,6 +11,7 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseMessaging
+import FirebaseStorage
 
 class FirebaseWebService: IFirebaseWebService {
     //MARK: - Member
@@ -79,7 +80,7 @@ class FirebaseWebService: IFirebaseWebService {
     }
     
     //MARK:- Firebase Auth Section
-    func CreateNewFirebaseUser(nickname: String, email: String, password: String) {
+    func CreateNewFirebaseUser(profileImage:UIImage, nickname: String, email: String, password: String) {
         self.isCalled = false
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
             if error != nil{
@@ -92,7 +93,7 @@ class FirebaseWebService: IFirebaseWebService {
                 }
                 return
             } else {
-                self.SaveNewUserWithUIDtoFirebase(nickname: nickname, user: user, firebaseURL: self.firebaseURL)
+                // self.SaveNewUserWithUIDtoFirebase(profileImage: profileImage, nickname: nickname, user: user, firebaseURL: self.firebaseURL)
                 self.FirebaseRequestFinished()
                 NSLog("Succesfully created new Firebase User")
             }
@@ -146,29 +147,6 @@ class FirebaseWebService: IFirebaseWebService {
             return
         }
         
-    }
-    
-    //MARK: - Helpers
-    private func SaveNewUserWithUIDtoFirebase(nickname:String, user: User?, firebaseURL: String){
-        DispatchQueue.main.async {
-            guard let uid = user?.uid else{
-                return
-            }
-            let token:String = Messaging.messaging().fcmToken!
-            NSLog(token)
-            let usersReference = self.ref.child("users").child(uid)
-            let values = (["nickname": nickname, "email": user!.email!, "fcmToken":token] as [String : Any])
-            usersReference.updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
-                if err != nil{
-                    self.FirebaseRequestFinished()
-                    NSLog(err!.localizedDescription)
-                    return
-                } else {
-                    self.FirebaseRequestFinished()
-                    NSLog("Succesfully saved user to Firebase")
-                }
-            })
-        }
     }
     
 }

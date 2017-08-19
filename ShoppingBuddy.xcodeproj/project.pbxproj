@@ -8,10 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		91935E9AC1DADD7A09CEB2FD /* Pods_ShoppingBuddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */; };
+		CF0161CD1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
 		CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */; };
 		CF3806971F2E2AAA005B3E15 /* ShoppingListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */; };
+		CF5E79871F471BA700D308BC /* IFirebaseUserWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5E79861F471BA700D308BC /* IFirebaseUserWebService.swift */; };
+		CF5F43941F47215300B9D1B9 /* IActivityAnimationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */; };
+		CF5F43961F474AB600B9D1B9 /* IShoppingListItemWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5F43951F474AB600B9D1B9 /* IShoppingListItemWebService.swift */; };
+		CF5F43981F476AA700B9D1B9 /* CacheImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF5F43971F476AA700B9D1B9 /* CacheImage.swift */; };
 		CF610C371F26371600B1B2DE /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C361F26371600B1B2DE /* UIColorExtension.swift */; };
 		CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */; };
 		CF610C3B1F2658DC00B1B2DE /* DashboardControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */; };
@@ -103,10 +108,15 @@
 		8351E8393FE8EBB4708741EA /* Pods-ShoppingBuddyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B8AFA10CA9BF18DA81630E5D /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 		C311ECDB5A403F720F0B0183 /* Pods-ShoppingBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
+		CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncUIImageDownloaderExtension.swift; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
 		CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarExtension.swift; sourceTree = "<group>"; };
 		CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListItem.swift; sourceTree = "<group>"; };
+		CF5E79861F471BA700D308BC /* IFirebaseUserWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IFirebaseUserWebService.swift; sourceTree = "<group>"; };
+		CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IActivityAnimationService.swift; sourceTree = "<group>"; };
+		CF5F43951F474AB600B9D1B9 /* IShoppingListItemWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IShoppingListItemWebService.swift; sourceTree = "<group>"; };
+		CF5F43971F476AA700B9D1B9 /* CacheImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CacheImage.swift; sourceTree = "<group>"; };
 		CF610C361F26371600B1B2DE /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		CF610C381F263BCD00B1B2DE /* CustomTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
 		CF610C3A1F2658DC00B1B2DE /* DashboardControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardControllerTests.swift; sourceTree = "<group>"; };
@@ -258,6 +268,7 @@
 				CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */,
 				CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */,
 				CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */,
+				CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -373,6 +384,7 @@
 				CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */,
 				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
+				CF5F43971F476AA700B9D1B9 /* CacheImage.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
 				CFE4A2071F23C8DC002A12C7 /* Protocols */,
@@ -397,6 +409,9 @@
 				CFE4A2081F23C8EB002A12C7 /* IValidationService.swift */,
 				CFB2AA5C1F24B56000AACB5B /* IFirebaseWebService.swift */,
 				CFF606B21F4346F5009E161E /* IShoppingBuddyListWebService.swift */,
+				CF5E79861F471BA700D308BC /* IFirebaseUserWebService.swift */,
+				CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */,
+				CF5F43951F474AB600B9D1B9 /* IShoppingListItemWebService.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -769,19 +784,24 @@
 				CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */,
 				CFF824061F4083D5002F369A /* ListID+CoreDataProperties.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
+				CF5F43941F47215300B9D1B9 /* IActivityAnimationService.swift in Sources */,
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
 				CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */,
+				CF5F43981F476AA700B9D1B9 /* CacheImage.swift in Sources */,
 				CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */,
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
 				CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */,
 				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,
+				CF0161CD1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift in Sources */,
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,
 				CFF824051F4083D5002F369A /* ListID+CoreDataClass.swift in Sources */,
 				CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */,
 				CFE4A2121F23C9A3002A12C7 /* EmailValidationService.swift in Sources */,
+				CF5E79871F471BA700D308BC /* IFirebaseUserWebService.swift in Sources */,
+				CF5F43961F474AB600B9D1B9 /* IShoppingListItemWebService.swift in Sources */,
 				CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */,
 				CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */,
 			);
@@ -983,7 +1003,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = petersypek.com.ShoppingBuddy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1000,7 +1020,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = petersypek.com.ShoppingBuddy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
