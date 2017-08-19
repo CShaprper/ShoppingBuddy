@@ -25,6 +25,7 @@ class FirebaseUser:IFirebaseUserWebservice {
     var Nickname:String?
     var Password:String?
     var FCMToken:String?
+    var ProfileImageURL:String?
     var ProfileImage:UIImage?
     
     //MARK: - IActivityAnimationService implementation
@@ -81,13 +82,11 @@ class FirebaseUser:IFirebaseUserWebservice {
         self.ShowActivityIndicator()
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             if error != nil{
-                print(error!.localizedDescription)
-                DispatchQueue.main.async {
-                    self.HideActivityIndicator()
-                    let title = String.OnlineFetchRequestError
-                    let message = error!.localizedDescription
-                    self.ShowAlertMessage(title: title, message: message)
-                }
+                NSLog(error!.localizedDescription)
+                self.HideActivityIndicator()
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
                 return
             } else {
                 self.HideActivityIndicator()
@@ -144,9 +143,13 @@ class FirebaseUser:IFirebaseUserWebservice {
             NSLog("Refreshed User fcmToken")
         }
     }
+    func SendInvitationToUserForListID(email:String, listID:String){
+        self.ShowActivityIndicator()
+        
+    }
     func SearchUserByEmail(listID:String, email:String) -> Void {
         self.ShowActivityIndicator()
-        Auth.auth().fetchProviders(forEmail: email) { (test, error) in
+        Auth.auth().fetchProviders(forEmail: email) { (snapshot, error) in
             if error != nil {
                 NSLog(error!.localizedDescription)
                 self.HideActivityIndicator()
@@ -156,8 +159,8 @@ class FirebaseUser:IFirebaseUserWebservice {
                 return
             }
             NSLog("Refreshed User fcmToken")
-            if test != nil {
-                self.GetuidByEmail(listID: listID, email: email)
+            if snapshot != nil {
+                self.SetFriendValues(listID: listID, email: email)
             } else {
                 let title = String.OnlineFetchRequestError
                 let message = "\(email) is not a registered address!"
@@ -165,7 +168,7 @@ class FirebaseUser:IFirebaseUserWebservice {
             }
         }
     }
-    func GetuidByEmail(listID:String, email:String) -> Void {
+    func SetFriendValues(listID:String, email:String) -> Void {
         self.ShowActivityIndicator()
         guard let uid = Auth.auth().currentUser?.uid else{
             return
@@ -195,6 +198,11 @@ class FirebaseUser:IFirebaseUserWebservice {
     }
     private func UserProfileImageDownloadTask(url:URL) -> Void{
         self.ShowActivityIndicator()
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == url.absoluteString }) {
+            CurrentUserProfileImage = ProfileImageCache[index].UserProfileImage!
+            self.HideActivityIndicator()
+            return
+        }
         let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
             if error != nil{
                 self.HideActivityIndicator()
@@ -206,6 +214,10 @@ class FirebaseUser:IFirebaseUserWebservice {
             }
             DispatchQueue.main.async {
                 if let downloadImage = UIImage(data: data!){
+                    let cachedImage = CacheUserProfileImage()
+                    cachedImage.UserProfileImage = downloadImage
+                    cachedImage.ProfileImageURL = url.absoluteString
+                    ProfileImageCache.append(cachedImage)
                     CurrentUserProfileImage = downloadImage
                     self.UserProfileImageDownloadFinished()
                     self.HideActivityIndicator()
@@ -234,7 +246,7 @@ class FirebaseUser:IFirebaseUserWebservice {
                     DispatchQueue.main.async {
                         print(metadata ?? "")
                         if let imgURL =  metadata?.downloadURL()?.absoluteString{
-                            let token:String = Messaging.messaging().fcmToken!
+                            let token:String = Messaging.messaging().fcmToken!              
                             let values = (["nickname": firebaseUser.Nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
                             self.userRef.updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                                 if err != nil{

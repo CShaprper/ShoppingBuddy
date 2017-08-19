@@ -76,9 +76,6 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     func UserProfileImageDownloadFinished() {
         UserProfileImage.alpha = 1
         UserProfileImage.image = CurrentUserProfileImage
-        for list in ShoppingListsArray {
-            list.OwnerProfileImage = list.ID! == Auth.auth().currentUser!.uid ? CurrentUserProfileImage : #imageLiteral(resourceName: "ShoppingBuddy-Logo")
-        }
     }
     
     
@@ -208,11 +205,20 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
         mapView.setRegion(region, animated: false)
         
-        if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue) || UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
-            
+        if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue){            
             //Update initial User Position
             UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
             
+            // Stop monitoring old regions
+            self.StopMonitoringForOldRegions()
+            
+            //Remove old Geofence Overlays
+            self.RemoveOldGeofenceOverlays()
+            
+            //Search nearby Shops
+            PerformLocalShopSearch()
+        }
+        else if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
             // Stop monitoring old regions
             self.StopMonitoringForOldRegions()
             
@@ -268,74 +274,39 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
     }
     internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
         if self.userLocation == nil { return }
+        var possibleRegionsPerStore = Int(round(Double(StoresArray.count / 20)))
+        possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
+        
         var itemsCount = 0
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: 0, maxDistance: mapSpan * 0.1)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.1, maxDistance: mapSpan * 0.2)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.2, maxDistance: mapSpan * 0.3)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.3, maxDistance: mapSpan * 0.4)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.4, maxDistance: mapSpan * 0.6)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.6, maxDistance: mapSpan * 3)
+    }
+    private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int{
         for mapItem:MKMapItem in mapItems{
             self.SetAnnotations(mapItem: mapItem)
-            var possibleRegionsPerStore = Int(round(Double(StoresArray.count / 20)))
-            possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
-            if itemsCount == possibleRegionsPerStore { return }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
-            //Monitore nearest stores first
-            if locationManager.monitoredRegions.count < 20 && distanceToUser < mapSpan * 0.1 {
-                MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
-            }
-        }
-        if itemsCount == 4 { return }
-        for mapItem:MKMapItem in mapItems{
-            self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
-            //Monitore 2nd nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= mapSpan * 0.1 && distanceToUser < mapSpan * 0.2 {
-                MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
-            }
-        }
-        if itemsCount == 4 { return }
-        for mapItem:MKMapItem in mapItems{
-            self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
-            //Monitore 3nd nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= mapSpan * 0.2 && distanceToUser < mapSpan * 0.3 {
-                MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
-            }
-        }
-        if itemsCount == 4 { return }
-        for mapItem:MKMapItem in mapItems{
-            self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
-            //Monitore 4nd nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= mapSpan * 0.3 && distanceToUser < mapSpan * 0.4 {
-                MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
-            }
-        }
-        if itemsCount == 4 { return }
-        for mapItem:MKMapItem in mapItems{
-            self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
-            //Monitore 5th nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= mapSpan * 0.4 && distanceToUser <= mapSpan * 0.6 {
-                MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
-            }
-        }
-        if itemsCount == 4 { return }
-        for mapItem:MKMapItem in mapItems{
-            self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == 4 { return }
+            if itemsCount == possibleRegionsPerStore { return itemsCount }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
             //Monitore 6th nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= mapSpan * 0.6 && distanceToUser <= mapSpan * 3 {
+            if locationManager.monitoredRegions.count < 20 && distanceToUser >= minDistance && distanceToUser <= maxDistance {
                 MonitoreCircularRegion(mapItem: mapItem)
-                itemsCount += 1
+               return  itemsCount + 1
             }
         }
+        return itemsCount
     }
     private func MonitoreCircularRegion(mapItem: MKMapItem){
         DispatchQueue.main.async {
@@ -440,7 +411,7 @@ extension DashboardController: CLLocationManagerDelegate{
             locationManager.requestAlwaysAuthorization()
         }
         if CLLocationManager.authorizationStatus() == .authorizedAlways{
-            locationManager.startUpdatingLocation()
+            locationManager.startMonitoringSignificantLocationChanges()
         }
         if CLLocationManager.authorizationStatus() == .denied{
             let title = String.GPSAuthorizationRequestDenied_AlertTitle

@@ -14,7 +14,7 @@ import CoreData
 
 var ShoppingListsArray:[ShoppingList] = []
 var StoresArray:[String] = []
-var CurrentUserProfileImage:UIImage?
+var CurrentUserProfileImage:UIImage? 
 var ProfileImageCache:[CacheUserProfileImage] = []
 
 @UIApplicationMain

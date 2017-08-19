@@ -103,10 +103,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
-        for list in ShoppingListsArray {
-            NSLog(list.OwnerProfileImageURL!)
-            firebaseShoppingList.DownloadImage(url: list.OwnerProfileImageURL!)
-        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -118,6 +114,9 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         view.bringSubview(toFront: TrashImage)
+        if ShoppingListsArray.count > 0{
+            SetCardOneValues(index: 0)
+        }
     }
     
     //MARK: - IShoppingBuddyListItemWebService implementation
@@ -151,10 +150,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     //MARK: - IFirebaseListWebService implementation
     func ShoppingBuddyListDataReceived() {
-        for list in ShoppingListsArray {
-            NSLog(list.OwnerProfileImageURL!)
-            firebaseShoppingList.DownloadImage(url: list.OwnerProfileImageURL!)
-        }
         ShoppingListDetailTableView.reloadData()
         RefreshCardView()
         ShoppingListCard.alpha = 1
@@ -571,8 +566,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].ItemsArray!.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].ItemsArray!))"
-        print(ShoppingListsArray[index].OwnerProfileImage )
-        ShoppingListOwnerImage.image = ShoppingListsArray[index].OwnerProfileImage! // != nil ?  ShoppingListsArray[index].OwnerProfileImage! : nil
+        if ShoppingListsArray[index].OwnerProfileImage != nil {
+            ShoppingListOwnerImage.alpha = 1
+        ShoppingListOwnerImage.image = ShoppingListsArray[index].OwnerProfileImage!
+        } else {
+            ShoppingListOwnerImage.alpha = 0
+            ShoppingListsArray[index].userProfileImageFromURL()
+        }
     }
     
     private func SetCardTwoValues(index: Int) -> Void{
@@ -582,8 +582,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[index].ItemsArray!.count)"
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].ItemsArray!))"
-        print(ShoppingListsArray[index].OwnerProfileImage )
-        ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].OwnerProfileImage! // != nil ?  ShoppingListsArray[index].OwnerProfileImage! : nil
+        if ShoppingListsArray[index].OwnerProfileImage != nil {
+            ShoppingListCard2OwnerImage.alpha = 1
+            ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].OwnerProfileImage!
+        } else {
+            ShoppingListCard2OwnerImage.alpha = 0
+            ShoppingListsArray[index].userProfileImageFromURL()
+        }
     }
     
     //MARK: - Textfield Delegate implementation
@@ -828,12 +833,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         ShoppingListCard2OwnerImage.layer.cornerRadius = ShoppingListCard2OwnerImage.frame.width * 0.5
         ShoppingListCard2OwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListCard2OwnerImage.layer.borderWidth = 3
-        ShoppingListCard2OwnerImage.alpha = 0
         
         ShoppingListOwnerImage.layer.cornerRadius = ShoppingListOwnerImage.frame.width * 0.5
         ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        ShoppingListOwnerImage.layer.borderWidth = 3
-        ShoppingListOwnerImage.alpha = 0
+        ShoppingListOwnerImage.layer.borderWidth = 3 
         
         if ShoppingListsArray.count > 1{
             SelectedList = ShoppingListsArray[0]
