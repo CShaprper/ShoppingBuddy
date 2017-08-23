@@ -221,7 +221,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
-            firebaseUser.SearchUserByEmail(listID: ShoppingListsArray[currentShoppingListIndex].id!, email: txt_ShareListOpponentEmail.text!)
+            firebaseShoppingList.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!)           
             HideShareListPopUp()
         }
     }

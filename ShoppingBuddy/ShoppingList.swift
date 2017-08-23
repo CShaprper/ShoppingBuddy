@@ -100,6 +100,50 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
         }
     }
     
+    //Share Functions
+    func SendFriendSharingInvitation(friendsEmail:String) -> Void {
+        self.ShowActivityIndicator()
+        Auth.auth().fetchProviders(forEmail: friendsEmail) { (snapshot, error) in
+            if error != nil {
+                NSLog(error!.localizedDescription)
+                self.HideActivityIndicator()
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+            }
+            if snapshot != nil {
+                
+            } else {
+                self.HideActivityIndicator()
+                let title = String.OnlineFetchRequestError
+                let message = "\(friendsEmail) is not a registered Shopping Buddy address!"
+                self.ShowAlertMessage(title: title, message: message)
+            }
+        }
+    }
+    func SearchUserByEmail(listID:String, email:String) -> Void {
+        self.ShowActivityIndicator()
+        Auth.auth().fetchProviders(forEmail: email) { (snapshot, error) in
+            if error != nil {
+                NSLog(error!.localizedDescription)
+                self.HideActivityIndicator()
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+            }
+            NSLog("Refreshed User fcmToken")
+            if snapshot != nil {
+                
+            } else {
+                let title = String.OnlineFetchRequestError
+                let message = "\(email) is not a registered address!"
+                self.ShowAlertMessage(title: title, message: message)
+            }
+        }
+    }
+    
     
     //MARK: - FirebaseSave Functions
     func SaveListToFirebaseDatabase() -> Void {

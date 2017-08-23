@@ -160,44 +160,7 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
             NSLog("Refreshed User fcmToken")
         }
     }
-    func SearchUserByEmail(listID:String, email:String) -> Void {
-        self.ShowActivityIndicator()
-        Auth.auth().fetchProviders(forEmail: email) { (snapshot, error) in
-            if error != nil {
-                NSLog(error!.localizedDescription)
-                self.HideActivityIndicator()
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            NSLog("Refreshed User fcmToken")
-            if snapshot != nil {
-                self.SetFriendValues(listID: listID, email: email)
-            } else {
-                let title = String.OnlineFetchRequestError
-                let message = "\(email) is not a registered address!"
-                self.ShowAlertMessage(title: title, message: message)
-            }
-        }
-    }
-    func SetFriendValues(listID:String, email:String) -> Void {
-        self.ShowActivityIndicator()
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("users").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.value is NSNull { return }
-            if snapshot.childrenCount == 0 { return }
-            for user in snapshot.children{
-                let usr = user as! DataSnapshot
-                self.ref.child("users").child(uid).child("friends").child(usr.key).setValue("pending")
-                self.ref.child("shoppinglists").child(uid).child(listID).child("members").child(usr.key).setValue("pending")
-                self.ref.child("users").child(usr.key).child("friends").child(uid).setValue("pending")
-            }
-            self.HideActivityIndicator()
-        })
-    }
+    
     func DownloadUserProfileImage(){
         guard let uid = Auth.auth().currentUser?.uid else{
             return
