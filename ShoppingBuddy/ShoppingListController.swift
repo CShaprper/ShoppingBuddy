@@ -488,12 +488,12 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             card.center.x = card.center.x + xSpin
         }, completion: { (true) in
             //Card arise in Center for new view
-            if ShoppingListsArray[self.currentShoppingListIndex].id == Auth.auth().currentUser!.uid{
+            if ShoppingListsArray[self.currentShoppingListIndex].owner!.id == Auth.auth().currentUser!.uid{
                 self.firebaseShoppingList.DeleteShoppingListFromFirebase(listToDelete: ShoppingListsArray[self.currentShoppingListIndex])
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
             } else {
                 let title = "Permission Denied"
-                let message = "Your are not allowed to delete your own lists!"
+                let message = "Your are only allowed to delete your own lists!"
                 self.ShowAlertMessage(title: title, message: message)
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
             }

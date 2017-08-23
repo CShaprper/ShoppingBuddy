@@ -365,5 +365,117 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingList.swift"
+            timestampString = "525199301.163775"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "349"
+            endingLineNumber = "349"
+            landmarkName = "DeleteShoppingListFromFirebase(listToDelete:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingList.swift"
+            timestampString = "525199341.129503"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
+            landmarkName = "DeleteShoppingListFromFirebase(listToDelete:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShoppingBuddy.ShoppingList.DeleteShoppingListFromFirebase (listToDelete : ShoppingBuddy.ShoppingList) -&gt; ()"
+                  moduleName = "ShoppingBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingList.swift"
+                  timestampString = "525199513.868951"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShoppingBuddy.ShoppingList.(DeleteShoppingListFromFirebase (listToDelete : ShoppingBuddy.ShoppingList) -&gt; ()).(closure #1)"
+                  moduleName = "ShoppingBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingList.swift"
+                  timestampString = "525199513.870898"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "346"
+                  endingLineNumber = "346"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "525199365.494689"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "326"
+            endingLineNumber = "326"
+            landmarkName = "HandleShoppingItemPan(sender:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShoppingBuddy.ShoppingListController.(HandleShoppingItemPan (sender : __ObjC.UIPanGestureRecognizer) -&gt; ()).(closure #6)"
+                  moduleName = "ShoppingBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingListController.swift"
+                  timestampString = "525199513.875466"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "327"
+                  endingLineNumber = "327"
+                  offsetFromSymbolStart = "552">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShoppingBuddy.ShoppingListController.(HandleShoppingItemPan (sender : __ObjC.UIPanGestureRecognizer) -&gt; ()).(closure #6).(closure #1)"
+                  moduleName = "ShoppingBuddy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingListController.swift"
+                  timestampString = "525199513.877425"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "327"
+                  endingLineNumber = "327"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

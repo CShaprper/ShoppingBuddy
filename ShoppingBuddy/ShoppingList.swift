@@ -303,6 +303,7 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
                 self.HideActivityIndicator()
                 return
             }
+            //TODO: overwork
             self.ref.child("users").child(uid).child("friends").observeSingleEvent(of: .value, with: { (snapshot) in
                 if snapshot.value is NSNull{ return }
                 for friendSnap in snapshot.children {
@@ -319,7 +320,7 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
                             for item in items.children{
                                 let currItem = item as! DataSnapshot
                                 let isSelected = currItem.childSnapshot(forPath: "isSelected")
-                                if isSelected.value as! String == "false" {
+                                if isSelected.value as! Bool == false {
                                     hasOpenElements = true
                                     break
                                 }
