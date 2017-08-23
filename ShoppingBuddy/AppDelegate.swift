@@ -94,6 +94,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         return true
     }
     
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
+        Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
+        NSLog("Successfully registered for RemoteNotifications with token")
+        print(tokenString(deviceToken))
+    }
+    func tokenString(_ deviceToken:Data) -> String{
+        //code to make a token string
+        let bytes = [UInt8](deviceToken)
+        var token = ""
+        for byte in bytes{
+            token += String(format: "%02x",byte)
+        }
+        return token
+    }
+    
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
         let token:String = Messaging.messaging().fcmToken!
         print(token)
@@ -103,6 +119,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
         print(remoteMessage)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+        print(userInfo)
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

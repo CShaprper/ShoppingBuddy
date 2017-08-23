@@ -9,16 +9,20 @@
 import UIKit
 
 
-extension ShoppingList: URLSessionDownloadDelegate {
+extension FirebaseUser: URLSessionDownloadDelegate {
     public func userProfileImageFromURL(){
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == self.OwnerProfileImageURL }) {
-            self.OwnerProfileImage = ProfileImageCache[index].UserProfileImage!
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == self.profileImageURL }) {
+            self.profileImage = ProfileImageCache[index].UserProfileImage!
             NSLog("UserProfileImage set from ImageCache!")
             return
         }
-        let url = URL(string: self.OwnerProfileImageURL!)!
-        let uTask = self.uSession.downloadTask(with: url)
-        uTask.resume()
+        if let imageURL = self.profileImageURL{
+            if imageURL.isEmpty { return }
+            NSLog(self.profileImageURL!)
+            let url = URL(string: imageURL)!
+            let uTask = self.uSession.downloadTask(with: url)
+            uTask.resume()
+        } 
     }
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL){
         if let image = try? UIImage(data: Data(contentsOf: location)),
@@ -29,9 +33,9 @@ extension ShoppingList: URLSessionDownloadDelegate {
             cachedImage.UserProfileImage = image
             ProfileImageCache.append(cachedImage)
             NSLog("Added UserProfileImage to Cache")
-            self.OwnerProfileImage = image
+            self.profileImage = image
             NSLog("UserProfileImage set from DownloadTask!")
-            self.ShoppingBuddyImageReceived()
+            self.UserProfileImageDownloadFinished()
         } else {
             //Set default image
         }

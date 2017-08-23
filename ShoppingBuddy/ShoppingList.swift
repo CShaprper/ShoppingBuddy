@@ -11,31 +11,26 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseMessaging
-
+ 
 class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate, IActivityAnimationService{
     private var ref = Database.database().reference()
-    private var shoppingListRef = Database.database().reference().child("shoppinglists").child(Auth.auth().currentUser!.uid)
+    private var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
+    private var shoppingListRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid).child("shoppinglists")
     var alertMessageDelegate: IAlertMessageDelegate?
     var activityAnimationServiceDelegate: IActivityAnimationService?
     var shoppingBuddyListWebServiceDelegate: IShoppingBuddyListWebService?
-    var ID:String?
-    var OwnerID:String?
-    var Name:String?
-    var OwnerProfileImageURL:String?
-    var OwnerProfileImage:UIImage?
-    var RelatedStore:String?
-    var ItemsArray:[ShoppingListItem]?
-    var MembersArray:[String]?
-    
-    lazy var uSession:URLSession = {
-        let config = URLSessionConfiguration.default
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()
+    var id:String?
+    var owner:FirebaseUser?
+    var name:String?
+    var relatedStore:String?
+    var itemsArray:[ShoppingListItem]!
+    var membersArray:[FirebaseUser]!
     
     override init() {
         super.init()
-        ItemsArray = []
-        MembersArray = []
+        owner = FirebaseUser()
+        itemsArray = []
+        membersArray = []
     }
     
     //MARK: - IAlertMessageDelegate implementation
@@ -94,39 +89,190 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
         } else {
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyImageReceived() in ShoppingList")
         }
-        
+    }
+    func ShoppingBuddyNewListSaved() {
+        if shoppingBuddyListWebServiceDelegate != nil{
+            DispatchQueue.main.async {
+                self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyNewListSaved!()
+            }
+        } else {
+            NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyNewListSaved() in ShoppingList")
+        }
     }
     
     
     //MARK: - FirebaseSave Functions
     func SaveListToFirebaseDatabase() -> Void {
         self.ShowActivityIndicator()
-        guard let uid = Auth.auth().currentUser?.uid else{
+        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if snapshot.value is NSNull { return }
+            let listRef =  snapshot.ref.child("shoppinglists").childByAutoId()
+            listRef.updateChildValues(["listName":self.name!, "relatedStore":self.relatedStore!], withCompletionBlock: { (error, dbRef) in
+                if error != nil {
+                    self.HideActivityIndicator()
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                }
+                NSLog("Successfully saved List to Firebase Listname: %@ related Store: %@",self.name!, self.relatedStore!)
+                let owner = FirebaseUser()
+                owner.id = snapshot.key
+                owner.email = snapshot.childSnapshot(forPath: "email").value as? String
+                owner.nickname = snapshot.childSnapshot(forPath:"nickname").value as? String
+                owner.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+                owner.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
+                
+                if owner.id == nil || owner.email == nil || owner.nickname == nil || owner.profileImageURL == nil || owner.fcmToken == nil {
+                    self.HideActivityIndicator()
+                    return
+                }
+                
+                dbRef.child("owner").child(owner.id!).updateChildValues(["email":owner.email!, "nickname":owner.nickname!, "profileImageURL":owner.profileImageURL!, "fcmToken":owner.fcmToken!], withCompletionBlock: { (error, dbRef) in
+                    if error != nil {
+                        self.HideActivityIndicator()
+                        NSLog(error!.localizedDescription)
+                        let title = String.OnlineFetchRequestError
+                        let message = error!.localizedDescription
+                        self.ShowAlertMessage(title: title, message: message)
+                        return
+                    }
+                    NSLog("Successfully saved owner of List to Firebase Listname: %@ related Store: %@",self.name!, self.relatedStore!)
+                    self.HideActivityIndicator()
+                    
+                    self.ObserveSingleShoppingList(owner: owner, listID: listRef.key)
+                })
+            })
+        }) { (error) in
             self.HideActivityIndicator()
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
             return
         }
-        let listID =  shoppingListRef.childByAutoId()
-        listID.updateChildValues(["listID":listID.key, "ownerID":uid, "name":self.Name!, "relatedStore":self.RelatedStore!], withCompletionBlock: { (error, dbref) in
-            if error != nil{
-                self.HideActivityIndicator()
-                NSLog(error!.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-            }
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-            listID.child("members").child(uid).setValue("owner")
-            self.ref.child("users").child(uid).child("profileImageURL").observeSingleEvent(of: .value, with: { (snapshot) in
-                if snapshot.value == nil { return }
-                listID.child("ownerProfileImageURL").setValue(snapshot.value as! String)
-                NSLog("Succesfully saved Shopping List to Firebase")
-                self.ObserveShoppingList()
-            })
-        })
     }
     
     //MARK: - Firebase Observe Functions
+    func ObserveSingleShoppingList(owner:FirebaseUser, listID:String) -> Void {
+        self.ShowActivityIndicator()
+         shoppingListRef.child(listID).observe(.value, with: { (snapshot) in
+            if snapshot.value is NSNull { return }
+            
+             let newShoppingList = ShoppingList()
+            newShoppingList.id = snapshot.key
+            newShoppingList.name = snapshot.childSnapshot(forPath: "listName").value as? String
+            newShoppingList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
+            newShoppingList.owner = owner
+            
+            var newItems = [ShoppingListItem]()
+            for items in snapshot.childSnapshot(forPath: "items").children{
+                guard let item = items as? DataSnapshot else {
+                    return
+                }
+                let newItem = ShoppingListItem()
+                newItem.id = item.key
+                newItem.isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
+                newItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
+                newItem.sortNumber = item.childSnapshot(forPath: "sortNumber").value as? Int
+                newItems.append(newItem)
+            }
+            newShoppingList.itemsArray  = newItems
+            
+            var newMembers = [FirebaseUser]()
+            for members in snapshot.childSnapshot(forPath: "members").children{
+                guard let member = members as? DataSnapshot else {
+                    return
+                }
+                let newMember = FirebaseUser()
+                newMember.id = member.key
+                newMember.email = member.childSnapshot(forPath: "email").value as? String
+                newMember.nickname = member.childSnapshot(forPath: "nickname").value as? String
+                newMember.profileImageURL = member.childSnapshot(forPath: "profileImageURL").value as? String
+                newMember.fcmToken = member.childSnapshot(forPath: "fcmToken").value as? String
+                newMember.userProfileImageFromURL()
+                newMembers.append(newMember)
+            }
+            newShoppingList.membersArray = newMembers
+            
+            ShoppingListsArray.append(newShoppingList)
+            self.HideActivityIndicator()
+            self.ShoppingBuddyListDataReceived()
+            
+         }) { (error) in
+            self.HideActivityIndicator()
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+        }
+    }
+    
+       func ObserveShoppingList() -> Void{
+        self.ShowActivityIndicator()
+        userRef.observe(.value, with: { (snapshot) in
+            if snapshot.value is NSNull{
+                self.HideActivityIndicator()
+                return
+            }
+            
+            //Fill UserData from Snapshot
+            let fbUser = FirebaseUser()
+            fbUser.id = snapshot.key
+            fbUser.email = snapshot.childSnapshot(forPath: "email").value as? String
+            fbUser.nickname = snapshot.childSnapshot(forPath: "nickName").value as? String
+            fbUser.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+            fbUser.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
+            
+            //Fill Listdata from ListSnapshot
+            let listSnap = snapshot.childSnapshot(forPath: "shoppinglists")
+            var shoppingListArray = [ShoppingList]()
+            for lists in listSnap.children {
+                let list = lists as! DataSnapshot
+                let shoppingList = ShoppingList()
+                shoppingList.owner = fbUser  //Set User Data
+                shoppingList.id = list.key
+                shoppingList.name = list.childSnapshot(forPath: "listName").value as? String
+                shoppingList.relatedStore = list.childSnapshot(forPath: "relatedStore").value as? String
+                
+                let itemsRef = list.childSnapshot(forPath: "items")
+                var itemsArray = [ShoppingListItem]()
+                for items in itemsRef.children {
+                    let item = items as! DataSnapshot
+                    let listItem = ShoppingListItem()
+                    listItem.id = item.key
+                    listItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
+                    listItem.isSelected = item.childSnapshot(forPath:  "isSelected").value as? Bool
+                    itemsArray.append(listItem)
+                }
+                shoppingList.itemsArray = itemsArray
+                
+                let membersRef = list.childSnapshot(forPath: "members")
+                var membersArray = [FirebaseUser]()
+                for members in membersRef.children {
+                    let member = members as! DataSnapshot
+                    let fbUser = FirebaseUser()
+                    fbUser.id = member.key
+                    fbUser.email = snapshot.childSnapshot(forPath: "email").value as? String
+                    fbUser.nickname = snapshot.childSnapshot(forPath: "nickName").value as? String
+                    fbUser.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+                    fbUser.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
+                    fbUser.sharingStatus = snapshot.childSnapshot(forPath: "sharingStatus").value as? String
+                    membersArray.append(fbUser)
+                }
+                shoppingList.membersArray = membersArray
+                shoppingListArray.append(shoppingList)
+            }
+            self.HideActivityIndicator()
+            ShoppingListsArray = shoppingListArray
+            self.ShoppingBuddyListDataReceived()
+        })
+    }
+    func ObserveFriendsList(){
+      
+    }
     func GetStoresForGeofencing(){
         self.ShowActivityIndicator()
         shoppingListRef.observeSingleEvent(of: .value, with: { (snapshot) in
@@ -134,10 +280,22 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
             var newStoresArray:[String] = []
             for listSnap in snapshot.children {
                 let list = listSnap as! DataSnapshot
-                let storeSnap = list.childSnapshot(forPath: "relatedStore")
-                if storeSnap.value == nil { return }
-                newStoresArray.append(storeSnap.value as! String)
-                self.ShoppingBuddyStoresCollectionReceived()
+                let items = list.childSnapshot(forPath: "items")
+                var hasOpenElements:Bool = false
+                for item in items.children{
+                    let currItem = item as! DataSnapshot
+                    let isSelected = currItem.childSnapshot(forPath: "isSelected")
+                    if isSelected.value as! Bool == false {
+                        hasOpenElements = true
+                        break
+                    }
+                }
+                if hasOpenElements {
+                    let storeSnap = list.childSnapshot(forPath: "relatedStore")
+                    if storeSnap.value == nil { return }
+                    newStoresArray.append(storeSnap.value as! String)
+                    self.ShoppingBuddyStoresCollectionReceived()
+                }
             }
             StoresArray = newStoresArray
             //Get friends stores
@@ -156,8 +314,20 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
                         if snapshot.value is NSNull{ return }
                         for listSnap in snapshot.children{
                             let list = listSnap as! DataSnapshot
-                            let storeSnap = list.childSnapshot(forPath: "relatedStore")
-                            newStoresArray.append(storeSnap.value as! String)
+                            let items = list.childSnapshot(forPath: "items")
+                            var hasOpenElements:Bool = false
+                            for item in items.children{
+                                let currItem = item as! DataSnapshot
+                                let isSelected = currItem.childSnapshot(forPath: "isSelected")
+                                if isSelected.value as! String == "false" {
+                                    hasOpenElements = true
+                                    break
+                                }
+                            }
+                            if hasOpenElements {
+                                let storeSnap = list.childSnapshot(forPath: "relatedStore")
+                                newStoresArray.append(storeSnap.value as! String)
+                            }
                         }
                         StoresArray = newStoresArray
                         self.ShoppingBuddyStoresCollectionReceived()
@@ -166,133 +336,12 @@ class ShoppingList:NSObject, IShoppingBuddyListWebService, IAlertMessageDelegate
             })
         })
     }
-    func ObserveShoppingList() -> Void{
-        shoppingListRef.observe(.value, with: { (snapshot) in
-            if snapshot.value is NSNull{ return }
-            var newShoppingListArray:[ShoppingList] = []
-            for listSnap in snapshot.children {
-                let list = listSnap as! DataSnapshot
-                //Get ListData
-                let newShoppinglist = ShoppingList()
-                if let dict = list.value as? NSDictionary{
-                    newShoppinglist.ID = dict["listID"] as? String ?? ""
-                    newShoppinglist.OwnerID = dict["ownerID"] as? String ?? ""
-                    newShoppinglist.Name = dict["name"] as? String ?? ""
-                    newShoppinglist.RelatedStore = dict["relatedStore"] as? String ?? ""
-                    newShoppinglist.OwnerProfileImageURL = dict["ownerProfileImageURL"] as? String ?? ""
-                    newShoppinglist.userProfileImageFromURL()
-                    
-                    //Get listitemsData
-                    let itemDataSnapshot = list.childSnapshot(forPath: "items")
-                    var newItems = [ShoppingListItem]()
-                    for snap in itemDataSnapshot.children{
-                        let item = snap as! DataSnapshot
-                        if let dict = item.value as? [String: AnyObject]{
-                            let listItem:ShoppingListItem = ShoppingListItem()
-                            listItem.ID = dict["itemID"] as? String != nil ? (dict["itemID"] as? String)! : ""
-                            listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
-                            listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
-                            listItem.ShoppingListID = newShoppinglist.ID!
-                            newItems.append(listItem)
-                        }
-                    }
-                    newShoppinglist.ItemsArray = newItems.filter({$0.ShoppingListID == newShoppinglist.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
-                    //Get list members Data
-                    let memberDataSnapshot = list.childSnapshot(forPath: "members")
-                    var newMembers = [String]()
-                    for snap in memberDataSnapshot.children{
-                        let member = snap as! DataSnapshot
-                        if let memberStr:String =  member.value as? String{
-                            newMembers.append(memberStr)
-                        }
-                    }
-                    newShoppinglist.MembersArray = newMembers
-                    newShoppingListArray.append(newShoppinglist)
-                }
-            }
-            ShoppingListsArray = newShoppingListArray
-            self.ShoppingBuddyListDataReceived()
-            self.ObserveFriendsList()
-        })
-    }
-    func ObserveFriendsList(){
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("users").child(uid).child("friends").observe(.value,  with: { (snapshot) in
-            if snapshot.value is NSNull{ return }
-            for friends in snapshot.children{
-                let friend = friends as! DataSnapshot
-                var status:String = ""
-                status = friend.value as! String
-                if status.isEmpty || status == "pending" { return }
-                
-                self.ref.child("shoppinglists").child(friend.key).observe(.value, with: { (snapshot) in
-                    if snapshot.value is NSNull{ return }
-                    
-                    var newShoppingListArray:[ShoppingList] = []
-                    for listSnap in snapshot.children {
-                        let list = listSnap as! DataSnapshot
-                        
-                        //Get list members Data
-                        let memberDataSnapshot = list.childSnapshot(forPath: "members")
-                        for snap in memberDataSnapshot.children{
-                            let member = snap as! DataSnapshot
-                            if member.key != uid { return }
-                            //Remove all previous data with friend.key from ShoppingListsArray
-                            ShoppingListsArray = ShoppingListsArray.filter({$0.OwnerID! != friend.key})
-                            
-                            
-                            //Get ListData
-                            let newShoppinglist = ShoppingList()
-                            if let dict = list.value as? NSDictionary{
-                                newShoppinglist.ID = dict["listID"] as? String ?? ""
-                                newShoppinglist.OwnerID = dict["ownerID"] as? String ?? ""
-                                newShoppinglist.Name = dict["name"] as? String ?? ""
-                                newShoppinglist.RelatedStore = dict["relatedStore"] as? String ?? ""
-                                newShoppinglist.OwnerProfileImageURL = dict["ownerProfileImageURL"] as? String ?? ""
-                                newShoppinglist.userProfileImageFromURL()
-                                
-                                //Get listitemsData
-                                let itemDataSnapshot = list.childSnapshot(forPath: "items")
-                                var newItems = [ShoppingListItem]()
-                                for snap in itemDataSnapshot.children{
-                                    let item = snap as! DataSnapshot
-                                    if let dict = item.value as? [String: AnyObject]{
-                                        let listItem:ShoppingListItem = ShoppingListItem()
-                                        listItem.ID = dict["itemID"] as? String != nil ? (dict["itemID"] as? String)! : ""
-                                        listItem.ItemName = dict["itemName"] as? String != nil ? (dict["itemName"] as? String)! : ""
-                                        listItem.isSelected = dict["isSelected"] as? String != nil ? (dict["isSelected"] as? String)! : ""
-                                        listItem.ShoppingListID = newShoppinglist.ID!
-                                        newItems.append(listItem)
-                                    }
-                                }
-                                newShoppinglist.ItemsArray = newItems.filter({$0.ShoppingListID == newShoppinglist.ID!}).sorted(by: {return $0.isSelected! < $1.isSelected!})
-                                //Get list members Data
-                                let memberDataSnapshot = list.childSnapshot(forPath: "members")
-                                var newMembers = [String]()
-                                for snap in memberDataSnapshot.children{
-                                    let member = snap as! DataSnapshot
-                                    if let memberStr:String =  member.value as? String{
-                                        newMembers.append(memberStr)
-                                    }
-                                }
-                                newShoppinglist.MembersArray = newMembers
-                                newShoppingListArray.append(newShoppinglist)
-                            }
-                            ShoppingListsArray.append(contentsOf: newShoppingListArray)
-                        }
-                    }
-                    self.ShoppingBuddyListDataReceived()
-                })
-            }
-        })
-    }
+
     
     //MARK: - Delete Functions
     func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
         self.ShowActivityIndicator()
-        shoppingListRef.child(listToDelete.ID!).removeValue { (error, dbref) in
+        shoppingListRef.child(listToDelete.id!).removeValue { (error, dbref) in
             if error != nil{
                 self.HideActivityIndicator()
                 NSLog(error!.localizedDescription)

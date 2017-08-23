@@ -72,7 +72,9 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
         ShoppingListsArray = []
         CurrentUserProfileImage = nil
     }
-    func FirebaseUserLoggedIn() {}
+    func FirebaseUserLoggedIn() {
+        firebaseUser.DownloadUserProfileImage()
+    }
     func UserProfileImageDownloadFinished() {
         UserProfileImage.alpha = 1
         UserProfileImage.image = CurrentUserProfileImage
@@ -103,6 +105,13 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     }
     func SegueToLoginController(sender: Notification) -> Void{
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
+    }
+    func ImageUploadFinished(sender: Notification) -> Void {
+        let fbUser = FirebaseUser()
+        fbUser.alertMessageDelegate = self
+        fbUser.firebaseUserWebServiceDelegate = self
+        fbUser.activityAnimationServiceDelegate = self
+        fbUser.DownloadUserProfileImage()
     }
     
     
@@ -163,6 +172,8 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
         
         //Notification Listener
         NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ImageUploadFinished), name: NSNotification.Name.ImageUploadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
     }
     func ShowNotification(title:String, message:String) -> Void{
         if #available(iOS 10.0, *) {
@@ -205,67 +216,56 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
         mapView.setRegion(region, animated: false)
         
-        if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue){            
+        if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue){
             //Update initial User Position
             UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
-            
-            // Stop monitoring old regions
-            self.StopMonitoringForOldRegions()
-            
-            //Remove old Geofence Overlays
-            self.RemoveOldGeofenceOverlays()
             
             //Search nearby Shops
             PerformLocalShopSearch()
         }
         else if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
-            // Stop monitoring old regions
-            self.StopMonitoringForOldRegions()
-            
-            //Remove old Geofence Overlays
-            self.RemoveOldGeofenceOverlays()
-            
             //Search nearby Shops
             PerformLocalShopSearch()
+            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         }
         else if HasUserMovedDistanceGreaterMapSpan(userLocation: userLocation){
-            // Stop monitoring old regions
-            self.StopMonitoringForOldRegions()
-            
-            //Remove old Geofence Overlays
-            self.RemoveOldGeofenceOverlays()
-            
             //Search nearby Shops
             PerformLocalShopSearch()
         }
     }
     //MARK: - IShoppingBuddyListWebService implementation
     func ShoppingBuddyListDataReceived() {
-        //firebaseShoppingList.loadImageUsingCacheWithURLString(urlString: <#T##String#>)
     }
+    
     func ShoppingBuddyStoresCollectionReceived() {
         for store in StoresArray {
             let request = MKLocalSearchRequest()
             request.naturalLanguageQuery = store
-            request.region = MapView.region
+            request.region = self.MapView.region
             let search = MKLocalSearch(request: request)
             search.start { (response, error) in
                 if error != nil {
                     print(error!.localizedDescription)
                     return
                 }
-                if response!.mapItems.count == 0 {
-                    NSLog("No local search matches found for \(store)")
-                    return
+                NSLog("Matches found for \(store)") 
+                DispatchQueue.main.async {
+                    self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
                 }
-                NSLog("Matches found for \(store)")
-                
-                self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
             }
         }
     }
     //MARK: MKMapViewDelegate Helper
-    private func PerformLocalShopSearch() -> Void{
+    func PerformLocalShopSearch() -> Void{
+        // Stop monitoring old regions
+        self.StopMonitoringForOldRegions()
+        
+        //Remove previous Annotations
+        self.RemoveOldAnnotations()
+        
+        //Remove old Geofence Overlays
+        self.RemoveOldGeofenceOverlays()
+        
         let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         radiusToMonitore = CLLocationDistance(exactly: rad)
         if radiusToMonitore == 0 { return }
@@ -274,7 +274,7 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
     }
     internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
         if self.userLocation == nil { return }
-        var possibleRegionsPerStore = Int(round(Double(StoresArray.count / 20)))
+        var possibleRegionsPerStore = Int(round(Double(20 / StoresArray.count)))
         possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
         
         var itemsCount = 0
@@ -296,17 +296,19 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.6, maxDistance: mapSpan * 3)
     }
     private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int{
+        var cnt:Int = itemsCount
         for mapItem:MKMapItem in mapItems{
             self.SetAnnotations(mapItem: mapItem)
-            if itemsCount == possibleRegionsPerStore { return itemsCount }
+            if cnt == possibleRegionsPerStore { return cnt }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
             //Monitore 6th nearest stores if regions count still below 20
-            if locationManager.monitoredRegions.count < 20 && distanceToUser >= minDistance && distanceToUser <= maxDistance {
+            if locationManager.monitoredRegions.count < 20 && distanceToUser >= minDistance && distanceToUser < maxDistance {
+                NSLog("Monitoring region: \(mapItem.name!)  \(mapItem.placemark.title!)")
                 MonitoreCircularRegion(mapItem: mapItem)
-               return  itemsCount + 1
+                cnt += 1
             }
         }
-        return itemsCount
+        return cnt
     }
     private func MonitoreCircularRegion(mapItem: MKMapItem){
         DispatchQueue.main.async {
@@ -383,9 +385,7 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         else { return nil }
     }
     private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void{
-        //Set hasUserChangedGeofenceRadius false
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-        //Set isInitialLocationUpdate false
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         //SaveNew position
         UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.LastUserLatitude.rawValue)
@@ -395,6 +395,12 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         for overlay in self.MapView.overlays{
             if overlay is MKUserLocation{ }
             else { MapView.remove(overlay)}
+        }
+    }
+    private func RemoveOldAnnotations() -> Void {
+        for annotation in self.MapView.annotations{
+            if annotation is MKUserLocation{ }
+            else { MapView.removeAnnotation(annotation) }
         }
     }
     func StopMonitoringForOldRegions(){

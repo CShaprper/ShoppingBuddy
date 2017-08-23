@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IFirebaseWebService {
+class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IFirebaseUserWebservice {
     //MARK: - Outlets
     @IBOutlet var BackgroundView: DesignableUIView!
     //Segmented Control
@@ -36,7 +36,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     
     
     //MARK: Member
-    var firebaseWebService:FirebaseWebService!
+    var firebaseUser:FirebaseUser!
     private var BlurrView:UIVisualEffectView?
     
     
@@ -61,7 +61,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        firebaseWebService.AddUserStateListener()
+        firebaseUser.AddUserStateListener()
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
     }
     override var preferredStatusBarStyle: UIStatusBarStyle{
@@ -167,7 +167,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
-                firebaseWebService.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
+                firebaseUser.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         case 1:
@@ -175,7 +175,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
-                firebaseWebService.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
+                firebaseUser.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         default:
@@ -194,7 +194,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
         let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, alertDelegate: self)
         if isValid{
-            firebaseWebService.ResetUserPassword(email: txt_Email.text!)
+            firebaseUser.ResetUserPassword(email: txt_Email.text!)
         }
     }
     
@@ -227,9 +227,9 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func ConfigureViewElements() -> Void{
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
         //FirebaseWbservice
-        firebaseWebService = FirebaseWebService()
-        firebaseWebService.firebaseWebServiceDelegate = self
-        firebaseWebService.alertMessageDelegate = self
+        firebaseUser = FirebaseUser()
+        firebaseUser.firebaseUserWebServiceDelegate = self
+        firebaseUser.alertMessageDelegate = self
         
         // BackgroundView Gradient
         BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()

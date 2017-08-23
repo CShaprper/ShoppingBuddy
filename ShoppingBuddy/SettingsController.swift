@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SettingsController: UIViewController, UITextFieldDelegate, IValidationService, IFirebaseWebService{
+class SettingsController: UIViewController, UITextFieldDelegate, IValidationService{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var GeofenceRadiusSlider: UISlider!
@@ -21,7 +21,6 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     
     
     //MARK: - Member
-    var firebaseWebService:FirebaseWebService!
     var blurrView:UIVisualEffectView!
     
     //MARK: - ViewController Lifecycle
@@ -66,13 +65,6 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         present(alert, animated: true, completion: nil)
     }
     
-    
-    //MARK: - IFirebaseWebService implementation
-    func FirebaseRequestStarted() {}
-    func FirebaseRequestFinished() {}
-    func FirebaseUserLoggedIn() {}
-    func FirebaseUserLoggedOut() {}
-    
     //MARK: - Wired actions
     func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
         let value = roundf(sender.value * 2) / 2
@@ -84,10 +76,6 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void{
-        //FirebaseWebService
-        firebaseWebService = FirebaseWebService()
-        firebaseWebService.firebaseWebServiceDelegate = self
-        firebaseWebService.alertMessageDelegate = self
     }
     func SetGeofenceRadiusSliderValue(value: Float) -> Void{
         GeofenceRadiusSlider.value = value

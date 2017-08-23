@@ -7,9 +7,9 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>120332862949-qgs8b4jaqla82mi7va0dldquv51o88bg.apps.googleusercontent.com</string>
+	<string>120332862949-7cd19oed84ki3k9u1srm8oqh4imptfsf.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.120332862949-qgs8b4jaqla82mi7va0dldquv51o88bg</string>
+	<string>com.googleusercontent.apps.120332862949-7cd19oed84ki3k9u1srm8oqh4imptfsf</string>
 	<key>API_KEY</key>
 	<string>AIzaSyA3NK7UxY7BETuQzxmNRALElRQGtz2MBYk</string>
 	<key>GCM_SENDER_ID</key>
@@ -17,7 +17,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>petersypek.com.Shopping-Buddy</string>
+	<string>petersypek.com.ShoppingBuddy</string>
 	<key>PROJECT_ID</key>
 	<string>shoppingbuddy-1ef51</string>
 	<key>STORAGE_BUCKET</key>
@@ -33,7 +33,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:120332862949:ios:1acfac0bfb3689fa</string>
+	<string>1:120332862949:ios:cc17b1aabb4a7524</string>
 	<key>DATABASE_URL</key>
 	<string>https://shoppingbuddy-1ef51.firebaseio.com</string>
 </dict>

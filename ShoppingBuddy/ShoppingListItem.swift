@@ -14,16 +14,18 @@ import FirebaseMessaging
 
 class ShoppingListItem: IShoppingBuddyListItemWebService, IAlertMessageDelegate, IActivityAnimationService{
     private var ref = Database.database().reference()
-    private var shoppingListRef = Database.database().reference().child("shoppinglists")
+    private var shoppingListRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid).child("shoppinglists")
     var alertMessageDelegate: IAlertMessageDelegate?
-    var firebaseWebServiceDelegate: IFirebaseWebService?
     var shoppingListItemWebServiceDelegate: IShoppingBuddyListItemWebService?
     var activityAnimationServiceDelegate: IActivityAnimationService?
     
-    var ID:String?
-    var ItemName:String?
-    var ShoppingListID:String?
-    var isSelected:String?
+    var id:String?
+    var itemName:String?
+    //var ShoppingListID:String?
+    var isSelected:Bool?
+    var sortNumber:Int?
+    var amount:Int?
+    var price:Double?
     
     //MARK: - IShoppingBuddyListItemWebService
     func ListItemSaved() {
@@ -80,33 +82,34 @@ class ShoppingListItem: IShoppingBuddyListItemWebService, IAlertMessageDelegate,
     }
     
     //MARK: - Edit Functions
-    func EditIsSelectedOnShoppingListItem(listOwnerID:String, shoppingListItem: ShoppingListItem) -> Void {
-        shoppingListRef.child(listOwnerID).child(shoppingListItem.ShoppingListID!).child("items").child(shoppingListItem.ID!).child("isSelected").setValue(shoppingListItem.isSelected!)
+    func EditIsSelectedOnShoppingListItem(list:ShoppingList, shoppingListItem: ShoppingListItem) -> Void {
+        self.ShowActivityIndicator()
+        shoppingListRef.child(list.id!).child("items").child(shoppingListItem.id!).child("isSelected").setValue(shoppingListItem.isSelected!)
         self.ListItemChanged()
     }
     
     
     //MARK: - Save functions
     func SaveListItemToFirebaseDatabase(shoppingList:ShoppingList, itemName:String) -> Void {
-        self.ShowActivityIndicator()
-        let itemref = shoppingListRef.child(shoppingList.OwnerID!).child(shoppingList.ID!).child("items").childByAutoId()
-        itemref.updateChildValues(["itemID":itemref.key, "itemName":itemName, "isSelected":"false", "shoppingListID":shoppingList.ID!], withCompletionBlock: {(error, dbref) in
+       self.ShowActivityIndicator()
+        let itemRef = shoppingListRef.child(shoppingList.id!).child("items").childByAutoId()
+        itemRef.updateChildValues(["sortNumber":0, "itemName":itemName, "isSelected":false]) { (error, dbRef) in
             if error != nil{
                 NSLog(error!.localizedDescription)
-                let title = ""
-                let message = ""
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
-            }
+            }            
             self.ListItemSaved()
             NSLog("Succesfully saved ShoppingListItem to Firebase")
-        })
+        }
     }
     
     //MARK: - Delete Functions
     func DeleteShoppingListItemFromFirebase(list:ShoppingList, itemToDelete: ShoppingListItem){
-        self.ShowActivityIndicator()
-        shoppingListRef.child(list.OwnerID!).child(list.ID!).child("items").child(itemToDelete.ID!).removeValue { (error, dbref) in
+    self.ShowActivityIndicator()
+        shoppingListRef.child(list.id!).child("items").child(itemToDelete.id!).removeValue { (error, dbref) in
             if error != nil{ 
                 print(error!.localizedDescription)
                 let title = ""
@@ -117,6 +120,5 @@ class ShoppingListItem: IShoppingBuddyListItemWebService, IAlertMessageDelegate,
             NSLog("Succesfully deleted item of shopping list from Firebase")
             self.ListItemDeleted()
         }
-        
     }
 }

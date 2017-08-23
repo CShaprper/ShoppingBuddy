@@ -13,20 +13,20 @@ import FirebaseDatabase
 import FirebaseMessaging
 import FirebaseStorage
 
-class FirebaseUser:IFirebaseUserWebservice {
+class FirebaseUser:NSObject, IFirebaseUserWebservice {
     //MARK: - Member
     private var ref = Database.database().reference()
-    private var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
     var activityAnimationServiceDelegate:IActivityAnimationService?
     var alertMessageDelegate: IAlertMessageDelegate?
     var firebaseUserWebServiceDelegate:IFirebaseUserWebservice?
-    var firebaseWebServiceDelegate: IFirebaseWebService?
-    var Email:String?
-    var Nickname:String?
-    var Password:String?
-    var FCMToken:String?
-    var ProfileImageURL:String?
-    var ProfileImage:UIImage?
+    var id:String?
+    var email:String?
+    var nickname:String?
+    var password:String?
+    var fcmToken:String?
+    var profileImageURL:String?
+    var profileImage:UIImage?
+    var sharingStatus:String?
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
@@ -76,6 +76,12 @@ class FirebaseUser:IFirebaseUserWebservice {
         }
     }
     
+    
+    lazy var uSession:URLSession = {
+        let config = URLSessionConfiguration.default
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+    
     //MARK User Login
     func LoginFirebaseUser(email: String, password: String) {
         //self.isCalled = false
@@ -89,6 +95,7 @@ class FirebaseUser:IFirebaseUserWebservice {
                 self.ShowAlertMessage(title: title, message: message)
                 return
             } else {
+                UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 self.HideActivityIndicator()
                 NSLog("Succesfully loged user in to Firebase")
             }
@@ -101,6 +108,7 @@ class FirebaseUser:IFirebaseUserWebservice {
         do{
             try  auth.signOut()
             self.HideActivityIndicator()
+            UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
             NSLog("Succesfully logged out")
         }
         catch let error as NSError{
@@ -112,26 +120,35 @@ class FirebaseUser:IFirebaseUserWebservice {
         }
     }
     
-    func CreateNewFirebaseUser(firebaseUser: FirebaseUser) {
-        self.ShowActivityIndicator()
-        //self.isCalled = false
-        Auth.auth().createUser(withEmail: firebaseUser.Email!, password: firebaseUser.Password!, completion: { (user, error) in
+    //MARK:- Firebase Auth Section
+    func CreateNewFirebaseUser(profileImage:UIImage, nickname: String, email: String, password: String) {        
+        Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
             if error != nil{
-                NSLog(error!.localizedDescription)
-                self.HideActivityIndicator()
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
+                print(error!.localizedDescription)
+                DispatchQueue.main.async {
+                    let title = ""
+                    let message = ""
+                    self.ShowAlertMessage(title: title, message: message)
+                }
                 return
+            } else {
+                let fbUser = FirebaseUser()
+                fbUser.profileImage = profileImage
+                fbUser.nickname = nickname
+                fbUser.email = email
+                
+                self.SaveNewUserWithUIDtoFirebase(firebaseUser: fbUser, user: user) 
+                NSLog("Succesfully created new Firebase User")
             }
-            self.SaveNewUserWithUIDtoFirebase(firebaseUser: firebaseUser, user: user)
-            self.HideActivityIndicator()
-            NSLog("Succesfully created new Firebase User")
         })
     }
+
     func SetNewFcmToken(token:String){
+        guard let uid = Auth.auth().currentUser?.uid else{
+            return
+        }
         self.ShowActivityIndicator()
-        userRef.child("fcmToken").setValue(token) { (error, dbRef) in
+        ref.child("users").child(uid).child("fcmToken").setValue(token) { (error, dbRef) in
             if error != nil{
                 NSLog(error!.localizedDescription)
                 self.HideActivityIndicator()
@@ -142,10 +159,6 @@ class FirebaseUser:IFirebaseUserWebservice {
             }
             NSLog("Refreshed User fcmToken")
         }
-    }
-    func SendInvitationToUserForListID(email:String, listID:String){
-        self.ShowActivityIndicator()
-        
     }
     func SearchUserByEmail(listID:String, email:String) -> Void {
         self.ShowActivityIndicator()
@@ -174,11 +187,11 @@ class FirebaseUser:IFirebaseUserWebservice {
             return
         }
         ref.child("users").queryOrdered(byChild: "email").queryEqual(toValue: email).observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.value == nil { return }
+            if snapshot.value is NSNull { return }
             if snapshot.childrenCount == 0 { return }
             for user in snapshot.children{
                 let usr = user as! DataSnapshot
-                self.userRef.child("friends").child(usr.key).setValue("pending")
+                self.ref.child("users").child(uid).child("friends").child(usr.key).setValue("pending")
                 self.ref.child("shoppinglists").child(uid).child(listID).child("members").child(usr.key).setValue("pending")
                 self.ref.child("users").child(usr.key).child("friends").child(uid).setValue("pending")
             }
@@ -190,8 +203,7 @@ class FirebaseUser:IFirebaseUserWebservice {
             return
         }
         ref.child("users").child(uid).child("profileImageURL").observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.value == nil { return }
-            NSLog(snapshot.value as! String)
+            if snapshot.value is NSNull { return }
             let url = URL(string: snapshot.value as! String)!
             self.UserProfileImageDownloadTask(url: url)
         })
@@ -227,13 +239,44 @@ class FirebaseUser:IFirebaseUserWebservice {
         task.resume()
     }
     
+    func ResetUserPassword(email:String){
+        Auth.auth().sendPasswordReset(withEmail: email) { (error) in
+            if error == nil {
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+            }
+            NSLog("Succesfully sent password reset mail")
+            return
+        }
+        
+    }
+    
+    //MARK: - FirebaseWebService methods
+    func AddUserStateListener() -> Void {
+        Auth.auth().addStateDidChangeListener { (auth, user) in
+            if user != nil{
+                NSLog("State listener detected user loged in")
+                UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
+                self.FirebaseUserLoggedIn()
+            } else {
+                UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
+                NSLog("State listener detected user loged out")
+                self.FirebaseUserLoggedOut()
+                NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
+            }
+        }
+    }
+    
     //MARK: - Helpers
     private func SaveNewUserWithUIDtoFirebase(firebaseUser:FirebaseUser, user: User?){
         self.ShowActivityIndicator()
         //Image Upload
         let imagesRef = Storage.storage().reference().child(user!.uid)
-        if firebaseUser.ProfileImage != nil {
-            if let uploadData = firebaseUser.ProfileImage!.mediumQualityJPEGNSData{
+        if firebaseUser.profileImage != nil {
+            if let uploadData = firebaseUser.profileImage!.mediumQualityJPEGNSData{
                 let _ = imagesRef.putData(uploadData as Data, metadata: nil, completion: { (metadata, error) in
                     if error != nil{
                         print(error!.localizedDescription)
@@ -247,8 +290,8 @@ class FirebaseUser:IFirebaseUserWebservice {
                         print(metadata ?? "")
                         if let imgURL =  metadata?.downloadURL()?.absoluteString{
                             let token:String = Messaging.messaging().fcmToken!              
-                            let values = (["nickname": firebaseUser.Nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
-                            self.userRef.updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
+                            let values = (["nickname": firebaseUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
+                            self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                                 if err != nil{
                                     self.HideActivityIndicator()
                                     NSLog(err!.localizedDescription)
@@ -258,10 +301,11 @@ class FirebaseUser:IFirebaseUserWebservice {
                                     return
                                 } else {
                                     self.HideActivityIndicator()
-                                    NSLog("Succesfully saved user to Firebase")
+                                    NSLog("Succesfully saved user to Firebase")                                    
                                 }
                             })
-                        }
+                        }                        
+                        NotificationCenter.default.post(name: Notification.Name.ImageUploadFinished, object: nil, userInfo: nil)
                         print("Successfully uploaded prodcut image!")
                     }//end: Dispatch Queue
                 }) // end: let _ = imagesRef.putData

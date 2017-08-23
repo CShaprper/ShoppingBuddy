@@ -88,5 +88,7 @@
 	<true/>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string></string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>

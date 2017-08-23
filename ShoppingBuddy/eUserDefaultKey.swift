@@ -18,4 +18,5 @@ enum eUserDefaultKey:String {
     case isInitialLocationUpdate = "isInitialLocationUpdate"
     case NeedToUpdateGeofence = "NeedToUpdateGeofence"
     case UserProfileImageURL = "UserProfileImageURL"
+    case CurrentUserID = "CurrentUserID"
 }

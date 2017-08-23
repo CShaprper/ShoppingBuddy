@@ -16,13 +16,13 @@ class ShoppingListCollectionViewCell: UICollectionViewCell {
     
     
     func ConfigureCell(shoppingList: ShoppingList) -> Void {
-        lbl_ListName.text = shoppingList.Name != nil ? shoppingList.Name! : ""
-        lbl_Store.text = shoppingList.RelatedStore != nil ? shoppingList.RelatedStore! : ""
-        if shoppingList.ItemsArray != nil{
+        lbl_ListName.text = shoppingList.name != nil ? shoppingList.name! : ""
+        lbl_Store.text = shoppingList.relatedStore != nil ? shoppingList.relatedStore! : ""
+        if shoppingList.itemsArray != nil{
             var itemsCount:Int = 0
-            for item in shoppingList.ItemsArray!{
+            for item in shoppingList.itemsArray!{
                 switch item.isSelected! {
-                case "false":
+                case false:
                     itemsCount += 1
                     break
                 default:

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		91935E9AC1DADD7A09CEB2FD /* Pods_ShoppingBuddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */; };
 		CF0161CD1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */; };
+		CF0161CF1F489BEF00369DFC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
 		CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */; };
@@ -28,14 +29,11 @@
 		CFB137191F2B40800076476D /* ShoppingListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */; };
 		CFB1371B1F2B425A0076476D /* ShoppingListControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */; };
 		CFB1371D1F2B479A0076476D /* ShoppingListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */; };
-		CFB2AA511F2494C800AACB5B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */; };
 		CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */; };
 		CFB2AA571F24A42200AACB5B /* DesignableTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */; };
 		CFB2AA591F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA581F24A7B900AACB5B /* UIViewAnimationExtension.swift */; };
 		CFB2AA5A1F24A7B900AACB5B /* UIViewAnimationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA581F24A7B900AACB5B /* UIViewAnimationExtension.swift */; };
 		CFB2AA5B1F24AB5C00AACB5B /* DesignableTextfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */; };
-		CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA5C1F24B56000AACB5B /* IFirebaseWebService.swift */; };
-		CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */; };
 		CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */; };
 		CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
@@ -109,6 +107,7 @@
 		B8AFA10CA9BF18DA81630E5D /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 		C311ECDB5A403F720F0B0183 /* Pods-ShoppingBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
 		CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncUIImageDownloaderExtension.swift; sourceTree = "<group>"; };
+		CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
 		CF2C4EA81F266F3600F046F4 /* StatusBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusBarExtension.swift; sourceTree = "<group>"; };
@@ -128,11 +127,8 @@
 		CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListCollectionViewCell.swift; sourceTree = "<group>"; };
 		CFB1371A1F2B425A0076476D /* ShoppingListControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListControllerTests.swift; sourceTree = "<group>"; };
 		CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingListItemTableViewCell.swift; sourceTree = "<group>"; };
-		CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CFB2AA551F24A42200AACB5B /* DesignableTextfield.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignableTextfield.swift; sourceTree = "<group>"; };
 		CFB2AA581F24A7B900AACB5B /* UIViewAnimationExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewAnimationExtension.swift; sourceTree = "<group>"; };
-		CFB2AA5C1F24B56000AACB5B /* IFirebaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IFirebaseWebService.swift; sourceTree = "<group>"; };
-		CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseWebService.swift; sourceTree = "<group>"; };
 		CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationNameExtension.swift; sourceTree = "<group>"; };
 		CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierExtension.swift; sourceTree = "<group>"; };
 		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
@@ -312,8 +308,8 @@
 				CFF8239A1F408040002F369A /* Model.xcdatamodeld */,
 				CFE4A2001F23C4D3002A12C7 /* ShoppingBuddy.entitlements */,
 				CFE4A1D61F23C0DC002A12C7 /* Info.plist */,
+				CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */,
 				CFC6BCDC1F3264B500366553 /* InfoPlist.strings */,
-				CFB2AA501F2494C800AACB5B /* GoogleService-Info.plist */,
 				CFE4A1D11F23C0DC002A12C7 /* Backgrounds.xcassets */,
 				CFE9AB191F25F43300D0825B /* Artwork.xcassets */,
 				CFE9AB221F2630D500D0825B /* Icons.xcassets */,
@@ -382,7 +378,6 @@
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
 				CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */,
-				CFB2AA5F1F24B58700AACB5B /* FirebaseWebService.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
 				CF5F43971F476AA700B9D1B9 /* CacheImage.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
@@ -407,7 +402,6 @@
 			children = (
 				CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */,
 				CFE4A2081F23C8EB002A12C7 /* IValidationService.swift */,
-				CFB2AA5C1F24B56000AACB5B /* IFirebaseWebService.swift */,
 				CFF606B21F4346F5009E161E /* IShoppingBuddyListWebService.swift */,
 				CF5E79861F471BA700D308BC /* IFirebaseUserWebService.swift */,
 				CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */,
@@ -589,11 +583,11 @@
 			files = (
 				CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
+				CF0161CF1F489BEF00369DFC /* GoogleService-Info.plist in Resources */,
 				CFE4A1D51F23C0DC002A12C7 /* LaunchScreen.storyboard in Resources */,
 				CFE9AB231F2630D500D0825B /* Icons.xcassets in Resources */,
 				CFE4A1D21F23C0DC002A12C7 /* Backgrounds.xcassets in Resources */,
 				CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */,
-				CFB2AA511F2494C800AACB5B /* GoogleService-Info.plist in Resources */,
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
 				CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */,
 			);
@@ -781,7 +775,6 @@
 				CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */,
 				CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */,
 				CF9A7FCC1F35303300DB401A /* DesignableUISlider.swift in Sources */,
-				CFB2AA601F24B58700AACB5B /* FirebaseWebService.swift in Sources */,
 				CFF824061F4083D5002F369A /* ListID+CoreDataProperties.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
 				CF5F43941F47215300B9D1B9 /* IActivityAnimationService.swift in Sources */,
@@ -793,7 +786,6 @@
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
-				CFB2AA5D1F24B56000AACB5B /* IFirebaseWebService.swift in Sources */,
 				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,
 				CF0161CD1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift in Sources */,
 				CFB2AA561F24A42200AACB5B /* DesignableTextfield.swift in Sources */,

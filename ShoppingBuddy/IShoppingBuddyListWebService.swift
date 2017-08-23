@@ -13,4 +13,5 @@ import Foundation
     @objc optional func ShoppingBuddyListDataReceived()
     @objc optional func ShoppingBuddyStoresCollectionReceived()
     @objc optional func ShoppingBuddyImageReceived()
+    @objc optional func ShoppingBuddyNewListSaved()
 }

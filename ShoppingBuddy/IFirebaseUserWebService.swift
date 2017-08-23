@@ -12,5 +12,5 @@ import Foundation
     @objc optional var firebaseUserWebserviceDelegate:IFirebaseUserWebservice? { get  set }
     @objc optional func UserProfileImageDownloadFinished()
     @objc optional func FirebaseUserLoggedIn()
-    @objc optional func FirebaseUserLoggedOut() 
+    @objc optional func FirebaseUserLoggedOut()
 }
