@@ -1,8 +1,8 @@
 //
-//  User.swift
+//  ShoppingBuddyUserWebservice.swift
 //  ShoppingBuddy
 //
-//  Created by Peter Sypek on 08.08.17.
+//  Created by Peter Sypek on 24.08.17.
 //  Copyright © 2017 Peter Sypek. All rights reserved.
 //
 
@@ -13,20 +13,12 @@ import FirebaseDatabase
 import FirebaseMessaging
 import FirebaseStorage
 
-class FirebaseUser:NSObject, IFirebaseUserWebservice {
-    //MARK: - Member
+class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlertMessageDelegate, IActivityAnimationService, URLSessionDelegate {
     private var ref = Database.database().reference()
+    private var userRef = Database.database().reference().child("users")
     var activityAnimationServiceDelegate:IActivityAnimationService?
     var alertMessageDelegate: IAlertMessageDelegate?
-    var firebaseUserWebServiceDelegate:IFirebaseUserWebservice?
-    var id:String?
-    var email:String?
-    var nickname:String?
-    var password:String?
-    var fcmToken:String?
-    var profileImageURL:String?
-    var profileImage:UIImage?
-    var sharingStatus:String?
+    var shoppingBuddyUserWebserviceDelegate:IShoppingBuddyUserWebservice?
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
@@ -44,25 +36,32 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
         }
     }
     
-    //MARK: - IFirebaseUserWebService implementation
-    func FirebaseUserLoggedIn() {
-        if firebaseUserWebServiceDelegate != nil {
+    //MARK: - IShoppingBuddyUserWebservice implementation
+    func ShoppingBuddyUserLoggedIn() {
+        if shoppingBuddyUserWebserviceDelegate != nil {
             DispatchQueue.main.async {
-                self.firebaseUserWebServiceDelegate!.FirebaseUserLoggedIn!()
+                self.shoppingBuddyUserWebserviceDelegate!.ShoppingBuddyUserLoggedIn!()
             }
         }
     }
-    func FirebaseUserLoggedOut() {
-        if firebaseUserWebServiceDelegate != nil {
+    func ShoppingBuddyUserLoggedOut() {
+        if shoppingBuddyUserWebserviceDelegate != nil {
             DispatchQueue.main.async {
-                self.firebaseUserWebServiceDelegate!.FirebaseUserLoggedOut!()
+                self.shoppingBuddyUserWebserviceDelegate!.ShoppingBuddyUserLoggedOut!()
             }
         }
     }
     func UserProfileImageDownloadFinished() -> Void {
-        if firebaseUserWebServiceDelegate != nil {
+        if shoppingBuddyUserWebserviceDelegate != nil {
             DispatchQueue.main.async {
-                self.firebaseUserWebServiceDelegate!.UserProfileImageDownloadFinished!()
+                self.shoppingBuddyUserWebserviceDelegate!.UserProfileImageDownloadFinished!()
+            }
+        }
+    }
+    func ShoppingBuddyUserDataReceived() {
+        if shoppingBuddyUserWebserviceDelegate != nil {
+            DispatchQueue.main.async {
+                self.shoppingBuddyUserWebserviceDelegate!.ShoppingBuddyUserDataReceived!()
             }
         }
     }
@@ -76,11 +75,37 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
         }
     }
     
-    
-    lazy var uSession:URLSession = {
-        let config = URLSessionConfiguration.default
-        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
-    }()
+    //CurrentUser Download
+    func GetCurrentUser(){
+        userRef.child(Auth.auth().currentUser!.uid).observe(.value, with: { (snapshot) in
+            if snapshot.value is NSNull { return }
+            
+            currentUser.id = snapshot.key
+            currentUser.email = snapshot.childSnapshot(forPath: "email").value as? String
+            currentUser.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
+            currentUser.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+            currentUser.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
+   
+            for lists in snapshot.childSnapshot(forPath: "shoppinglists").children{
+                let list = lists as! DataSnapshot
+                if let index = currentUser.shoppingLists.index(where: { $0 == list.key }){
+                    currentUser.shoppingLists.remove(at: index)
+                }
+                currentUser.shoppingLists.append(list.key)
+            }            
+            
+            self.ShoppingBuddyUserDataReceived()
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            self.HideActivityIndicator()
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            
+        }
+    }
     
     //MARK User Login
     func LoginFirebaseUser(email: String, password: String) {
@@ -121,7 +146,7 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
     }
     
     //MARK:- Firebase Auth Section
-    func CreateNewFirebaseUser(profileImage:UIImage, nickname: String, email: String, password: String) {        
+    func CreateNewFirebaseUser(profileImage:UIImage, nickname: String, email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
             if error != nil{
                 print(error!.localizedDescription)
@@ -132,17 +157,17 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
                 }
                 return
             } else {
-                let fbUser = FirebaseUser()
-                fbUser.profileImage = profileImage
-                fbUser.nickname = nickname
-                fbUser.email = email
+                let sbUser = ShoppingBuddyUser()
+                sbUser.profileImage = profileImage
+                sbUser.nickname = nickname
+                sbUser.email = email
                 
-                self.SaveNewUserWithUIDtoFirebase(firebaseUser: fbUser, user: user) 
+                self.SaveNewUserWithUIDtoFirebase(shoppingBuddyUser: sbUser, user: user)
                 NSLog("Succesfully created new Firebase User")
             }
         })
     }
-
+    
     func SetNewFcmToken(token:String){
         guard let uid = Auth.auth().currentUser?.uid else{
             return
@@ -174,7 +199,7 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
     private func UserProfileImageDownloadTask(url:URL) -> Void{
         self.ShowActivityIndicator()
         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == url.absoluteString }) {
-            CurrentUserProfileImage = ProfileImageCache[index].UserProfileImage!
+            currentUser.profileImage = ProfileImageCache[index].UserProfileImage!
             self.HideActivityIndicator()
             return
         }
@@ -193,7 +218,7 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
                     cachedImage.UserProfileImage = downloadImage
                     cachedImage.ProfileImageURL = url.absoluteString
                     ProfileImageCache.append(cachedImage)
-                    CurrentUserProfileImage = downloadImage
+                    currentUser.profileImage = downloadImage
                     self.UserProfileImageDownloadFinished()
                     self.HideActivityIndicator()
                 }
@@ -223,23 +248,23 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
             if user != nil{
                 NSLog("State listener detected user loged in")
                 UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
-                self.FirebaseUserLoggedIn()
+                self.ShoppingBuddyUserLoggedIn()
             } else {
                 UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 NSLog("State listener detected user loged out")
-                self.FirebaseUserLoggedOut()
+                self.ShoppingBuddyUserLoggedOut()
                 NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
             }
         }
     }
     
     //MARK: - Helpers
-    private func SaveNewUserWithUIDtoFirebase(firebaseUser:FirebaseUser, user: User?){
+    private func SaveNewUserWithUIDtoFirebase(shoppingBuddyUser:ShoppingBuddyUser, user: User?){
         self.ShowActivityIndicator()
         //Image Upload
         let imagesRef = Storage.storage().reference().child(user!.uid)
-        if firebaseUser.profileImage != nil {
-            if let uploadData = firebaseUser.profileImage!.mediumQualityJPEGNSData{
+        if shoppingBuddyUser.profileImage != nil {
+            if let uploadData = shoppingBuddyUser.profileImage!.mediumQualityJPEGNSData{
                 let _ = imagesRef.putData(uploadData as Data, metadata: nil, completion: { (metadata, error) in
                     if error != nil{
                         print(error!.localizedDescription)
@@ -252,8 +277,8 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
                     DispatchQueue.main.async {
                         print(metadata ?? "")
                         if let imgURL =  metadata?.downloadURL()?.absoluteString{
-                            let token:String = Messaging.messaging().fcmToken!              
-                            let values = (["nickname": firebaseUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
+                            let token:String = Messaging.messaging().fcmToken!
+                            let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
                             self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                                 if err != nil{
                                     self.HideActivityIndicator()
@@ -264,10 +289,10 @@ class FirebaseUser:NSObject, IFirebaseUserWebservice {
                                     return
                                 } else {
                                     self.HideActivityIndicator()
-                                    NSLog("Succesfully saved user to Firebase")                                    
+                                    NSLog("Succesfully saved user to Firebase")
                                 }
                             })
-                        }                        
+                        }
                         NotificationCenter.default.post(name: Notification.Name.ImageUploadFinished, object: nil, userInfo: nil)
                         print("Successfully uploaded prodcut image!")
                     }//end: Dispatch Queue

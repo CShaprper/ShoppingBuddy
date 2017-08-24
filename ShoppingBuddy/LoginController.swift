@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IFirebaseUserWebservice {
+class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IShoppingBuddyUserWebservice, IActivityAnimationService {
     //MARK: - Outlets
     @IBOutlet var BackgroundView: DesignableUIView!
     //Segmented Control
@@ -36,7 +36,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     
     
     //MARK: Member
-    var firebaseUser:FirebaseUser!
+    var sbUserWebservice:ShoppingBuddyUserWebservice!
     private var BlurrView:UIVisualEffectView?
     
     
@@ -61,7 +61,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        firebaseUser.AddUserStateListener()
+        sbUserWebservice.AddUserStateListener()
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
     }
     override var preferredStatusBarStyle: UIStatusBarStyle{
@@ -76,17 +76,44 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     }
     
     
-    //IFirebaseWebService Implementation
+    //MARK: - IShoppingBuddyUserWebservice Implementation
     func FirebaseRequestStarted() { ShowActivityIndicator() }
     func FirebaseRequestFinished() { HideActivityIndicator() }
-    func FirebaseUserLoggedOut() {}
-    func FirebaseUserLoggedIn() {
+    func ShoppingBuddyUserLoggedOut() {}
+    func ShoppingBuddyUserLoggedIn() {
         performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
     }
     
     
+    //MARK: - IShoppingBuddyUserWebservice Impementation
+    func ShowActivityIndicator() -> Void {
+        if BlurrView == nil{
+            BlurrView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            BlurrView!.bounds = view.bounds
+            BlurrView!.center = view.center
+            view.addSubview(BlurrView!)
+            ActivityIndicatior.activityIndicatorViewStyle = .whiteLarge
+            
+            ActivityIndicatior.color = UIColor.ColorPaletteMiddle()
+            ActivityIndicatior.center = view.center
+            ActivityIndicatior.transform = CGAffineTransform(scaleX: 2, y: 2)
+            BlurrView!.addSubview(ActivityIndicatior)
+            ActivityIndicatior.startAnimating()
+        }
+    }
+    func HideActivityIndicator() -> Void {
+        if BlurrView != nil{
+            BlurrView!.removeFromSuperview()
+            BlurrView = nil
+            
+            ActivityIndicatior.stopAnimating()
+            ActivityIndicatior.removeFromSuperview()
+        }
+    }
     
-    //Textfield Delegate implementation
+    
+    
+    //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
         return true
@@ -167,7 +194,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
-                firebaseUser.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
+                sbUserWebservice.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         case 1:
@@ -175,7 +202,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
-                firebaseUser.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
+                sbUserWebservice.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
             }
             break
         default:
@@ -194,42 +221,20 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
         let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, alertDelegate: self)
         if isValid{
-            firebaseUser.ResetUserPassword(email: txt_Email.text!)
+            sbUserWebservice.ResetUserPassword(email: txt_Email.text!)
         }
     }
     
     
-    //MARK: - Helper Functions
-    func ShowActivityIndicator() -> Void {
-        if BlurrView == nil{
-            BlurrView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-            BlurrView!.bounds = view.bounds
-            BlurrView!.center = view.center
-            view.addSubview(BlurrView!)
-            ActivityIndicatior.activityIndicatorViewStyle = .whiteLarge
-            
-            ActivityIndicatior.color = UIColor.ColorPaletteMiddle()
-            ActivityIndicatior.center = view.center
-            ActivityIndicatior.transform = CGAffineTransform(scaleX: 2, y: 2)
-            BlurrView!.addSubview(ActivityIndicatior)
-            ActivityIndicatior.startAnimating()
-        }
-    }
-    func HideActivityIndicator() -> Void {
-        if BlurrView != nil{
-            BlurrView!.removeFromSuperview()
-            BlurrView = nil
-            
-            ActivityIndicatior.stopAnimating()
-            ActivityIndicatior.removeFromSuperview()
-        }
-    }
+    
     func ConfigureViewElements() -> Void{
+        //sbUserWebservice
+        sbUserWebservice = ShoppingBuddyUserWebservice()
+        sbUserWebservice.activityAnimationServiceDelegate = self
+        sbUserWebservice.alertMessageDelegate = self
+        sbUserWebservice.shoppingBuddyUserWebserviceDelegate = self
+        
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
-        //FirebaseWbservice
-        firebaseUser = FirebaseUser()
-        firebaseUser.firebaseUserWebServiceDelegate = self
-        firebaseUser.alertMessageDelegate = self
         
         // BackgroundView Gradient
         BackgroundView.TopColor = UIColor.ColorPaletteSecondBrightest()

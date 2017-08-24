@@ -37,7 +37,10 @@
 		CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */; };
 		CFB2AA651F24B9C800AACB5B /* IdentifierExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
-		CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */; };
+		CFB635A41F3A2F6E00D8C592 /* ShoppingBuddyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */; };
+		CFBE245B1F4F291600373CCB /* IShoppingBuddyUserWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBE245A1F4F291600373CCB /* IShoppingBuddyUserWebService.swift */; };
+		CFBE245D1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */; };
+		CFBE245F1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */; };
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
@@ -139,7 +142,10 @@
 		CFB6359F1F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFB635A01F3A276700D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CFB635A21F3A279000D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
-		CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseUser.swift; sourceTree = "<group>"; };
+		CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyUser.swift; sourceTree = "<group>"; };
+		CFBE245A1F4F291600373CCB /* IShoppingBuddyUserWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IShoppingBuddyUserWebService.swift; sourceTree = "<group>"; };
+		CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyUserWebservice.swift; sourceTree = "<group>"; };
+		CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListWebservice.swift; sourceTree = "<group>"; };
 		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -264,7 +270,6 @@
 				CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */,
 				CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */,
 				CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */,
-				CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -375,14 +380,17 @@
 		CFE4A1FA1F23C432002A12C7 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				CFE4A2071F23C8DC002A12C7 /* Protocols */,
+				CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */,
+				CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */,
+				CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */,
+				CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */,
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
-				CFB635A31F3A2F6E00D8C592 /* FirebaseUser.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
 				CF5F43971F476AA700B9D1B9 /* CacheImage.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A2151F23C9AB002A12C7 /* Enum */,
-				CFE4A2071F23C8DC002A12C7 /* Protocols */,
 				CFE4A20C1F23C992002A12C7 /* ValidationService */,
 			);
 			name = Model;
@@ -406,6 +414,7 @@
 				CF5E79861F471BA700D308BC /* IFirebaseUserWebService.swift */,
 				CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */,
 				CF5F43951F474AB600B9D1B9 /* IShoppingListItemWebService.swift */,
+				CFBE245A1F4F291600373CCB /* IShoppingBuddyUserWebService.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -752,6 +761,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFBE245F1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift in Sources */,
 				CFE4A2131F23C9A3002A12C7 /* TextfieldIValidationService.swift in Sources */,
 				CF3806971F2E2AAA005B3E15 /* ShoppingListItem.swift in Sources */,
 				CFE4A2111F23C9A3002A12C7 /* PasswordValidationService.swift in Sources */,
@@ -764,6 +774,7 @@
 				CFE4A2171F23C9B8002A12C7 /* eValidationType.swift in Sources */,
 				CFF8239C1F408040002F369A /* Model.xcdatamodeld in Sources */,
 				CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */,
+				CFBE245D1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift in Sources */,
 				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */,
 				CFF606B31F4346F5009E161E /* IShoppingBuddyListWebService.swift in Sources */,
 				CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */,
@@ -782,7 +793,8 @@
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
 				CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */,
 				CF5F43981F476AA700B9D1B9 /* CacheImage.swift in Sources */,
-				CFB635A41F3A2F6E00D8C592 /* FirebaseUser.swift in Sources */,
+				CFBE245B1F4F291600373CCB /* IShoppingBuddyUserWebService.swift in Sources */,
+				CFB635A41F3A2F6E00D8C592 /* ShoppingBuddyUser.swift in Sources */,
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,

@@ -14,13 +14,14 @@ import CoreData
 
 var ShoppingListsArray:[ShoppingList] = []
 var StoresArray:[String] = []
-var CurrentUserProfileImage:UIImage? 
+var currentUser:ShoppingBuddyUser = ShoppingBuddyUser()
+var CurrentUserProfileImage:UIImage?
 var ProfileImageCache:[CacheUserProfileImage] = []
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     
-    var window: UIWindow?
+    var window: UIWindow? 
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         //Google places
@@ -113,8 +114,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
         let token:String = Messaging.messaging().fcmToken!
         print(token)
-        let fbUser = FirebaseUser()
-        fbUser.SetNewFcmToken(token: token)
+        let sbUserWebservice = ShoppingBuddyUserWebservice()
+        sbUserWebservice.SetNewFcmToken(token: token)
     }
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {

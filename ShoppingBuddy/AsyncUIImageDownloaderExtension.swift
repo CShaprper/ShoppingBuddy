@@ -9,7 +9,7 @@
 import UIKit
 
 
-extension FirebaseUser: URLSessionDownloadDelegate {
+extension ShoppingBuddyUser: URLSessionDownloadDelegate {
     public func userProfileImageFromURL(){
         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == self.profileImageURL }) {
             self.profileImage = ProfileImageCache[index].UserProfileImage!
@@ -22,9 +22,9 @@ extension FirebaseUser: URLSessionDownloadDelegate {
             let url = URL(string: imageURL)!
             let uTask = self.uSession.downloadTask(with: url)
             uTask.resume()
-        } 
+        }
     }
-    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL){
+    internal func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL){
         if let image = try? UIImage(data: Data(contentsOf: location)),
             image != nil
         {
@@ -35,17 +35,16 @@ extension FirebaseUser: URLSessionDownloadDelegate {
             NSLog("Added UserProfileImage to Cache")
             self.profileImage = image
             NSLog("UserProfileImage set from DownloadTask!")
-            self.UserProfileImageDownloadFinished()
         } else {
             //Set default image
         }
     }
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    internal func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if error != nil {
             NSLog(error!.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error!.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
+            // let title = String.OnlineFetchRequestError
+            // let message = error!.localizedDescription
+            //self.ShowAlertMessage(title: title, message: message)
         }
     }
 }

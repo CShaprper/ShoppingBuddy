@@ -12,7 +12,7 @@ import CoreLocation
 import UserNotifications
 import FirebaseAuth
 
-class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMessageDelegate{
+class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAlertMessageDelegate, IActivityAnimationService{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MapView: MKMapView!
@@ -28,8 +28,8 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     internal var radiusToMonitore:CLLocationDistance!
     internal var mapSpan:Double!
     internal var userLocation:CLLocationCoordinate2D?
-    private var firebaseUser:FirebaseUser!
-    var firebaseShoppingList:ShoppingList!
+    private var sbUserWebservice:ShoppingBuddyUserWebservice!
+    var sbListWebservice:ShoppingBuddyListWebservice!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -68,16 +68,19 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     
     
     //MARK: - IFirebaseUserWebservice Implementation
-    func FirebaseUserLoggedOut() {
+    func ShoppingBuddyUserLoggedOut() {
         ShoppingListsArray = []
         CurrentUserProfileImage = nil
     }
-    func FirebaseUserLoggedIn() {
-        firebaseUser.DownloadUserProfileImage()
+    func ShoppingBuddyUserLoggedIn() {
+        sbUserWebservice.DownloadUserProfileImage()
     }
     func UserProfileImageDownloadFinished() {
         UserProfileImage.alpha = 1
-        UserProfileImage.image = CurrentUserProfileImage
+        UserProfileImage.image = currentUser.profileImage!
+    }
+    func ShoppingBuddyUserDataReceived() {
+        sbListWebservice.ObserveAllList()
     }
     
     
@@ -101,17 +104,13 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem)->Void{
-        firebaseUser.LogFirebaseUserOut()
+        sbUserWebservice.LogFirebaseUserOut()
     }
     func SegueToLoginController(sender: Notification) -> Void{
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
     }
     func ImageUploadFinished(sender: Notification) -> Void {
-        let fbUser = FirebaseUser()
-        fbUser.alertMessageDelegate = self
-        fbUser.firebaseUserWebServiceDelegate = self
-        fbUser.activityAnimationServiceDelegate = self
-        fbUser.DownloadUserProfileImage()
+        sbUserWebservice.DownloadUserProfileImage()
     }
     
     
@@ -119,11 +118,12 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
         //Firebase User
-        firebaseUser = FirebaseUser()
-        firebaseUser.alertMessageDelegate = self
-        firebaseUser.firebaseUserWebServiceDelegate = self
-        firebaseUser.activityAnimationServiceDelegate = self
-        firebaseUser.DownloadUserProfileImage()
+        sbUserWebservice = ShoppingBuddyUserWebservice()
+        sbUserWebservice.alertMessageDelegate = self
+        sbUserWebservice.shoppingBuddyUserWebserviceDelegate = self
+        sbUserWebservice.activityAnimationServiceDelegate = self
+        sbUserWebservice.DownloadUserProfileImage()
+        sbUserWebservice.GetCurrentUser()
         
         //UserProfileImage
         UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
@@ -140,10 +140,10 @@ class DashboardController: UIViewController, IFirebaseUserWebservice, IAlertMess
         tabBarItem.title = String.DashboardControllerTitle
         
         //Load all Stores
-        firebaseShoppingList = ShoppingList()
-        firebaseShoppingList.alertMessageDelegate = self
-        firebaseShoppingList.shoppingBuddyListWebServiceDelegate = self
-        firebaseShoppingList.ObserveShoppingList()
+        sbListWebservice = ShoppingBuddyListWebservice()
+        sbListWebservice.alertMessageDelegate = self
+        sbListWebservice.shoppingBuddyListWebServiceDelegate = self
+        sbListWebservice.ObserveAllList()
         
         
         MapView.delegate = self
@@ -270,7 +270,7 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         radiusToMonitore = CLLocationDistance(exactly: rad)
         if radiusToMonitore == 0 { return }
         
-        firebaseShoppingList.GetStoresForGeofencing()
+        sbListWebservice.GetStoresForGeofencing()
     }
     internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
         if self.userLocation == nil { return }

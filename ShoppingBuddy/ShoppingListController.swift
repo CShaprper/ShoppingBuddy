@@ -87,8 +87,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     //MARK:- Member
     var blurrView:UIVisualEffectView?
-    //var firebaseWebService:FirebaseWebService!
-    var firebaseShoppingList:ShoppingList!
+    var sbListWebservice:ShoppingBuddyListWebservice!
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
     var swipedCellIndex:Int!
@@ -96,7 +95,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     var currentShoppingListIndex:Int!
     var currentUpperCard:Int!
     var firebaseShoppingListItem:ShoppingListItem!
-    var firebaseUser:FirebaseUser!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -106,7 +104,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if ShoppingListsArray.count > 0 && ShoppingListCard.alpha == 0 {
-            firebaseShoppingList.ObserveShoppingList()
+            sbListWebservice.ObserveAllList()
         }
     }
     override func didReceiveMemoryWarning() {
@@ -116,9 +114,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         view.bringSubview(toFront: TrashImage)
-        if ShoppingListsArray.count > 0{
-            SetCardOneValues(index: 0)
-        }
+       RefreshCardView()
     }
     
     //MARK: - IShoppingBuddyListItemWebService implementation
@@ -162,6 +158,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         ShoppingListCard2OwnerImage.alpha = 1
         ShoppingListOwnerImage.alpha = 1
     }
+    func ShoppingBuddyNewListSaved(listID:String) {
+        //New list saved so lets Observe it
+        sbListWebservice.ObserveSingleList(listID: listID)
+    }
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -179,10 +179,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     }
     func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .textField, validationString: firebaseShoppingList.name, alertDelegate: self)
-        isValid = ValidationFactory.Validate(type: .textField, validationString: firebaseShoppingList.relatedStore, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
         if isValid{
-            firebaseShoppingList.SaveListToFirebaseDatabase()
+            sbListWebservice.SaveListToFirebaseDatabase(currentUser: currentUser, listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
             HideAddListPopUp()
         }
     }
@@ -221,7 +221,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
-            firebaseShoppingList.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!)           
+            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!)
             HideShareListPopUp()
         }
     }
@@ -488,7 +488,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             card.center.x = card.center.x + xSpin
         }, completion: { (true) in
             //Card arise in Center for new view
-            if ShoppingListsArray[self.currentShoppingListIndex].owner!.id == Auth.auth().currentUser!.uid{
+         /*   if ShoppingListsArray[self.currentShoppingListIndex].owner!.id == Auth.auth().currentUser!.uid{
                 self.firebaseShoppingList.DeleteShoppingListFromFirebase(listToDelete: ShoppingListsArray[self.currentShoppingListIndex])
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
             } else {
@@ -496,7 +496,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                 let message = "Your are only allowed to delete your own lists!"
                 self.ShowAlertMessage(title: title, message: message)
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
-            }
+            }*/
         })
     }
     private func ResetCardAfterSwipeOff(card: UIView, bringCardToFront: Int){
@@ -557,12 +557,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
-        if ShoppingListsArray[index].owner!.profileImage != nil {
+       if ShoppingListsArray[index].owneruid != nil {
             ShoppingListOwnerImage.alpha = 1
-            ShoppingListOwnerImage.image = ShoppingListsArray[index].owner!.profileImage!
-        } else {
+            ShoppingListOwnerImage.image = currentUser.profileImage
+       } else {
+        //TODO: Overwork
             ShoppingListOwnerImage.alpha = 0
-            ShoppingListsArray[index].owner!.userProfileImageFromURL()
+        // ShoppingListsArray[index].owner!.userProfileImageFromURL()
         }
         HideShareListButtonIfCurrentUserNotIsListOwner()
     }
@@ -574,18 +575,20 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
-        if ShoppingListsArray[index].owner!.profileImage != nil {
+        if ShoppingListsArray[index].owneruid != nil {
             ShoppingListCard2OwnerImage.alpha = 1
-            ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].owner!.profileImage!
+            ShoppingListCard2OwnerImage.image = currentUser.profileImage
         } else {
+            //TODO: Overwork
             ShoppingListCard2OwnerImage.alpha = 0
-            ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            // ShoppingListsArray[index].owner!.userProfileImageFromURL()
         }
         HideShareListButtonIfCurrentUserNotIsListOwner()
     }
-    private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {
+    private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {        
+        //TODO: Overwork
         //Hide share list button
-        if  ShoppingListsArray[currentShoppingListIndex].owner!.id != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
+        /*if  ShoppingListsArray[currentShoppingListIndex].owner!.id != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
             if currentUpperCard == 1 {
                 btn_ShoppingCardShareList.alpha = 0
             } else { btn_ShoppingCard2ShareList.alpha = 0 }
@@ -595,7 +598,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         if currentUpperCard == 1{
             btn_ShoppingCardShareList.alpha = 1
         } else { btn_ShoppingCard2ShareList.alpha = 1 }
-        
+        */
     }
     
     //MARK: - Textfield Delegate implementation
@@ -604,10 +607,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         return true
     }
     func txt_ListName_TextChanged(sender: UITextField) -> Void {
-        firebaseShoppingList.name = sender.text!
+        //firebaseShoppingList.name = sender.text!
     }
     func txt_RelatedStore_TextChanged(sender: UITextField) -> Void {
-        firebaseShoppingList.relatedStore = sender.text!
+        //firebaseShoppingList.relatedStore = sender.text!
     }
     //MARK: Keyboard Notification Listener targets
     func KeyboardWillShow(sender: Notification) -> Void {
@@ -714,11 +717,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         return shoppingItems.filter({$0.isSelected! == false}).count
     }
     func ConfigureView() -> Void {
-        //FirebaseUser
-        firebaseUser = FirebaseUser()
-        firebaseUser.activityAnimationServiceDelegate = self
-        firebaseUser.alertMessageDelegate = self
-        firebaseUser.firebaseUserWebServiceDelegate = nil
         
         //Firebase Shopping list item
         firebaseShoppingListItem = ShoppingListItem()
@@ -727,10 +725,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         firebaseShoppingListItem.shoppingListItemWebServiceDelegate = self
         
         //Firebase Shopping list
-        firebaseShoppingList = ShoppingList()
-        firebaseShoppingList.alertMessageDelegate = self
-        firebaseShoppingList.activityAnimationServiceDelegate = self
-        firebaseShoppingList.shoppingBuddyListWebServiceDelegate = self
+        sbListWebservice = ShoppingBuddyListWebservice()
+        sbListWebservice.alertMessageDelegate = self
+        sbListWebservice.activityAnimationServiceDelegate = self
+        sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         
         if ShoppingListsArray.count == 0{
             ShoppingListCard.alpha = 0
