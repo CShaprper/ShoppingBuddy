@@ -12,6 +12,8 @@ import CoreLocation
 import UserNotifications
 import FirebaseAuth
 
+var possibleRegionsPerStore:Int = 4
+
 class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAlertMessageDelegate, IActivityAnimationService{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
@@ -80,7 +82,7 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         UserProfileImage.image = currentUser.profileImage!
     }
     func ShoppingBuddyUserDataReceived() {
-        sbListWebservice.ObserveAllList()
+        // sbListWebservice.ObserveAllList()
     }
     
     
@@ -237,23 +239,30 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
     func ShoppingBuddyListDataReceived() {
     }
     
-    func ShoppingBuddyStoresCollectionReceived() {
-        for store in StoresArray {
+    func ShoppingBuddyStoreReceived(store: String) {
+        
             let request = MKLocalSearchRequest()
             request.naturalLanguageQuery = store
             request.region = self.MapView.region
+        
             let search = MKLocalSearch(request: request)
             search.start { (response, error) in
+                
                 if error != nil {
-                    print(error!.localizedDescription)
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
                     return
+                    
                 }
+                
                 NSLog("Matches found for \(store)") 
                 DispatchQueue.main.async {
                     self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
                 }
             }
-        }
     }
     //MARK: MKMapViewDelegate Helper
     func PerformLocalShopSearch() -> Void{
@@ -274,7 +283,9 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
     }
     internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
         if self.userLocation == nil { return }
-        var possibleRegionsPerStore = Int(round(Double(20 / StoresArray.count)))
+        if possibleRegionsPerStore == 0 { return }
+        
+         possibleRegionsPerStore = Int(round(Double(20 / possibleRegionsPerStore)))
         possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
         
         var itemsCount = 0

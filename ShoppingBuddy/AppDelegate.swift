@@ -12,8 +12,7 @@ import GooglePlaces
 import UserNotifications
 import CoreData
 
-var ShoppingListsArray:[ShoppingList] = []
-var StoresArray:[String] = []
+var ShoppingListsArray:[ShoppingList] = [] 
 var currentUser:ShoppingBuddyUser = ShoppingBuddyUser()
 var CurrentUserProfileImage:UIImage?
 var ProfileImageCache:[CacheUserProfileImage] = []

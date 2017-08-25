@@ -87,14 +87,14 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     //MARK:- Member
     var blurrView:UIVisualEffectView?
-    var sbListWebservice:ShoppingBuddyListWebservice!
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
     var swipedCellIndex:Int!
     var panRecognizer:UIPanGestureRecognizer!
     var currentShoppingListIndex:Int!
     var currentUpperCard:Int!
-    var firebaseShoppingListItem:ShoppingListItem!
+    var sbListWebservice:ShoppingBuddyListWebservice!
+    var sbListItemWebservice: ShoppingBuddyListItemWebservice!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -103,7 +103,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if ShoppingListsArray.count > 0 && ShoppingListCard.alpha == 0 {
+        if ShoppingListsArray.count == 0 && ShoppingListCard.alpha == 0 {
             sbListWebservice.ObserveAllList()
         }
     }
@@ -114,69 +114,101 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         view.bringSubview(toFront: TrashImage)
-       RefreshCardView()
+        RefreshCardView()
     }
     
     //MARK: - IShoppingBuddyListItemWebService implementation
     func ListItemSaved() {
-        ShoppingListDetailTableView.reloadData()
+        
         lbl_ShoppingCardTotalItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.count)
-        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.filter({$0.isSelected! == false}).count)
+        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.filter({ $0.isSelected! == false }).count)
+        
     }
-    func ListItemDeleted() {
-        ShoppingListDetailTableView.reloadData()
-        lbl_ShoppingCardTotalItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.count)
-        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.filter({$0.isSelected! == false}).count)
-    }
+    
     func ListItemChanged() {
+        
+        //Sort items and reload TableView
         SortShoppingListItemsArrayBy_isSelected()
         ShoppingListDetailTableView.reloadData()
+        
     }
+    
+    func ListItemReceived() {
+        
+        //Sort items and reload TableView
+        SortShoppingListItemsArrayBy_isSelected()
+        ShoppingListDetailTableView.reloadData()
+        
+    }
+    
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
+        
         ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
         ActivityIndicator.center = view.center
         ActivityIndicator.color = UIColor.green
         ActivityIndicator.startAnimating()
         view.addSubview(ActivityIndicator)
+        
     }
+    
     func HideActivityIndicator() {
+        
         if view.subviews.contains(ActivityIndicator) {
             ActivityIndicator.removeFromSuperview()
         }
+        
     }
+    
     
     //MARK: - IFirebaseListWebService implementation
     func ShoppingBuddyListDataReceived() {
+        
         ShoppingListDetailTableView.reloadData()
         RefreshCardView()
         ShoppingListCard.alpha = 1
         ShoppingListCard2.alpha = 1
+        
     }
+    
     func ShoppingBuddyImageReceived() {
+        
         ShoppingListCard2OwnerImage.alpha = 1
         ShoppingListOwnerImage.alpha = 1
+        
     }
+    
     func ShoppingBuddyNewListSaved(listID:String) {
+        
         //New list saved so lets Observe it
-        sbListWebservice.ObserveSingleList(listID: listID)
+        sbListWebservice.ObserveNewList(listID: listID)
+        sbListWebservice.GetStoresForGeofencing()   
+        
     }
+    
+    func ShoppingBuddyNewListReceived(listID: String) {
+        
+        if let index = ShoppingListsArray.index(where: { $0.id! == listID }) {
+            currentShoppingListIndex = index
+        }
+        RefreshCardView()
+        
+    }
+    
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
+        
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+        
     }
     
     
     //MARK: - Wired Actions
-    func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
-        HideAddListPopUp()
-        HideShareListPopUp()
-        ShoppingListDetailView.removeFromSuperview()
-    }
+    //Shopping List
     func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
@@ -188,6 +220,11 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     }
     @IBAction func btn_AddShoppingList_Pressed(_ sender: UIBarButtonItem) {
         ShowAddShoppingListPopUp()
+    }
+    func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
+        HideAddListPopUp()
+        HideShareListPopUp()
+        ShoppingListDetailView.removeFromSuperview()
     }
     func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
         NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
@@ -209,38 +246,63 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             AddShoppingListPopUp.removeFromSuperview()
         }
     }
+    //Shopping List Items
     func btn_SaveItem_Pressed(sender: UIButton) -> Void {
+        
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
+        
         if isValid{
-            firebaseShoppingListItem.SaveListItemToFirebaseDatabase(shoppingList: ShoppingListsArray[currentShoppingListIndex], itemName: txt_ItemName.text!)
+            
+            var newListItem = ShoppingListItem()
+            newListItem.itemName = txt_ItemName.text!
+            newListItem.listID = ShoppingListsArray[currentShoppingListIndex].id!
+            sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem)
+            
             HideAddItemPopUp()
+            
         }
+        
     }
+    
     func btn_ShareListSave_Pressed(sender: UIButton) -> Void {
+        
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
+        
         if isValid {
+            
             sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!)
             HideShareListPopUp()
         }
+        
     }
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
     }
+    
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
         if let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer {
+            
             let translation = panGestureRecognizer.translation(in: view)
+            
             if fabs(translation.x) > fabs(translation.y) {
                 return true
             }
+            
             return false
+            
         }
         return false
+        
     }
+    
     func btn_ShoppingCardShareList_Pressed(sender: UIButton) -> Void {
         ShowShareListPopUp()
     }
+    
     func btn_ShoppingCard2ShareList_Pressed(sender: UIButton) -> Void {
         ShowShareListPopUp()
     }
@@ -294,50 +356,66 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                     if xPercentFromCenter <= -0.25 && isSelected! == false{
                         //Shake Cart
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                            
                             self.ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
+                            
                         })
                         //Drop item to cart
                         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            
                             swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45).scaledBy(x: 0.3, y: 0.3)
+                            
                         }, completion: { (true) in
+                            
+                            if ShoppingListsArray[self.currentShoppingListIndex].itemsArray.count > self.swipedCellIndex {
+                                
+                                ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex].isSelected = true
+                                self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex])
+                                
+                            }
+                            
                             self.ShoppingCartImage.alpha = 0
                             self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
                             self.ShowActivityIndicator()
-                            if ShoppingListsArray[self.currentShoppingListIndex].itemsArray.count > self.swipedCellIndex {
-                                ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex].isSelected = true
-                                self.firebaseShoppingListItem.EditIsSelectedOnShoppingListItem(list: ShoppingListsArray[self.currentShoppingListIndex], shoppingListItem: ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex])
-                            }
+                            
                         })
-                        return
                     }
                     else if xPercentFromCenter >= 0.75{
                         //Shake Trash
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                            
                             self.TrashImage.transform = CGAffineTransform(translationX: -20, y: 0)
+                            
                         })
                         UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            
                             swipedCell.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.8, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+                            
                         }, completion: { (true) in
+                            
+                            if let index = ShoppingListsArray.index(where: {$0.id == ShoppingListsArray[self.currentShoppingListIndex].id!}){
+                                
+                                if ShoppingListsArray[index].itemsArray.isEmpty { return }
+                                self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListsArray[index].itemsArray[self.swipedCellIndex])
+                                ShoppingListsArray[index].itemsArray.remove(at: self.swipedCellIndex)
+                                self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
+                                
+                            }
+                            
                             self.TrashImage.alpha = 0
                             self.TrashImage.transform = .identity
                             swipedCell.alpha = 0
                             swipedCell.transform = .identity
                             
-                            if let index = ShoppingListsArray.index(where: {$0.id == ShoppingListsArray[self.currentShoppingListIndex].id!}){
-                                if ShoppingListsArray[index].itemsArray.isEmpty { return }
-                                
-                                self.firebaseShoppingListItem.DeleteShoppingListItemFromFirebase(list: ShoppingListsArray[index], itemToDelete: ShoppingListsArray[index].itemsArray[self.swipedCellIndex])
-                                ShoppingListsArray[index].itemsArray.remove(at: self.swipedCellIndex)
-                                self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
-                            }
                         })
-                        return
                     } else {
+                        
                         // reset to initial state
                         TrashImage.alpha = 0
                         ShoppingCartImage.alpha = 0
                         swipedCell.transform = .identity
+                        
                     }
                 }
             }
@@ -370,27 +448,37 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             let swipeDuration = 0.3
             // Move off to the left side if drag reached swipeLimitLeft
             if note.center.x < swipeLimitLeft{
+                
                 currentUpperCard = 2
                 SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 2)
                 return
+                
             } else if note.center.x > swipeLimitRight{
+                
                 //Move off to the right side if drag reached swipeLimitRight
                 currentUpperCard = 2
                 SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 2)
                 return
+                
             } else if note.center.y < swipeLimitTop{
+                
                 //Move off the top side if drag reached swipeLimitTop
                 currentUpperCard = 2
                 SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 2)
                 return
+                
             } else if note.center.y > swipeLimitBottom {
+                
                 //Move downways if drag reached swipe limit bottom
                 SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 2)
                 return
+                
             } else {
+                
                 // Reset card if no drag limit reached
                 currentUpperCard = 1
                 self.ResetCardAfterSwipeOff(card: note, bringCardToFront: 1)
+                
             }
         }
     }
@@ -419,29 +507,39 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         if sender.state == UIGestureRecognizerState.ended{
             let swipeDuration = 0.3
             if note.center.x < swipeLimitLeft{
+                
                 // Move off to the left side if drag reached swipeLimitLeft
                 currentUpperCard = 1
                 SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 1)
                 return
+                
             } else if note.center.x > swipeLimitRight{
+                
                 //Move off to the right side if drag reached swipeLimitRight
                 currentUpperCard = 1
                 SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 1)
                 return
+                
             } else if note.center.y < swipeLimitTop{
+                
                 //Move off the top side if drag reached swipeLimitTop
                 currentUpperCard = 1
                 SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 1)
                 return
+                
             } else if note.center.y > swipeLimitBottom {
+                
                 //Move downways if drag reached swipe limit bottom
                 currentUpperCard = 1
                 SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 1)
                 return
+                
             } else {
+                
                 // Reset card if no drag limit reached
                 currentUpperCard = 2
                 self.ResetCardAfterSwipeOff(card: note, bringCardToFront: 2)
+                
             }
         }
     }
@@ -487,44 +585,99 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             card.center.y = card.center.y + self.view.frame.size.height
             card.center.x = card.center.x + xSpin
         }, completion: { (true) in
-            //Card arise in Center for new view
-         /*   if ShoppingListsArray[self.currentShoppingListIndex].owner!.id == Auth.auth().currentUser!.uid{
-                self.firebaseShoppingList.DeleteShoppingListFromFirebase(listToDelete: ShoppingListsArray[self.currentShoppingListIndex])
-                self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+            
+            if ShoppingListsArray[self.currentShoppingListIndex].owneruid! == currentUser.id!{
+                
+                let title = "Delete Warning"
+                let message = "You sure to delete the shopping list?"
+                
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) -> Void in
+                    
+                    self.sbListWebservice.DeleteShoppingListFromFirebase(listToDelete: ShoppingListsArray[self.currentShoppingListIndex])
+                    if let index = ShoppingListsArray.index(where: { $0.id == ShoppingListsArray[self.currentShoppingListIndex].id }){
+                        ShoppingListsArray.remove(at: index)
+                    }
+                    if ShoppingListsArray.isEmpty {
+                        self.TrashImage.alpha = 0
+                        self.TrashImage.transform = .identity
+                        self.RefreshCardView()
+                    } else {
+                        self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+                    }
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) -> Void in
+                    self.ShoppingListCard.transform = .identity
+                    self.ShoppingListCard2.transform = .identity
+                }))
+                
+                self.present(alert, animated: true, completion: nil)
             } else {
                 let title = "Permission Denied"
                 let message = "Your are only allowed to delete your own lists!"
                 self.ShowAlertMessage(title: title, message: message)
                 self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
-            }*/
+            }
         })
     }
-    private func ResetCardAfterSwipeOff(card: UIView, bringCardToFront: Int){
+    private func ResetCardAfterSwipeOff(card: UIView, bringCardToFront: Int) -> Void {
+        
         self.SetNewCardValues(upperCarIndex: bringCardToFront)
         TrashImage.alpha = 0
         TrashImage.transform = .identity
         card.alpha = 0
         card.center = self.view.center
         card.Arise(duration: 0.7, delay: 0, options: [.allowUserInteraction], toAlpha: 1)
+        
         if bringCardToFront == 1{
+            
             view.bringSubview(toFront: ShoppingListCard)
             ShoppingListCard2.transform = .identity
             ShoppingListCard2.transform = CGAffineTransform(rotationAngle: Double(8).degreesToRadians)
+            RefreshCardView()
+            
         } else {
+            
             view.bringSubview(toFront: ShoppingListCard2)
             ShoppingListCard.transform = .identity
             ShoppingListCard.transform = CGAffineTransform(rotationAngle: Double(5).degreesToRadians)
+            RefreshCardView()
         }
     }
+    
     func RefreshCardView(){
-        if ShoppingListsArray.count == 0 { return }
+        
+        if ShoppingListsArray.isEmpty {
+            
+            ShoppingListCard.alpha = 0
+            ShoppingListCard2.alpha = 0
+            return
+            
+        }
+        
+        ShoppingListCard.alpha = 1
+        ShoppingListCard2.alpha = 1
+        
         if ShoppingListsArray.count == 1{
+            
             currentShoppingListIndex = 0
             SetCardOneValues(index: 0)
             SetCardTwoValues(index: 0)
+            
         } else {
-            SetCardOneValues(index: currentShoppingListIndex!)
-            SetCardTwoValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
+            
+            if currentUpperCard == 1 {
+                
+                SetCardOneValues(index: currentShoppingListIndex!)
+                SetCardTwoValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
+                
+            } else {
+                
+                SetCardOneValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
+                SetCardTwoValues(index: currentShoppingListIndex!)
+                
+            }
         }
     }
     private func SetNewCardValues(upperCarIndex: Int){
@@ -550,6 +703,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         let lowerCardIndex = currentUpperListIndex == ShoppingListsArray.count - 1 ? 1 : currentUpperListIndex + 1
         return lowerCardIndex
     }
+    
     private func SetCardOneValues(index: Int) -> Void{
         lbl_ShoppingListCardTitle.text = ShoppingListsArray[index].name!
         lbl_ShoppingCardStoreName.text = ShoppingListsArray[index].relatedStore!
@@ -557,13 +711,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
-       if ShoppingListsArray[index].owneruid != nil {
+        if ShoppingListsArray[index].owneruid != nil {
             ShoppingListOwnerImage.alpha = 1
             ShoppingListOwnerImage.image = currentUser.profileImage
-       } else {
-        //TODO: Overwork
+        } else {
+            //TODO: Overwork
             ShoppingListOwnerImage.alpha = 0
-        // ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            // ShoppingListsArray[index].owner!.userProfileImageFromURL()
         }
         HideShareListButtonIfCurrentUserNotIsListOwner()
     }
@@ -585,20 +739,20 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         }
         HideShareListButtonIfCurrentUserNotIsListOwner()
     }
-    private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {        
+    private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {
         //TODO: Overwork
         //Hide share list button
         /*if  ShoppingListsArray[currentShoppingListIndex].owner!.id != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
-            if currentUpperCard == 1 {
-                btn_ShoppingCardShareList.alpha = 0
-            } else { btn_ShoppingCard2ShareList.alpha = 0 }
-            return
-        }
-        
-        if currentUpperCard == 1{
-            btn_ShoppingCardShareList.alpha = 1
-        } else { btn_ShoppingCard2ShareList.alpha = 1 }
-        */
+         if currentUpperCard == 1 {
+         btn_ShoppingCardShareList.alpha = 0
+         } else { btn_ShoppingCard2ShareList.alpha = 0 }
+         return
+         }
+         
+         if currentUpperCard == 1{
+         btn_ShoppingCardShareList.alpha = 1
+         } else { btn_ShoppingCard2ShareList.alpha = 1 }
+         */
     }
     
     //MARK: - Textfield Delegate implementation
@@ -718,11 +872,11 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     }
     func ConfigureView() -> Void {
         
-        //Firebase Shopping list item
-        firebaseShoppingListItem = ShoppingListItem()
-        firebaseShoppingListItem.activityAnimationServiceDelegate = self
-        firebaseShoppingListItem.alertMessageDelegate = self
-        firebaseShoppingListItem.shoppingListItemWebServiceDelegate = self
+        //SHoppingBuddyListItemWebService
+        sbListItemWebservice = ShoppingBuddyListItemWebservice()
+        sbListItemWebservice.activityAnimationServiceDelegate  = self
+        sbListItemWebservice.alertMessageDelegate = self
+        sbListItemWebservice.shoppingListItemWebServiceDelegate = self
         
         //Firebase Shopping list
         sbListWebservice = ShoppingBuddyListWebservice()
@@ -730,7 +884,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         sbListWebservice.activityAnimationServiceDelegate = self
         sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         
-        if ShoppingListsArray.count == 0{
+        if ShoppingListsArray.isEmpty{
             ShoppingListCard.alpha = 0
             ShoppingListCard2.alpha = 0
         }
@@ -906,7 +1060,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
             //Allow only select on checked items => unchecked must be dropped to basket
             if ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false { return }
             ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected  = ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false ? true : false
-            firebaseShoppingListItem.EditIsSelectedOnShoppingListItem(list: ShoppingListsArray[currentShoppingListIndex], shoppingListItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[row])
+            sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[row])
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

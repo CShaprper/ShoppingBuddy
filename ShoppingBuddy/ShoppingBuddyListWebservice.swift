@@ -21,6 +21,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     private var ref = Database.database().reference()
     private var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
     private var listRef = Database.database().reference().child("shoppinglists")
+    private var itemsRef = Database.database().reference().child("listItems")
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -60,17 +61,18 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyListDataReceived() in ShoppingList")
         }
     }
-    func ShoppingBuddyStoresCollectionReceived() {
+    func ShoppingBuddyStoreReceived(store: String) {
         self.HideActivityIndicator()
         if shoppingBuddyListWebServiceDelegate != nil{
             DispatchQueue.main.async {
-                self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyStoresCollectionReceived!()
+                self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyStoreReceived!(store: store)
             }
         } else {
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyStoresCollectionReceived() in ShoppingList")
         }
     }
     func ShoppingBuddyImageReceived() {
+        self.HideActivityIndicator()
         if shoppingBuddyListWebServiceDelegate != nil{
             DispatchQueue.main.async {
                 self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyImageReceived!()
@@ -80,12 +82,23 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         }
     }
     func ShoppingBuddyNewListSaved(listID: String) {
+        self.HideActivityIndicator()
         if shoppingBuddyListWebServiceDelegate != nil{
             DispatchQueue.main.async {
                 self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyNewListSaved!(listID: listID)
             }
         } else {
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyNewListSaved() in ShoppingList")
+        }
+    }
+    func ShoppingBuddyNewListReceived(listID: String) {
+        self.HideActivityIndicator()
+        if shoppingBuddyListWebServiceDelegate != nil{
+            DispatchQueue.main.async {
+                self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyNewListReceived!(listID: listID)
+            }
+        } else {
+            NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyNewListReceived() in ShoppingList")
         }
     }
     //Share Functions
@@ -135,41 +148,76 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     
     //MARK: - FirebaseSave Functions
     func SaveListToFirebaseDatabase(currentUser:ShoppingBuddyUser, listName:String, relatedStore:String) -> Void {
+        
         self.ShowActivityIndicator()
         let newListRef = listRef.childByAutoId()
         newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":currentUser.id!], withCompletionBlock: { (error, dbRef) in
             
             if error != nil {
+                
                 self.HideActivityIndicator()
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             }
             
             NSLog("Successfully saved List to Firebase Listname: %@ related Store: %@",listName, relatedStore)
             self.userRef.child("shoppinglists").updateChildValues([newListRef.key:"owner"], withCompletionBlock: { (error, dbRef) in
                 
                 if error != nil {
+                    
                     self.HideActivityIndicator()
                     NSLog(error!.localizedDescription)
                     let title = String.OnlineFetchRequestError
                     let message = error!.localizedDescription
                     self.ShowAlertMessage(title: title, message: message)
                     return
+                    
                 }
+                
                 NSLog("Successfully Updated ListID in User Node: %@ related Store: %@",listName, relatedStore)
                 self.HideActivityIndicator()
                 self.ShoppingBuddyNewListSaved(listID: newListRef.key)
+                
             })
         })
     }
     
+    
     //MARK: - Firebase Observe Functions
-    func ObserveSingleList(listID:String) -> Void {
+    func ObserveAllList() -> Void{
+        
         self.ShowActivityIndicator()
-        listRef.child(listID).observe(.value, with: { (snapshot) in
+        if currentUser.shoppingLists.isEmpty {
+            
+            self.HideActivityIndicator()
+            return
+        
+        }
+        
+        for listID in currentUser.shoppingLists {
+            
+            ObserveSingleList(listID: listID)
+            
+        }
+        
+    }
+    
+    
+    func ObserveSingleList(listID:String) -> Void {
+        
+        self.ShowActivityIndicator()
+        listRef.child(listID).queryOrdered(byChild: "isSelected").observe(.value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
+                self.HideActivityIndicator()
+                return
+                
+            }
             
             var newList = ShoppingList()
             newList.id = snapshot.key
@@ -177,24 +225,21 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
             newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
             
-            var newItems = [ShoppingListItem]()
-            for items in snapshot.childSnapshot(forPath: "items").children {
-                let item = items as! DataSnapshot
-                let newItem = ShoppingListItem()
-                newItem.id = item.key
-                newItem.isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
-                newItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
-                newItem.sortNumber = item.childSnapshot(forPath: "sortNumber").value as? Int
-                newItems.append(newItem)
-            }
-            newList.itemsArray = newItems
-            
             if let index = ShoppingListsArray.index(where: { $0.id == listID }){
-                ShoppingListsArray.remove(at: index)
+                
+                ShoppingListsArray[index].id = newList.id
+                ShoppingListsArray[index].name = newList.name
+                ShoppingListsArray[index].owneruid = newList.owneruid
+                ShoppingListsArray[index].relatedStore = newList.relatedStore
+                
+            } else {
+                
+                ShoppingListsArray.append(newList)
+                
             }
-            ShoppingListsArray.append(newList)
             
             self.ShoppingBuddyListDataReceived()
+            self.ObserveListItems(list: newList)
             
         }) { (error) in
             
@@ -208,79 +253,199 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         }
     }
     
-    func ObserveAllList() -> Void{
-        self.ShowActivityIndicator()
-        if currentUser.shoppingLists.isEmpty { return }
+    func ObserveNewList(listID:String) -> Void {
         
-        for listID in currentUser.shoppingLists {
-            ObserveSingleList(listID: listID)
+        self.ShowActivityIndicator()
+        listRef.child(listID).queryOrdered(byChild: "isSelected").observe(.value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
+                self.HideActivityIndicator()
+                return
+                
+            }
+            
+            var newList = ShoppingList()
+            newList.id = snapshot.key
+            newList.name = snapshot.childSnapshot(forPath: "listName").value as? String
+            newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
+            newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
+            
+            if let index = ShoppingListsArray.index(where: { $0.id == listID }){
+                
+                ShoppingListsArray[index].id = newList.id
+                ShoppingListsArray[index].name = newList.name
+                ShoppingListsArray[index].owneruid = newList.owneruid
+                ShoppingListsArray[index].relatedStore = newList.relatedStore                
+                self.ShoppingBuddyNewListReceived(listID: newList.id!)
+                
+            } else {
+                
+                ShoppingListsArray.append(newList)
+                self.ShoppingBuddyNewListReceived(listID: newList.id!)
+                
+            }
+            
+        }) { (error) in
+            
+            self.HideActivityIndicator()
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
         }
     }
+    
+    func ObserveListItems(list:ShoppingList) -> Void {
+        
+        self.ShowActivityIndicator()
+        itemsRef.child(list.id!).observe(.value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
+                self.HideActivityIndicator()
+                return
+                
+            }
+            
+            for items in snapshot.children {
+                
+                let item = items as! DataSnapshot
+                var newItem = ShoppingListItem()
+                newItem.id = item.key
+                newItem.listID  = list.id
+                newItem.isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
+                newItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
+                newItem.sortNumber = item.childSnapshot(forPath: "sortNumber").value as? Int
+                
+                self.ObserveSingleItem(listItem: newItem)
+                
+            }
+            
+        }) { (error) in
+            
+            self.HideActivityIndicator()
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+    }
+    
+    private func ObserveSingleItem(listItem:ShoppingListItem) -> Void {
+        
+        self.ShowActivityIndicator()
+        itemsRef.child(listItem.listID!).child(listItem.id!).observe(.value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
+                self.HideActivityIndicator()
+                return
+                
+            }
+            
+            var newItem = ShoppingListItem()
+            newItem.id = snapshot.key
+            newItem.listID = listItem.listID
+            newItem.isSelected = snapshot.childSnapshot(forPath: "isSelected").value as? Bool
+            newItem.itemName = snapshot.childSnapshot(forPath: "itemName").value as? String
+            newItem.sortNumber = snapshot.childSnapshot(forPath: "sortNumber").value as? Int
+            
+            if let listIndex = ShoppingListsArray.index(where: { $0.id == listItem.listID }) {
+                
+                if let itemIndex = ShoppingListsArray[listIndex].itemsArray.index(where: { $0.id == listItem.id }) {
+                    
+                    if newItem.itemName == nil {
+                        self.ShoppingBuddyListDataReceived()
+                        return
+                    }
+                    ShoppingListsArray[listIndex].itemsArray[itemIndex].id = newItem.id
+                    ShoppingListsArray[listIndex].itemsArray[itemIndex].isSelected = newItem.isSelected
+                    ShoppingListsArray[listIndex].itemsArray[itemIndex].itemName = newItem.itemName
+                    ShoppingListsArray[listIndex].itemsArray[itemIndex].listID = newItem.listID
+                    ShoppingListsArray[listIndex].itemsArray[itemIndex].sortNumber = newItem.sortNumber
+                    self.ShoppingBuddyListDataReceived()
+                    
+                } else {
+                    
+                    if newItem.itemName == nil {
+                        return
+                    }
+                    ShoppingListsArray[listIndex].itemsArray.append(newItem)
+                    
+                    self.ShoppingBuddyListDataReceived()
+                    
+                }
+                
+            } else {
+                
+                self.HideActivityIndicator()
+                
+            }
+            
+        }) { (error) in
+            
+            self.HideActivityIndicator()
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+    }
+    
     func ObserveFriendsList(){
         
     }
     func GetStoresForGeofencing(){
         self.ShowActivityIndicator()
-        listRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.value == nil { return }
-            var newStoresArray:[String] = []
-            for listSnap in snapshot.children {
-                let list = listSnap as! DataSnapshot
-                let items = list.childSnapshot(forPath: "items")
-                var hasOpenElements:Bool = false
-                for item in items.children{
-                    let currItem = item as! DataSnapshot
-                    let isSelected = currItem.childSnapshot(forPath: "isSelected")
-                    if isSelected.value as! Bool == false {
-                        hasOpenElements = true
-                        break
-                    }
-                }
-                if hasOpenElements {
-                    let storeSnap = list.childSnapshot(forPath: "relatedStore")
-                    if storeSnap.value == nil { return }
-                    newStoresArray.append(storeSnap.value as! String)
-                    self.ShoppingBuddyStoresCollectionReceived()
-                }
-            }
-            StoresArray = newStoresArray
-            //Get friends stores
-            guard let uid = Auth.auth().currentUser?.uid else{
+        userRef.child("shoppinglists").observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
                 self.HideActivityIndicator()
                 return
+                
             }
-            //TODO: overwork
-            self.ref.child("users").child(uid).child("friends").observeSingleEvent(of: .value, with: { (snapshot) in
-                if snapshot.value is NSNull{ return }
-                for friendSnap in snapshot.children {
-                    let friend = friendSnap as! DataSnapshot
-                    var status:String = ""
-                    status = friend.value as! String
-                    if status.isEmpty || status == "pending" { return }
-                    self.ref.child("shoppinglists").child(friend.key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        if snapshot.value is NSNull{ return }
-                        for listSnap in snapshot.children{
-                            let list = listSnap as! DataSnapshot
-                            let items = list.childSnapshot(forPath: "items")
-                            var hasOpenElements:Bool = false
-                            for item in items.children{
-                                let currItem = item as! DataSnapshot
-                                let isSelected = currItem.childSnapshot(forPath: "isSelected")
-                                if isSelected.value as! Bool == false {
-                                    hasOpenElements = true
-                                    break
-                                }
-                            }
-                            if hasOpenElements {
-                                let storeSnap = list.childSnapshot(forPath: "relatedStore")
-                                newStoresArray.append(storeSnap.value as! String)
-                            }
-                        }
-                        StoresArray = newStoresArray
-                        self.ShoppingBuddyStoresCollectionReceived()
-                    })
+            
+            possibleRegionsPerStore = Int(snapshot.childrenCount)
+            for lists in snapshot.children {
+                
+                guard let list = lists as? DataSnapshot else {
+                    
+                    self.HideActivityIndicator()
+                    return
+                    
                 }
-            })
+                
+              self.listRef.child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
+                
+                let store = listSnap.childSnapshot(forPath: "relatedStore").value as? String
+                
+                if store == nil {
+                    self.HideActivityIndicator()
+                    return
+                } 
+                
+                self.ShoppingBuddyStoreReceived(store: store!)
+                
+              }, withCancel: { (error) in
+                
+                self.HideActivityIndicator()
+                NSLog(error.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+              
+              })
+                
+            }
         })
     }
     
@@ -288,17 +453,29 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     //MARK: - Delete Functions
     func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
         self.ShowActivityIndicator()
+        
         listRef.child(listToDelete.id!).removeValue { (error, dbref) in
+            
             if error != nil{
+                
                 self.HideActivityIndicator()
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             }
+            
             NSLog("Succesfully deleted Shopping List from Firebase")
-            self.ShoppingBuddyListDataReceived()
+            self.itemsRef.child(listToDelete.id!).removeValue()
+            self.userRef.child("shoppinglists").child(listToDelete.id!).removeValue()
+            
+            if let index = ShoppingListsArray.index(where: { $0.id == listToDelete.id }) {
+                ShoppingListsArray.remove(at: index)
+            }
+            
+            //self.ShoppingBuddyListDataReceived()
         }
     }
     
