@@ -132,11 +132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/DashboardController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525437462.97519"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "444"
-            endingLineNumber = "444"
+            startingLineNumber = "445"
+            endingLineNumber = "445"
             landmarkName = "HasUserMovedDistanceGreaterMapSpan(userLocation:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/DashboardController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525437462.97519"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "258"
+            endingLineNumber = "258"
             landmarkName = "mapView(_:didUpdate:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -180,11 +180,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/DashboardController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525437462.97519"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
             landmarkName = "mapView(_:didUpdate:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -196,11 +196,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525438322.37236"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "935"
-            endingLineNumber = "935"
+            startingLineNumber = "959"
+            endingLineNumber = "959"
             landmarkName = "ShowListDetailView()"
             landmarkType = "7">
          </BreakpointContent>
@@ -212,13 +212,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525438322.37236"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1157"
-            endingLineNumber = "1157"
-            landmarkName = "ShoppingListController"
-            landmarkType = "4">
+            startingLineNumber = "1181"
+            endingLineNumber = "1181"
+            landmarkName = "tableView(_:numberOfRowsInSection:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -260,11 +260,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525465116.193533"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "316"
-            endingLineNumber = "316"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
             landmarkName = "ObserveListItems(list:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -276,11 +276,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525465116.193533"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "245"
-            endingLineNumber = "245"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "ObserveSingleList(listID:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -308,11 +308,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525437796.397195"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "413"
-            endingLineNumber = "413"
+            startingLineNumber = "412"
+            endingLineNumber = "412"
             landmarkName = "HandleShoppingItemPan(sender:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -324,11 +324,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "525437228.158807"
+            timestampString = "525465116.193533"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
+            startingLineNumber = "490"
+            endingLineNumber = "490"
             landmarkName = "GetStoresForGeofencing()"
             landmarkType = "7">
          </BreakpointContent>
@@ -404,11 +404,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "525436488.274728"
+            timestampString = "525438322.37236"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "987"
-            endingLineNumber = "987"
+            startingLineNumber = "1011"
+            endingLineNumber = "1011"
             landmarkName = "ConfigureView()"
             landmarkType = "7">
          </BreakpointContent>

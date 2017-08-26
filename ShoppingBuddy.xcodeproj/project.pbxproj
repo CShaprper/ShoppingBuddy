@@ -267,6 +267,7 @@
 		CFB2AA611F24B87A00AACB5B /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */,
 				CFB2AA621F24B8A100AACB5B /* NotificationNameExtension.swift */,
 				CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */,
 				CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */,
@@ -384,7 +385,6 @@
 				CFBE245A1F4F291600373CCB /* IShoppingBuddyUserWebService.swift */,
 				CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */,
 				CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */,
-				CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */,
 				CFF606B21F4346F5009E161E /* IShoppingBuddyListWebService.swift */,
 				CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */,
 				CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */,

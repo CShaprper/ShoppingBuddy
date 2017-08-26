@@ -105,26 +105,47 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         }
     }
     //Share Functions
-    func SendFriendSharingInvitation(friendsEmail:String) -> Void {
+    func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {
+        
         self.ShowActivityIndicator()
-        Auth.auth().fetchProviders(forEmail: friendsEmail) { (snapshot, error) in
+        
+        ref.child("users").queryOrdered(byChild: "email").queryEqual(toValue: friendsEmail).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            print(snapshot)
+            let inviteRef = snapshot.ref.child("invites").childByAutoId()
+            inviteRef.child("listName").setValue(list.name!)
+            inviteRef.child("owneruid").setValue(listOwner.id!)
+            inviteRef.child("ownerNickname").setValue(listOwner.nickname!)
+            inviteRef.child("ownerEmail").setValue(listOwner.email!)
+            inviteRef.child("ownerProfileImageURL").setValue(listOwner.profileImageURL!)
+            
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            self.HideActivityIndicator()
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+      /*  Auth.auth().fetchProviders(forEmail: friendsEmail) { (snapshot, error) in
+            
             if error != nil {
+                
                 NSLog(error!.localizedDescription)
                 self.HideActivityIndicator()
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
-            }
-            if snapshot != nil {
                 
-            } else {
-                self.HideActivityIndicator()
-                let title = String.OnlineFetchRequestError
-                let message = "\(friendsEmail) is not a registered Shopping Buddy address!"
-                self.ShowAlertMessage(title: title, message: message)
             }
-        }
+                self.HideActivityIndicator()
+            print(snapshot)
+            
+        }*/
     }
     func SearchUserByEmail(listID:String, email:String) -> Void {
         self.ShowActivityIndicator()
