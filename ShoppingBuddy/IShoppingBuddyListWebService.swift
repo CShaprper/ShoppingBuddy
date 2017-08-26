@@ -11,8 +11,8 @@ import Foundation
 @objc protocol IShoppingBuddyListWebService{
     @objc optional var shoppingBuddyListWebServiceDelegate:IShoppingBuddyListWebService? { get set }
     @objc optional func ShoppingBuddyListDataReceived()
-    @objc optional func ShoppingBuddyStoreReceived(store: String)
     @objc optional func ShoppingBuddyImageReceived()
+    @objc optional func ShoppingBuddyStoreReceived(store:String)
     @objc optional func ShoppingBuddyNewListSaved(listID:String)
     @objc optional func ShoppingBuddyNewListReceived(listID:String)
 }

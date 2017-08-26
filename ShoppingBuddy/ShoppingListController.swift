@@ -167,8 +167,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         ShoppingListDetailTableView.reloadData()
         RefreshCardView()
-        ShoppingListCard.alpha = 1
-        ShoppingListCard2.alpha = 1
         
     }
     
@@ -183,8 +181,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         //New list saved so lets Observe it
         sbListWebservice.ObserveNewList(listID: listID)
-        sbListWebservice.GetStoresForGeofencing()   
-        
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
     }
     
     func ShoppingBuddyNewListReceived(listID: String) {
@@ -377,7 +374,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                             self.ShoppingCartImage.alpha = 0
                             self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
-                            self.ShowActivityIndicator()
+                            self.HideActivityIndicator()
                             
                         })
                     }
@@ -400,6 +397,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                                 self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListsArray[index].itemsArray[self.swipedCellIndex])
                                 ShoppingListsArray[index].itemsArray.remove(at: self.swipedCellIndex)
                                 self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
+                                self.DecrementCurrentShoppingListIndex()
                                 
                             }
                             
@@ -449,35 +447,32 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             // Move off to the left side if drag reached swipeLimitLeft
             if note.center.x < swipeLimitLeft{
                 
-                currentUpperCard = 2
-                SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 2)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin)
                 return
                 
             } else if note.center.x > swipeLimitRight{
                 
-                //Move off to the right side if drag reached swipeLimitRight
-                currentUpperCard = 2
-                SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 2)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin)
                 return
                 
             } else if note.center.y < swipeLimitTop{
                 
-                //Move off the top side if drag reached swipeLimitTop
-                currentUpperCard = 2
-                SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 2)
+               SwitchCurrentUpperCardIndex()
+                SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
             } else if note.center.y > swipeLimitBottom {
                 
                 //Move downways if drag reached swipe limit bottom
-                SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 2)
+                SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
             } else {
                 
                 // Reset card if no drag limit reached
-                currentUpperCard = 1
-                self.ResetCardAfterSwipeOff(card: note, bringCardToFront: 1)
+                self.ResetCardAfterSwipeOff(card: note)
                 
             }
         }
@@ -508,37 +503,31 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             let swipeDuration = 0.3
             if note.center.x < swipeLimitLeft{
                 
-                // Move off to the left side if drag reached swipeLimitLeft
-                currentUpperCard = 1
-                SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 1)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffLeft(swipeDuration: swipeDuration, card: note, ySpin: ySpin)
                 return
                 
             } else if note.center.x > swipeLimitRight{
                 
-                //Move off to the right side if drag reached swipeLimitRight
-                currentUpperCard = 1
-                SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin, bringCardToFront: 1)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffRight(swipeDuration: swipeDuration, card: note, ySpin: ySpin)
                 return
                 
             } else if note.center.y < swipeLimitTop{
                 
-                //Move off the top side if drag reached swipeLimitTop
-                currentUpperCard = 1
-                SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 1)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
             } else if note.center.y > swipeLimitBottom {
                 
-                //Move downways if drag reached swipe limit bottom
-                currentUpperCard = 1
-                SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin, bringCardToFront: 1)
+                SwitchCurrentUpperCardIndex()
+                SwipeCardOffBottom(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
             } else {
                 
-                // Reset card if no drag limit reached
-                currentUpperCard = 2
-                self.ResetCardAfterSwipeOff(card: note, bringCardToFront: 2)
+                self.ResetCardAfterSwipeOff(card: note)
                 
             }
         }
@@ -553,34 +542,37 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     
     //MARK: Swipe Helpers
-    private func SwipeCardOffLeft(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat, bringCardToFront: Int){
+    private func SwitchCurrentUpperCardIndex() -> Void {
+        currentUpperCard = currentUpperCard == 1 ? 2 : 1
+    }
+    private func SwipeCardOffLeft(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat){
         UIView.animate(withDuration: swipeDuration, animations: {
             card.center.x = card.center.x - self.view.frame.size.width
             card.center.y = card.center.y + ySpin
         }, completion: { (true) in
             //Card arise in Center for new view
-            self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+            self.ResetCardAfterSwipeOff(card: card)
         })
     }
-    private func SwipeCardOffRight(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat, bringCardToFront: Int){
+    private func SwipeCardOffRight(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat){
         UIView.animate(withDuration: swipeDuration, animations: {
             card.center.x = card.center.x + self.view.frame.size.width
             card.center.y = card.center.y + ySpin
         }, completion: { (true) in
             //Card arise in Center for new view
-            self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+            self.ResetCardAfterSwipeOff(card: card)
         })
     }
-    private func SwipeCardOffTop(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat, bringCardToFront: Int){
+    private func SwipeCardOffTop(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat){
         UIView.animate(withDuration: swipeDuration, animations: {
             card.center.y = card.center.y - self.view.frame.size.height
             card.center.x = card.center.x + xSpin
         }, completion: { (true) in
             //Card arise in Center for new view
-            self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+            self.ResetCardAfterSwipeOff(card: card)
         })
     }
-    private func SwipeCardOffBottom(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat, bringCardToFront: Int){
+    private func SwipeCardOffBottom(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat){
         UIView.animate(withDuration: swipeDuration, animations: {
             card.center.y = card.center.y + self.view.frame.size.height
             card.center.x = card.center.x + xSpin
@@ -603,7 +595,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                         self.TrashImage.transform = .identity
                         self.RefreshCardView()
                     } else {
-                        self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+                        self.ResetCardAfterSwipeOff(card: card)
                     }
                     
                 }))
@@ -617,20 +609,20 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
                 let title = "Permission Denied"
                 let message = "Your are only allowed to delete your own lists!"
                 self.ShowAlertMessage(title: title, message: message)
-                self.ResetCardAfterSwipeOff(card: card, bringCardToFront: bringCardToFront)
+                self.ResetCardAfterSwipeOff(card: card)
             }
         })
     }
-    private func ResetCardAfterSwipeOff(card: UIView, bringCardToFront: Int) -> Void {
+    private func ResetCardAfterSwipeOff(card: UIView) -> Void {
         
-        self.SetNewCardValues(upperCarIndex: bringCardToFront)
+        self.SetNewCardValues()
         TrashImage.alpha = 0
         TrashImage.transform = .identity
         card.alpha = 0
         card.center = self.view.center
         card.Arise(duration: 0.7, delay: 0, options: [.allowUserInteraction], toAlpha: 1)
         
-        if bringCardToFront == 1{
+        if currentUpperCard == 1{
             
             view.bringSubview(toFront: ShoppingListCard)
             ShoppingListCard2.transform = .identity
@@ -680,64 +672,106 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             }
         }
     }
-    private func SetNewCardValues(upperCarIndex: Int){
+    private func SetNewCardValues() -> Void {
+        
         if ShoppingListsArray.count == 0 { return }
-        currentShoppingListIndex = currentShoppingListIndex >= ShoppingListsArray.count - 1 ?  0 : currentShoppingListIndex + 1
+        IncrementCurrentShoppingListIndex()
+        
         NSLog("Shopping list array Count \(ShoppingListsArray.count)")
         NSLog("Current Shopping List Index \(currentShoppingListIndex)")
         NSLog("Current List Title \(ShoppingListsArray[currentShoppingListIndex].name!)")
+        
         if ShoppingListsArray.count == 1 {
+            
             SetCardOneValues(index: 0)
             SetCardTwoValues(index: 0)
             return
+            
         }
+        
         if currentUpperCard == 1 {
+            
             SetCardOneValues(index: currentShoppingListIndex)
             SetCardTwoValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
+            
         } else {
+            
             SetCardOneValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
             SetCardTwoValues(index: currentShoppingListIndex)
+            
         }
+        
     }
+    
+    private func IncrementCurrentShoppingListIndex() -> Void {
+        
+        currentShoppingListIndex = currentShoppingListIndex >= ShoppingListsArray.count - 1 ?  0 : currentShoppingListIndex + 1
+        
+    }
+    
+    private func DecrementCurrentShoppingListIndex() -> Void {
+        
+        currentShoppingListIndex = currentShoppingListIndex == 0 ? ShoppingListsArray.count : currentShoppingListIndex - 1
+        
+    }
+    
     private func determineLowerCardIndex(currentUpperListIndex:Int) -> Int {
+        
         let lowerCardIndex = currentUpperListIndex == ShoppingListsArray.count - 1 ? 1 : currentUpperListIndex + 1
         return lowerCardIndex
+        
     }
     
     private func SetCardOneValues(index: Int) -> Void{
+        
         lbl_ShoppingListCardTitle.text = ShoppingListsArray[index].name!
         lbl_ShoppingCardStoreName.text = ShoppingListsArray[index].relatedStore!
         lbl_ShoppingCardTotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
         lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
+        
         if ShoppingListsArray[index].owneruid != nil {
+            
             ShoppingListOwnerImage.alpha = 1
             ShoppingListOwnerImage.image = currentUser.profileImage
+            
         } else {
+            
             //TODO: Overwork
             ShoppingListOwnerImage.alpha = 0
             // ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            
         }
+        
         HideShareListButtonIfCurrentUserNotIsListOwner()
+        
     }
     
     private func SetCardTwoValues(index: Int) -> Void{
+        
         lbl_ShoppingListCard2Title.text = ShoppingListsArray[index].name!
         lbl_ShoppingCard2StoreName.text = ShoppingListsArray[index].relatedStore!
         lbl_ShoppingCard2TotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
         lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
+        
         if ShoppingListsArray[index].owneruid != nil {
+            
             ShoppingListCard2OwnerImage.alpha = 1
             ShoppingListCard2OwnerImage.image = currentUser.profileImage
+            
         } else {
+            
             //TODO: Overwork
             ShoppingListCard2OwnerImage.alpha = 0
             // ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            
         }
+        
         HideShareListButtonIfCurrentUserNotIsListOwner()
+        
     }
     private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {
         //TODO: Overwork
@@ -757,60 +791,91 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
         self.view.endEditing(true)
         return true
+        
     }
+    
     func txt_ListName_TextChanged(sender: UITextField) -> Void {
+        
         //firebaseShoppingList.name = sender.text!
     }
+    
     func txt_RelatedStore_TextChanged(sender: UITextField) -> Void {
+        
         //firebaseShoppingList.relatedStore = sender.text!
+        
     }
+    
     //MARK: Keyboard Notification Listener targets
     func KeyboardWillShow(sender: Notification) -> Void {
+        
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            
             AddItemPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
             AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
             ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
+            
         }
+        
     }
     func KeyboardWillHide(sender: Notification) -> Void {
+        
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            
             AddItemPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
             AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
             ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
+            
         }
+        
     }
     
     
     //MARK: - Helper Functions
     func ShowAddShoppingListPopUp() -> Void {
+        
         AddShoppingListPopUp.frame.size.width = 280
         AddShoppingListPopUp.center = view.center
         view.addSubview(AddShoppingListPopUp)
         AddShoppingListPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+        
     }
+    
     func ShowAddItemPopUp() -> Void{
+        
         if view.subviews.contains(AddItemPopUp){
+            
             refreshControl.endRefreshing()
             return
+            
         }
+        
         AddItemPopUp.frame.size.width = 280
         AddItemPopUp.center = view.center
         view.addSubview(AddItemPopUp)
         AddItemPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
         refreshControl.endRefreshing()
+        
     }
-    func ShowShareListPopUp(){
-        if ShowBlurrView(){
+    func ShowShareListPopUp() -> Void{
+        
+        if ShowBlurrView() {
+            
             ShareListPopUp.frame.size.width = 280
             ShareListPopUp.center = view.center
             view.addSubview(ShareListPopUp)
             ShareListPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            
         }
+        
     }
+    
     func ShowBlurrView() -> Bool{
-        if blurrView == nil{
+        
+        if blurrView == nil {
+            
             blurrView = UIVisualEffectView()
             blurrView!.effect = UIBlurEffect(style: .light)
             blurrView!.bounds = view.bounds
@@ -819,32 +884,53 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             blurrView!.addGestureRecognizer(blurrViewTap)
             view.addSubview(blurrView!)
             return true
+            
         }
+        
         return false
+        
     }
-    func HideListDetailView() -> Void{
+    
+    func HideListDetailView() -> Void {
+        
         ShoppingListDetailView.removeFromSuperview()
+        
     }
+    
     func HideAddListPopUp() -> Void {
+        
         HideBlurrView()
         txt_ListName.text = ""
         txt_RelatedStore.text = ""
         AddShoppingListPopUp.removeFromSuperview()
+        
     }
-    func HideShareListPopUp(){
+    
+    func HideShareListPopUp() -> Void {
+        
         HideBlurrView()
         ShareListPopUp.removeFromSuperview()
+        
     }
+    
     func HideAddItemPopUp() -> Void {
+        
         txt_ItemName.text = ""
         AddItemPopUp.removeFromSuperview()
+        
     }
+    
     func HideBlurrView() -> Void{
+        
         blurrView?.removeFromSuperview()
         blurrView = nil
+        
     }
-    func ShowListDetailView(){
-        if ShowBlurrView(){
+    
+    func ShowListDetailView() -> Void {
+        
+        if ShowBlurrView() {
+            
             ShoppingListDetailView.frame.size.width = view.frame.width * 0.9
             ShoppingListDetailView.frame.size.height = view.frame.height * 0.8
             ShoppingListDetailView.center = view.center
@@ -853,23 +939,35 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             ShoppingListDetailTableView.delegate = self
             ShoppingListDetailTableView.dataSource = self
             SortShoppingListItemsArrayBy_isSelected()
+            
         }
+        
     }
+    
     func SortShoppingListItemsArrayBy_isSelected() -> Void {
+        
         if ShoppingListsArray[currentShoppingListIndex].itemsArray.isEmpty {
+            
             ShoppingListDetailTableView.delegate = self
             ShoppingListDetailTableView.dataSource = self
             ShoppingListDetailTableView.reloadData()
             return
+            
         }
+        
         ShoppingListsArray[currentShoppingListIndex].itemsArray.sort{ !$0.isSelected! && $1.isSelected! }
         ShoppingListDetailTableView.delegate = self
         ShoppingListDetailTableView.dataSource = self
         ShoppingListDetailTableView.reloadData()
+        
     }
-    func GetOpenItemsCount(shoppingItems: [ShoppingListItem]) -> Int{
+    
+    func GetOpenItemsCount(shoppingItems: [ShoppingListItem]) -> Int {
+        
         return shoppingItems.filter({$0.isSelected! == false}).count
+        
     }
+    
     func ConfigureView() -> Void {
         
         //SHoppingBuddyListItemWebService
@@ -884,9 +982,11 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         sbListWebservice.activityAnimationServiceDelegate = self
         sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         
-        if ShoppingListsArray.isEmpty{
+        if ShoppingListsArray.isEmpty {
+            
             ShoppingListCard.alpha = 0
             ShoppingListCard2.alpha = 0
+            
         }
         AddShoppingListButton.tintColor = UIColor.ColorPaletteTintColor()
         
@@ -1001,7 +1101,8 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListOwnerImage.layer.borderWidth = 3
         
-        if ShoppingListsArray.count > 1{
+        if ShoppingListsArray.count > 1 {
+            
             currentShoppingListIndex = 0
             lbl_ShoppingListCardTitle.text = ShoppingListsArray[0].name!
             lbl_ShoppingCardStoreName.text = ShoppingListsArray[0].relatedStore!
@@ -1017,7 +1118,9 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
             lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[1].itemsArray))"
             
+            
         } else if ShoppingListsArray.count == 1 {
+            
             currentShoppingListIndex = 0
             lbl_ShoppingListCardTitle.text = ShoppingListsArray[0].name!
             lbl_ShoppingCardStoreName.text = ShoppingListsArray[0].relatedStore!
@@ -1032,6 +1135,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[0].itemsArray!.count)"
             lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
             lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[0].itemsArray))"
+            
         }
     }
 }
@@ -1041,27 +1145,34 @@ extension Double {
 extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
+        
         return 1
+        
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return ShoppingListsArray[currentShoppingListIndex].itemsArray.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier, for: indexPath) as! ShoppingListItemTableViewCell
         cell.selectionStyle = .none
         cell.ConfigureCell(shoppingListItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[indexPath.row])
         return cell
+        
     }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if ShoppingListsArray[currentShoppingListIndex].itemsArray.count > 0 {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        if ShoppingListsArray[currentShoppingListIndex].itemsArray.isEmpty { return }
+            
             let row = indexPath.row
-            //Allow only select on checked items => unchecked must be dropped to basket
             if ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false { return }
             ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected  = ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false ? true : false
             sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[row])
-        }
+            
+        
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return tableView.frame.height / 7

@@ -62,11 +62,14 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         }
     }
     func ShoppingBuddyStoreReceived(store: String) {
+        
         self.HideActivityIndicator()
-        if shoppingBuddyListWebServiceDelegate != nil{
+        if shoppingBuddyListWebServiceDelegate != nil {
+            
             DispatchQueue.main.async {
                 self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyStoreReceived!(store: store)
             }
+            
         } else {
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyStoresCollectionReceived() in ShoppingList")
         }
@@ -195,7 +198,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             
             self.HideActivityIndicator()
             return
-        
+            
         }
         
         for listID in currentUser.shoppingLists {
@@ -276,7 +279,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                 ShoppingListsArray[index].id = newList.id
                 ShoppingListsArray[index].name = newList.name
                 ShoppingListsArray[index].owneruid = newList.owneruid
-                ShoppingListsArray[index].relatedStore = newList.relatedStore                
+                ShoppingListsArray[index].relatedStore = newList.relatedStore
                 self.ShoppingBuddyNewListReceived(listID: newList.id!)
                 
             } else {
@@ -402,7 +405,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     func ObserveFriendsList(){
         
     }
-    func GetStoresForGeofencing(){
+    func GetStoresForGeofencing() -> Void {
+        
         self.ShowActivityIndicator()
         userRef.child("shoppinglists").observeSingleEvent(of: .value, with: { (snapshot) in
             
@@ -423,27 +427,44 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                     
                 }
                 
-              self.listRef.child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
-                
-                let store = listSnap.childSnapshot(forPath: "relatedStore").value as? String
-                
-                if store == nil {
+                self.listRef.child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
+                    
+                    let store = listSnap.childSnapshot(forPath: "relatedStore").value as? String
+                    
+                    if store == nil {
+                        self.HideActivityIndicator()
+                        return
+                    }
+                    
+                    self.itemsRef.child(list.key).observeSingleEvent(of: .value, with: { (itemSnap) in
+                        
+                        if itemSnap.childrenCount == 0  { return }
+                        
+                        var cnt:Int = 0
+                        for items in itemSnap.children {
+                            
+                            let item = items as! DataSnapshot
+                            let isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
+                            cnt = isSelected! == false ? cnt + 1 : cnt
+                            
+                        }
+                        
+                        if cnt == 0 { return }
+                        self.ShoppingBuddyStoreReceived(store: store!)
+                        
+                    })
+                    
+                    
+                }, withCancel: { (error) in
+                    
                     self.HideActivityIndicator()
+                    NSLog(error.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
                     return
-                } 
-                
-                self.ShoppingBuddyStoreReceived(store: store!)
-                
-              }, withCancel: { (error) in
-                
-                self.HideActivityIndicator()
-                NSLog(error.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-              
-              })
+                    
+                })
                 
             }
         })
@@ -475,7 +496,6 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                 ShoppingListsArray.remove(at: index)
             }
             
-            //self.ShoppingBuddyListDataReceived()
         }
     }
     

@@ -46,7 +46,14 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // locationService.RequestGPSAuthorization()
+        
+        if UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue) {
+            
+            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+            sbListWebservice.GetStoresForGeofencing()
+            
+        }
+        
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -55,40 +62,50 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     
     
     //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
+    func ShowActivityIndicator() -> Void {
+        
         ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
         ActivityIndicator.center = view.center
         ActivityIndicator.color = UIColor.green
         ActivityIndicator.startAnimating()
         view.addSubview(ActivityIndicator)
+        
     }
-    func HideActivityIndicator() {
+    func HideActivityIndicator()  -> Void {
+        
         if view.subviews.contains(ActivityIndicator) {
             ActivityIndicator.removeFromSuperview()
         }
+        
     }
     
     
     //MARK: - IFirebaseUserWebservice Implementation
-    func ShoppingBuddyUserLoggedOut() {
+    func ShoppingBuddyUserLoggedOut()  -> Void {
+        
         ShoppingListsArray = []
         CurrentUserProfileImage = nil
+        
     }
-    func ShoppingBuddyUserLoggedIn() {
+    func ShoppingBuddyUserLoggedIn()  -> Void {
+        
         sbUserWebservice.DownloadUserProfileImage()
+        
     }
-    func UserProfileImageDownloadFinished() {
+    func UserProfileImageDownloadFinished()  -> Void {
+        
         UserProfileImage.alpha = 1
         UserProfileImage.image = currentUser.profileImage!
+        
     }
-    func ShoppingBuddyUserDataReceived() {
+    func ShoppingBuddyUserDataReceived() -> Void {
         // sbListWebservice.ObserveAllList()
     }
     
     
     
     //MARK: - IAlertMessageDelegate implementation
-    func ShowAlertMessage(title: String, message: String) {
+    func ShowAlertMessage(title: String, message: String)  -> Void {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         if title != String.GPSAuthorizationRequestDenied_AlertTitle{
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -105,20 +122,27 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     
     
     //MARK: - Wired Actions
-    func LogOutBarButtonItemPressed(sender: UIBarButtonItem)->Void{
+    func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void {
+        
         sbUserWebservice.LogFirebaseUserOut()
+        
     }
-    func SegueToLoginController(sender: Notification) -> Void{
+    func SegueToLoginController(sender: Notification) -> Void {
+        
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
+        
     }
     func ImageUploadFinished(sender: Notification) -> Void {
+        
         sbUserWebservice.DownloadUserProfileImage()
+        
     }
     
     
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
+        
         //Firebase User
         sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.alertMessageDelegate = self
@@ -177,8 +201,10 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         NotificationCenter.default.addObserver(self, selector: #selector(ImageUploadFinished), name: NSNotification.Name.ImageUploadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
     }
-    func ShowNotification(title:String, message:String) -> Void{
+    func ShowNotification(title:String, message:String) -> Void {
+        
         if #available(iOS 10.0, *) {
+    
             let content = UNMutableNotificationContent()
             content.title = title
             content.body = message
@@ -186,9 +212,15 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
             content.sound = .default()
             let request = UNNotificationRequest(identifier: "notification", content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request, withCompletionHandler: { (error) in
+    
                 if error != nil{
-                    print(error!.localizedDescription)
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
                     return
+    
                 }
                 //toDo:??
             })
@@ -281,11 +313,13 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         
         sbListWebservice.GetStoresForGeofencing()
     }
-    internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]){
+    
+    internal func StartMonitoringGeofenceRegions(mapItems: [MKMapItem]) -> Void {
+        
         if self.userLocation == nil { return }
         if possibleRegionsPerStore == 0 { return }
         
-         possibleRegionsPerStore = Int(round(Double(20 / possibleRegionsPerStore)))
+        possibleRegionsPerStore = Int(round(Double(20 / possibleRegionsPerStore)))
         possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
         
         var itemsCount = 0
@@ -305,35 +339,50 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         
         if itemsCount == possibleRegionsPerStore { return }
         itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.6, maxDistance: mapSpan * 3)
+        
     }
-    private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int{
+    private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int {
+        
         var cnt:Int = itemsCount
-        for mapItem:MKMapItem in mapItems{
+        for mapItem:MKMapItem in mapItems {
+            
             self.SetAnnotations(mapItem: mapItem)
             if cnt == possibleRegionsPerStore { return cnt }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
+            
             //Monitore 6th nearest stores if regions count still below 20
             if locationManager.monitoredRegions.count < 20 && distanceToUser >= minDistance && distanceToUser < maxDistance {
+                
                 NSLog("Monitoring region: \(mapItem.name!)  \(mapItem.placemark.title!)")
                 MonitoreCircularRegion(mapItem: mapItem)
                 cnt += 1
+                
             }
+            
         }
         return cnt
     }
-    private func MonitoreCircularRegion(mapItem: MKMapItem){
+    
+    private func MonitoreCircularRegion(mapItem: MKMapItem) -> Void {
+        
         DispatchQueue.main.async {
+            
             let region = CLCircularRegion(center: mapItem.placemark.coordinate, radius: CLLocationDistance(self.radiusToMonitore), identifier: "\(UUID().uuidString)\("SB_")\(mapItem.name!)")
             self.locationManager.startMonitoring(for: region)
             
             NSLog("Monitored Regions: \(self.locationManager.monitoredRegions.count)")
             NSLog("MapSpan: \(self.mapSpan)")
             NSLog("Start monitoring for Region: \(region) with Radius \(region.radius)" )
+            
         }
+        
     }
-    private func SetAnnotations(mapItem: MKMapItem){
+    private func SetAnnotations(mapItem: MKMapItem) -> Void {
+        
         DispatchQueue.main.async {
-            if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}){
+            
+            if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
+                
                 NSLog("Adding Annotation at location: \(String(describing: mapItem.placemark.coordinate))")
                 NSLog("Adding Annotation Title: \(String(describing: mapItem.name))")
                 NSLog("Adding Annotation Subtitle: \(String(describing: mapItem.placemark.title))")
@@ -343,18 +392,25 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
                 annotation.title = mapItem.name
                 annotation.subtitle = mapItem.placemark.title
                 self.MapView.addAnnotation(annotation)
+                
             }
+            
         }
     }
+    
     private func CalculateDistanceBetweenTwoCoordinates(location1: CLLocationCoordinate2D, location2: CLLocationCoordinate2D) -> CLLocationDistance {
+        
         let coord1 = CLLocation(latitude: location1.latitude, longitude: location1.longitude)
         let coord2 = CLLocation(latitude: location2.latitude, longitude: location2.longitude)
         return coord1.distance(from: coord2)
+        
     }
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        
         guard let circleOverlay = overlay as? MKCircle else {
             return MKOverlayRenderer()
         }
+        
         NSLog("Drawing Circular Overlay")
         let circleRenderer = MKCircleRenderer(circle: circleOverlay)
         circleRenderer.strokeColor = UIColor.red
@@ -362,6 +418,7 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         circleRenderer.lineWidth = 1
         circleRenderer.setNeedsDisplay()
         return circleRenderer
+        
     }
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if (annotation is MKUserLocation) {  return nil }
@@ -374,76 +431,116 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         //pinView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         pinView.image =  myAnnotation.image
         return pinView
+        
     }
     //HasUserMovedDistanceGreaterMapSpan
-    private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool{
-        if  let lastUserLocation = ReadLastUserLocationFromUserDefaults(){
+    private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool {
+        
+        if  let lastUserLocation = ReadLastUserLocationFromUserDefaults() {
+            
             let distance = userLocation.location?.distance(from: lastUserLocation)
             if distance != nil && distance! > mapSpan * 0.25{
                 lbl_DebugHasUserMovedDistance.text = "User moved > mapSpan: \(debugcounter += 1)"
                 UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
                 return true
+                
             }
+            
         }
+        
         return false
     }
-    private func ReadLastUserLocationFromUserDefaults() -> CLLocation?{
+    private func ReadLastUserLocationFromUserDefaults() -> CLLocation? {
+        
         let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.LastUserLatitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: eUserDefaultKey.LastUserLongitude.rawValue)
-        if latitude > 0 && longitude > 0{
+        
+        if latitude > 0 && longitude > 0 {
+            
             return CLLocation(latitude: CLLocationDegrees(floatLiteral: latitude), longitude: CLLocationDegrees(floatLiteral: longitude))
+            
         }
+            
         else { return nil }
     }
-    private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void{
+    private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void {
+        
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
-        //SaveNew position
         UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.LastUserLatitude.rawValue)
         UserDefaults.standard.set(coordinate.longitude, forKey: eUserDefaultKey.LastUserLongitude.rawValue)
+        
     }
-    private func RemoveOldGeofenceOverlays() -> Void{
-        for overlay in self.MapView.overlays{
+    private func RemoveOldGeofenceOverlays() -> Void {
+        
+        for overlay in self.MapView.overlays {
+            
             if overlay is MKUserLocation{ }
             else { MapView.remove(overlay)}
+            
         }
+        
     }
     private func RemoveOldAnnotations() -> Void {
-        for annotation in self.MapView.annotations{
+        
+        for annotation in self.MapView.annotations {
+            
             if annotation is MKUserLocation{ }
             else { MapView.removeAnnotation(annotation) }
+            
         }
+        
     }
-    func StopMonitoringForOldRegions(){
+    func StopMonitoringForOldRegions() -> Void {
+        
         for region in locationManager.monitoredRegions {
+            
             locationManager.stopMonitoring(for: region)
             NSLog("removing Region: " + region.identifier)
             NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
+            
         }
+        
     }
 }
-extension DashboardController: CLLocationManagerDelegate{
-    func RequestGPSAuthorization() -> Void{
+extension DashboardController: CLLocationManagerDelegate {
+    
+    func RequestGPSAuthorization() -> Void {
+        
         if CLLocationManager.authorizationStatus() == .notDetermined {
+            
             locationManager.requestAlwaysAuthorization()
+            
         }
-        if CLLocationManager.authorizationStatus() == .authorizedAlways{
+        
+        if CLLocationManager.authorizationStatus() == .authorizedAlways {
+            
             locationManager.startMonitoringSignificantLocationChanges()
+            
         }
-        if CLLocationManager.authorizationStatus() == .denied{
+        
+        if CLLocationManager.authorizationStatus() == .denied {
+            
             let title = String.GPSAuthorizationRequestDenied_AlertTitle
             let message = String.GPSAuthorizationRequestDenied_AlertMessage
             self.ShowAlertMessage(title: title, message: message)
+            
         }
+        
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first{
+        
+        if let location = locations.first {
+            
             lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
             userLocation = location.coordinate
             MapView.centerCoordinate = location.coordinate
+            
         }
+        
     }
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        
         let str:[String] = region.identifier.components(separatedBy: "SB_")
         if str.count <= 0 { return }
         
@@ -453,24 +550,36 @@ extension DashboardController: CLLocationManagerDelegate{
         let message = String.LocationManagerEnteredRegion_AlertMessage
         ShowAlertMessage(title: title, message: message)
         ShowNotification(title: title, message: message)
+        
     }
+    
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        
         NSLog("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
         locationManager.stopMonitoring(for: region!)
+        
     }
+    
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        
         lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
+        
         // Add region overlay circel
-        if let circularRegion = region as? CLCircularRegion{
+        if let circularRegion = region as? CLCircularRegion {
+            
             NSLog("Started monitoring for Region: \(region.identifier) with radius: \(circularRegion.radius)")
             NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
             let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
             self.MapView.add(circle)
             NSLog("Adding circular Overlay")
+            
         }
+        
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        
         NSLog("locationManager failed with error")
         NSLog(error.localizedDescription)
+        
     }
 }
