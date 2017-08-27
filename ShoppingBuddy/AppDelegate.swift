@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
         GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
         
         //Firebase
-        FirebaseApp.configure()
+        FirebaseApp.configure() 
         Messaging.messaging().shouldEstablishDirectChannel = true
         Messaging.messaging().delegate = self
         

@@ -125,19 +125,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
     }
     
-    func ListItemChanged() {
-        
-        //Sort items and reload TableView
-        SortShoppingListItemsArrayBy_isSelected()
-        ShoppingListDetailTableView.reloadData()
-        
-    }
-    
     func ListItemReceived() {
         
         //Sort items and reload TableView
         SortShoppingListItemsArrayBy_isSelected()
-        ShoppingListDetailTableView.reloadData()
         
     }
     
@@ -166,6 +157,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     func ShoppingBuddyListDataReceived() {
         
         ShoppingListDetailTableView.reloadData()
+        SortShoppingListItemsArrayBy_isSelected()
         RefreshCardView()
         
     }
@@ -976,16 +968,12 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         if ShoppingListsArray[currentShoppingListIndex].itemsArray.isEmpty {
             
-            ShoppingListDetailTableView.delegate = self
-            ShoppingListDetailTableView.dataSource = self
             ShoppingListDetailTableView.reloadData()
             return
             
         }
         
         ShoppingListsArray[currentShoppingListIndex].itemsArray.sort{ !$0.isSelected! && $1.isSelected! }
-        ShoppingListDetailTableView.delegate = self
-        ShoppingListDetailTableView.dataSource = self
         ShoppingListDetailTableView.reloadData()
         
     }

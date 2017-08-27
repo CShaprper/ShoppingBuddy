@@ -169,19 +169,25 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
     }
     
     func SetNewFcmToken(token:String){
-        guard let uid = Auth.auth().currentUser?.uid else{
+        guard let uid = Auth.auth().currentUser?.uid else {
             return
         }
+        
         self.ShowActivityIndicator()
+        
         ref.child("users").child(uid).child("fcmToken").setValue(token) { (error, dbRef) in
-            if error != nil{
+            
+            if error != nil {
+                
                 NSLog(error!.localizedDescription)
                 self.HideActivityIndicator()
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             }
+            
             NSLog("Refreshed User fcmToken")
         }
     }

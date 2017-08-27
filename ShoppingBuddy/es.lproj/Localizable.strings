@@ -73,5 +73,8 @@ lbl_ShoppingCardOpenItems_Label = "Open items:";
 lbl_ShareListTitle = "Share lista";
 txt_ShareOpponentEmailPlaceholder = "friends email";
 
+    //Share List Message
+ShareListMessage = " quiere agregar sus listas de compras con usted.";
+
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";

@@ -75,6 +75,9 @@ extension String{
     static let lbl_ShareListTitle = NSLocalizedString("lbl_ShareListTitle", comment: "")
     static let txt_ShareOpponentEmailPlaceholder = NSLocalizedString("txt_ShareOpponentEmailPlaceholder", comment: "")
     
+    //Share List Message
+    static let ShareListMessage = NSLocalizedString("ShareListMessage", comment: "")
+    
     //Firebase Error Messages
     static let OnlineFetchRequestError = NSLocalizedString("OnlineFetchRequestError", comment: "")
 }

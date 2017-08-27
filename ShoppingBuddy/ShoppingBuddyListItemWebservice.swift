@@ -31,14 +31,6 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
             NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemSaved in ShoppingListItem")
         }
     } 
-    func ListItemChanged() {
-        self.HideActivityIndicator()
-        if shoppingListItemWebServiceDelegate != nil {
-            shoppingListItemWebServiceDelegate?.ListItemChanged!()
-        } else {
-            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemChanged in ShoppingListItem")
-        }
-    }
     func ListItemReceived() {
         self.HideActivityIndicator()
         if shoppingListItemWebServiceDelegate != nil {
@@ -81,7 +73,6 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
         self.ShowActivityIndicator()
         
         listItemRef.child(listItem.listID!).child(listItem.id!).child("isSelected").setValue(listItem.isSelected!)
-        self.ObserveListItem(listItem: listItem)
         
     }
     
@@ -108,7 +99,7 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
             
             var newListItem = listItem
             newListItem.id = itemRef.key            
-            self.ObserveListItem(listItem: newListItem)
+            //self.ObserveListItem(listItem: newListItem)
             
         }
     }
