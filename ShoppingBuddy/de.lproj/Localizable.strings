@@ -68,10 +68,11 @@ lbl_ShoppingCardOpenItems_Label = "Offen:";
 
     //ShareListPopUp
 lbl_ShareListTitle = "Liste mit Freund teilen";
-txt_ShareOpponentEmailPlaceholder = "E-mail des Freundes";
+txt_ShareOpponentEmailPlaceholder = "E-Mail des Freundes";
 
     //Share List Message
-ShareListMessage = " wants to share shopping lists with you.";
+ShareListMessage = "möchte eine Shopping Liste mit Dir teilen.";
+ShareListTitle = "Einladung von";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";

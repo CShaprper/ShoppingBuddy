@@ -4,34 +4,35 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase); 
 
 //register to onWrite event of my node news
-exports.sendShoppingListInvitationNotification = functions.database.ref('/invites/{id}/').onWrite(event => {
+exports.sendShoppingListInvitationNotification = functions.database.ref('/invites/{id}').onWrite(event => {
     //get the snapshot of the written data
-    const snapshot = event.data;  
-
-    if (!event.data.exists()){
-        return;
-    }
-    if (event.data.previous.exists()){
-        return;
-    }
+    const snapshot = event.data;
 
         //get snapshot values
-        console.log(snapshot.key);
+        console.log(snapshot);
+    
     const receiptToken = snapshot.child('receiptFcmToken').val();
     const senderName = snapshot.child('senderNickname').val();
     const inviteMessage = snapshot.child('inviteMessage').val();
-    const senderImage = snapshot.child('senderProfileImageURL').val();
-    
+    const inviteTitle = snapshot.child('inviteTitle').val();
+    const senderImage = snapshot.child('senderProfileImageURL').val(); 
+    const senderUid = snapshot.child('senderID').val();      
+    const listUid = snapshot.child('listID').val();       
+    const listName = snapshot.child('listName').val();  
  
     //create Notification
     const payload = {
         notification: {
             title: `Invitation from ${senderName}`,
-            body:  `${inviteMessage}`,
-            icon: `${senderImage}`,
+            body:  `${inviteMessage}`, 
             badge: '1',
             sound: 'default',
-        }
+            senderImg : `${senderImage}`,
+            senderNick : `${senderName}`,
+            senderID: `${senderUid}`,
+            listID: `${listUid}`, 
+            listname: `${listName}`, 
+        } 
     };               
     
     //send a notification to firends token   

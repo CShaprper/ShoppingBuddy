@@ -77,6 +77,7 @@ extension String{
     
     //Share List Message
     static let ShareListMessage = NSLocalizedString("ShareListMessage", comment: "")
+    static let ShareListTitle = NSLocalizedString("ShareListTitle", comment: "")
     
     //Firebase Error Messages
     static let OnlineFetchRequestError = NSLocalizedString("OnlineFetchRequestError", comment: "")

@@ -75,7 +75,8 @@ lbl_ShareListTitle = "Share liste";
 txt_ShareOpponentEmailPlaceholder = "friends email";
 
     //Share List Message
-ShareListMessage = " voudrait partager ses listes de courses avec vous."; 
+ShareListMessage = "voudrait partager ses listes de courses avec vous.";
+ShareListTitle = "Invitation from";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";

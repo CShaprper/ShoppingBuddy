@@ -109,25 +109,33 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
     
     //MARK User Login
     func LoginFirebaseUser(email: String, password: String) {
+        
         //self.isCalled = false
         self.ShowActivityIndicator()
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+            
             if error != nil{
+                
                 NSLog(error!.localizedDescription)
                 self.HideActivityIndicator()
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             } else {
+                
                 UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 self.HideActivityIndicator()
                 NSLog("Succesfully loged user in to Firebase")
+                
             }
         }
+        
     }
     //MARK: User Loout
     func LogFirebaseUserOut() {
+        
         self.ShowActivityIndicator()
         let auth = Auth.auth()
         do{
@@ -143,6 +151,7 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
             let message = error.localizedDescription
             self.ShowAlertMessage(title: title, message: message)
         }
+        
     }
     
     //MARK:- Firebase Auth Section
@@ -202,24 +211,34 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
             self.UserProfileImageDownloadTask(url: url)
         })
     }
-    private func UserProfileImageDownloadTask(url:URL) -> Void{
+    private func UserProfileImageDownloadTask(url:URL) -> Void {
+        
         self.ShowActivityIndicator()
         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == url.absoluteString }) {
+            
             currentUser.profileImage = ProfileImageCache[index].UserProfileImage!
             self.HideActivityIndicator()
             return
+            
         }
+        
         let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if error != nil{
+            
+            if error != nil {
+                
                 self.HideActivityIndicator()
                 print(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             }
+            
             DispatchQueue.main.async {
-                if let downloadImage = UIImage(data: data!){
+                
+                if let downloadImage = UIImage(data: data!) {
+                    
                     let cachedImage = CacheUserProfileImage()
                     cachedImage.UserProfileImage = downloadImage
                     cachedImage.ProfileImageURL = url.absoluteString
@@ -227,6 +246,7 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
                     currentUser.profileImage = downloadImage
                     self.UserProfileImageDownloadFinished()
                     self.HideActivityIndicator()
+                    
                 }
             }
         }
@@ -234,73 +254,100 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
     }
     
     func ResetUserPassword(email:String){
+        
         Auth.auth().sendPasswordReset(withEmail: email) { (error) in
+            
             if error == nil {
+                
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
                 self.ShowAlertMessage(title: title, message: message)
                 return
+                
             }
+            
             NSLog("Succesfully sent password reset mail")
             return
+            
         }
         
     }
     
     //MARK: - FirebaseWebService methods
     func AddUserStateListener() -> Void {
+        
         Auth.auth().addStateDidChangeListener { (auth, user) in
-            if user != nil{
+            
+            if user != nil {
+                
                 NSLog("State listener detected user loged in")
                 UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 self.ShoppingBuddyUserLoggedIn()
+                
             } else {
+                
                 UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 NSLog("State listener detected user loged out")
                 self.ShoppingBuddyUserLoggedOut()
                 NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
+                
             }
         }
     }
     
     //MARK: - Helpers
-    private func SaveNewUserWithUIDtoFirebase(shoppingBuddyUser:ShoppingBuddyUser, user: User?){
+    private func SaveNewUserWithUIDtoFirebase(shoppingBuddyUser:ShoppingBuddyUser, user: User?) -> Void {
+        
         self.ShowActivityIndicator()
         //Image Upload
         let imagesRef = Storage.storage().reference().child(user!.uid)
         if shoppingBuddyUser.profileImage != nil {
-            if let uploadData = shoppingBuddyUser.profileImage!.mediumQualityJPEGNSData{
+            
+            if let uploadData = shoppingBuddyUser.profileImage!.mediumQualityJPEGNSData {
+                
                 let _ = imagesRef.putData(uploadData as Data, metadata: nil, completion: { (metadata, error) in
-                    if error != nil{
-                        print(error!.localizedDescription)
+                    
+                    if error != nil {
+                        
+                        NSLog(error!.localizedDescription)
                         self.HideActivityIndicator()
                         let title = String.OnlineFetchRequestError
                         let message = error!.localizedDescription
                         self.ShowAlertMessage(title: title, message: message)
                         return
+                        
                     }
+                    
                     DispatchQueue.main.async {
-                        print(metadata ?? "")
-                        if let imgURL =  metadata?.downloadURL()?.absoluteString{
+                        
+                        if let imgURL =  metadata?.downloadURL()?.absoluteString {
+                            
                             let token:String = Messaging.messaging().fcmToken!
                             let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
                             self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
-                                if err != nil{
+                                
+                                if err != nil {
+                                    
                                     self.HideActivityIndicator()
                                     NSLog(err!.localizedDescription)
                                     let title = String.OnlineFetchRequestError
                                     let message = err!.localizedDescription
                                     self.ShowAlertMessage(title: title, message: message)
                                     return
+                                    
                                 } else {
+                                    
                                     self.HideActivityIndicator()
                                     NSLog("Succesfully saved user to Firebase")
+                                    
                                 }
                             })
                         }
+                        
                         NotificationCenter.default.post(name: Notification.Name.ImageUploadFinished, object: nil, userInfo: nil)
                         print("Successfully uploaded prodcut image!")
+                        
                     }//end: Dispatch Queue
                 }) // end: let _ = imagesRef.putData
             }//end: if let let uploadData

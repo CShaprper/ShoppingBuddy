@@ -18,7 +18,7 @@ var CurrentUserProfileImage:UIImage?
 var ProfileImageCache:[CacheUserProfileImage] = []
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate,MessagingDelegate {
     
     var window: UIWindow? 
     
@@ -122,8 +122,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate,MessagingDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        print(userInfo)
-    }
+        guard let senderProfileImageURL =  userInfo["gcm.notification.senderImg"] as? String,
+        let senderID = userInfo["gcm.notification.senderID"] as? String,
+        let senderNickname = userInfo["gcm.notification.senderNick"] as? String,
+            let listID = userInfo["gcm.notification.listID"] as? String,
+            let listName = userInfo["gcm.notification.listname"] as? String else {
+            return
+        }
+        guard let aps = userInfo["aps"] as? NSDictionary else {
+            return
+        }
+        guard let alert = aps["alert"] as? NSDictionary else {
+            return
+        }
+        guard let title = alert["title"] as? String,
+        let body = alert["body"] as? String else {
+            return
+        }
+        print(senderProfileImageURL)
+        print(senderID)
+        print(senderNickname)
+        print(title)
+        print(body)
+        print(listID)
+        print(listName)
+    } 
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

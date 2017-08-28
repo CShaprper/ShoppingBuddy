@@ -100,7 +100,8 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     }
     func ShoppingBuddyUserDataReceived() -> Void {
         // sbListWebservice.ObserveAllList()
-    }
+    } 
+ 
     
     
     

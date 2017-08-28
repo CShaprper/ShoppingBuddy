@@ -127,16 +127,26 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                 let child = childs as! DataSnapshot
                 
                 let inviteRef = self.ref.child("invites").childByAutoId()
-                inviteRef.child("receiptID").setValue(child.key)
-                inviteRef.child("receiptFcmToken").setValue(child.childSnapshot(forPath: "fcmToken").value as! String)
-                inviteRef.child("listName").setValue(list.name!)
-                inviteRef.child("listID").setValue(list.id!)
-                inviteRef.child("senderID").setValue(listOwner.id!)
-                inviteRef.child("senderNickname").setValue(listOwner.nickname!)
-                inviteRef.child("senderProfileImageURL").setValue(listOwner.profileImageURL!)
-                inviteRef.child("inviteMessage").setValue("\(listOwner.nickname!) " + String.ShareListMessage)
-                inviteRef.child("sharingStatus").setValue("pending")
-                
+                let receiptFcmToken = child.childSnapshot(forPath: "fcmToken").value as! String
+                let inviteMessage = "\(listOwner.nickname!) " + String.ShareListMessage
+                let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
+                inviteRef.updateChildValues(["receiptID":child.key, "receiptFcmToken":receiptFcmToken, "senderFcmToken":currentUser.fcmToken!, "senderID":currentUser.id!, "senderNickname":currentUser.nickname!, "senderProfileImageURL":currentUser.profileImageURL!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listName":list.name!, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
+                    
+                    if error != nil {
+                        
+                        NSLog(error!.localizedDescription)
+                        self.HideActivityIndicator()
+                        let title = String.OnlineFetchRequestError
+                        let message = error!.localizedDescription
+                        self.ShowAlertMessage(title: title, message: message)
+                        return
+                        
+                    }
+                    
+                    
+                    
+                })
+                NSLog("Succesfully send invitation for sharing")                
             }
             
             self.HideActivityIndicator()
