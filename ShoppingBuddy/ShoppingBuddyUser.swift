@@ -18,11 +18,13 @@ class ShoppingBuddyUser:NSObject {
     var profileImageURL:String?
     var profileImage:UIImage?
     var shoppingLists:[String]!
+    var invites:[String]!
     var friends:[ShoppingBuddyUser]!
     
     override init() {
         super.init()
         shoppingLists = []
+        invites = []
         friends = []
     }
     

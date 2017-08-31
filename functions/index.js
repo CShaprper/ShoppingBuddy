@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase); 
 
 //register to onWrite event of my node news
-exports.sendShoppingListInvitationNotification = functions.database.ref('/invites/{id}').onWrite(event => {
+exports.sendShoppingListInvitationNotification = functions.database.ref('/invites/{id}').onCreate(event => {
     //get the snapshot of the written data
     const snapshot = event.data;
 
@@ -18,7 +18,11 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/invite
     const senderImage = snapshot.child('senderProfileImageURL').val(); 
     const senderUid = snapshot.child('senderID').val();      
     const listUid = snapshot.child('listID').val();       
-    const listName = snapshot.child('listName').val();  
+    const listName = snapshot.child('listName').val();
+    const receiptUid  = snapshot.child('receiptID').val();    
+
+    const userRef = admin.database().ref('users').child(String(receiptUid)).child('invites').child(String(snapshot.key)).set('pending');
+  
  
     //create Notification
     const payload = {
@@ -32,6 +36,7 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/invite
             senderID: `${senderUid}`,
             listID: `${listUid}`, 
             listname: `${listName}`, 
+            receiptID: `${receiptUid}`, 
         } 
     };               
     
@@ -41,6 +46,34 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/invite
      }).catch((err) => {
         console.log(err);
     });   
+});
+
+exports.updateUserListNodeOnNewListCreation = functions.database.ref('/shoppinglists/{id}').onCreate(event => {
+    const snapshot = event.data;
+
+    const listID = snapshot.key;
+    const listOwnerID = snapshot.child('owneruid').val();
+
+    console.log('Succesfully updated user node with shopping listID');
+
+    return admin.database().ref('users').child(String(listOwnerID)).child('shoppinglists').child(String(listID)).set('owner');
+});
+
+exports.deleteItemsAndReferencesOnShoppingListDelete = functions.database.ref('/shoppinglists/{id}').onDelete(event => {
+    //Get prvious data before detele action
+    const snapshot = event.data.previous;
+
+    console.log(snapshot.data);
+
+    const listID = String(snapshot.key);
+    const listOwnerID = String(snapshot.child('owneruid').val());
+
+    console.log(listID)
+    console.log(listOwnerID)
+
+        admin.database().ref('users').child(listOwnerID).child('shoppinglists').child(listID).set(null).then(() => {
+            return admin.database().ref('listItems').child(String(listID)).set(null);
+        })        
 });
 
 /*

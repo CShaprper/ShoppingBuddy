@@ -20,4 +20,7 @@ extension String{
     
     //ShoppingListDetailsView Cell
     static let ShoppingListItemTableViewCell_Identifier = "ShoppingListItemTableViewCell"
+    
+    //InvatationCell Identifier
+    static let InvitationCell_Identifier = "InvitationCell"
 }

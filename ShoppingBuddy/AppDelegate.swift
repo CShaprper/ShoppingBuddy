@@ -10,10 +10,11 @@ import UIKit
 import Firebase
 import GooglePlaces
 import UserNotifications
-import CoreData
+import FirebaseDatabase
 
 var ShoppingListsArray:[ShoppingList] = [] 
 var currentUser:ShoppingBuddyUser = ShoppingBuddyUser()
+var invitationsArray = [ShoppingBuddyInvitation]()
 var CurrentUserProfileImage:UIImage?
 var ProfileImageCache:[CacheUserProfileImage] = []
 
@@ -27,7 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
         
         //Firebase
-        FirebaseApp.configure() 
+        FirebaseApp.configure()
+        Database.database().isPersistenceEnabled = true
         Messaging.messaging().shouldEstablishDirectChannel = true
         Messaging.messaging().delegate = self
         
@@ -126,7 +128,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let senderID = userInfo["gcm.notification.senderID"] as? String,
         let senderNickname = userInfo["gcm.notification.senderNick"] as? String,
             let listID = userInfo["gcm.notification.listID"] as? String,
-            let listName = userInfo["gcm.notification.listname"] as? String else {
+            let listName = userInfo["gcm.notification.listname"] as? String,
+            let receiptID = userInfo["gcm.notification.receiptID"] as? String else {
             return
         }
         guard let aps = userInfo["aps"] as? NSDictionary else {

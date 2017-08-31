@@ -76,3 +76,6 @@ ShareListTitle = "Einladung von";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";
+
+    //Messages Controller
+MessagesControllerTitle = "Nachrichten";

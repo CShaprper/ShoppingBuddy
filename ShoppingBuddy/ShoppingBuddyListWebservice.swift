@@ -21,7 +21,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     private var ref = Database.database().reference()
     private var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
     private var listRef = Database.database().reference().child("shoppinglists")
-    private var itemsRef = Database.database().reference().child("listItems")
+    private var itemsRef = Database.database().reference().child("listItems")    
+    
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -143,10 +144,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                         
                     }
                     
-                    
-                    
+                    NSLog("Succesfully sent invitation for sharing")
                 })
-                NSLog("Succesfully send invitation for sharing")                
             }
             
             self.HideActivityIndicator()
@@ -184,24 +183,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             }
             
             NSLog("Successfully saved List to Firebase Listname: %@ related Store: %@",listName, relatedStore)
-            self.userRef.child("shoppinglists").updateChildValues([newListRef.key:"owner"], withCompletionBlock: { (error, dbRef) in
-                
-                if error != nil {
-                    
-                    self.HideActivityIndicator()
-                    NSLog(error!.localizedDescription)
-                    let title = String.OnlineFetchRequestError
-                    let message = error!.localizedDescription
-                    self.ShowAlertMessage(title: title, message: message)
-                    return
-                    
-                }
-                
-                NSLog("Successfully Updated ListID in User Node: %@ related Store: %@",listName, relatedStore)
                 self.HideActivityIndicator()
                 self.ShoppingBuddyNewListSaved(listID: newListRef.key)
-                
-            })
         })
     }
     
@@ -436,8 +419,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             }
             
             NSLog("Succesfully deleted Shopping List from Firebase")
-            self.itemsRef.child(listToDelete.id!).removeValue()
-            self.userRef.child("shoppinglists").child(listToDelete.id!).removeValue()
+            //items and reference in user node is deleted on serverside code 
             
             if let index = ShoppingListsArray.index(where: { $0.id == listToDelete.id }) {
                 ShoppingListsArray.remove(at: index)

@@ -81,4 +81,7 @@ extension String{
     
     //Firebase Error Messages
     static let OnlineFetchRequestError = NSLocalizedString("OnlineFetchRequestError", comment: "")
+    
+    //Messages Controller
+    static let MessagesControllerTitle = NSLocalizedString("MessagesControllerTitle", comment: "")
 }

@@ -911,6 +911,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
     }
     
+    func HideBlurrView() -> Void{
+        
+        blurrView?.removeFromSuperview()
+        blurrView = nil
+        
+    }
+    
     func HideListDetailView() -> Void {
         
         ShoppingListDetailView.removeFromSuperview()
@@ -937,13 +944,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         txt_ItemName.text = ""
         AddItemPopUp.removeFromSuperview()
-        
-    }
-    
-    func HideBlurrView() -> Void{
-        
-        blurrView?.removeFromSuperview()
-        blurrView = nil
         
     }
     
@@ -984,7 +984,12 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
     }
     
-    func ConfigureView() -> Void {
+    func ConfigureView() -> Void {        
+        //SetNavigationBar Title
+        navigationItem.title = String.ShoppingListControllerTitle
+        
+        //SetTabBarTitle
+        tabBarItem.title = String.ShoppingListControllerTitle
         
         //SHoppingBuddyListItemWebService
         sbListItemWebservice = ShoppingBuddyListItemWebservice()
@@ -1033,12 +1038,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(HandleShoppingItemPan))
         panRecognizer.delegate = self
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
-        
-        //SetNavigationBar Title
-        navigationItem.title = String.ShoppingListControllerTitle
-        
-        //SetTabBarTitle
-        tabBarItem.title = String.ShoppingListControllerTitle
         
         //Notification Listeners
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);

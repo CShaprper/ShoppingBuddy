@@ -14,11 +14,16 @@ import FirebaseMessaging
 import FirebaseStorage
 
 class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlertMessageDelegate, IActivityAnimationService, URLSessionDelegate {
-    private var ref = Database.database().reference()
-    private var userRef = Database.database().reference().child("users")
     var activityAnimationServiceDelegate:IActivityAnimationService?
     var alertMessageDelegate: IAlertMessageDelegate?
-    var shoppingBuddyUserWebserviceDelegate:IShoppingBuddyUserWebservice?
+    var shoppingBuddyUserWebserviceDelegate:IShoppingBuddyUserWebservice?    
+    
+    private var ref = Database.database().reference()
+    private var userRef = Database.database().reference().child("users")
+    
+    override init() {
+        super.init()        
+    }
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
@@ -85,14 +90,26 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
             currentUser.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
             currentUser.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
             currentUser.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
-   
-            for lists in snapshot.childSnapshot(forPath: "shoppinglists").children{
+            
+            for lists in snapshot.childSnapshot(forPath: "shoppinglists").children {
+                
                 let list = lists as! DataSnapshot
                 if let index = currentUser.shoppingLists.index(where: { $0 == list.key }){
                     currentUser.shoppingLists.remove(at: index)
                 }
                 currentUser.shoppingLists.append(list.key)
-            }            
+                
+            }
+            
+            for invitations in snapshot.childSnapshot(forPath: "invites").children {
+                
+                let invite = invitations as! DataSnapshot
+                if let index = currentUser.invites.index(where: { $0 == invite.key }){
+                    currentUser.shoppingLists.remove(at: index)
+                }
+                currentUser.invites.append(invite.key)
+                
+            }
             
             self.ShoppingBuddyUserDataReceived()
             
@@ -201,7 +218,7 @@ class ShoppingBuddyUserWebservice:NSObject, IShoppingBuddyUserWebservice, IAlert
         }
     }
     
-    func DownloadUserProfileImage(){
+    func DownloadUserProfileImage() -> Void {
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }

@@ -31,11 +31,14 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     internal var mapSpan:Double!
     internal var userLocation:CLLocationCoordinate2D?
     private var sbUserWebservice:ShoppingBuddyUserWebservice!
+    private var sbMessagesWebService:ShoppingBuddyMessageWebservice!
     var sbListWebservice:ShoppingBuddyListWebservice!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sbMessagesWebService = ShoppingBuddyMessageWebservice()
         ConfigureView()
     }
     override func didReceiveMemoryWarning() {
@@ -79,7 +82,6 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         
     }
     
-    
     //MARK: - IFirebaseUserWebservice Implementation
     func ShoppingBuddyUserLoggedOut()  -> Void {
         
@@ -98,8 +100,8 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         UserProfileImage.image = currentUser.profileImage!
         
     }
-    func ShoppingBuddyUserDataReceived() -> Void {
-        // sbListWebservice.ObserveAllList()
+    func ShoppingBuddyUserDataReceived() -> Void { 
+        sbMessagesWebService.ObserveInvitations()
     } 
  
     

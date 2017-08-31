@@ -10,7 +10,6 @@ import Foundation
 import FirebaseCore
 import FirebaseAuth
 import FirebaseDatabase
-import FirebaseMessaging
 import FirebaseStorage
 
 class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertMessageDelegate, IActivityAnimationService {
@@ -21,6 +20,7 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
     private var ref = Database.database().reference()
     private var userRef = Database.database().reference().child("users")
     private var listItemRef = Database.database().reference().child("listItems")
+    
     
     //MARK: - IShoppingBuddyListItemWebService
     func ListItemSaved() {

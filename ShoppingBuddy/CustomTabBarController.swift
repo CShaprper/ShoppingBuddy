@@ -20,6 +20,8 @@ class CustomTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(RefreshMessagesBadgeValue), name: Notification.Name.RefreshMessagesBadgeValue, object: nil)
+        
         self.delegate = mydelegate  
         
         let shadow = NSShadow()
@@ -32,7 +34,8 @@ class CustomTabBarController: UITabBarController {
         
         tabBar.items?[0].title = String.DashboardControllerTitle
         tabBar.items?[1].title = String.ShoppingListControllerTitle
-        tabBar.items?[2].title = String.SettingsControllerTitle
+        tabBar.items?[2].title = String.MessagesControllerTitle
+        tabBar.items?[3].title = String.SettingsControllerTitle
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -50,6 +53,10 @@ class CustomTabBarController: UITabBarController {
         super.viewDidAppear(animated)
     }
     
+    func RefreshMessagesBadgeValue(notification: Notification) -> Void {
+        tabBar.items?[2].badgeValue = String(invitationsArray.count)
+    }
+    
     //MARK: - TabBar
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         switch item.title! {
@@ -62,6 +69,10 @@ class CustomTabBarController: UITabBarController {
             item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break
         case String.SettingsControllerTitle:
+            tabBar.tintColor = UIColor.ColorPaletteTintColor()
+            item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
+            break
+        case String.MessagesControllerTitle:
             tabBar.tintColor = UIColor.ColorPaletteTintColor()
             item.setTitleTextAttributes([NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor()], for: .selected)
             break

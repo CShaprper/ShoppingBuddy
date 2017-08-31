@@ -13,4 +13,5 @@ public extension Notification.Name{
     static let SegueToDashboardController = Notification.Name("SegueToDashboardController")
     static let ImageUploadFinished = Notification.Name("ImageUploadFinished")
     static let PerformLocalShopSearch = Notification.Name("PerformLocalShopSearch")
+    static let RefreshMessagesBadgeValue = Notification.Name("RefreshMessagesBadgeValue")
 }

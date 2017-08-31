@@ -10,6 +10,10 @@
 		91935E9AC1DADD7A09CEB2FD /* Pods_ShoppingBuddyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E0F6DE9308C21D8F1AFA053 /* Pods_ShoppingBuddyTests.framework */; };
 		CF0161CD1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */; };
 		CF0161CF1F489BEF00369DFC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */; };
+		CF033B541F57214700684963 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B531F57214700684963 /* MessagesController.swift */; };
+		CF033B581F57322000684963 /* ShoppingBuddyInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B571F57322000684963 /* ShoppingBuddyInvitation.swift */; };
+		CF033B5A1F57334800684963 /* IShoppingBuddyMessageWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B591F57334800684963 /* IShoppingBuddyMessageWebservice.swift */; };
+		CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF16344E1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
@@ -44,6 +48,7 @@
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
+		CFD48DE91F586C5E000B403A /* ShoppingBuddyInvitationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */; };
 		CFE330AB1F29E77A00190993 /* ControlTargetTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */; };
 		CFE330AD1F29E86200190993 /* FakeAlertMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
@@ -111,6 +116,10 @@
 		C311ECDB5A403F720F0B0183 /* Pods-ShoppingBuddyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddyTests/Pods-ShoppingBuddyTests.release.xcconfig"; sourceTree = "<group>"; };
 		CF0161CC1F48421E00369DFC /* AsyncUIImageDownloaderExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AsyncUIImageDownloaderExtension.swift; sourceTree = "<group>"; };
 		CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		CF033B531F57214700684963 /* MessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
+		CF033B571F57322000684963 /* ShoppingBuddyInvitation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyInvitation.swift; sourceTree = "<group>"; };
+		CF033B591F57334800684963 /* IShoppingBuddyMessageWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IShoppingBuddyMessageWebservice.swift; sourceTree = "<group>"; };
+		CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessageWebService.swift; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListItemWebservice.swift; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
@@ -150,6 +159,7 @@
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE531F3289400032AA9F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyInvitationCell.swift; sourceTree = "<group>"; };
 		CFE330AA1F29E77A00190993 /* ControlTargetTester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlTargetTester.swift; sourceTree = "<group>"; };
 		CFE330AC1F29E86200190993 /* FakeAlertMocks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAlertMocks.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -280,6 +290,7 @@
 			children = (
 				CFB137181F2B40800076476D /* ShoppingListCollectionViewCell.swift */,
 				CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */,
+				CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */,
 			);
 			name = TableViewCell;
 			sourceTree = "<group>";
@@ -374,6 +385,7 @@
 				CFE9AB201F262DBE00D0825B /* DashboardController.swift */,
 				CFAD850F1F27AAB500F207E5 /* SettingsController.swift */,
 				CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */,
+				CF033B531F57214700684963 /* MessagesController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -391,6 +403,9 @@
 				CF5F43951F474AB600B9D1B9 /* IShoppingListItemWebService.swift */,
 				CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */,
 				CF3806961F2E2AAA005B3E15 /* ShoppingListItem.swift */,
+				CF033B591F57334800684963 /* IShoppingBuddyMessageWebservice.swift */,
+				CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */,
+				CF033B571F57322000684963 /* ShoppingBuddyInvitation.swift */,
 				CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */,
 				CF5F43971F476AA700B9D1B9 /* CacheImage.swift */,
 				CFB2AA611F24B87A00AACB5B /* Helper */,
@@ -773,6 +788,7 @@
 				CFE4A2141F23C9A3002A12C7 /* SegmentedControlValidationService.swift in Sources */,
 				CFE4A2171F23C9B8002A12C7 /* eValidationType.swift in Sources */,
 				CFF8239C1F408040002F369A /* Model.xcdatamodeld in Sources */,
+				CF033B541F57214700684963 /* MessagesController.swift in Sources */,
 				CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */,
 				CFBE245D1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift in Sources */,
 				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */,
@@ -788,14 +804,18 @@
 				CF9A7FCC1F35303300DB401A /* DesignableUISlider.swift in Sources */,
 				CFF824061F4083D5002F369A /* ListID+CoreDataProperties.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
+				CF033B581F57322000684963 /* ShoppingBuddyInvitation.swift in Sources */,
 				CF5F43941F47215300B9D1B9 /* IActivityAnimationService.swift in Sources */,
+				CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */,
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,
 				CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */,
 				CF5F43981F476AA700B9D1B9 /* CacheImage.swift in Sources */,
+				CF033B5A1F57334800684963 /* IShoppingBuddyMessageWebservice.swift in Sources */,
 				CFBE245B1F4F291600373CCB /* IShoppingBuddyUserWebService.swift in Sources */,
 				CFB635A41F3A2F6E00D8C592 /* ShoppingBuddyUser.swift in Sources */,
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
+				CFD48DE91F586C5E000B403A /* ShoppingBuddyInvitationCell.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
 				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,
