@@ -123,7 +123,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                 let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
                 let inviteMessage = "\(listOwner.nickname!) " + String.ShareListMessage
                 
-                inviteRef.updateChildValues(["receiptID":receipt.key, "receiptFcmToken":receiptFcmToken, "receiptNickname":receiptNickname, "receiptProfileImageURL":receiptProfileImageURL, "senderFcmToken":listOwner.fcmToken!, "senderID":currentUser!.id!, "senderNickname":currentUser!.nickname!, "senderProfileImageURL":currentUser!.profileImageURL!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listName":list.name!, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
+                inviteRef.updateChildValues(["receiptID":receipt.key, "receiptFcmToken":receiptFcmToken, "receiptNickname":receiptNickname, "receiptProfileImageURL":receiptProfileImageURL, "senderFcmToken":Messaging.messaging().fcmToken!, "senderID":currentUser!.id!, "senderNickname":currentUser!.nickname!, "senderProfileImageURL":currentUser!.profileImageURL!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listName":list.name!, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
                     
                     if error != nil {
                         

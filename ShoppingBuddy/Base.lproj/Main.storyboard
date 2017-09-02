@@ -935,6 +935,8 @@
                         <outlet property="CustomRefreshControlImage" destination="mfh-9S-gHV" id="NPc-pW-PLY"/>
                         <outlet property="CustomRefreshView" destination="IKT-J4-K9c" id="qu7-aC-CxR"/>
                         <outlet property="DetailTableViewBottomConstraint" destination="fW1-L4-TTW" id="Jr6-ez-peD"/>
+                        <outlet property="InvitationNotification" destination="94b-eK-FgA" id="FPj-4l-CuJ"/>
+                        <outlet property="InviteUserImage" destination="WKE-1g-y9l" id="Zaj-mx-7Rm"/>
                         <outlet property="ListDetailBackgroundImage" destination="AHA-rO-YAN" id="HTF-19-JJF"/>
                         <outlet property="ShareListPopUp" destination="KsF-71-lyn" id="zGm-vW-IlA"/>
                         <outlet property="ShoppingCard2StoreImage" destination="8fD-Ta-Hon" id="99A-wt-eSF"/>
@@ -961,6 +963,8 @@
                         <outlet property="btn_ShoppingCardShareList" destination="1sy-bZ-94j" id="9nE-lj-CRT"/>
                         <outlet property="lbl_AddItemPopUpTitle" destination="GCd-nj-6iB" id="5Cv-L2-ayW"/>
                         <outlet property="lbl_AddListPopUpTitle" destination="Ot9-4g-1ti" id="ZFo-yl-U1f"/>
+                        <outlet property="lbl_InviteMessage" destination="MSc-vI-frv" id="tVz-Mp-VdG"/>
+                        <outlet property="lbl_InviteTitle" destination="aew-6o-zk7" id="xt5-yr-4Mm"/>
                         <outlet property="lbl_ShareOpponentTitle" destination="BRH-fZ-2gC" id="C9x-SV-aFy"/>
                         <outlet property="lbl_ShoppingCard2OpenItems" destination="nfb-5Q-tGv" id="oDY-wN-qSN"/>
                         <outlet property="lbl_ShoppingCard2OpenItemsLabel" destination="es7-yS-ahI" id="C3m-Jt-jrw"/>
@@ -986,6 +990,45 @@
                     <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </activityIndicatorView>
+                <view contentMode="scaleToFill" id="94b-eK-FgA">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WKE-1g-y9l">
+                            <rect key="frame" x="10" y="15" width="70" height="70"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="70" id="CX9-1Q-sxi"/>
+                                <constraint firstAttribute="height" constant="70" id="KOv-QJ-7Jf"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" alpha="0.94999998807907104" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="x9H-6d-ETQ">
+                            <rect key="frame" x="88" y="15" width="222" height="70"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aew-6o-zk7">
+                                    <rect key="frame" x="0.0" y="0.0" width="222" height="25"/>
+                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="248" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="MSc-vI-frv">
+                                    <rect key="frame" x="0.0" y="25" width="222" height="45"/>
+                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="18"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="x9H-6d-ETQ" firstAttribute="leading" secondItem="WKE-1g-y9l" secondAttribute="trailing" constant="8" id="6jZ-1h-9Zb"/>
+                        <constraint firstItem="x9H-6d-ETQ" firstAttribute="height" secondItem="WKE-1g-y9l" secondAttribute="height" id="8et-tz-RS1"/>
+                        <constraint firstAttribute="trailing" secondItem="x9H-6d-ETQ" secondAttribute="trailing" constant="10" id="Wlf-Wi-EcC"/>
+                        <constraint firstItem="x9H-6d-ETQ" firstAttribute="centerY" secondItem="WKE-1g-y9l" secondAttribute="centerY" id="ajL-CY-ipS"/>
+                        <constraint firstItem="WKE-1g-y9l" firstAttribute="centerY" secondItem="94b-eK-FgA" secondAttribute="centerY" id="ehb-6Q-lzA"/>
+                        <constraint firstItem="WKE-1g-y9l" firstAttribute="leading" secondItem="94b-eK-FgA" secondAttribute="leading" constant="10" id="sMN-F0-dfE"/>
+                    </constraints>
+                </view>
                 <panGestureRecognizer minimumNumberOfTouches="1" id="t0n-Ny-kee">
                     <connections>
                         <action selector="ShoppingListCardPan:" destination="7as-8F-Vmr" id="sfY-pF-vfm"/>

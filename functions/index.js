@@ -10,18 +10,6 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/users/
 
         //get snapshot values
         console.log(snapshot);  
-
-    console.log("inviteTitle", snapshot.inviteTitle);
-    console.log("inviteMessage", snapshot.inviteMessage);
-    console.log("inviteKey", String(event.data.key));
-    console.log("senderProfileImageURL", snapshot.senderProfileImageURL);
-    console.log("senderNickname", snapshot.senderNickname);
-    console.log("senderID", snapshot.senderID);
-    console.log("listID", snapshot.listID); 
-    console.log("listName", snapshot.listName);
-    console.log("receiptID", snapshot.receiptID);
-    console.log("receiptFcmToken", snapshot.receiptFcmToken);
-    console.log("senderFcmToken", snapshot.senderFcmToken);
     
     //create Notification
     const payload = {
@@ -37,8 +25,10 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/users/
             listID: snapshot.listID, 
             listname: snapshot.listName, 
             receiptID: snapshot.receiptID, 
+            receiptImg : snapshot.receiptProfileImageURL,
+            receiptNick: snapshot.receiptNickname, 
             receiptToken: snapshot.receiptFcmToken, 
-            senderFcmToken: snapshot.senderFcmToken, 
+            senderToken: snapshot.senderFcmToken, 
             notificationType: 'SharingInvitation',
         } 
     };               
@@ -46,6 +36,7 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/users/
     //send a notification to firends token   
     return admin.messaging().sendToDevice(snapshot.receiptFcmToken, payload).then(response => { 
          console.log("Successfully sent message:", response);
+         console.log(response.results[0].error);
      }).catch((err) => { 
         console.log("Error sendung Push", err);
     });   

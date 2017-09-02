@@ -19,7 +19,7 @@ class PushNotificationHelper {
             return
             
         case .SharingInvitation:
-            sendSharingInvitatonNotification(userInfo: userInfo)
+            sendSharingInvitationNotification(userInfo: userInfo)
             break
         }
         
@@ -43,7 +43,7 @@ class PushNotificationHelper {
         
     }
     
-    private func sendSharingInvitatonNotification(userInfo: [AnyHashable : Any]) -> Void {
+    private func sendSharingInvitationNotification(userInfo: [AnyHashable : Any]) -> Void {
  
         NotificationCenter.default.post(name: Notification.Name.SharingInvitationNotification, object: nil, userInfo: userInfo)
         
@@ -52,12 +52,15 @@ class PushNotificationHelper {
     func createChoppingBuddyIntitationObject(userInfo: [AnyHashable : Any]) -> ShoppingBuddyInvitation? {
         
         guard let senderProfileImageURL =  userInfo["gcm.notification.senderImg"] as? String,
+            let receiptProfileImageURL =  userInfo["gcm.notification.receiptImg"] as? String,
             let sbID = userInfo["gcm.notification.sbID"] as? String,
             let senderID = userInfo["gcm.notification.senderID"] as? String,
             let senderNickname = userInfo["gcm.notification.senderNick"] as? String,
             let listID = userInfo["gcm.notification.listID"] as? String,
             let listName = userInfo["gcm.notification.listname"] as? String,
-            let senderFcmToken = userInfo["gcm.notification.senderFcmToken"] as? String,
+            let receiptNickname = userInfo["gcm.notification.receiptNick"] as? String,
+            let receiptFcmToken = userInfo["gcm.notification.receiptToken"] as? String,
+            let senderFcmToken = userInfo["gcm.notification.senderToken"] as? String,
             let receiptID = userInfo["gcm.notification.receiptID"] as? String else { return nil }
         guard let aps = userInfo["aps"] as? NSDictionary else { return nil }
         guard let alert = aps["alert"] as? NSDictionary else { return nil }
@@ -75,6 +78,9 @@ class PushNotificationHelper {
         sbi.senderProfileImageURL = senderProfileImageURL
         sbi.listName = listName
         sbi.receiptID = receiptID
+        sbi.receiptNickname = receiptNickname
+        sbi.receiptFcmToken = receiptFcmToken
+        sbi.receiptProfileImageURL = receiptProfileImageURL
         
         return sbi
     }

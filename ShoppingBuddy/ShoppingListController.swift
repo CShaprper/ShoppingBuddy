@@ -85,7 +85,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var txt_ShareListOpponentEmail: UITextField!
     @IBOutlet var btn_ShareListSave: UIButton!
     
+    //InviatationNotification
+    @IBOutlet var InvitationNotification: UIView!
+    @IBOutlet var lbl_InviteTitle: UILabel!
+    @IBOutlet var lbl_InviteMessage: UILabel!
+    @IBOutlet var InviteUserImage: UIImageView!
+    
+    
     //MARK:- Member
+    var timer:Timer!
     var blurrView:UIVisualEffectView?
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
@@ -996,6 +1004,90 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
+    func HideSharingInvitationNotification() -> Void {
+        UIView.animate(withDuration: 1, animations: {
+            self.InvitationNotification.center.y = -self.InvitationNotification.frame.size.height * 2 - self.topLayoutGuide.length
+        }) { (true) in
+            if self.view.subviews.contains(self.InvitationNotification) {
+                self.InvitationNotification.removeFromSuperview()
+            }
+        }
+    }
+    
+    func ShowSharingInvitationNotification(notification: Notification) -> Void {
+        
+        guard let info = notification.userInfo else { return }
+        let pnh = PushNotificationHelper()
+        guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
+        
+        lbl_InviteTitle.text = invite.inviteTitle!
+        lbl_InviteMessage.text = invite.inviteMessage!
+        
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
+            
+            invite.senderImage = ProfileImageCache[index].UserProfileImage!
+            InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
+            displaySharingInvatationNotification()
+            
+        } else {
+            
+            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
+            
+        }
+        
+    }
+    private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
+        
+        let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            DispatchQueue.main.async {
+                
+                if let downloadImage = UIImage(data: data!) {
+                    
+                    let cachedImage = CacheUserProfileImage()
+                    cachedImage.UserProfileImage = downloadImage
+                    cachedImage.ProfileImageURL = url.absoluteString
+                    ProfileImageCache.append(cachedImage)
+                    self.InviteUserImage.image = cachedImage.UserProfileImage!
+                    self.displaySharingInvatationNotification()
+                    
+                }
+            }
+        }
+        task.resume()
+    }
+    private func displaySharingInvatationNotification() -> Void {        
+        
+        //Invite Notification View
+        InvitationNotification.center.x = view.center.x
+        InvitationNotification.center.y = -InvitationNotification.frame.height
+        InvitationNotification.layer.cornerRadius = 30
+        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
+        InviteUserImage.clipsToBounds = true
+        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        InviteUserImage.layer.borderWidth = 3
+        
+        view.addSubview(InvitationNotification)
+        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
+        UIView.animate(withDuration: 1) {
+            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+        }
+        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
+        
+    }
+    
+    
+    
     func ConfigureView() -> Void {        
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
@@ -1051,6 +1143,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
         
         //Notification Listeners
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
         

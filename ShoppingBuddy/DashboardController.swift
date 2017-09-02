@@ -47,11 +47,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         super.viewDidLoad()
         
         ConfigureView()
-        
-        //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -179,26 +174,17 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
             
             invite.senderImage = ProfileImageCache[index].UserProfileImage!
+            InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
             displaySharingInvatationNotification()
             
         } else {
             
-            UserProfileImageDownloadTask(url: URL(string: invite.senderProfileImageURL!)!)
+            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
             
         }
         
     }
-    private func displaySharingInvatationNotification() -> Void {
-        
-        view.addSubview(InvitationNotification)
-        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
-        UIView.animate(withDuration: 1) { 
-            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
-        }
-        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
-        
-    }
-    private func UserProfileImageDownloadTask(url:URL) -> Void {
+    private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
         
         let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
             
@@ -227,6 +213,26 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             }
         }
         task.resume()
+    }
+    private func displaySharingInvatationNotification() -> Void {
+        
+        
+        //Invite Notification View
+        InvitationNotification.center.x = view.center.x
+        InvitationNotification.center.y = -InvitationNotification.frame.height
+        InvitationNotification.layer.cornerRadius = 30
+        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
+        InviteUserImage.clipsToBounds = true
+        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        InviteUserImage.layer.borderWidth = 3
+        
+        view.addSubview(InvitationNotification)
+        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
+        UIView.animate(withDuration: 1) {
+            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+        }
+        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
+        
     }
 
     
@@ -264,17 +270,15 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         sbListWebservice.ObserveAllList()
         
-        //NotificationObserver SharingInvitation
-        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
         
-        //Invite Notification View
-        InvitationNotification.center.x = view.center.x
-        InvitationNotification.center.y = -InvitationNotification.frame.height
-        InvitationNotification.layer.cornerRadius = 30
-        InviteUserImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
-        InviteUserImage.clipsToBounds = true
-        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        InviteUserImage.layer.borderWidth = 3
+        //Notification Listener
+        NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ImageUploadFinished), name: NSNotification.Name.ImageUploadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
         
         
         MapView.delegate = self
@@ -300,11 +304,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
         logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
-        
-        //Notification Listener
-        NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ImageUploadFinished), name: NSNotification.Name.ImageUploadFinished, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
     }
     func ShowNotification(title:String, message:String) -> Void {
         

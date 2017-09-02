@@ -99,7 +99,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
         Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
-        NSLog("Successfully registered for RemoteNotifications with token") 
+        NSLog("Successfully registered for RemoteNotifications with token")
+        let sbUserWebservice = ShoppingBuddyUserWebservice()
+        sbUserWebservice.SetNewFcmToken(token: tokenString(deviceToken))
     }
     func tokenString(_ deviceToken:Data) -> String{
         //code to make a token string
@@ -115,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let token:String = Messaging.messaging().fcmToken!
         print(token)
         let sbUserWebservice = ShoppingBuddyUserWebservice()
-        sbUserWebservice.SetNewFcmToken(token: token)
+        sbUserWebservice.SetNewFcmToken(token: fcmToken)
     }
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
