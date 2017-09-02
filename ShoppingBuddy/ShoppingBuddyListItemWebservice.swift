@@ -12,33 +12,13 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertMessageDelegate, IActivityAnimationService {
+class ShoppingBuddyListItemWebservice: IAlertMessageDelegate, IActivityAnimationService {
     var alertMessageDelegate: IAlertMessageDelegate?
-    var shoppingListItemWebServiceDelegate: IShoppingBuddyListItemWebService?
     var activityAnimationServiceDelegate: IActivityAnimationService?
     
     private var ref = Database.database().reference()
     private var userRef = Database.database().reference().child("users")
     private var listItemRef = Database.database().reference().child("listItems")
-    
-    
-    //MARK: - IShoppingBuddyListItemWebService
-    func ListItemSaved() {
-        self.HideActivityIndicator()
-        if shoppingListItemWebServiceDelegate != nil {
-            shoppingListItemWebServiceDelegate?.ListItemSaved!()
-        } else {
-            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemSaved in ShoppingListItem")
-        }
-    } 
-    func ListItemReceived() {
-        self.HideActivityIndicator()
-        if shoppingListItemWebServiceDelegate != nil {
-            shoppingListItemWebServiceDelegate!.ListItemReceived!()
-        } else {
-            NSLog("shoppingListItemWebServiceDelegate not set from calling class. ListItemReceived in ShoppingListItem")
-        }
-    }
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
@@ -94,12 +74,11 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
                 
             }
             
-            self.ListItemSaved()
+            NotificationCenter.default.post(name: Notification.Name.ListItemSaved, object: nil, userInfo: nil)
             NSLog("Succesfully saved ShoppingListItem to Firebase")
             
             var newListItem = listItem
-            newListItem.id = itemRef.key            
-            //self.ObserveListItem(listItem: newListItem)
+            newListItem.id = itemRef.key
             
         }
     }
@@ -125,12 +104,12 @@ class ShoppingBuddyListItemWebservice: IShoppingBuddyListItemWebService, IAlertM
                     ShoppingListsArray[listIndex].itemsArray[itemIndex].isSelected = newlistItem.isSelected
                     ShoppingListsArray[listIndex].itemsArray[itemIndex].itemName = newlistItem.itemName
                     ShoppingListsArray[listIndex].itemsArray[itemIndex].sortNumber = newlistItem.sortNumber
-                    self.ListItemReceived()
+                    NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
                     
                 } else {
                     
                     ShoppingListsArray[listIndex].itemsArray.append(newlistItem)
-                    self.ListItemReceived()
+                    NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
                 }
             }
             

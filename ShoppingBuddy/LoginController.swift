@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IShoppingBuddyUserWebservice, IActivityAnimationService {
+class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognizerDelegate, IValidationService, IActivityAnimationService {
     //MARK: - Outlets
     @IBOutlet var BackgroundView: DesignableUIView!
     //Segmented Control
@@ -45,6 +45,11 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         super.viewDidLoad()
         //Configure View Elements
         ConfigureViewElements()
+        
+        //Notification Listeners
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -232,7 +237,6 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.alertMessageDelegate = self
-        sbUserWebservice.shoppingBuddyUserWebserviceDelegate = self
         
         view.tintColor = UIColor.ColorPaletteSecondDarkest()
         
@@ -303,10 +307,6 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         ButtonContainer.layer.cornerRadius = 25
         ButtonContainer.layer.borderColor = view.tintColor.cgColor
         ButtonContainer.layer.borderWidth = 1
-        
-        //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
     }
 }
 //Image Compression

@@ -79,9 +79,17 @@ extension String{
     static let ShareListMessage = NSLocalizedString("ShareListMessage", comment: "")
     static let ShareListTitle = NSLocalizedString("ShareListTitle", comment: "")
     
+    //Delete List Message
+    static let ShoppingListDeleteAlertTitle = NSLocalizedString("ShoppingListDeleteAlertTitle", comment: "")
+    static let ShoppingListDeleteAlertMessage = NSLocalizedString("ShoppingListDeleteAlertMessage", comment: "")
+    
     //Firebase Error Messages
     static let OnlineFetchRequestError = NSLocalizedString("OnlineFetchRequestError", comment: "")
     
     //Messages Controller
     static let MessagesControllerTitle = NSLocalizedString("MessagesControllerTitle", comment: "")
+    
+    //Messages TableView EditActions
+    static let AcceptInvitation = NSLocalizedString("AcceptInvitation", comment: "")
+    static let DeclineInvitation = NSLocalizedString("DeclineInvitation", comment: "")
 }

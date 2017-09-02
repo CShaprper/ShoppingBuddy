@@ -26,6 +26,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
+        HideActivityIndicator()
         if alertMessageDelegate != nil {
             DispatchQueue.main.async {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
@@ -52,25 +53,12 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     }
     
     //MARK: - IShoppingBuddyListWebService implementation
-    func ShoppingBuddyListDataReceived() {
-        self.HideActivityIndicator()
-        if shoppingBuddyListWebServiceDelegate != nil{
-            DispatchQueue.main.async {
-                self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyListDataReceived!()
-            }
-        } else {
-            NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyListDataReceived() in ShoppingList")
-        }
-    }
     func ShoppingBuddyStoreReceived(store: String) {
-        
         self.HideActivityIndicator()
         if shoppingBuddyListWebServiceDelegate != nil {
-            
             DispatchQueue.main.async {
                 self.shoppingBuddyListWebServiceDelegate!.ShoppingBuddyStoreReceived!(store: store)
             }
-            
         } else {
             NSLog("shoppingBuddyListWebServiceDelegate not set from calling class. ShoppingBuddyStoresCollectionReceived() in ShoppingList")
         }
@@ -125,18 +113,21 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             
             for childs in snapshot.children {
                 
-                let child = childs as! DataSnapshot
+                let receipt = childs as! DataSnapshot
                 
-                let inviteRef = self.ref.child("invites").childByAutoId()
-                let receiptFcmToken = child.childSnapshot(forPath: "fcmToken").value as! String
-                let inviteMessage = "\(listOwner.nickname!) " + String.ShareListMessage
+                //Write invitation Data to receipt ref
+                let inviteRef = self.ref.child("users").child(receipt.key).child("invites").childByAutoId()
+                let receiptFcmToken = receipt.childSnapshot(forPath: "fcmToken").value as! String
+                let receiptProfileImageURL = receipt.childSnapshot(forPath: "profileImageURL").value as! String
+                let receiptNickname = receipt.childSnapshot(forPath: "nickname").value as! String
                 let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
-                inviteRef.updateChildValues(["receiptID":child.key, "receiptFcmToken":receiptFcmToken, "senderFcmToken":currentUser.fcmToken!, "senderID":currentUser.id!, "senderNickname":currentUser.nickname!, "senderProfileImageURL":currentUser.profileImageURL!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listName":list.name!, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
+                let inviteMessage = "\(listOwner.nickname!) " + String.ShareListMessage
+                
+                inviteRef.updateChildValues(["receiptID":receipt.key, "receiptFcmToken":receiptFcmToken, "receiptNickname":receiptNickname, "receiptProfileImageURL":receiptProfileImageURL, "senderFcmToken":listOwner.fcmToken!, "senderID":currentUser!.id!, "senderNickname":currentUser!.nickname!, "senderProfileImageURL":currentUser!.profileImageURL!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listName":list.name!, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
                     
                     if error != nil {
                         
                         NSLog(error!.localizedDescription)
-                        self.HideActivityIndicator()
                         let title = String.OnlineFetchRequestError
                         let message = error!.localizedDescription
                         self.ShowAlertMessage(title: title, message: message)
@@ -154,7 +145,6 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         }) { (error) in
             
             NSLog(error.localizedDescription)
-            self.HideActivityIndicator()
             let title = String.OnlineFetchRequestError
             let message = error.localizedDescription
             self.ShowAlertMessage(title: title, message: message)
@@ -169,11 +159,10 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         
         self.ShowActivityIndicator()
         let newListRef = listRef.childByAutoId()
-        newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":currentUser.id!], withCompletionBlock: { (error, dbRef) in
+        newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":currentUser.id!, "ownerImageURL":currentUser.profileImageURL!], withCompletionBlock: { (error, dbRef) in
             
             if error != nil {
                 
-                self.HideActivityIndicator()
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
@@ -183,7 +172,6 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             }
             
             NSLog("Successfully saved List to Firebase Listname: %@ related Store: %@",listName, relatedStore)
-                self.HideActivityIndicator()
                 self.ShoppingBuddyNewListSaved(listID: newListRef.key)
         })
     }
@@ -194,14 +182,14 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
     func ObserveAllList() -> Void{
         
         self.ShowActivityIndicator()
-        if currentUser.shoppingLists.isEmpty {
+        if currentUser!.shoppingLists.isEmpty {
             
             self.HideActivityIndicator()
             return
             
         }
         
-        for listID in currentUser.shoppingLists {
+        for listID in currentUser!.shoppingLists {
             
             ObserveSingleList(listID: listID)
         }
@@ -227,6 +215,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             newList.name = snapshot.childSnapshot(forPath: "listName").value as? String
             newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
             newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
+            newList.ownerImageURL = snapshot.childSnapshot(forPath: "ownerImageURL").value as? String
             
             self.itemsRef.child(listID).observe(.value, with: { (itemSnap) in
                 
@@ -255,7 +244,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                     
                 }
                 
-                self.ShoppingBuddyListDataReceived()
+                self.HideActivityIndicator()
+                NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                 
             })
             
@@ -287,6 +277,7 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
             newList.id = snapshot.key
             newList.name = snapshot.childSnapshot(forPath: "listName").value as? String
             newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
+            newList.ownerImageURL = snapshot.childSnapshot(forPath: "ownerImageURL").value as? String
             newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
             
             self.itemsRef.child(listID).observe(.value, with: { (itemSnap) in
@@ -316,7 +307,8 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                     
                 }
                 
-                self.ShoppingBuddyListDataReceived()
+                self.HideActivityIndicator()
+                NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                 
             })
             

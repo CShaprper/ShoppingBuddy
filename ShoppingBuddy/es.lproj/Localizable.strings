@@ -70,15 +70,21 @@ lbl_ShoppingCardTotalItems_Label = "Total items:";
 lbl_ShoppingCardOpenItems_Label = "Open items:";
 
     //ShareListPopUp
-lbl_ShareListTitle = "Share lista";
-txt_ShareOpponentEmailPlaceholder = "friends email";
+lbl_ShareListTitle = "Agregar la lista";
+txt_ShareOpponentEmailPlaceholder = "Correo electrónico de sus amigos";
 
     //Share List Message
 ShareListMessage = "quiere agregar sus listas de compras con usted.";
 ShareListTitle = "Invitation from";
+
+    //Delete List Message
+ShoppingListDeleteAlertTitle = "Eliminar la lista de compras ?";
+ShoppingListDeleteAlertMessage = "Este va a eliminar la lista asÌ como todos sus elementos.";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";
 
     //Messages Controller
 MessagesControllerTitle = "Messages";
+AcceptInvitation = "Aceptar";
+DeclineInvitation = "Rechazar";

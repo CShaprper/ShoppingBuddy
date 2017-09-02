@@ -18,7 +18,7 @@ class ShoppingBuddyUser:NSObject {
     var profileImageURL:String?
     var profileImage:UIImage?
     var shoppingLists:[String]!
-    var invites:[String]!
+    var invites:[ShoppingBuddyInvitation]!
     var friends:[ShoppingBuddyUser]!
     
     override init() {

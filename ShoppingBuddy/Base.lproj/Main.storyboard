@@ -534,43 +534,53 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="93" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JAH-VP-7kQ">
-                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
+                                <rect key="frame" x="10" y="74" width="300" height="357"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InvitationCell" rowHeight="93" id="1u0-oB-Q3y" customClass="ShoppingBuddyInvitationCell" customModule="ShoppingBuddy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="320" height="93"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InvitationCell" id="1u0-oB-Q3y" customClass="ShoppingBuddyInvitationCell" customModule="ShoppingBuddy" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="300" height="93"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1u0-oB-Q3y" id="rFN-AE-dBs">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="92.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="300" height="92.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7GJ-Xq-eQQ">
-                                                    <rect key="frame" x="8" y="8" width="70" height="70"/>
+                                                    <rect key="frame" x="8" y="11.5" width="70" height="70"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="70" id="IzZ-Fg-RtM"/>
-                                                        <constraint firstAttribute="width" constant="70" id="MUb-zR-TO4"/>
+                                                        <constraint firstAttribute="width" constant="70" id="b9k-38-b7a"/>
+                                                        <constraint firstAttribute="height" constant="70" id="yDW-Zz-gba"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Invitation Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hfA-1g-8ca">
-                                                    <rect key="frame" x="86" y="8" width="226" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Invitation Message: You are invited to list xyz" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KJo-jL-C5w">
-                                                    <rect key="frame" x="86" y="29" width="226" height="49"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="16"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="NFD-dR-3ds">
+                                                    <rect key="frame" x="86" y="11.5" width="206" height="70"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="749" text="Invitation Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="hfA-1g-8ca">
+                                                            <rect key="frame" x="0.0" y="0.0" width="206" height="23"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="23" id="vm0-CF-NtA"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invitation Message: You are invited to list xyz" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="KJo-jL-C5w">
+                                                            <rect key="frame" x="0.0" y="23" width="206" height="47"/>
+                                                            <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </stackView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="7GJ-Xq-eQQ" firstAttribute="leading" secondItem="rFN-AE-dBs" secondAttribute="leadingMargin" id="9dL-XI-yMo"/>
-                                                <constraint firstItem="7GJ-Xq-eQQ" firstAttribute="top" secondItem="rFN-AE-dBs" secondAttribute="topMargin" id="FqK-Dz-lYq"/>
+                                                <constraint firstItem="7GJ-Xq-eQQ" firstAttribute="leading" secondItem="rFN-AE-dBs" secondAttribute="leadingMargin" id="GUX-rP-Hsb"/>
+                                                <constraint firstItem="NFD-dR-3ds" firstAttribute="height" secondItem="7GJ-Xq-eQQ" secondAttribute="height" id="N1E-mN-Cvu"/>
+                                                <constraint firstItem="7GJ-Xq-eQQ" firstAttribute="centerY" secondItem="rFN-AE-dBs" secondAttribute="centerY" id="TaB-Vq-hHD"/>
+                                                <constraint firstAttribute="trailing" secondItem="NFD-dR-3ds" secondAttribute="trailing" constant="8" id="eyt-5i-5lC"/>
+                                                <constraint firstItem="NFD-dR-3ds" firstAttribute="centerY" secondItem="7GJ-Xq-eQQ" secondAttribute="centerY" id="kDc-rW-fZn"/>
+                                                <constraint firstItem="NFD-dR-3ds" firstAttribute="leading" secondItem="7GJ-Xq-eQQ" secondAttribute="trailing" constant="8" id="qlT-EA-veC"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -589,13 +599,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="E1V-8P-vTd" firstAttribute="top" secondItem="JAH-VP-7kQ" secondAttribute="bottom" id="Cfw-QZ-QXt"/>
-                            <constraint firstAttribute="trailing" secondItem="JAH-VP-7kQ" secondAttribute="trailing" id="NIu-ul-922"/>
+                            <constraint firstAttribute="trailing" secondItem="JAH-VP-7kQ" secondAttribute="trailing" constant="10" id="NIu-ul-922"/>
                             <constraint firstItem="q1X-ER-W7a" firstAttribute="top" secondItem="F42-WY-qwb" secondAttribute="bottom" id="asR-pR-dAE"/>
                             <constraint firstAttribute="trailing" secondItem="q1X-ER-W7a" secondAttribute="trailing" id="fzo-0L-bZB"/>
                             <constraint firstItem="q1X-ER-W7a" firstAttribute="leading" secondItem="ZGl-9a-4ET" secondAttribute="leading" id="hIv-M0-Rhn"/>
                             <constraint firstItem="E1V-8P-vTd" firstAttribute="top" secondItem="q1X-ER-W7a" secondAttribute="bottom" id="q6k-4b-dDw"/>
-                            <constraint firstItem="JAH-VP-7kQ" firstAttribute="leading" secondItem="ZGl-9a-4ET" secondAttribute="leading" id="w29-pj-T6O"/>
-                            <constraint firstItem="JAH-VP-7kQ" firstAttribute="top" secondItem="F42-WY-qwb" secondAttribute="bottom" id="zy4-2W-B8m"/>
+                            <constraint firstItem="JAH-VP-7kQ" firstAttribute="leading" secondItem="ZGl-9a-4ET" secondAttribute="leading" constant="10" id="w29-pj-T6O"/>
+                            <constraint firstItem="JAH-VP-7kQ" firstAttribute="top" secondItem="F42-WY-qwb" secondAttribute="bottom" constant="10" id="zy4-2W-B8m"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Messages" id="2iz-vY-YUl"/>
@@ -1521,10 +1531,14 @@
                     <connections>
                         <outlet property="ActivityIndicator" destination="Hza-6T-NDO" id="F5v-WJ-Yvf"/>
                         <outlet property="BackgroundView" destination="hd2-aN-rmQ" id="hdD-tg-a5q"/>
+                        <outlet property="InvitationNotification" destination="zCs-7N-BU4" id="zMn-vd-nKB"/>
+                        <outlet property="InviteUserImage" destination="zZd-8V-Ezo" id="97J-ll-EKM"/>
                         <outlet property="MapView" destination="NUe-re-gZq" id="cJu-A5-SSf"/>
                         <outlet property="UserProfileImage" destination="qWh-Ig-8Co" id="QFM-n2-5wn"/>
                         <outlet property="lbl_DebugHasUserMovedDistance" destination="grE-IM-uKc" id="fMM-P0-05D"/>
                         <outlet property="lbl_DebugMonitoredRegions" destination="vwh-eP-wRR" id="dXg-KB-mhQ"/>
+                        <outlet property="lbl_InviteMessage" destination="ldn-Pg-54X" id="Ddv-zD-9Fv"/>
+                        <outlet property="lbl_InviteTitle" destination="Srx-d8-Ca9" id="y5U-HW-z8F"/>
                         <segue destination="5el-h7-Kap" kind="presentation" identifier="SegueToLoginController" id="nv6-pW-Gd9"/>
                     </connections>
                 </viewController>
@@ -1533,6 +1547,45 @@
                     <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </activityIndicatorView>
+                <view contentMode="scaleToFill" id="zCs-7N-BU4">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zZd-8V-Ezo">
+                            <rect key="frame" x="10" y="15" width="70" height="70"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="70" id="0gc-Wz-bWf"/>
+                                <constraint firstAttribute="height" constant="70" id="kF2-MA-5kp"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" alpha="0.94999999999999996" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="3q1-I1-87X">
+                            <rect key="frame" x="88" y="15" width="222" height="70"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Srx-d8-Ca9">
+                                    <rect key="frame" x="0.0" y="0.0" width="222" height="25"/>
+                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="248" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="ldn-Pg-54X">
+                                    <rect key="frame" x="0.0" y="25" width="222" height="45"/>
+                                    <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="18"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="3q1-I1-87X" firstAttribute="centerY" secondItem="zZd-8V-Ezo" secondAttribute="centerY" id="F5p-hx-wkB"/>
+                        <constraint firstAttribute="trailing" secondItem="3q1-I1-87X" secondAttribute="trailing" constant="10" id="Mhw-3V-ayp"/>
+                        <constraint firstItem="3q1-I1-87X" firstAttribute="height" secondItem="zZd-8V-Ezo" secondAttribute="height" id="Ske-nX-Pw1"/>
+                        <constraint firstItem="zZd-8V-Ezo" firstAttribute="centerY" secondItem="zCs-7N-BU4" secondAttribute="centerY" id="Vph-fP-XJw"/>
+                        <constraint firstItem="3q1-I1-87X" firstAttribute="leading" secondItem="zZd-8V-Ezo" secondAttribute="trailing" constant="8" id="hVL-4A-Mr4"/>
+                        <constraint firstItem="zZd-8V-Ezo" firstAttribute="leading" secondItem="zCs-7N-BU4" secondAttribute="leading" constant="10" id="tlj-cz-0TS"/>
+                    </constraints>
+                </view>
             </objects>
             <point key="canvasLocation" x="3303.75" y="-605"/>
         </scene>

@@ -74,8 +74,14 @@ txt_ShareOpponentEmailPlaceholder = "E-Mail des Freundes";
 ShareListMessage = "möchte eine Shopping Liste mit Dir teilen.";
 ShareListTitle = "Einladung von";
 
+    //Delete List Message
+ShoppingListDeleteAlertTitle = "Liste Löschen?";
+ShoppingListDeleteAlertMessage = "Beim Löschen der Liste werden alle Listenelemente ebenfalls gelöscht.";
+
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";
 
     //Messages Controller
 MessagesControllerTitle = "Nachrichten";
+AcceptInvitation = "Annehmen";
+DeclineInvitation = "Ablehnen";

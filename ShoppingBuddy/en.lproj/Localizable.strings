@@ -75,8 +75,14 @@ txt_ShareOpponentEmailPlaceholder = "friends email";
 ShareListMessage = "want's to share a shopping list with you.";
 ShareListTitle = "Invitation from";
 
+    //Delete List Message
+ShoppingListDeleteAlertTitle = "Delete shopping list?";
+ShoppingListDeleteAlertMessage = "This will delete the shopping list and all of its items.";
+
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";
 
     //Messages Controller
 MessagesControllerTitle = "Messages";
+AcceptInvitation = "accept";
+DeclineInvitation = "decline";

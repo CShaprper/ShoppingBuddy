@@ -15,7 +15,7 @@ class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAl
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
     private var blurrView:UIVisualEffectView!
-    private var sbMessageWebservice:ShoppingBuddyMessageWebservice!
+    internal var sbMessageWebservice:ShoppingBuddyMessageWebservice!
     
     
     //MARK: - ViewController Lifecycle
@@ -29,20 +29,21 @@ class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAl
         //SetTabBarTitle
         tabBarItem.title = String.MessagesControllerTitle
         
+        //NotificationListener
+        NotificationCenter.default.addObserver(self, selector: #selector(ReloadInvitesTableView), name: NSNotification.Name.ReloadInvitesTableView, object: nil)
+        
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
         sbMessageWebservice.shoppingMessageWebServiceDelegate = self
         sbMessageWebservice.activityAnimationServiceDelegate = self
         sbMessageWebservice.alertMessageDelegate = self
     }
-    
     override func viewWillAppear(_ animated: Bool) {
-        
-        sbMessageWebservice.ObserveInvitations()
-        
+        super.viewWillAppear(animated)
+        refreshProfileImagesFromCache()
     }
     
-        //MARK: - IAlertMessageDelegate
+    //MARK: - IAlertMessageDelegate
     func ShowAlertMessage(title: String, message: String) {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -54,111 +55,119 @@ class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAl
     //MARK: - IActivityAnimationService
     func ShowActivityIndicator() {
         
-        if ShowBlurrView() {            
-            
-            ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
-            ActivityIndicator.center = view.center
-            ActivityIndicator.color = UIColor.green
-            ActivityIndicator.startAnimating()
-            view.addSubview(ActivityIndicator)
-            
-        }
+        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
+        ActivityIndicator.center = view.center
+        ActivityIndicator.color = UIColor.green
+        ActivityIndicator.startAnimating()
+        view.addSubview(ActivityIndicator)
+        view.bringSubview(toFront:ActivityIndicator)
         
     }
     
     func HideActivityIndicator() {
         
-        HideBlurrView()
         if view.subviews.contains(ActivityIndicator) {
             ActivityIndicator.removeFromSuperview()
         }
         
     }
     
-    //MARK: - IShoppingBuddyMessageWebservice
-    func ShoppingBuddyInvitationReceived(invitation: ShoppingBuddyInvitation) {
+    //MARK: - IShoppingBuddyMessageWebservice    
+    func ShoppingBuddyUserImageReceived() {
         
-        sbMessageWebservice.DownloadInvitationsProfileImages(invitation: invitation)
-        self.tabBarController?.tabBar.items?[2].badgeValue = String(invitationsArray.count)
+        refreshProfileImagesFromCache()
         
     }
     
-    func ShoppingBuddyUserImageReceived() {
+    private func refreshProfileImagesFromCache() -> Void {
         
-        for invite in invitationsArray {
-            sbMessageWebservice.DownloadInvitationsProfileImages(invitation: invite)
+        for invite in currentUser!.invites {
+            if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL! }) {
+                invite.senderImage = ProfileImageCache[index].UserProfileImage!
+            }
         }
         InvitationsTableView.reloadData()
         
     }
     
-    //MARK: - Helpers
-    func ShowBlurrView() -> Bool{
-        
-        if blurrView == nil {
-            
-            blurrView = UIVisualEffectView()
-            blurrView!.effect = UIBlurEffect(style: .light)
-            blurrView!.bounds = view.bounds
-            blurrView!.center = view.center
-            view.addSubview(blurrView!)
-            return true
-            
-        }
-        
-        return false
-        
+    //MARK: - Notification listener selectors
+    func ReloadInvitesTableView(notification: Notification) -> Void {
+        refreshProfileImagesFromCache()
+        InvitationsTableView.reloadData()
     }
-    
-    func HideBlurrView() -> Void{
-        
-        blurrView?.removeFromSuperview()
-        blurrView = nil
-        
-    }
-    
 }
 
 extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
-        return invitationsArray.count
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return currentUser!.invites.count
+
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String.InvitationCell_Identifier, for: indexPath) as! ShoppingBuddyInvitationCell
         
-        let invite = invitationsArray[indexPath.row]
+        let invite = currentUser!.invites[indexPath.row]
         
-         cell.ConfigureCell(invitation: invite)
+        cell.ConfigureCell(invitation: invite)
         
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
+    }
     
-    /*
-     // conditional editing of the table view.
-     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }
-     */
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let accept = UITableViewRowAction(style: .normal, title: String.AcceptInvitation) { (action, index) in
+            
+            self.sbMessageWebservice.AcceptInvitation(invitation: currentUser!.invites[indexPath.row])
+            tableView.setEditing(false, animated: true)
+            
+            //tableView.deleteRows(at: [indexPath], with: .fade)
+            
+        }
+        accept.backgroundColor = UIColor.green
+        
+        let decline = UITableViewRowAction(style: .destructive, title: String.DeclineInvitation) { (action, index) in
+            
+            tableView.setEditing(false, animated: true)
+            
+            //tableView.deleteRows(at: [indexPath], with: .fade)
+            
+        }
+        
+        return [accept, decline]
+    }
     
-    /*
-     // editing the table view.
-     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-     if editingStyle == .delete {
-     // Delete the row from the data source
-     tableView.deleteRows(at: [indexPath], with: .fade)
-     } else if editingStyle == .insert {
-     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-     }
-     }
-     */
+    
+    // conditional editing of the table view.
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        // Return false if you do not want the specified item to be editable.
+        return true
+    }
+    
+    
+    
+    // editing the table view.
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        print(indexPath.row) 
+        /*
+         if editingStyle == .delete {
+         
+         // Delete the row from the data source
+         tableView.deleteRows(at: [indexPath], with: .fade)
+         
+         } else if editingStyle == .insert {
+         
+         }*/
+    }
+    
     
     /*
      // rearranging the table view.

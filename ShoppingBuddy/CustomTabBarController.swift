@@ -54,7 +54,7 @@ class CustomTabBarController: UITabBarController {
     }
     
     func RefreshMessagesBadgeValue(notification: Notification) -> Void {
-        tabBar.items?[2].badgeValue = String(invitationsArray.count)
+        tabBar.items?[2].badgeValue = String(currentUser!.invites.count)
     }
     
     //MARK: - TabBar

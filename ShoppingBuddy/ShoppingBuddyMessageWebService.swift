@@ -19,7 +19,6 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
     var activityAnimationServiceDelegate: IActivityAnimationService?
     
     private var ref = Database.database().reference()
-    private var inviteRef = Database.database().reference().child("invites")
     private var userRef = Database.database().reference().child("users")
     
     
@@ -51,18 +50,7 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
         }
     }
     
-    //MARK: IShoppingBuddyMessageWebservice implementation
-    func ShoppingBuddyInvitationReceived(invitation: ShoppingBuddyInvitation) {
-        self.HideActivityIndicator()
-        if shoppingMessageWebServiceDelegate != nil {
-            DispatchQueue.main.async {
-                self.shoppingMessageWebServiceDelegate!.ShoppingBuddyInvitationReceived!(invitation: invitation)
-            }
-        } else {
-            NSLog("shoppingMessageWebServiceDelegate not set from calling class in ShoppingBuddyMessageWebservice")
-        }
-    }
-    
+    //MARK: IShoppingBuddyMessageWebservice implementation    
     func ShoppingBuddyUserImageReceived() {
         self.HideActivityIndicator()
         if shoppingMessageWebServiceDelegate != nil {
@@ -72,51 +60,25 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
         } else {
             NSLog("shoppingMessageWebServiceDelegate not set from calling class in ShoppingBuddyUserImageReceived")
         }
+    } 
+    
+    func AcceptInvitation(invitation: ShoppingBuddyInvitation) -> Void {        
+       
+        
     }
     
-    //MARK: - Observe Invitations
-    func ObserveInvitations() -> Void {
-        self.ShowActivityIndicator()
+    //private func set
+    
+    private func buildGroupFromInvitationMembers(invitation: ShoppingBuddyInvitation) -> Void {
         
-        for invite in currentUser.invites {
-            inviteRef.child(invite).observe(.value, with: { (snapshot) in
-                
-                if snapshot.value is NSNull { return }
-                let invitation = ShoppingBuddyInvitation()
-                invitation.id = snapshot.key
-                invitation.invitedListID = snapshot.childSnapshot(forPath: "listID").value as? String
-                invitation.inviteMessage = snapshot.childSnapshot(forPath: "inviteMessage").value as? String
-                invitation.inviteTitle = snapshot.childSnapshot(forPath: "inviteTitle").value as? String
-                invitation.senderFcmToken = snapshot.childSnapshot(forPath: "senderFcmToken").value as? String
-                invitation.senderID = snapshot.childSnapshot(forPath: "senderID").value as? String
-                invitation.senderNickname = snapshot.childSnapshot(forPath: "senderNickname").value as? String
-                invitation.senderProfileImageURL = snapshot.childSnapshot(forPath: "senderProfileImageURL").value as? String
-                
-                if let index = invitationsArray.index(where: { $0.id == invitation.id }) {
-                    invitationsArray.remove(at: index)
-                }
-                
-                invitationsArray.append(invitation)
-                self.HideActivityIndicator()
-                self.ShoppingBuddyInvitationReceived(invitation: invitation)
-                NotificationCenter.default.post(name: Notification.Name.RefreshMessagesBadgeValue, object: nil, userInfo: nil)
-                
-            }, withCancel: { (error) in
-                
-                self.HideActivityIndicator()
-                NSLog(error.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                
-            })
-        }
+        
+        
     }
     
     
     func DownloadInvitationsProfileImages(invitation:ShoppingBuddyInvitation) -> Void {
         
-        let url = URL(string: invitation.senderProfileImageURL!)!
+      let url = URL(string: invitation.senderProfileImageURL!)!
         self.UserProfileImageDownloadTask(url: url)
         
     }
@@ -124,11 +86,11 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
     private func UserProfileImageDownloadTask(url:URL) -> Void {
         
         self.ShowActivityIndicator()
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == url.absoluteString }) {
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL! == url.absoluteString }) {
             
-            if let inviteIndex = invitationsArray.index(where: { $0.senderProfileImageURL! == url.absoluteString }) {
-                invitationsArray[inviteIndex].senderImage = ProfileImageCache[index].UserProfileImage!
-                self.HideActivityIndicator()
+            if let inviteIndex = currentUser!.invites.index(where: { $0.senderProfileImageURL! == url.absoluteString }) {
+                currentUser!.invites[inviteIndex].senderImage = ProfileImageCache[index].UserProfileImage!
+                self.ShoppingBuddyUserImageReceived()
                 return
             }
             
@@ -156,6 +118,7 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
                     cachedImage.ProfileImageURL = url.absoluteString
                     ProfileImageCache.append(cachedImage)
                     self.ShoppingBuddyUserImageReceived()
+                    return
                     
                 }
                 self.HideActivityIndicator()

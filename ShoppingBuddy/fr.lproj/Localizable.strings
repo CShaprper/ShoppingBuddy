@@ -64,22 +64,27 @@ lbl_Abonnement_Monthly = "Abonnement trimestriel";
 lbl_Abonnement_Monthly = "Abonnement annuel";
 lbl_RestorePurchases = "Restaurer les achats";
 
-
     //Shopping Cards
 lbl_ShoppingCardTotalItems_Label = "Total items:";
 lbl_ShoppingCardOpenItems_Label = "Open items:";
 
 
     //ShareListPopUp
-lbl_ShareListTitle = "Share liste";
-txt_ShareOpponentEmailPlaceholder = "friends email";
+lbl_ShareListTitle = "Partager la liste";
+txt_ShareOpponentEmailPlaceholder = "Compartir lista con amigos";
 
     //Share List Message
 ShareListMessage = "voudrait partager ses listes de courses avec vous.";
 ShareListTitle = "Invitation from";
+
+    //Delete List Message
+ShoppingListDeleteAlertTitle = "Supprimer la liste de courses ?";
+ShoppingListDeleteAlertMessage = "Cela supprimera la liste ainsi que tous ses ÈlÈments.";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";
 
     //Messages Controller
 MessagesControllerTitle = "Messages";
+AcceptInvitation = "Accepter";
+DeclineInvitation = "Refuser";

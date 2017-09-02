@@ -10,7 +10,6 @@ import Foundation
 
 @objc protocol IShoppingBuddyMessageWebservice {
     
-    @objc optional func ShoppingBuddyInvitationReceived(invitation: ShoppingBuddyInvitation)
     @objc optional func ShoppingBuddyUserImageReceived()
     
 }

@@ -1,3 +1,4 @@
+
 //
 //  AppDelegate.swift
 //  ShoppingBuddy
@@ -13,8 +14,7 @@ import UserNotifications
 import FirebaseDatabase
 
 var ShoppingListsArray:[ShoppingList] = [] 
-var currentUser:ShoppingBuddyUser = ShoppingBuddyUser()
-var invitationsArray = [ShoppingBuddyInvitation]()
+var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()
 var CurrentUserProfileImage:UIImage?
 var ProfileImageCache:[CacheUserProfileImage] = []
 
@@ -99,8 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
         Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
-        NSLog("Successfully registered for RemoteNotifications with token")
-        print(tokenString(deviceToken))
+        NSLog("Successfully registered for RemoteNotifications with token") 
     }
     func tokenString(_ deviceToken:Data) -> String{
         //code to make a token string
@@ -124,31 +123,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-        guard let senderProfileImageURL =  userInfo["gcm.notification.senderImg"] as? String,
-        let senderID = userInfo["gcm.notification.senderID"] as? String,
-        let senderNickname = userInfo["gcm.notification.senderNick"] as? String,
-            let listID = userInfo["gcm.notification.listID"] as? String,
-            let listName = userInfo["gcm.notification.listname"] as? String,
-            let receiptID = userInfo["gcm.notification.receiptID"] as? String else {
-            return
-        }
-        guard let aps = userInfo["aps"] as? NSDictionary else {
-            return
-        }
-        guard let alert = aps["alert"] as? NSDictionary else {
-            return
-        }
-        guard let title = alert["title"] as? String,
-        let body = alert["body"] as? String else {
-            return
-        }
-        print(senderProfileImageURL)
-        print(senderID)
-        print(senderNickname)
-        print(title)
-        print(body)
-        print(listID)
-        print(listName)
+ 
+        let pnh = PushNotificationHelper()
+        pnh.SendNotificationDependendOnPushNotificationType(userInfo: userInfo)
+       
     } 
     
     func applicationWillResignActive(_ application: UIApplication) {

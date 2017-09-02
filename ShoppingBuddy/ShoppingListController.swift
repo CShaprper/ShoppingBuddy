@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IShoppingBuddyListWebService, IActivityAnimationService {
+class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IShoppingBuddyListWebService, IActivityAnimationService {
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -100,6 +100,11 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
+        
+        //Notification Listeners
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyListDataReceived), name: NSNotification.Name.ShoppingBuddyListDataReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ListItemSaved), name: NSNotification.Name.ListItemSaved, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ListItemReceived), name: NSNotification.Name.ListItemReceived, object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -158,6 +163,13 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         ShoppingListDetailTableView.reloadData()
         SortShoppingListItemsArrayBy_isSelected()
+        for list in ShoppingListsArray {
+            if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == list.ownerImageURL }) {
+                if let listindex = ShoppingListsArray.index(where: { $0.id == list.id }) {
+                    ShoppingListsArray[listindex].ownerImage = ProfileImageCache[index].UserProfileImage!
+                }
+            }
+        }
         RefreshCardView()
         
     }
@@ -171,9 +183,9 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
     
     func ShoppingBuddyNewListSaved(listID:String) {
         
-        //New list saved so lets Observe it
         sbListWebservice.ObserveNewList(listID: listID)
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        
     }
     
     func ShoppingBuddyNewListReceived(listID: String) {
@@ -203,7 +215,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
         if isValid{
-            sbListWebservice.SaveListToFirebaseDatabase(currentUser: currentUser, listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
+            sbListWebservice.SaveListToFirebaseDatabase(currentUser: currentUser!, listName: txt_ListName.text!, relatedStore: txt_RelatedStore.text!)
             HideAddListPopUp()
         }
     }
@@ -261,7 +273,7 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         
         if isValid {
             
-            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: ShoppingListsArray[currentShoppingListIndex], listOwner: currentUser)
+            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: ShoppingListsArray[currentShoppingListIndex], listOwner: currentUser!)
             HideShareListPopUp()
         }
         
@@ -584,10 +596,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
             
         }, completion: { (true) in
             
-            if ShoppingListsArray[self.currentShoppingListIndex].owneruid! == currentUser.id!{
+            if ShoppingListsArray[self.currentShoppingListIndex].owneruid! == currentUser!.id!{
                 
-                let title = "Delete Warning"
-                let message = "You sure to delete the shopping list?"
+                let title = String.ShoppingListDeleteAlertTitle
+                let message = String.ShoppingListDeleteAlertMessage
                 
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) -> Void in
@@ -745,10 +757,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
         
-        if ShoppingListsArray[index].owneruid != nil {
+        if ShoppingListsArray[index].ownerImage != nil {
             
             ShoppingListOwnerImage.alpha = 1
-            ShoppingListOwnerImage.image = currentUser.profileImage
+            ShoppingListOwnerImage.image = ShoppingListsArray[index].ownerImage
             
         } else {
             
@@ -771,10 +783,10 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
         
-        if ShoppingListsArray[index].owneruid != nil {
+        if ShoppingListsArray[index].ownerImage != nil {
             
             ShoppingListCard2OwnerImage.alpha = 1
-            ShoppingListCard2OwnerImage.image = currentUser.profileImage
+            ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].ownerImage
             
         } else {
             
@@ -995,7 +1007,6 @@ class ShoppingListController: UIViewController, IShoppingBuddyListItemWebService
         sbListItemWebservice = ShoppingBuddyListItemWebservice()
         sbListItemWebservice.activityAnimationServiceDelegate  = self
         sbListItemWebservice.alertMessageDelegate = self
-        sbListItemWebservice.shoppingListItemWebServiceDelegate = self
         
         //Firebase Shopping list
         sbListWebservice = ShoppingBuddyListWebservice()

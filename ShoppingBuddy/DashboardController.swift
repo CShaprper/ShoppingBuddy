@@ -14,7 +14,7 @@ import FirebaseAuth
 
 var possibleRegionsPerStore:Int = 4
 
-class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAlertMessageDelegate, IActivityAnimationService{
+class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAnimationService{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MapView: MKMapView!
@@ -22,6 +22,13 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     @IBOutlet var lbl_DebugHasUserMovedDistance: UILabel!
     @IBOutlet var UserProfileImage: UIImageView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
+    //NotificationView
+    @IBOutlet var InvitationNotification: UIView!
+    @IBOutlet var lbl_InviteTitle: UILabel!
+    @IBOutlet var lbl_InviteMessage: UILabel!
+    @IBOutlet var InviteUserImage: UIImageView!
+    
+    
     
     
     //MARK: - Member
@@ -33,13 +40,18 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     private var sbUserWebservice:ShoppingBuddyUserWebservice!
     private var sbMessagesWebService:ShoppingBuddyMessageWebservice!
     var sbListWebservice:ShoppingBuddyListWebservice!
+    var timer:Timer!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sbMessagesWebService = ShoppingBuddyMessageWebservice()
         ConfigureView()
+        
+        //Notification Listeners
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -61,6 +73,10 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if timer != nil { timer.invalidate() }
+    } 
     
     
     
@@ -82,10 +98,12 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         
     }
     
+    
     //MARK: - IFirebaseUserWebservice Implementation
     func ShoppingBuddyUserLoggedOut()  -> Void {
         
         ShoppingListsArray = []
+        currentUser = nil
         CurrentUserProfileImage = nil
         
     }
@@ -97,13 +115,11 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
     func UserProfileImageDownloadFinished()  -> Void {
         
         UserProfileImage.alpha = 1
-        UserProfileImage.image = currentUser.profileImage!
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == currentUser!.profileImageURL }) {
+            UserProfileImage.image = ProfileImageCache[index].UserProfileImage
+        }
         
     }
-    func ShoppingBuddyUserDataReceived() -> Void { 
-        sbMessagesWebService.ObserveInvitations()
-    } 
- 
     
     
     
@@ -141,15 +157,89 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         
     }
     
+    func HideSharingInvitationNotification() -> Void {
+        UIView.animate(withDuration: 1, animations: { 
+            self.InvitationNotification.center.y = -self.InvitationNotification.frame.size.height * 2 - self.topLayoutGuide.length
+        }) { (true) in
+            if self.view.subviews.contains(self.InvitationNotification) {
+                self.InvitationNotification.removeFromSuperview()
+            }
+        }
+    }
+    
+    func ShowSharingInvitationNotification(notification: Notification) -> Void {
+        
+        guard let info = notification.userInfo else { return }
+        let pnh = PushNotificationHelper()
+        guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
+        
+        lbl_InviteTitle.text = invite.inviteTitle!
+        lbl_InviteMessage.text = invite.inviteMessage!
+ 
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
+            
+            invite.senderImage = ProfileImageCache[index].UserProfileImage!
+            displaySharingInvatationNotification()
+            
+        } else {
+            
+            UserProfileImageDownloadTask(url: URL(string: invite.senderProfileImageURL!)!)
+            
+        }
+        
+    }
+    private func displaySharingInvatationNotification() -> Void {
+        
+        view.addSubview(InvitationNotification)
+        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
+        UIView.animate(withDuration: 1) { 
+            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+        }
+        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
+        
+    }
+    private func UserProfileImageDownloadTask(url:URL) -> Void {
+        
+        let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            DispatchQueue.main.async {
+                
+                if let downloadImage = UIImage(data: data!) {
+                    
+                    let cachedImage = CacheUserProfileImage()
+                    cachedImage.UserProfileImage = downloadImage
+                    cachedImage.ProfileImageURL = url.absoluteString
+                    ProfileImageCache.append(cachedImage)
+                    self.InviteUserImage.image = cachedImage.UserProfileImage!
+                    self.displaySharingInvatationNotification()
+                    
+                }
+            }
+        }
+        task.resume()
+    }
+
     
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
         
+        //Shopping Buddy Message Webservice
+        sbMessagesWebService = ShoppingBuddyMessageWebservice()
+        
         //Firebase User
         sbUserWebservice = ShoppingBuddyUserWebservice()
-        sbUserWebservice.alertMessageDelegate = self
-        sbUserWebservice.shoppingBuddyUserWebserviceDelegate = self
+        sbUserWebservice.alertMessageDelegate = self 
         sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.DownloadUserProfileImage()
         sbUserWebservice.GetCurrentUser()
@@ -173,6 +263,18 @@ class DashboardController: UIViewController, IShoppingBuddyUserWebservice, IAler
         sbListWebservice.alertMessageDelegate = self
         sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         sbListWebservice.ObserveAllList()
+        
+        //NotificationObserver SharingInvitation
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
+        
+        //Invite Notification View
+        InvitationNotification.center.x = view.center.x
+        InvitationNotification.center.y = -InvitationNotification.frame.height
+        InvitationNotification.layer.cornerRadius = 30
+        InviteUserImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
+        InviteUserImage.clipsToBounds = true
+        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        InviteUserImage.layer.borderWidth = 3
         
         
         MapView.delegate = self

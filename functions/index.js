@@ -4,47 +4,50 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase); 
 
 //register to onWrite event of my node news
-exports.sendShoppingListInvitationNotification = functions.database.ref('/invites/{id}').onCreate(event => {
+exports.sendShoppingListInvitationNotification = functions.database.ref('/users/{id}/invites/{id2}').onCreate(event => {
     //get the snapshot of the written data
-    const snapshot = event.data;
+    const snapshot = event.data.val();
 
         //get snapshot values
-        console.log(snapshot);
-    
-    const receiptToken = snapshot.child('receiptFcmToken').val();
-    const senderName = snapshot.child('senderNickname').val();
-    const inviteMessage = snapshot.child('inviteMessage').val();
-    const inviteTitle = snapshot.child('inviteTitle').val();
-    const senderImage = snapshot.child('senderProfileImageURL').val(); 
-    const senderUid = snapshot.child('senderID').val();      
-    const listUid = snapshot.child('listID').val();       
-    const listName = snapshot.child('listName').val();
-    const receiptUid  = snapshot.child('receiptID').val();    
+        console.log(snapshot);  
 
-    const userRef = admin.database().ref('users').child(String(receiptUid)).child('invites').child(String(snapshot.key)).set('pending');
-  
- 
+    console.log("inviteTitle", snapshot.inviteTitle);
+    console.log("inviteMessage", snapshot.inviteMessage);
+    console.log("inviteKey", String(event.data.key));
+    console.log("senderProfileImageURL", snapshot.senderProfileImageURL);
+    console.log("senderNickname", snapshot.senderNickname);
+    console.log("senderID", snapshot.senderID);
+    console.log("listID", snapshot.listID); 
+    console.log("listName", snapshot.listName);
+    console.log("receiptID", snapshot.receiptID);
+    console.log("receiptFcmToken", snapshot.receiptFcmToken);
+    console.log("senderFcmToken", snapshot.senderFcmToken);
+    
     //create Notification
     const payload = {
         notification: {
-            title: `Invitation from ${senderName}`,
-            body:  `${inviteMessage}`, 
+            title: snapshot.inviteTitle,
+            body:  snapshot.inviteMessage, 
             badge: '1',
             sound: 'default',
-            senderImg : `${senderImage}`,
-            senderNick : `${senderName}`,
-            senderID: `${senderUid}`,
-            listID: `${listUid}`, 
-            listname: `${listName}`, 
-            receiptID: `${receiptUid}`, 
+            sbID: String(event.data.key),
+            senderImg : snapshot.senderProfileImageURL,
+            senderNick : snapshot.senderNickname,
+            senderID: snapshot.senderID,
+            listID: snapshot.listID, 
+            listname: snapshot.listName, 
+            receiptID: snapshot.receiptID, 
+            receiptToken: snapshot.receiptFcmToken, 
+            senderFcmToken: snapshot.senderFcmToken, 
+            notificationType: 'SharingInvitation',
         } 
     };               
     
     //send a notification to firends token   
-    return admin.messaging().sendToDevice(receiptToken, payload).then(response => { 
+    return admin.messaging().sendToDevice(snapshot.receiptFcmToken, payload).then(response => { 
          console.log("Successfully sent message:", response);
-     }).catch((err) => {
-        console.log(err);
+     }).catch((err) => { 
+        console.log("Error sendung Push", err);
     });   
 });
 
@@ -59,7 +62,7 @@ exports.updateUserListNodeOnNewListCreation = functions.database.ref('/shoppingl
     return admin.database().ref('users').child(String(listOwnerID)).child('shoppinglists').child(String(listID)).set('owner');
 });
 
-exports.deleteItemsAndReferencesOnShoppingListDelete = functions.database.ref('/shoppinglists/{id}').onDelete(event => {
+exports.deleteItemsAndReferencesOnShoppingListDelete = functions.database.ref('/shoppinglists/{id}').onDelete( event => {
     //Get prvious data before detele action
     const snapshot = event.data.previous;
 
@@ -77,15 +80,79 @@ exports.deleteItemsAndReferencesOnShoppingListDelete = functions.database.ref('/
 });
 
 /*
-exports.deleteEmptySpacesItemName = functions.database.ref('/listItems/{id}/{itemID}').onWrite(event => {
+exports.deleteSharingInvitationAndSendPushOnSharingUpdate = functions.database.ref('users/invites/{id}').onUpdate( event => {
+    const snapshot = event.data;
+    console.log(snapshot.data);
 
-      const data = event.data.val();
+    const inviteID = String(snapshot.key); 
+    const inviteValue = String(snapshot.val());
 
-      if(data.sanitized) {
-          return;
+    if (inviteValue == "accepted") {
+        admin.database().ref('invites').child(inviteID).once('value').then(function(snap) {  
+            
+                    const receiptUid  = snapshot.child('receiptID').val(); 
+                    const senderUid = snapshot.child('senderID').val();   
+            
+                   return admin.database().ref('users').child(receiptUid).child('friends').child(senderUid).set('accepted');
+            
+                });
+    }       
+     
+});
+
+function setInvitationSenderAsFriendInReceiptUserNode(inviteID) {
+    admin.database().ref('invites').child(inviteID).once('value').then(function(snap) {  
+
+        const receiptUid  = snapshot.child('receiptID').val(); 
+        const senderUid = snapshot.child('senderID').val();   
+
+       return admin.database().ref('users').child(receiptUid).child('friends').child(senderUid).set('accepted');
+
+    });
+}*/
+
+exports.deleteEmptySpacesOnNewList = functions.database.ref('/shoppinglists/{id}').onWrite( event => {
+    
+          const d = event.data.val();
+    
+           // Exit when the data is deleted.
+           if (!event.data.exists()) {
+            return;
+          }
+    
+          if(d.trimmed) { return }
+    
+          const name = d.listName 
+          const store = d.relatedStore
+
+          d.trimmed = true
+          d.relatedStore = trimString(store)
+          d.listName = trimString(name)   
+            
+         return event.data.ref.set(d)
+    }); 
+ 
+
+exports.deleteEmptySpacesItemName = functions.database.ref('/listItems/{id}/{itemID}').onWrite( event => {
+
+      const itemdata = event.data.val();
+
+       // Exit when the data is deleted.
+       if (!event.data.exists()) {
+        return;
       }
-      const str = data.itemName; 
-        data.itemName = str.trim();   
+
+      if(itemdata.trimmed) { return }
+
+      const str = itemdata.itemName
+      itemdata.trimmed = true
+      itemdata.itemName = trimString(str)   
         
-        return data.ref.push(data);
-});*/
+     return event.data.ref.set(itemdata)
+});
+
+function trimString(str) {
+    var trimmedText = String(str)
+    trimmedText = trimmedText.trim()
+    return trimmedText
+}
