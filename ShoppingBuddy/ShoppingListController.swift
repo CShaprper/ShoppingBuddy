@@ -828,6 +828,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         } else { btn_ShoppingCard2ShareList.alpha = 1 }
         
     }
+    func AddedFriendsListAfterSharingAccept(notification: Notification) -> Void {
+        sbListWebservice.ObserveAllList()
+    }
     
     //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -1146,6 +1149,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(AddedFriendsListAfterSharingAccept), name: NSNotification.Name.AddedFriendsListAfterSharingAccept, object: nil)
         
         //Add Shopping List PopUp
         AddShoppingListPopUp.layer.shadowColor  = UIColor.black.cgColor

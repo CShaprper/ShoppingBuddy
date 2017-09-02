@@ -196,6 +196,9 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
         
     }
     
+    func GetListGroupMembers(listID:String) -> Void {
+        
+    }
     
     func ObserveSingleList(listID:String) -> Void {
         
@@ -233,6 +236,22 @@ class ShoppingBuddyListWebservice: IShoppingBuddyListWebService, IAlertMessageDe
                     
                 }
                 newList.itemsArray = newItems
+                
+                //GroupMembers
+                var groupMembers = [ShoppingBuddyUser]()
+                let m = snapshot.childSnapshot(forPath: "groupMembers")
+                for members in m.children {
+                    
+                    let member = members as! DataSnapshot
+                    let newMember = ShoppingBuddyUser()
+                    newMember.nickname = member.childSnapshot(forPath: "nickname").value as? String
+                    newMember.profileImageURL = member.childSnapshot(forPath: "profileImageURL").value as? String
+                    newMember.status = member.childSnapshot(forPath: "status").value as? String
+                    groupMembers.append(newMember)
+                    
+                }
+                newList.groupMembers = groupMembers
+                
                 
                 if let index = ShoppingListsArray.index(where: { $0.id == listID }){
                     

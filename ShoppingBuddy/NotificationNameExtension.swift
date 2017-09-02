@@ -22,4 +22,5 @@ public extension Notification.Name{
     static let ShoppingBuddyListDataReceived = Notification.Name("ShoppingBuddyListDataReceived")
     static let ListItemSaved = Notification.Name("ListItemSaved")
     static let ListItemReceived = Notification.Name("ListItemReceived")
+    static let AddedFriendsListAfterSharingAccept = Notification.Name("AddedFriendsListAfterSharingAccept")
 }

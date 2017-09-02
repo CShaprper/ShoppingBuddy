@@ -17,15 +17,14 @@ class ShoppingBuddyUser:NSObject {
     var fcmToken:String?
     var profileImageURL:String?
     var profileImage:UIImage?
+    var status:String?
     var shoppingLists:[String]!
     var invites:[ShoppingBuddyInvitation]!
-    var friends:[ShoppingBuddyUser]!
     
     override init() {
         super.init()
         shoppingLists = []
         invites = []
-        friends = []
     }
     
     lazy var uSession:URLSession = {

@@ -20,11 +20,11 @@ struct ShoppingList{
     var ownerImage:UIImage?
     var relatedStore:String?
     var itemsArray:[ShoppingListItem]!
-    var membersArray:[ShoppingBuddyUser]!
+    var groupMembers:[ShoppingBuddyUser]!
     
     init() {
         itemsArray = []
-        membersArray = []
+        groupMembers = []
     }
     
 }

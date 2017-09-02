@@ -31,7 +31,11 @@ exports.sendShoppingListInvitationNotification = functions.database.ref('/users/
             senderToken: snapshot.senderFcmToken, 
             notificationType: 'SharingInvitation',
         } 
-    };               
+    };   
+    
+    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('status').set('owner');
+    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('profileImageURL').set(snapshot.senderProfileImageURL);
+    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('nickname').set(snapshot.senderNickname);
     
     //send a notification to firends token   
     return admin.messaging().sendToDevice(snapshot.receiptFcmToken, payload).then(response => { 

@@ -64,14 +64,52 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
     
     func AcceptInvitation(invitation: ShoppingBuddyInvitation) -> Void {        
        
+        saveListIDToOwnShoppingListNodeAfterAccept(invitation: invitation)
+        saveSelfToListGroupMembers(invitation: invitation)
         
     }
     
-    //private func set
+    private func saveListIDToOwnShoppingListNodeAfterAccept(invitation: ShoppingBuddyInvitation) -> Void {
+        
+        self.ShowActivityIndicator()
+        userRef.child(currentUser!.id!).child("shoppinglists").child(invitation.listID!).setValue("observer") { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            NSLog("Successfully added friends list to user/shoppinglitst node")
+            
+        }
+        
+    }
     
-    private func buildGroupFromInvitationMembers(invitation: ShoppingBuddyInvitation) -> Void {
+    private func saveSelfToListGroupMembers(invitation: ShoppingBuddyInvitation) -> Void {
         
-        
+        self.ShowActivityIndicator()
+        ref.child("shoppinglists").child(invitation.listID!).child("groupMembers").child(currentUser!.id!).updateChildValues(["status":"observer", "profileImageURL":currentUser!.profileImageURL!, "nickname":currentUser!.nickname!], withCompletionBlock: { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NotificationCenter.default.post(name: Notification.Name.AddedFriendsListAfterSharingAccept, object: nil, userInfo: nil)
+            NSLog("Successfully added current user to shoppinglists/{id}/groupMembers node")
+            
+            
+        })
         
     }
     
@@ -100,7 +138,6 @@ class ShoppingBuddyMessageWebservice: IShoppingBuddyMessageWebservice, IAlertMes
             
             if error != nil {
                 
-                self.HideActivityIndicator()
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error!.localizedDescription
