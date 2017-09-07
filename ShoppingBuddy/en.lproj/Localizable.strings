@@ -74,6 +74,8 @@ txt_ShareOpponentEmailPlaceholder = "friends email";
     //Share List Message
 ShareListMessage = "want's to share a shopping list with you.";
 ShareListTitle = "Invitation from";
+ShareListAcceptedTitle = "Sharing accepted";
+ShareListAcceptedMessage = "accepted your sharing invite.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Delete shopping list?";

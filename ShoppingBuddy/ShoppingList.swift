@@ -16,15 +16,13 @@ struct ShoppingList{
     var id:String?
     var owneruid:String?
     var name:String?
-    var ownerImageURL:String?
-    var ownerImage:UIImage?
     var relatedStore:String?
-    var itemsArray:[ShoppingListItem]!
-    var groupMembers:[ShoppingBuddyUser]!
+    var items:[ShoppingListItem]!
+    var members:[String]!
     
     init() {
-        itemsArray = []
-        groupMembers = []
+        items = []
+        members = []
     }
     
 }

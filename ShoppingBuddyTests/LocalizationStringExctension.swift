@@ -78,6 +78,8 @@ extension String{
     //Share List Message
     static let ShareListMessage = NSLocalizedString("ShareListMessage", comment: "")
     static let ShareListTitle = NSLocalizedString("ShareListTitle", comment: "")
+    static let ShareListAcceptedTitle = NSLocalizedString("ShareListAcceptedTitle", comment: "")
+    static let ShareListAcceptedMessage = NSLocalizedString("ShareListAcceptedMessage", comment: "")
     
     //Delete List Message
     static let ShoppingListDeleteAlertTitle = NSLocalizedString("ShoppingListDeleteAlertTitle", comment: "")

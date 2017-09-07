@@ -14,8 +14,6 @@ struct ShoppingListItem {
     var listID:String?
     var itemName:String?
     var isSelected:Bool?
-    var sortNumber:Int?
-    var amount:Int?
-    var price:Double?
+    var sortNumber:Int? 
     
 }

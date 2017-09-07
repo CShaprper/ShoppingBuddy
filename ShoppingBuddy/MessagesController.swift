@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAlertMessageDelegate, IActivityAnimationService {
+class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnimationService {
     //MARK: - Outlets
     @IBOutlet var BackgroundImage: UIImageView!
     @IBOutlet var InvitationsTableView: UITableView!
@@ -30,17 +30,16 @@ class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAl
         tabBarItem.title = String.MessagesControllerTitle
         
         //NotificationListener
-        NotificationCenter.default.addObserver(self, selector: #selector(ReloadInvitesTableView), name: NSNotification.Name.ReloadInvitesTableView, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AllInvitesReceived), name: NSNotification.Name.AllInvitesReceived, object: nil)
         
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
-        sbMessageWebservice.shoppingMessageWebServiceDelegate = self
         sbMessageWebservice.activityAnimationServiceDelegate = self
         sbMessageWebservice.alertMessageDelegate = self
+        sbMessageWebservice.ObserveAllInvites()
     }
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        refreshProfileImagesFromCache()
+        super.viewWillAppear(animated) 
     }
     
     //MARK: - IAlertMessageDelegate
@@ -72,29 +71,12 @@ class MessagesController: UIViewController, IShoppingBuddyMessageWebservice, IAl
         
     }
     
-    //MARK: - IShoppingBuddyMessageWebservice    
-    func ShoppingBuddyUserImageReceived() {
-        
-        refreshProfileImagesFromCache()
-        
-    }
-    
-    private func refreshProfileImagesFromCache() -> Void {
-        
-        for invite in currentUser!.invites {
-            if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL! }) {
-                invite.senderImage = ProfileImageCache[index].UserProfileImage!
-            }
-        }
-        InvitationsTableView.reloadData()
-        
-    }
-    
     //MARK: - Notification listener selectors
-    func ReloadInvitesTableView(notification: Notification) -> Void {
-        refreshProfileImagesFromCache()
-        InvitationsTableView.reloadData()
-    }
+    func AllInvitesReceived(notification: Notification) -> Void {
+        
+         InvitationsTableView.reloadData()
+        
+    } 
 }
 
 extension MessagesController: UITableViewDelegate, UITableViewDataSource{
@@ -104,14 +86,14 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentUser!.invites.count
+        return allInvites.count
 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String.InvitationCell_Identifier, for: indexPath) as! ShoppingBuddyInvitationCell
         
-        let invite = currentUser!.invites[indexPath.row]
+        let invite = allInvites[indexPath.row]
         
         cell.ConfigureCell(invitation: invite)
         
@@ -126,7 +108,7 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
         
         let accept = UITableViewRowAction(style: .normal, title: String.AcceptInvitation) { (action, index) in
             
-            self.sbMessageWebservice.AcceptInvitation(invitation: currentUser!.invites[indexPath.row])
+            self.sbMessageWebservice.AcceptInvitation(invitation: allInvites[indexPath.row])
             tableView.setEditing(false, animated: true)
             
             //tableView.deleteRows(at: [indexPath], with: .fade)

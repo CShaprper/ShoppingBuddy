@@ -13,10 +13,10 @@ import GooglePlaces
 import UserNotifications
 import FirebaseDatabase
 
-var ShoppingListsArray:[ShoppingList] = [] 
-var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()
-var CurrentUserProfileImage:UIImage?
-var ProfileImageCache:[CacheUserProfileImage] = []
+var allShoppingLists:[ShoppingList] = []
+var allUsers:[ShoppingBuddyUser] = []
+var allInvites:[ShoppingBuddyInvitation] = []
+var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()  
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate,MessagingDelegate {
@@ -97,11 +97,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
         Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
         Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
         NSLog("Successfully registered for RemoteNotifications with token")
         let sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.SetNewFcmToken(token: tokenString(deviceToken))
+        
     }
     func tokenString(_ deviceToken:Data) -> String{
         //code to make a token string
@@ -114,8 +116,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
-        let token:String = Messaging.messaging().fcmToken!
-        print(token)
         let sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.SetNewFcmToken(token: fcmToken)
     }

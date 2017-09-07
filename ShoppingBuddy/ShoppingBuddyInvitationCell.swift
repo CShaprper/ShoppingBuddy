@@ -28,7 +28,16 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
         SenderProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         SenderProfileImage.clipsToBounds = true
         SenderProfileImage.layer.borderWidth = 3
-        SenderProfileImage.image = invitation.senderImage != nil ? invitation.senderImage! : #imageLiteral(resourceName: "userPlaceholder")
+        
+        if let index = allUsers.index(where: { $0.id == invitation.senderID }){
+            
+            SenderProfileImage.image = allUsers[index].profileImage
+            
+        } else {
+            
+            SenderProfileImage.image = #imageLiteral(resourceName: "userPlaceholder")   
+            
+        }
         
         lbl_InviteTitle.text = invitation.inviteTitle != nil ? invitation.inviteTitle! : ""
         lbl_IvitationMessage.text = invitation.inviteMessage != nil ? invitation.inviteMessage! : ""

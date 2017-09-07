@@ -60,8 +60,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         if UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue) {
             
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-            sbListWebservice.GetStoresForGeofencing()
-            
         }
         
     }
@@ -71,7 +69,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if timer != nil { timer.invalidate() }
-    } 
+    }
     
     
     
@@ -94,26 +92,29 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     
     
-    //MARK: - IFirebaseUserWebservice Implementation
+    
     func ShoppingBuddyUserLoggedOut()  -> Void {
         
-        ShoppingListsArray = []
+        allShoppingLists = []
+        allUsers = []
+        allInvites = []
         currentUser = nil
-        CurrentUserProfileImage = nil
         
     }
     func ShoppingBuddyUserLoggedIn()  -> Void {
         
-        sbUserWebservice.DownloadUserProfileImage()
+        
         
     }
     func UserProfileImageDownloadFinished()  -> Void {
         
-        UserProfileImage.alpha = 1
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == currentUser!.profileImageURL }) {
-            UserProfileImage.image = ProfileImageCache[index].UserProfileImage
+        if let index = allUsers.index(where: { $0.profileImageURL == currentUser!.profileImageURL }) {
+            
+            UserProfileImage.image = allUsers[index].profileImage
+            UserProfileImage.alpha = 1
+            
         }
-        
+        HideActivityIndicator()
     }
     
     
@@ -134,6 +135,16 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     
     
+    //MARK: - Notificarion listeners
+    func CurrentUserReceived(notification: Notification) -> Void {
+        
+        sbMessagesWebService.ObserveAllInvites()
+        sbUserWebservice.ObserveUsersFriends()
+        sbListWebservice.GetStoresForGeofencing()
+        
+    }
+    
+    
     
     //MARK: - Wired Actions
     func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void {
@@ -146,14 +157,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
         
     }
-    func ImageUploadFinished(sender: Notification) -> Void {
-        
-        sbUserWebservice.DownloadUserProfileImage()
-        
-    }
     
     func HideSharingInvitationNotification() -> Void {
-        UIView.animate(withDuration: 1, animations: { 
+        UIView.animate(withDuration: 1, animations: {
             self.InvitationNotification.center.y = -self.InvitationNotification.frame.size.height * 2 - self.topLayoutGuide.length
         }) { (true) in
             if self.view.subviews.contains(self.InvitationNotification) {
@@ -163,26 +169,26 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     
     func ShowSharingInvitationNotification(notification: Notification) -> Void {
-        
-        guard let info = notification.userInfo else { return }
-        let pnh = PushNotificationHelper()
-        guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
-        
-        lbl_InviteTitle.text = invite.inviteTitle!
-        lbl_InviteMessage.text = invite.inviteMessage!
- 
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
-            
-            invite.senderImage = ProfileImageCache[index].UserProfileImage!
-            InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
-            displaySharingInvatationNotification()
-            
-        } else {
-            
-            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
-            
-        }
-        
+        /*
+         guard let info = notification.userInfo else { return }
+         let pnh = PushNotificationHelper()
+         guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
+         
+         lbl_InviteTitle.text = invite.inviteTitle!
+         lbl_InviteMessage.text = invite.inviteMessage!
+         
+         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
+         
+         invite.senderImage = ProfileImageCache[index].UserProfileImage!
+         InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
+         displaySharingInvatationNotification()
+         
+         } else {
+         
+         ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
+         
+         }
+         */
     }
     private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
         
@@ -202,11 +208,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
                 
                 if let downloadImage = UIImage(data: data!) {
                     
-                    let cachedImage = CacheUserProfileImage()
-                    cachedImage.UserProfileImage = downloadImage
-                    cachedImage.ProfileImageURL = url.absoluteString
-                    ProfileImageCache.append(cachedImage)
-                    self.InviteUserImage.image = cachedImage.UserProfileImage!
+                    //TODO: take a look at runtime
+                    self.InviteUserImage.image = downloadImage
                     self.displaySharingInvatationNotification()
                     
                 }
@@ -234,7 +237,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
         
     }
-
+    
     
     
     //MARK: - Helper Functions
@@ -245,9 +248,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         //Firebase User
         sbUserWebservice = ShoppingBuddyUserWebservice()
-        sbUserWebservice.alertMessageDelegate = self 
+        sbUserWebservice.alertMessageDelegate = self
         sbUserWebservice.activityAnimationServiceDelegate = self
-        sbUserWebservice.DownloadUserProfileImage()
         sbUserWebservice.GetCurrentUser()
         
         //UserProfileImage
@@ -256,7 +258,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         UserProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         UserProfileImage.layer.borderWidth = 3
         UserProfileImage.alpha = 0
-        UserProfileImage.image = CurrentUserProfileImage
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle
@@ -267,18 +268,18 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         //Load all Stores
         sbListWebservice = ShoppingBuddyListWebservice()
         sbListWebservice.alertMessageDelegate = self
-        sbListWebservice.shoppingBuddyListWebServiceDelegate = self
-        sbListWebservice.ObserveAllList()
+        // sbListWebservice.ObserveAllList()
         
         
         //Notification Listener
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CurrentUserReceived), name: NSNotification.Name.CurrentUserReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ImageUploadFinished), name: NSNotification.Name.ImageUploadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyStoreReceived), name: NSNotification.Name.ShoppingBuddyStoreReceived, object: nil)
         
         
         MapView.delegate = self
@@ -308,7 +309,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     func ShowNotification(title:String, message:String) -> Void {
         
         if #available(iOS 10.0, *) {
-    
+            
             let content = UNMutableNotificationContent()
             content.title = title
             content.body = message
@@ -316,7 +317,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             content.sound = .default()
             let request = UNNotificationRequest(identifier: "notification", content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request, withCompletionHandler: { (error) in
-    
+                
                 if error != nil{
                     
                     NSLog(error!.localizedDescription)
@@ -324,7 +325,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
                     let message = error!.localizedDescription
                     self.ShowAlertMessage(title: title, message: message)
                     return
-    
+                    
                 }
                 //toDo:??
             })
@@ -346,7 +347,7 @@ extension DashboardController: UNUserNotificationCenterDelegate{
         
     }
 }
-extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
+extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
         self.userLocation = userLocation.coordinate
@@ -372,33 +373,34 @@ extension DashboardController: MKMapViewDelegate,IShoppingBuddyListWebService{
         }
     }
     //MARK: - IShoppingBuddyListWebService implementation
-    func ShoppingBuddyListDataReceived() {
-    }
-    
-    func ShoppingBuddyStoreReceived(store: String) {
+    func ShoppingBuddyStoreReceived(notification: Notification) {
         
-            let request = MKLocalSearchRequest()
-            request.naturalLanguageQuery = store
-            request.region = self.MapView.region
+        guard let userInfo = notification.userInfo else { return }
+        guard let store = userInfo["store"] as? String else { return }
         
-            let search = MKLocalSearch(request: request)
-            search.start { (response, error) in
+        
+        let request = MKLocalSearchRequest()
+        request.naturalLanguageQuery = store
+        request.region = self.MapView.region
+        
+        let search = MKLocalSearch(request: request)
+        search.start { (response, error) in
+            
+            if error != nil {
                 
-                if error != nil {
-                    
-                    NSLog(error!.localizedDescription)
-                    let title = String.OnlineFetchRequestError
-                    let message = error!.localizedDescription
-                    self.ShowAlertMessage(title: title, message: message)
-                    return
-                    
-                }
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
                 
-                NSLog("Matches found for \(store)") 
-                DispatchQueue.main.async {
-                    self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
-                }
             }
+            
+            NSLog("Matches found for \(store)")
+            DispatchQueue.main.async {
+                self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
+            }
+        }
     }
     //MARK: MKMapViewDelegate Helper
     func PerformLocalShopSearch() -> Void{

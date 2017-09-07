@@ -95,21 +95,22 @@ class ShoppingBuddyListItemWebservice: IAlertMessageDelegate, IActivityAnimation
             newlistItem.sortNumber = snapshot.childSnapshot(forPath: "sortNumber").value as? Int
             newlistItem.itemName = snapshot.childSnapshot(forPath: "itemName").value as? String
             
-            if let listIndex = ShoppingListsArray.index(where: { $0.id == listItem.listID! }) {
+            if let listIndex = allShoppingLists.index(where: { $0.id == listItem.listID! }) {
                 
-                if let itemIndex = ShoppingListsArray[listIndex].itemsArray.index(where: { $0.id == listItem.id! }) {
+                if let itemIndex = allShoppingLists[listIndex].items.index(where: { $0.id == listItem.id! }) {
                     
-                    ShoppingListsArray[listIndex].itemsArray[itemIndex].id = newlistItem.id
-                    ShoppingListsArray[listIndex].itemsArray[itemIndex].listID = newlistItem.listID
-                    ShoppingListsArray[listIndex].itemsArray[itemIndex].isSelected = newlistItem.isSelected
-                    ShoppingListsArray[listIndex].itemsArray[itemIndex].itemName = newlistItem.itemName
-                    ShoppingListsArray[listIndex].itemsArray[itemIndex].sortNumber = newlistItem.sortNumber
+                    allShoppingLists[listIndex].items[itemIndex].id = newlistItem.id
+                    allShoppingLists[listIndex].items[itemIndex].listID = newlistItem.listID
+                    allShoppingLists[listIndex].items[itemIndex].isSelected = newlistItem.isSelected
+                    allShoppingLists[listIndex].items[itemIndex].itemName = newlistItem.itemName
+                    allShoppingLists[listIndex].items[itemIndex].sortNumber = newlistItem.sortNumber
                     NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
                     
                 } else {
                     
-                    ShoppingListsArray[listIndex].itemsArray.append(newlistItem)
+                    allShoppingLists[listIndex].items.append(newlistItem)
                     NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
+                    
                 }
             }
             

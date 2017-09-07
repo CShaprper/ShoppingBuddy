@@ -52,54 +52,21 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
     
     //CurrentUser Download
     func GetCurrentUser(){
+        ShowActivityIndicator()
         userRef.child(Auth.auth().currentUser!.uid).observe(.value, with: { (snapshot) in
-            if snapshot.value is NSNull { return }
+            
+            if snapshot.value is NSNull { self.HideActivityIndicator(); return }
             
             currentUser!.id = snapshot.key
             currentUser!.email = snapshot.childSnapshot(forPath: "email").value as? String
             currentUser!.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
-            currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
             currentUser!.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
+            currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+            currentUser!.userProfileImageFromURL()
             
-            for lists in snapshot.childSnapshot(forPath: "shoppinglists").children {
-                
-                let list = lists as! DataSnapshot
-                if let index = currentUser!.shoppingLists.index(where: { $0 == list.key }){
-                    currentUser!.shoppingLists.remove(at: index)
-                }
-                currentUser!.shoppingLists.append(list.key)
-                NSLog("Succesfully added shoppinglist key \(list.key) to users \(currentUser!.nickname!) shopping lists")
-                
-            }
+            allUsers.append(currentUser!)
             
-            var invites = [ShoppingBuddyInvitation]()
-            for invitations in snapshot.childSnapshot(forPath: "invites").children {
-                
-                let invite = invitations as! DataSnapshot
-                
-                let i = ShoppingBuddyInvitation()
-                i.id = invite.key
-                i.inviteMessage = invite.childSnapshot(forPath: "inviteMessage").value as? String
-                i.inviteTitle = invite.childSnapshot(forPath: "inviteTitle").value as? String
-                i.listID = invite.childSnapshot(forPath: "listID").value as? String
-                i.listName = invite.childSnapshot(forPath: "listName").value as? String
-                i.receiptFcmToken = invite.childSnapshot(forPath: "receiptFcmToken").value as? String
-                i.receiptID = invite.childSnapshot(forPath: "receiptID").value as? String
-                i.receiptNickname = invite.childSnapshot(forPath: "receiptID").value as? String
-                i.receiptProfileImageURL = invite.childSnapshot(forPath: "receiptProfileImageURL").value as? String
-                i.senderFcmToken = invite.childSnapshot(forPath: "senderFcmToken").value as? String
-                i.senderID = invite.childSnapshot(forPath: "senderID").value as? String
-                i.senderNickname = invite.childSnapshot(forPath: "senderNickname").value as? String
-                i.senderProfileImageURL = invite.childSnapshot(forPath: "senderProfileImageURL").value as? String
-                
-                invites.append(i)
-                NSLog("Succesfully added invite \(i.id!) to users \(currentUser!.nickname!) invites")
-                
-                self.UserProfileImageDownloadTask(url: URL(string: i.senderProfileImageURL!)!)
-            }
-            currentUser!.invites = invites
-             
-            NotificationCenter.default.post(name: Notification.Name.ReloadInvitesTableView, object: nil, userInfo: nil)
+            NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
             
         }) { (error) in
             
@@ -110,6 +77,66 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
             
         }
     }
+    
+    
+    func ObserveUsersFriends() -> Void {
+        
+        ShowActivityIndicator()
+        ref.child("users_friends").child(currentUser!.id!).observe(.value, with: { (friendsSnap) in
+            
+            if friendsSnap.value is NSNull { self.HideActivityIndicator(); return }
+            
+  
+            for friendSnap in friendsSnap.children {
+                
+                let friend = friendSnap as! DataSnapshot
+                self.ObserveUser(userID: friend.key)
+                
+            }
+            
+            
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            
+        }
+        
+    }
+    
+    func ObserveUser(userID: String){
+        
+        ShowActivityIndicator()
+        userRef.child(userID).observe(.value, with: { (userSnap) in
+            
+            if userSnap.value is NSNull { self.HideActivityIndicator(); return }
+            
+            let newUser = ShoppingBuddyUser()
+            newUser.id = userSnap.key
+            newUser.email = userSnap.childSnapshot(forPath: "email").value as? String
+            newUser.nickname = userSnap.childSnapshot(forPath: "nickname").value as? String
+            newUser.fcmToken = userSnap.childSnapshot(forPath: "fcmToken").value as? String
+            newUser.profileImageURL = userSnap.childSnapshot(forPath: "profileImageURL").value as? String
+            newUser.userProfileImageFromURL()
+            
+            allUsers.append(newUser)
+            
+            // NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            
+        }
+    }
+    
+    
     
     //MARK User Login
     func LoginFirebaseUser(email: String, password: String) {
@@ -203,56 +230,50 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
         }
     }
     
-    func DownloadUserProfileImage() -> Void {
-        guard let uid = Auth.auth().currentUser?.uid else{
-            return
-        }
-        ref.child("users").child(uid).child("profileImageURL").observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot.value is NSNull { return }
-            let url = URL(string: snapshot.value as! String)!
-            self.UserProfileImageDownloadTask(url: url)
-        })
-    }
-    private func UserProfileImageDownloadTask(url:URL) -> Void {
-        
-        self.ShowActivityIndicator()
-        if let _ = ProfileImageCache.index(where: { $0.ProfileImageURL == url.absoluteString }) {
-            
-            HideActivityIndicator()
-            NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
-            return
-            
-        }
-        
-        let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if error != nil {
-                
-                NSLog(error!.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-                
-            }
-            
-            DispatchQueue.main.async {
-                
-                if let downloadImage = UIImage(data: data!) {
-                    
-                    let cachedImage = CacheUserProfileImage()
-                    cachedImage.UserProfileImage = downloadImage
-                    cachedImage.ProfileImageURL = url.absoluteString
-                    ProfileImageCache.append(cachedImage)
-                    
-                    self.HideActivityIndicator()
-                    NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil) 
-                    
-                }
-            }
-        }
-        task.resume()
-    }
+    /*
+     private func UserProfileImageDownloadTask(url:URL) -> Void {
+     
+     self.ShowActivityIndicator()
+     if let _ = allUsers.index(where: { $0.profileImageURL == url.absoluteString }) {
+     
+     HideActivityIndicator()
+     NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+     return
+     
+     }
+     
+     let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
+     
+     if error != nil {
+     
+     NSLog(error!.localizedDescription)
+     let title = String.OnlineFetchRequestError
+     let message = error!.localizedDescription
+     self.ShowAlertMessage(title: title, message: message)
+     return
+     
+     }
+     
+     DispatchQueue.main.async {
+     
+     if let downloadImage = UIImage(data: data!) {
+     
+     if let index = allUsers.index(where: { $0.profileImageURL == url.absoluteString }) {
+     
+     allUsers[index].profileImage = allUsers[index].profileImage == nil ? downloadImage : nil
+     
+     }
+     
+     self.HideActivityIndicator()
+     
+     
+     NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+     
+     }
+     }
+     }
+     task.resume()
+     }*/
     
     func ResetUserPassword(email:String){
         
@@ -290,7 +311,7 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
                 
                 UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
                 NSLog("State listener detected user loged out")
-    
+                
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedOut, object: nil, userInfo: nil)
                 NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
                 
@@ -329,7 +350,7 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
                             self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                                 
                                 if err != nil {
-                                     
+                                    
                                     NSLog(err!.localizedDescription)
                                     let title = String.OnlineFetchRequestError
                                     let message = err!.localizedDescription
@@ -345,7 +366,6 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
                             })
                         }
                         
-                        NotificationCenter.default.post(name: Notification.Name.ImageUploadFinished, object: nil, userInfo: nil)
                         print("Successfully uploaded prodcut image!")
                         
                     }//end: Dispatch Queue

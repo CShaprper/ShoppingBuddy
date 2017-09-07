@@ -20,7 +20,7 @@ class CustomTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(RefreshMessagesBadgeValue), name: Notification.Name.RefreshMessagesBadgeValue, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(RefreshMessagesBadgeValue), name: Notification.Name.AllInvitesReceived, object: nil)
         
         self.delegate = mydelegate  
         
@@ -54,7 +54,7 @@ class CustomTabBarController: UITabBarController {
     }
     
     func RefreshMessagesBadgeValue(notification: Notification) -> Void {
-        tabBar.items?[2].badgeValue = String(currentUser!.invites.count)
+        tabBar.items?[2].badgeValue = String(allInvites.count)
     }
     
     //MARK: - TabBar

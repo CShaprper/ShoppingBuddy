@@ -8,22 +8,13 @@
 
 import UIKit
 
-class ShoppingBuddyInvitation:NSObject {
+struct ShoppingBuddyInvitation {
     
     var id:String?
     var inviteMessage:String?
     var inviteTitle:String?
     var listID:String?
-    var listName:String?
-    var receiptFcmToken:String?
-    var receiptID:String?
-    var receiptNickname:String?
-    var receiptProfileImageURL:String?
-    var receiptImage:UIImage?
-    var senderFcmToken:String?
     var senderID:String?
-    var senderNickname:String?
-    var senderProfileImageURL:String?
-    var senderImage:UIImage?
+    var receiptID:String?    
     
 }

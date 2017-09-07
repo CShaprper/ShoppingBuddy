@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IShoppingBuddyListWebService, IActivityAnimationService {
+class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IActivityAnimationService {
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -116,7 +116,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if ShoppingListsArray.count == 0 && ShoppingListCard.alpha == 0 {
+        if allShoppingLists.count == 0 && ShoppingListCard.alpha == 0 {
             sbListWebservice.ObserveAllList()
         }
     }
@@ -133,8 +133,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //MARK: - IShoppingBuddyListItemWebService implementation
     func ListItemSaved() {
         
-        lbl_ShoppingCardTotalItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.count)
-        lbl_ShoppingCardOpenItems.text = String(ShoppingListsArray[currentShoppingListIndex].itemsArray.filter({ $0.isSelected! == false }).count)
+        lbl_ShoppingCardTotalItems.text = String(allShoppingLists[currentShoppingListIndex].items.count)
+        lbl_ShoppingCardOpenItems.text = String(allShoppingLists[currentShoppingListIndex].items.filter({ $0.isSelected! == false }).count)
         
     }
     
@@ -171,13 +171,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         ShoppingListDetailTableView.reloadData()
         SortShoppingListItemsArrayBy_isSelected()
-        for list in ShoppingListsArray {
+        /*
+        for list in allShoppingLists {
             if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == list.ownerImageURL }) {
-                if let listindex = ShoppingListsArray.index(where: { $0.id == list.id }) {
-                    ShoppingListsArray[listindex].ownerImage = ProfileImageCache[index].UserProfileImage!
+                if let listindex = allShoppingLists.index(where: { $0.id == list.id }) {
+                    allShoppingLists[listindex].ownerImage = ProfileImageCache[index].UserProfileImage!
                 }
             }
-        }
+        }*/
         RefreshCardView()
         
     }
@@ -191,14 +192,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func ShoppingBuddyNewListSaved(listID:String) {
         
-        sbListWebservice.ObserveNewList(listID: listID)
+        sbListWebservice.ObserveSingleList(listID: listID)
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         
     }
     
     func ShoppingBuddyNewListReceived(listID: String) {
         
-        if let index = ShoppingListsArray.index(where: { $0.id! == listID }) {
+        if let index = allShoppingLists.index(where: { $0.id! == listID }) {
             currentShoppingListIndex = index
         }
         RefreshCardView()
@@ -265,7 +266,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             var newListItem = ShoppingListItem()
             newListItem.itemName = txt_ItemName.text!
-            newListItem.listID = ShoppingListsArray[currentShoppingListIndex].id!
+            newListItem.listID = allShoppingLists[currentShoppingListIndex].id!
             sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem)
             
             HideAddItemPopUp()
@@ -281,7 +282,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if isValid {
             
-            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: ShoppingListsArray[currentShoppingListIndex], listOwner: currentUser!)
+            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: allShoppingLists[currentShoppingListIndex], listOwner: currentUser!)
             HideShareListPopUp()
         }
         
@@ -327,7 +328,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let velocity = panRecognizer.velocity(in: ShoppingListDetailTableView)
                 
                 //Get swiped item isSelected value
-                let isSelected =  ShoppingListsArray[currentShoppingListIndex].itemsArray[self.swipedCellIndex].isSelected
+                let isSelected =  allShoppingLists[currentShoppingListIndex].items[self.swipedCellIndex].isSelected
                 
                 //translation of thumb in view
                 let point = sender.translation(in: ShoppingListDetailTableView)
@@ -376,10 +377,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             
                         }, completion: { (true) in
                             
-                            if ShoppingListsArray[self.currentShoppingListIndex].itemsArray.count > self.swipedCellIndex {
+                            if allShoppingLists[self.currentShoppingListIndex].items.count > self.swipedCellIndex {
                                 
-                                ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex].isSelected = true
-                                self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: ShoppingListsArray[self.currentShoppingListIndex].itemsArray[self.swipedCellIndex])
+                                allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex].isSelected = true
+                                self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex])
                                 
                             }
                             
@@ -403,11 +404,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             
                         }, completion: { (true) in
                             
-                            if let index = ShoppingListsArray.index(where: {$0.id == ShoppingListsArray[self.currentShoppingListIndex].id!}){
+                            if let index = allShoppingLists.index(where: {$0.id == allShoppingLists[self.currentShoppingListIndex].id!}){
                                 
-                                if ShoppingListsArray[index].itemsArray.isEmpty { return }
-                                self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListsArray[index].itemsArray[self.swipedCellIndex])
-                                ShoppingListsArray[index].itemsArray.remove(at: self.swipedCellIndex)
+                                if allShoppingLists[index].items.isEmpty { return }
+                                self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: allShoppingLists[index].items[self.swipedCellIndex])
+                                allShoppingLists[index].items.remove(at: self.swipedCellIndex)
                                 self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
                                 
                             }
@@ -604,7 +605,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }, completion: { (true) in
             
-            if ShoppingListsArray[self.currentShoppingListIndex].owneruid! == currentUser!.id!{
+            if allShoppingLists[self.currentShoppingListIndex].owneruid! == currentUser!.id!{
                 
                 let title = String.ShoppingListDeleteAlertTitle
                 let message = String.ShoppingListDeleteAlertMessage
@@ -612,15 +613,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) -> Void in
                     
-                    self.sbListWebservice.DeleteShoppingListFromFirebase(listToDelete: ShoppingListsArray[self.currentShoppingListIndex])
-                    if let index = ShoppingListsArray.index(where: { $0.id == ShoppingListsArray[self.currentShoppingListIndex].id }) {
+                    self.sbListWebservice.DeleteShoppingListFromFirebase(listToDelete: allShoppingLists[self.currentShoppingListIndex])
+                    if let index = allShoppingLists.index(where: { $0.id == allShoppingLists[self.currentShoppingListIndex].id }) {
                         
-                        ShoppingListsArray.remove(at: index)
+                        allShoppingLists.remove(at: index)
                         self.DecrementCurrentShoppingListIndex()
                         
                     }
                     
-                    if ShoppingListsArray.isEmpty {
+                    if allShoppingLists.isEmpty {
                         
                         self.TrashImage.alpha = 0
                         self.TrashImage.transform = .identity
@@ -674,7 +675,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func RefreshCardView(){
         
-        if ShoppingListsArray.isEmpty {
+        if allShoppingLists.isEmpty {
             
             ShoppingListCard.alpha = 0
             ShoppingListCard2.alpha = 0
@@ -685,7 +686,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListCard.alpha = 1
         ShoppingListCard2.alpha = 1
         
-        if ShoppingListsArray.count == 1{
+        if allShoppingLists.count == 1{
             
             currentShoppingListIndex = 0
             SetCardOneValues(index: 0)
@@ -708,14 +709,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     private func SetNewCardValues() -> Void {
         
-        if ShoppingListsArray.count == 0 { return }
+        if allShoppingLists.count == 0 { return }
         IncrementCurrentShoppingListIndex()
         
-        NSLog("Shopping list array Count \(ShoppingListsArray.count)")
+        NSLog("Shopping list array Count \(allShoppingLists.count)")
         NSLog("Current Shopping List Index \(currentShoppingListIndex)")
-        NSLog("Current List Title \(ShoppingListsArray[currentShoppingListIndex].name!)")
+        NSLog("Current List Title \(allShoppingLists[currentShoppingListIndex].name!)")
         
-        if ShoppingListsArray.count == 1 {
+        if allShoppingLists.count == 1 {
             
             SetCardOneValues(index: 0)
             SetCardTwoValues(index: 0)
@@ -739,42 +740,37 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     private func IncrementCurrentShoppingListIndex() -> Void {
         
-        currentShoppingListIndex = currentShoppingListIndex >= ShoppingListsArray.count - 1 ?  0 : currentShoppingListIndex + 1
+        currentShoppingListIndex = currentShoppingListIndex >= allShoppingLists.count - 1 ?  0 : currentShoppingListIndex + 1
         
     }
     
     private func DecrementCurrentShoppingListIndex() -> Void {
         
-        currentShoppingListIndex = currentShoppingListIndex == 0 ? ShoppingListsArray.count : currentShoppingListIndex - 1
+        currentShoppingListIndex = currentShoppingListIndex == 0 ? allShoppingLists.count : currentShoppingListIndex - 1
         
     }
     
     private func determineLowerCardIndex(currentUpperListIndex:Int) -> Int {
         
-        let lowerCardIndex = currentUpperListIndex == ShoppingListsArray.count - 1 ? 1 : currentUpperListIndex + 1
+        let lowerCardIndex = currentUpperListIndex == allShoppingLists.count - 1 ? 1 : currentUpperListIndex + 1
         return lowerCardIndex
         
     }
     
     private func SetCardOneValues(index: Int) -> Void{
         
-        lbl_ShoppingListCardTitle.text = ShoppingListsArray[index].name!
-        lbl_ShoppingCardStoreName.text = ShoppingListsArray[index].relatedStore!
+        lbl_ShoppingListCardTitle.text = allShoppingLists[index].name!
+        lbl_ShoppingCardStoreName.text = allShoppingLists[index].relatedStore!
         lbl_ShoppingCardTotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-        lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
+        lbl_ShoppingCardTotalItems.text = "\(allShoppingLists[index].items.count)"
         lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-        lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
+        lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[index].items))"
         
-        if ShoppingListsArray[index].ownerImage != nil {
+        
+        if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
             
             ShoppingListOwnerImage.alpha = 1
-            ShoppingListOwnerImage.image = ShoppingListsArray[index].ownerImage
-            
-        } else {
-            
-            //TODO: Overwork
-            ShoppingListOwnerImage.alpha = 0
-            // ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            ShoppingListOwnerImage.image = allUsers[userIndex].profileImage
             
         }
         
@@ -784,23 +780,17 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     private func SetCardTwoValues(index: Int) -> Void{
         
-        lbl_ShoppingListCard2Title.text = ShoppingListsArray[index].name!
-        lbl_ShoppingCard2StoreName.text = ShoppingListsArray[index].relatedStore!
+        lbl_ShoppingListCard2Title.text = allShoppingLists[index].name!
+        lbl_ShoppingCard2StoreName.text = allShoppingLists[index].relatedStore!
         lbl_ShoppingCard2TotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-        lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[index].itemsArray.count)"
+        lbl_ShoppingCard2TotalItems.text = "\(allShoppingLists[index].items.count)"
         lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-        lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[index].itemsArray))"
+        lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[index].items))"
         
-        if ShoppingListsArray[index].ownerImage != nil {
+        if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
             
             ShoppingListCard2OwnerImage.alpha = 1
-            ShoppingListCard2OwnerImage.image = ShoppingListsArray[index].ownerImage
-            
-        } else {
-            
-            //TODO: Overwork
-            ShoppingListCard2OwnerImage.alpha = 0
-            // ShoppingListsArray[index].owner!.userProfileImageFromURL()
+            ShoppingListCard2OwnerImage.image = allUsers[userIndex].profileImage
             
         }
         
@@ -810,7 +800,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {
         
         //Hide share list button
-        if  ShoppingListsArray[currentShoppingListIndex].owneruid! != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
+        if allShoppingLists[currentShoppingListIndex].owneruid == nil { return }
+        if  allShoppingLists[currentShoppingListIndex].owneruid! != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
             
             if currentUpperCard == 1 {
                 
@@ -828,8 +819,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         } else { btn_ShoppingCard2ShareList.alpha = 1 }
         
     }
-    func AddedFriendsListAfterSharingAccept(notification: Notification) -> Void {
-        sbListWebservice.ObserveAllList()
+    
+    //MARK: - Notification listener selectors     
+    func CurrentUserReceived(notification: Notification) -> Void {
+        
+        // userdata received so lets observe his lists            
+        //    sbListWebservice.ObserveAllList()
+        
     }
     
     //MARK: - Textfield Delegate implementation
@@ -837,17 +833,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         self.view.endEditing(true)
         return true
-        
-    }
-    
-    func txt_ListName_TextChanged(sender: UITextField) -> Void {
-        
-        //firebaseShoppingList.name = sender.text!
-    }
-    
-    func txt_RelatedStore_TextChanged(sender: UITextField) -> Void {
-        
-        //firebaseShoppingList.relatedStore = sender.text!
         
     }
     
@@ -977,7 +962,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             ShoppingListDetailView.frame.size.width = view.frame.width * 0.95
             ShoppingListDetailView.frame.size.height = view.frame.height * 0.8
             ShoppingListDetailView.center = view.center
-            lbl_ShoppingListDetailTitle.text = ShoppingListsArray[currentShoppingListIndex].name != nil ? ShoppingListsArray[currentShoppingListIndex].name : ""
+            lbl_ShoppingListDetailTitle.text = allShoppingLists[currentShoppingListIndex].name != nil ? allShoppingLists[currentShoppingListIndex].name : ""
             view.addSubview(ShoppingListDetailView)
             ShoppingListDetailTableView.delegate = self
             ShoppingListDetailTableView.dataSource = self
@@ -989,14 +974,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func SortShoppingListItemsArrayBy_isSelected() -> Void {
         
-        if ShoppingListsArray[currentShoppingListIndex].itemsArray.isEmpty {
+        if allShoppingLists[currentShoppingListIndex].items.isEmpty {
             
             ShoppingListDetailTableView.reloadData()
             return
             
         }
         
-        ShoppingListsArray[currentShoppingListIndex].itemsArray.sort{ !$0.isSelected! && $1.isSelected! }
+        allShoppingLists[currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! }
         ShoppingListDetailTableView.reloadData()
         
     }
@@ -1026,17 +1011,18 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         lbl_InviteTitle.text = invite.inviteTitle!
         lbl_InviteMessage.text = invite.inviteMessage!
         
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
+        /*
+        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.sender!.profileImageURL } ) {
             
-            invite.senderImage = ProfileImageCache[index].UserProfileImage!
+            invite.sender!.profileImage = ProfileImageCache[index].UserProfileImage!
             InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
             displaySharingInvatationNotification()
             
         } else {
             
-            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
+            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.sender!.profileImageURL!)!)
             
-        }
+        }*/
         
     }
     private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
@@ -1056,12 +1042,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             DispatchQueue.main.async {
                 
                 if let downloadImage = UIImage(data: data!) {
-                    
-                    let cachedImage = CacheUserProfileImage()
-                    cachedImage.UserProfileImage = downloadImage
-                    cachedImage.ProfileImageURL = url.absoluteString
-                    ProfileImageCache.append(cachedImage)
-                    self.InviteUserImage.image = cachedImage.UserProfileImage!
+                    //TODO: take a look in runtime
+                    self.InviteUserImage.image = downloadImage
                     self.displaySharingInvatationNotification()
                     
                 }
@@ -1107,9 +1089,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         sbListWebservice = ShoppingBuddyListWebservice()
         sbListWebservice.alertMessageDelegate = self
         sbListWebservice.activityAnimationServiceDelegate = self
-        sbListWebservice.shoppingBuddyListWebServiceDelegate = self
         
-        if ShoppingListsArray.isEmpty {
+        if allShoppingLists.isEmpty {
             
             ShoppingListCard.alpha = 0
             ShoppingListCard2.alpha = 0
@@ -1147,9 +1128,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         //Notification Listeners
         NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(AddedFriendsListAfterSharingAccept), name: NSNotification.Name.AddedFriendsListAfterSharingAccept, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
+   
         
         //Add Shopping List PopUp
         AddShoppingListPopUp.layer.shadowColor  = UIColor.black.cgColor
@@ -1161,11 +1142,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         txt_RelatedStore.delegate = self
         txt_RelatedStore.placeholder = String.txt_RelatedStore_Placeholder
         txt_RelatedStore.textColor = UIColor.black
-        txt_RelatedStore.addTarget(self, action: #selector(txt_RelatedStore_TextChanged), for: .editingChanged)
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
-        txt_ListName.textColor = UIColor.black
-        txt_ListName.addTarget(self, action: #selector(txt_ListName_TextChanged), for: .editingChanged)
+        txt_ListName.textColor = UIColor.black 
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
         AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
@@ -1224,40 +1203,40 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListOwnerImage.layer.borderWidth = 3
         
-        if ShoppingListsArray.count > 1 {
+        if allShoppingLists.count > 1 {
             
             currentShoppingListIndex = 0
-            lbl_ShoppingListCardTitle.text = ShoppingListsArray[0].name!
-            lbl_ShoppingCardStoreName.text = ShoppingListsArray[0].relatedStore!
+            lbl_ShoppingListCardTitle.text = allShoppingLists[0].name!
+            lbl_ShoppingCardStoreName.text = allShoppingLists[0].relatedStore!
             lbl_ShoppingCardTotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-            lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[0].itemsArray!.count)"
+            lbl_ShoppingCardTotalItems.text = "\(allShoppingLists[0].items!.count)"
             lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-            lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[0].itemsArray))"
+            lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[0].items))"
             
-            lbl_ShoppingListCard2Title.text = ShoppingListsArray[1].name!
-            lbl_ShoppingCard2StoreName.text = ShoppingListsArray[1].relatedStore!
+            lbl_ShoppingListCard2Title.text = allShoppingLists[1].name!
+            lbl_ShoppingCard2StoreName.text = allShoppingLists[1].relatedStore!
             lbl_ShoppingCard2TotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-            lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[1].itemsArray!.count)"
+            lbl_ShoppingCard2TotalItems.text = "\(allShoppingLists[1].items!.count)"
             lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-            lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[1].itemsArray))"
+            lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[1].items))"
             
             
-        } else if ShoppingListsArray.count == 1 {
+        } else if allShoppingLists.count == 1 {
             
             currentShoppingListIndex = 0
-            lbl_ShoppingListCardTitle.text = ShoppingListsArray[0].name!
-            lbl_ShoppingCardStoreName.text = ShoppingListsArray[0].relatedStore!
+            lbl_ShoppingListCardTitle.text = allShoppingLists[0].name!
+            lbl_ShoppingCardStoreName.text = allShoppingLists[0].relatedStore!
             lbl_ShoppingCardTotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-            lbl_ShoppingCardTotalItems.text = "\(ShoppingListsArray[0].itemsArray!.count)"
+            lbl_ShoppingCardTotalItems.text = "\(allShoppingLists[0].items!.count)"
             lbl_ShoppingCardOpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-            lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[0].itemsArray))"
+            lbl_ShoppingCardOpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[0].items))"
             
-            lbl_ShoppingListCard2Title.text = ShoppingListsArray[0].name!
-            lbl_ShoppingCard2StoreName.text = ShoppingListsArray[0].relatedStore!
+            lbl_ShoppingListCard2Title.text = allShoppingLists[0].name!
+            lbl_ShoppingCard2StoreName.text = allShoppingLists[0].relatedStore!
             lbl_ShoppingCard2TotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
-            lbl_ShoppingCard2TotalItems.text = "\(ShoppingListsArray[0].itemsArray!.count)"
+            lbl_ShoppingCard2TotalItems.text = "\(allShoppingLists[0].items!.count)"
             lbl_ShoppingCard2OpenItemsLabel.text = String.lbl_ShoppingCardOpenItems_Label
-            lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: ShoppingListsArray[0].itemsArray))"
+            lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[0].items))"
             
         }
     }
@@ -1274,7 +1253,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return ShoppingListsArray[currentShoppingListIndex].itemsArray.count
+        return allShoppingLists[currentShoppingListIndex].items.count
         
     }
     
@@ -1282,18 +1261,18 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
         
         let cell = tableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier, for: indexPath) as! ShoppingListItemTableViewCell
         cell.selectionStyle = .none
-        cell.ConfigureCell(shoppingListItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[indexPath.row])
+        cell.ConfigureCell(shoppingListItem: allShoppingLists[currentShoppingListIndex].items[indexPath.row])
         return cell
         
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
-        if ShoppingListsArray[currentShoppingListIndex].itemsArray.isEmpty { return }
+        if allShoppingLists[currentShoppingListIndex].items.isEmpty { return }
         
         let row = indexPath.row
-        if ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false { return }
-        ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected  = ShoppingListsArray[currentShoppingListIndex].itemsArray[row].isSelected == false ? true : false
-        sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: ShoppingListsArray[currentShoppingListIndex].itemsArray[row])
+        if allShoppingLists[currentShoppingListIndex].items[row].isSelected == false { return }
+        allShoppingLists[currentShoppingListIndex].items[row].isSelected  = allShoppingLists[currentShoppingListIndex].items[row].isSelected == false ? true : false
+        sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[currentShoppingListIndex].items[row])
         
         
     }

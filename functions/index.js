@@ -4,111 +4,152 @@ const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase); 
 
 //register to onWrite event of my node news
-exports.sendShoppingListInvitationNotification = functions.database.ref('/users/{id}/invites/{id2}').onCreate(event => {
-    //get the snapshot of the written data
+exports.send_ShoppingListInvitationNotification = functions.database.ref('/invites/{id}').onCreate(event => {
     const snapshot = event.data.val();
 
-        //get snapshot values
-        console.log(snapshot);  
-    
-    //create Notification
-    const payload = {
-        notification: {
-            title: snapshot.inviteTitle,
-            body:  snapshot.inviteMessage, 
-            badge: '1',
-            sound: 'default',
-            sbID: String(event.data.key),
-            senderImg : snapshot.senderProfileImageURL,
-            senderNick : snapshot.senderNickname,
-            senderID: snapshot.senderID,
-            listID: snapshot.listID, 
-            listname: snapshot.listName, 
-            receiptID: snapshot.receiptID, 
-            receiptImg : snapshot.receiptProfileImageURL,
-            receiptNick: snapshot.receiptNickname, 
-            receiptToken: snapshot.receiptFcmToken, 
-            senderToken: snapshot.senderFcmToken, 
-            notificationType: 'SharingInvitation',
-        } 
-    };   
-    
-    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('status').set('owner');
-    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('profileImageURL').set(snapshot.senderProfileImageURL);
-    admin.database().ref("shoppinglists").child(snapshot.listID).child("groupMembers").child(snapshot.senderID).child('nickname').set(snapshot.senderNickname);
-    
-    //send a notification to firends token   
-    return admin.messaging().sendToDevice(snapshot.receiptFcmToken, payload).then(response => { 
-         console.log("Successfully sent message:", response);
-         console.log(response.results[0].error);
-     }).catch((err) => { 
-        console.log("Error sendung Push", err);
-    });   
+    //log snapshot values
+    console.log(snapshot);  
+    return admin.database().ref('/users_friends/').child(snapshot.senderID).child(snapshot.receiptID).set('pending').then( snap => { 
+
+        return admin.database().ref('/users_friends/').child(snapshot.receiptID).child(snapshot.senderID).set('pending').then( ufriendsSnap => {
+
+            return admin.database().ref('/users_invites/').child(snapshot.receiptID).child(event.params.id).set('pending').then( snap => {
+
+            //Get the receipt users values for sending Push
+            console.log('snapshot.receiptID: ' + snapshot.receiptID)
+               
+            return admin.database().ref('/users/' + snapshot.receiptID).once('value').then( usnap => { 
+               
+                //Send push to users fcmToken
+                const userSnap = usnap.val()
+                console.log('sending Push to ' + userSnap.fcmToken)
+                
+                //create Notification
+                var payload = {
+                    notification: {
+                        title: snapshot.inviteTitle,
+                        body:  snapshot.inviteMessage, 
+                        badge: '1',
+                        sound: 'default',
+                        sbID: String(event.data.key),
+                        senderID: snapshot.senderID,
+                        listID: snapshot.listID, 
+                        receiptID: snapshot.receiptID, 
+                        notificationType: 'SharingInvitation',
+                    } 
+                };             
+               
+                return admin.messaging().sendToDevice(userSnap.fcmToken, payload).then( response => {
+               
+                    console.log("Successfully sent invite message:", response)
+                    console.log(response.results[0].error)
+               
+                }).catch((err) => {  console.log("Error sending Push", err) })
+
+            })
+                                   
+            }) 
+        })
+    })
+});       
+
+exports.delete_AllItemsAndReferencesOnShoppingListDelete = functions.database.ref('/users_shoppinglists/{userID}/{listID}').onDelete( event => { 
+    //Get previous data before detele action
+   // const snapshot = event.data.previous
+    var listID = event.params.listID
+    var userID = event.params.userID
+
+    console.log('userID: ' + userID + 'listID : ' + listID) 
+
+      return admin.database().ref('shoppinglists').child(listID).set(null).then( () => {
+            return admin.database().ref('listItems').child(listID).set(null) 
+        })     
 });
 
-exports.updateUserListNodeOnNewListCreation = functions.database.ref('/shoppinglists/{id}').onCreate(event => {
-    const snapshot = event.data;
+exports.add_NewListIDToUsersListsNodeOnCreate = functions.database.ref('/shoppinglists/{id}').onCreate( event => {
+    var uid = event.auth.variable ? event.auth.variable.uid : null
+    var listID = event.params.id
+    console.log('key: ' + listID)
+    console.log('uid: ' + uid)
 
-    const listID = snapshot.key;
-    const listOwnerID = snapshot.child('owneruid').val();
+    return admin.database().ref('/shoppinglists/' + listID).child('members').child(uid).set('owner').then( () => {
+        return admin.database().ref('/users_shoppinglists/').child(uid).child(listID).set('owner')
+    })
+}); 
 
-    console.log('Succesfully updated user node with shopping listID');
+exports.delete_Invite_AfterAccepted_SetFriendAcceptes = functions.database.ref('/invites/{inviteID}').onUpdate( event => {
+    var inviteSnap = event.data.val()
+    var senderID = inviteSnap.senderID
+    var receiptID = inviteSnap.receiptID
+    var listID = inviteSnap.listID
+    var inviteID = event.params.inviteID
+    var inviteAcceptedTitle = inviteSnap.inviteAcceptedTitle
+    var inviteAcceptedMessage = inviteSnap.inviteAcceptedMessage
 
-    return admin.database().ref('users').child(String(listOwnerID)).child('shoppinglists').child(String(listID)).set('owner');
+    console.log(inviteSnap.status)
+
+    if (inviteSnap.status != 'accepted') { return }
+
+    return admin.database().ref('/users_invites/' + receiptID + '/' + inviteID).set(null).then( snap => {
+
+        return admin.database().ref('/shoppinglists/' + listID +'/members/').child(receiptID).set('observer').then( listSnap => {
+
+            return admin.database().ref('/users_friends/' + senderID).child(receiptID).set('accepted').then( usersFriendsSnap => {
+
+                return admin.database().ref('/users_friends/' + receiptID).child(senderID).set('accepted').then( usersFriendsSnap2 => {
+
+                    return admin.database().ref('/invites/' + inviteID).set(null).then( inviteSnap => {
+
+                        return admin.database().ref('/users_shoppinglists/').child(receiptID).child(listID).set('observer').then( snoop => {
+
+                            return admin.database().ref('/users/' + senderID).once('value').then( uSnap => {
+
+                                var userSnap = uSnap.val()
+                                console.log('sending Push to ' + userSnap.fcmToken)
+
+                                 //create Notification
+                                var payload = {
+                                    notification: {
+                                        title: String(inviteAcceptedTitle),
+                                        body: String(inviteAcceptedMessage), 
+                                        badge: '1',
+                                        sound: 'default', 
+                                        senderID: receiptID,
+                                        listID: listID, 
+                                        receiptID: senderID, 
+                                        notificationType: 'SharingAccepted',
+                                    } 
+                                }
+
+                                return admin.messaging().sendToDevice(userSnap.fcmToken, payload).then( response => {
+                                    
+                                         console.log("Successfully sent sharing accepted message:", response)
+                                         console.log(response.results[0].error)
+                                    
+                                     }).catch((err) => {  console.log("Error sending Push", err) })
+
+
+                            })
+
+                        })
+
+                    }) 
+
+                })
+
+            })
+
+        })
+
+    }) 
+
 });
 
-exports.deleteItemsAndReferencesOnShoppingListDelete = functions.database.ref('/shoppinglists/{id}').onDelete( event => {
-    //Get prvious data before detele action
-    const snapshot = event.data.previous;
 
-    console.log(snapshot.data);
 
-    const listID = String(snapshot.key);
-    const listOwnerID = String(snapshot.child('owneruid').val());
-
-    console.log(listID)
-    console.log(listOwnerID)
-
-        admin.database().ref('users').child(listOwnerID).child('shoppinglists').child(listID).set(null).then(() => {
-            return admin.database().ref('listItems').child(String(listID)).set(null);
-        })        
-});
-
-/*
-exports.deleteSharingInvitationAndSendPushOnSharingUpdate = functions.database.ref('users/invites/{id}').onUpdate( event => {
-    const snapshot = event.data;
-    console.log(snapshot.data);
-
-    const inviteID = String(snapshot.key); 
-    const inviteValue = String(snapshot.val());
-
-    if (inviteValue == "accepted") {
-        admin.database().ref('invites').child(inviteID).once('value').then(function(snap) {  
-            
-                    const receiptUid  = snapshot.child('receiptID').val(); 
-                    const senderUid = snapshot.child('senderID').val();   
-            
-                   return admin.database().ref('users').child(receiptUid).child('friends').child(senderUid).set('accepted');
-            
-                });
-    }       
-     
-});
-
-function setInvitationSenderAsFriendInReceiptUserNode(inviteID) {
-    admin.database().ref('invites').child(inviteID).once('value').then(function(snap) {  
-
-        const receiptUid  = snapshot.child('receiptID').val(); 
-        const senderUid = snapshot.child('senderID').val();   
-
-       return admin.database().ref('users').child(receiptUid).child('friends').child(senderUid).set('accepted');
-
-    });
-}*/
-
-exports.deleteEmptySpacesOnNewList = functions.database.ref('/shoppinglists/{id}').onWrite( event => {
+exports.deleteEmptySpacesOnNewListCreate = functions.database.ref('/shoppinglists/{id}').onCreate( event => {
     
-          const d = event.data.val();
+          var d = event.data.val();
     
            // Exit when the data is deleted.
            if (!event.data.exists()) {
@@ -128,7 +169,7 @@ exports.deleteEmptySpacesOnNewList = functions.database.ref('/shoppinglists/{id}
     }); 
  
 
-exports.deleteEmptySpacesItemName = functions.database.ref('/listItems/{id}/{itemID}').onWrite( event => {
+exports.deleteEmptySpacesItemNameonCreate = functions.database.ref('/listItems/{id}/{itemID}').onCreate( event => {
 
       const itemdata = event.data.val();
 
