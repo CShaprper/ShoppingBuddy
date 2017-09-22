@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/LoginController.swift"
-            timestampString = "526069612.670705"
+            filePath = "ShoppingBuddy/ShoppingBuddyUser.swift"
+            timestampString = "527256690.512011"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
-            landmarkName = "btn_Login_Pressed(sender:)"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "urlSession(_:downloadTask:didFinishDownloadingTo:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/LoginController.swift"
-            timestampString = "526069612.670705"
+            filePath = "ShoppingBuddy/ShoppingBuddyUser.swift"
+            timestampString = "527256692.177049"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
-            landmarkName = "btn_Login_Pressed(sender:)"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "userProfileImageFromURL()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,44 +41,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "524154577.262256"
+            filePath = "ShoppingBuddy/ShoppingBuddyUser.swift"
+            timestampString = "527256755.435313"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.LocationService.PerformLocalShopSearch () -&gt; ()"
-                  moduleName = "ShoppingBuddy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/LocationService.swift"
-                  timestampString = "523821064.532455"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "131"
-                  endingLineNumber = "131"
-                  offsetFromSymbolStart = "28">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.LocationService.(PerformLocalShopSearch () -&gt; ()).(implicit closure #1)"
-                  moduleName = "ShoppingBuddy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/LocationService.swift"
-                  timestampString = "523821064.534513"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "131"
-                  endingLineNumber = "131"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "userProfileImageFromURL()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -87,12 +57,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "524154577.262256"
+            filePath = "ShoppingBuddy/AppDelegate.swift"
+            timestampString = "527614225.028436"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184">
+            startingLineNumber = "142"
+            endingLineNumber = "142"
+            landmarkName = "application(_:didReceiveRemoteNotification:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -101,12 +73,30 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/LocationService.swift"
-            timestampString = "524154577.262256"
+            filePath = "ShoppingBuddy/PushNotificationHelper.swift"
+            timestampString = "527261295.99527"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283">
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "SendNotificationDependendOnPushNotificationType(userInfo:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingBuddyUserWebservice.swift"
+            timestampString = "527361291.961812"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "ObserveUser(userID:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -116,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/DashboardController.swift"
-            timestampString = "526327549.637291"
+            timestampString = "527360677.232703"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "535"
-            endingLineNumber = "535"
-            landmarkName = "mapView(_:viewFor:)"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "CurrentUserReceived(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -132,13 +122,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526237740.902421"
+            timestampString = "527703080.596555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "950"
-            endingLineNumber = "950"
-            landmarkName = "ShoppingListController"
-            landmarkType = "3">
+            startingLineNumber = "341"
+            endingLineNumber = "341"
+            landmarkName = "btn_ShareListSave_Pressed(sender:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -147,14 +137,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526319334.944043"
+            filePath = "ShoppingBuddy/ShoppingBuddyMessageWebService.swift"
+            timestampString = "527705017.554694"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1246"
-            endingLineNumber = "1246"
-            landmarkName = "Double"
-            landmarkType = "4">
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "SendFriendSharingInvitation(friendsEmail:list:listOwner:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -164,12 +154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
-            timestampString = "526071667.245257"
+            timestampString = "527346808.390194"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "ObserveListItem(listItem:)"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "SaveListItemToFirebaseDatabase(listItem:currentShoppingListIndex:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -179,139 +169,43 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526234801.870297"
+            filePath = "ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
+            timestampString = "527347280.420802"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "425"
-            endingLineNumber = "425"
-            landmarkName = "HandleShoppingItemPan(sender:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526076598.065772"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "ShoppingBuddyListDataReceived()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526234801.870297"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
-            landmarkName = "ShoppingBuddyNewListReceived(listID:)"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "SaveListItemToFirebaseDatabase(listItem:currentShoppingListIndex:)"
             landmarkType = "7">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingListController.ShoppingBuddyNewListReceived (listID : Swift.String) -&gt; ()"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyListItemWebservice.(SaveListItemToFirebaseDatabase (listItem : ShoppingBuddy.ShoppingListItem, currentShoppingListIndex : Swift.Int) -&gt; ()).(closure #1)"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingListController.swift"
-                  timestampString = "525384727.677193"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
+                  timestampString = "527346828.19542"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "191"
-                  endingLineNumber = "191"
-                  offsetFromSymbolStart = "36">
+                  startingLineNumber = "75"
+                  endingLineNumber = "75"
+                  offsetFromSymbolStart = "9058">
                </Location>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingListController.(ShoppingBuddyNewListReceived (listID : Swift.String) -&gt; ()).(closure #1)"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyListItemWebservice.(SaveListItemToFirebaseDatabase (listItem : ShoppingBuddy.ShoppingListItem, currentShoppingListIndex : Swift.Int) -&gt; ()).(closure #1).(closure #1)"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingListController.swift"
-                  timestampString = "525384727.679168"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
+                  timestampString = "527346828.197428"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "191"
-                  endingLineNumber = "191"
-                  offsetFromSymbolStart = "212">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/MessagesController.swift"
-            timestampString = "526321941.091245"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "tableView(_:editActionsForRowAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "526234801.870297"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "SendFriendSharingInvitation(friendsEmail:list:listOwner:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingBuddyListWebservice.(SendFriendSharingInvitation (friendsEmail : Swift.String, list : ShoppingBuddy.ShoppingList, listOwner : ShoppingBuddy.ShoppingBuddyUser) -&gt; ()).(closure #1)"
-                  moduleName = "ShoppingBuddy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-                  timestampString = "526072683.811963"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "126"
-                  endingLineNumber = "126"
-                  offsetFromSymbolStart = "5385">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingBuddyListWebservice.(SendFriendSharingInvitation (friendsEmail : Swift.String, list : ShoppingBuddy.ShoppingList, listOwner : ShoppingBuddy.ShoppingBuddyUser) -&gt; ()).(closure #1).(closure #1)"
-                  moduleName = "ShoppingBuddy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-                  timestampString = "526072683.81412"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "128"
-                  endingLineNumber = "128"
+                  startingLineNumber = "77"
+                  endingLineNumber = "77"
                   offsetFromSymbolStart = "23">
                </Location>
             </Locations>
@@ -323,12 +217,60 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "526234801.870297"
+            filePath = "ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
+            timestampString = "527346973.591307"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "SaveListItemToFirebaseDatabase(listItem:currentShoppingListIndex:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingBuddyListItemWebservice.swift"
+            timestampString = "527347280.420802"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
+            landmarkName = "SaveListItemToFirebaseDatabase(listItem:currentShoppingListIndex:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "527703080.596555"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "339"
+            endingLineNumber = "339"
+            landmarkName = "btn_ShareListSave_Pressed(sender:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingBuddyMessageWebService.swift"
+            timestampString = "527705017.554694"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
             landmarkName = "SendFriendSharingInvitation(friendsEmail:list:listOwner:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -339,60 +281,44 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/AppDelegate.swift"
-            timestampString = "526319334.944043"
+            filePath = "ShoppingBuddy/ShoppingBuddyMessageWebService.swift"
+            timestampString = "527705017.554694"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "application(_:didFinishLaunchingWithOptions:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/PushNotificationHelper.swift"
-            timestampString = "526074834.418051"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
-            landmarkName = "createChoppingBuddyIntitationObject(userInfo:)"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "SendFriendSharingInvitation(friendsEmail:list:listOwner:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.PushNotificationHelper.createChoppingBuddyIntitationObject (userInfo : Swift.Dictionary&lt;Swift.AnyHashable, Any&gt;) -&gt; Swift.Optional&lt;ShoppingBuddy.ShoppingBuddyInvitation&gt;"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyMessageWebservice.SendFriendSharingInvitation (friendsEmail : Swift.String, list : ShoppingBuddy.ShoppingList, listOwner : ShoppingBuddy.ShoppingBuddyUser) -&gt; ()"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/PushNotificationHelper.swift"
-                  timestampString = "526500835.530147"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyMessageWebService.swift"
+                  timestampString = "527347893.030183"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "54"
-                  endingLineNumber = "54"
-                  offsetFromSymbolStart = "60">
+                  startingLineNumber = "29"
+                  endingLineNumber = "29"
+                  offsetFromSymbolStart = "476">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.PushNotificationHelper.createChoppingBuddyIntitationObject (userInfo : Swift.Dictionary&lt;Swift.AnyHashable, Any&gt;) -&gt; Swift.Optional&lt;ShoppingBuddy.ShoppingBuddyInvitation&gt;"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyMessageWebservice.(SendFriendSharingInvitation (friendsEmail : Swift.String, list : ShoppingBuddy.ShoppingList, listOwner : ShoppingBuddy.ShoppingBuddyUser) -&gt; ()).(closure #1)"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/PushNotificationHelper.swift"
-                  timestampString = "526500835.532301"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyMessageWebService.swift"
+                  timestampString = "527347893.0322"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "54"
-                  endingLineNumber = "54"
-                  offsetFromSymbolStart = "408">
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "228">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -404,12 +330,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/DashboardController.swift"
-            timestampString = "526325820.842818"
+            timestampString = "527360677.232703"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "236"
-            endingLineNumber = "236"
-            landmarkName = "displaySharingInvatationNotification()"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "UserProfileImageTapped(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -420,12 +346,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
-            timestampString = "526237035.414518"
+            timestampString = "527705726.584872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "ObserveAllList()"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
+            landmarkName = "ObserveListMembers()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -435,60 +361,44 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingListController.swift"
-            timestampString = "526235835.51301"
+            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+            timestampString = "527705726.584872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "182"
-            endingLineNumber = "182"
-            landmarkName = "ShoppingBuddyListDataReceived()"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "ObserveListItems()"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingBuddyUserWebservice.swift"
-            timestampString = "526325461.888246"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
-            landmarkName = "ShoppingBuddyUserWebservice"
-            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingBuddyUserWebservice.((UserProfileImageDownloadTask in _758F138DC444B12463548B7BD74D6CC1) (url : Foundation.URL) -&gt; ()).(closure #2).(closure #1)"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyListWebservice.(ObserveListItems in _AB351411B8E97404D60C78C0A66A294B) () -&gt; ()"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyUserWebservice.swift"
-                  timestampString = "526237954.298728"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+                  timestampString = "527617550.08811"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "250"
-                  endingLineNumber = "250"
-                  offsetFromSymbolStart = "28">
+                  startingLineNumber = "197"
+                  endingLineNumber = "197"
+                  offsetFromSymbolStart = "750">
                </Location>
                <Location
                   shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "ShoppingBuddy.ShoppingBuddyUserWebservice.((UserProfileImageDownloadTask in _758F138DC444B12463548B7BD74D6CC1) (url : Foundation.URL) -&gt; ()).(closure #2).(closure #1)"
+                  symbolName = "ShoppingBuddy.ShoppingBuddyListWebservice.((ObserveListItems in _AB351411B8E97404D60C78C0A66A294B) () -&gt; ()).(closure #1)"
                   moduleName = "ShoppingBuddy"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyUserWebservice.swift"
-                  timestampString = "526237954.301506"
+                  urlString = "file:///Users/petersypek/Desktop/ShoppingBuddy/ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+                  timestampString = "527617550.090131"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "250"
-                  endingLineNumber = "250"
-                  offsetFromSymbolStart = "160">
+                  startingLineNumber = "199"
+                  endingLineNumber = "199"
+                  offsetFromSymbolStart = "364">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -499,29 +409,125 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/ShoppingBuddyUserWebservice.swift"
-            timestampString = "526321637.472524"
+            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+            timestampString = "527705726.584872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "GetCurrentUser()"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "ObserveListItems()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ShoppingBuddy/AppDelegate.swift"
-            timestampString = "526322614.294924"
+            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+            timestampString = "527705726.584872"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
-            landmarkName = "messaging(_:didRefreshRegistrationToken:)"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "ObserveListMembers()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "527703080.596555"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "281"
+            endingLineNumber = "281"
+            landmarkName = "cancelSharing()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "527703428.35145"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1412"
+            endingLineNumber = "1412"
+            landmarkName = "collectionView(_:cellForItemAt:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "527703428.35145"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1428"
+            endingLineNumber = "1428"
+            landmarkName = "collectionView(_:cellForItemAt:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingListController.swift"
+            timestampString = "527703428.35145"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1416"
+            endingLineNumber = "1416"
+            landmarkName = "collectionView(_:cellForItemAt:)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ListMembersCell.swift"
+            timestampString = "527619958.991026"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "ConfigureCell(user:member:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ShoppingBuddy/ShoppingBuddyListWebservice.swift"
+            timestampString = "527705726.584872"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "ObserveListMembers()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

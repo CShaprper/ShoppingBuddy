@@ -27,9 +27,9 @@ class CustomNavigationController: UINavigationController {
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 35
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        let textAttributes = [NSShadowAttributeName:shadow,
-                              NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(),
-                              NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 20)!] as [String : Any]
+        let textAttributes = [NSAttributedStringKey.shadow.rawValue:shadow,
+                              NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor(),
+                              NSAttributedStringKey.font:UIFont(name: "Courgette-Regular", size: 20)!] as! [String : Any]
         navigationBar.titleTextAttributes = textAttributes
         navigationBar.clipsToBounds = false 
         navigationBar.setBackgroundImage(#imageLiteral(resourceName: "UpperNavBar"), for: .default)

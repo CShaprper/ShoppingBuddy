@@ -13,100 +13,32 @@ import FirebaseDatabase
 import FirebaseMessaging
 import FirebaseStorage
 
-class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationService{
+class ShoppingBuddyListWebservice {
     var alertMessageDelegate: IAlertMessageDelegate?
     var activityAnimationServiceDelegate: IActivityAnimationService?
+    internal var sbUserService:ShoppingBuddyUserWebservice!
     
-    private var ref = Database.database().reference()
-    private var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
-    private var listRef = Database.database().reference().child("shoppinglists")
-    private var itemsRef = Database.database().reference().child("listItems")
+    internal var ref = Database.database().reference()
+    internal var userRef = Database.database().reference().child("users").child(Auth.auth().currentUser!.uid)
     
-    
-    //MARK: - IAlertMessageDelegate implementation
-    func ShowAlertMessage(title: String, message: String) {
-        HideActivityIndicator()
-        if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
-                self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
-            }
-        } else {
-            NSLog("alertMessageDelegate not set from calling class in ShoppingList")
-        }
-    }
-    
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.ShowActivityIndicator!()
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator() in ShoppingList")
-        }
-    }
-    func HideActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.HideActivityIndicator!()
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator() in ShoppingList")
-        }
-    }
-    
-    
-    //Share Functions
-    func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {
+    init() {
+        sbUserService = ShoppingBuddyUserWebservice()
         
-        self.ShowActivityIndicator()
-        
-        ref.child("users").queryOrdered(byChild: "email").queryEqual(toValue: friendsEmail).observeSingleEvent(of: .value, with: { (snapshot) in
-            
-            if snapshot.value is NSNull { self.HideActivityIndicator(); return }
-            
-            for childs in snapshot.children {
-                
-                let receipt = childs as! DataSnapshot
-                
-                //Write invitation Data to receipt ref
-                let inviteRef = self.ref.child("invites").childByAutoId()                
-                let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
-                let inviteMessage = "\(listOwner.nickname!) " + String.ShareListMessage
-                
-                inviteRef.updateChildValues(["receiptID":receipt.key, "senderID":currentUser!.id!, "inviteMessage":inviteMessage, "inviteTitle":inviteTitle, "listID":list.id!], withCompletionBlock: { (error, dbRef) in
-                    
-                    if error != nil {
-                        
-                        NSLog(error!.localizedDescription)
-                        let title = String.OnlineFetchRequestError
-                        let message = error!.localizedDescription
-                        self.ShowAlertMessage(title: title, message: message)
-                        return
-                        
-                    }
-                    
-                    NSLog("Succesfully sent invitation for sharing")
-                })
-            }
-            
-            self.HideActivityIndicator()
-            
-            
-        }) { (error) in
-            
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            return
-            
-        }
     }
     
     
-    //MARK: - FirebaseSave Functions
+    ///Saves a new Shopping List in firebase "shoppinglists" node
+    ///The creation of a node "shoppingList_member" that stores the user id will be performed as firebase function.
+    /**- Parameters:
+     - currentUser: - ShoppingBuddyUser: The current user
+     - listName: - String: Name of the list to save
+     - relatedStore: - String: Name of the store that is related to this shopping list
+     */
     func SaveListToFirebaseDatabase(currentUser:ShoppingBuddyUser, listName:String, relatedStore:String) -> Void {
         
         self.ShowActivityIndicator()
-        let newListRef = listRef.childByAutoId()
-        newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":currentUser.id!], withCompletionBlock: { (error, dbRef) in
+        let newListRef = ref.child("shoppinglists").childByAutoId()
+        newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":Auth.auth().currentUser!.uid], withCompletionBlock: { (error, dbRef) in
             
             if error != nil {
                 
@@ -119,8 +51,7 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
             }
             
             self.HideActivityIndicator()
-            NSLog("Successfully saved List to Firebase Listname: %@ related Store: %@",listName, relatedStore)
-          
+            
         })
     }
     
@@ -128,17 +59,72 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
     //MARK: - Firebase Observe Functions
     
     func ObserveAllList() -> Void{
+        if currentUser == nil { return }
         
         self.ShowActivityIndicator()
-        ref.child("users_shoppinglists").child(currentUser!.id!).observe(.value, with: { (usersListsSnap) in
+        ref.child("users_shoppinglists").child(Auth.auth().currentUser!.uid).observe(.value, with: { (usersListsSnap) in            
             
-            if usersListsSnap.value is NSNull { self.HideActivityIndicator(); return }
+            allShoppingLists = []
             
+            if usersListsSnap.value is NSNull {
+                
+                self.HideActivityIndicator()
+                return
+            
+            }
+
             for listSnap in usersListsSnap.children {
                 
                 let list = listSnap as! DataSnapshot
                 
-                self.ObserveSingleList(listID: list.key)
+                self.ref.child("shoppinglists").child(list.key).observe(.value, with: { (snapshot) in
+                    
+                    if snapshot.value is NSNull { self.HideActivityIndicator(); return }
+                    
+                    
+                    //Read listData
+                    var newList = ShoppingList()
+                    newList.id = snapshot.key
+                    newList.name = snapshot.childSnapshot(forPath: "listName").value as? String
+                    newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
+                    newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String
+                    
+                    self.getUser(userID: newList.owneruid!)
+                    
+                 
+                    if let index = allShoppingLists.index(where: { $0.id == newList.id }){
+                        
+                        allShoppingLists[index] = newList
+                        
+                    } else {
+                        
+                        allShoppingLists.append(newList)
+                        
+                    }
+                    
+                    
+                    //Read List members
+                    self.ObserveListMembers()
+                    
+                    // Read list Items
+                    self.ObserveListItems()
+                    
+                    self.HideActivityIndicator()
+                    NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
+                    
+                    
+                    
+                    
+                }) { (error) in
+                    
+                    self.HideActivityIndicator()
+                    NSLog(error.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                    
+                }
                 
             }
             
@@ -155,33 +141,76 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
         
     }
     
-    func ObserveSingleList(listID:String) -> Void {
+    private func getUser(userID:String) -> Void {
         
+        //download user if unknown
+        if let _ = allUsers.index(where: { $0.id == userID }) { }
+        else {
+            sbUserService.ObserveUser(userID:userID)
+        }
+    }
+    
+    private func ObserveListMembers() -> Void {
+        
+        if allShoppingLists.isEmpty { return }
         self.ShowActivityIndicator()
-        listRef.child(listID).queryOrdered(byChild: "isSelected").observe(.value, with: { (snapshot) in
-            
-            if snapshot.value is NSNull {
+        
+        for list in allShoppingLists {
+            //Read List members
+            self.ref.child("shoppinglist_member").child(list.id!).observe(.value, with: { (memberSnap) in
                 
-                self.HideActivityIndicator()
-                if let index = allShoppingLists.index(where: { $0.id == listID }) {
+                var newMembers = [ShoppingListMember]()
+                for members in memberSnap.children {
                     
-                    allShoppingLists.remove(at: index)
-                    NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
+                    let member = members as! DataSnapshot
+                    var m = ShoppingListMember()
+                    m.listID = list.id!
+                    m.memberID = member.key
+                    m.status = member.value as? String
+                    
+                    self.getUser(userID: m.memberID!)
+                    
+                    //dont append listowner
+                    if m.memberID != list.owneruid {
+                        newMembers.append(m)
+                    }
                     
                 }
                 
+                
+                if let index = allShoppingLists.index(where: { $0.id == list.id! }){
+                    
+                    DispatchQueue.main.async {
+                        allShoppingLists[index].members = newMembers
+                    }
+                }
+                
+                self.HideActivityIndicator()
+                NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
+                
+                
+                
+            }, withCancel: { (error) in
+                
+                self.HideActivityIndicator()
+                NSLog(error.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
                 return
                 
-            }
+            })
+        }
+        
+    }
+    
+    private func ObserveListItems() -> Void {
+        
+        self.ShowActivityIndicator()
+        //Read List items
+        for list in allShoppingLists {
             
-            //Read listData
-            var newList = ShoppingList()
-            newList.id = snapshot.key
-            newList.name = snapshot.childSnapshot(forPath: "listName").value as? String
-            newList.owneruid = snapshot.childSnapshot(forPath: "owneruid").value as? String
-            newList.relatedStore = snapshot.childSnapshot(forPath: "relatedStore").value as? String 
-            
-            self.itemsRef.child(listID).observe(.value, with: { (itemSnap) in
+            self.ref.child("listItems").child(list.id!).observe(.value, with: { (itemSnap) in
                 
                 var newItems = [ShoppingListItem]()
                 for items in itemSnap.children {
@@ -189,62 +218,129 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
                     let item = items as! DataSnapshot
                     var newItem = ShoppingListItem()
                     newItem.id = item.key
-                    newItem.listID  = listID
+                    newItem.listID  = list.id!
                     newItem.isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
                     newItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
                     newItem.sortNumber = item.childSnapshot(forPath: "sortNumber").value as? Int
                     newItems.append(newItem)
                     
                 }
-                newList.items = newItems
-                
-                //GroupMembers
-                var newMembers = [String]()
-                let m = snapshot.childSnapshot(forPath: "members")
-                for members in m.children {
+                if let index = allShoppingLists.index(where: { $0.id == list.id! }){
                     
-                    let member = members as! DataSnapshot
-                    
-                    newMembers.append(member.key)
-                    
-                    NSLog("Succesfully added user \(member.key) to Group in List \(newList.name!)")
-                    
-                }
-                
-                newList.members = newMembers
-                
-                
-                if let index = allShoppingLists.index(where: { $0.id == listID }){
-                    
-                    allShoppingLists[index] = newList
-                    
-                } else {
-                    
-                    allShoppingLists.append(newList)
+                    DispatchQueue.main.async {
+                        allShoppingLists[index].items = newItems
+                    }
                     
                 }
                 
                 self.HideActivityIndicator()
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                 
+            }, withCancel: { (error) in
+                
+                self.HideActivityIndicator()
+                NSLog(error.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
             })
             
-        }) { (error) in
+        }
+        
+    }
+    
+    func CancelSharingByOwnerForUser(userToDelete:ShoppingBuddyUser , listToCancel:ShoppingList) -> Void {
+        
+        self.ShowActivityIndicator()
+        
+        //Add message for canceled user to messages node
+        let title = String.ListOwnerCanceledSharingTitle
+        let message = String.localizedStringWithFormat(NSLocalizedString("ListOwnerCanceledSharingMessage", comment: ""), currentUser!.nickname!, userToDelete.nickname!, listToCancel.name!)
+        self.ref.child("messages").childByAutoId().updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":Auth.auth().currentUser!.uid, "messageType":eNotificationType.CancelSharingByOwner.rawValue, "userIDToDelete": userToDelete.id!], withCompletionBlock: { (error, dbRef) in
+            
+            if error != nil{
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+        })
+        
+        self.HideActivityIndicator()
+        
+    }
+    
+    func CancelSharingBySharedUserForMember(member:ShoppingBuddyUser, listToCancel:ShoppingList) -> Void {
+        
+        self.ShowActivityIndicator()
+        ref.child("shoppinglists").child(listToCancel.id!).child("members").child(member.id!).setValue(eNotificationType.CancelSharingBySharedUser.rawValue, withCompletionBlock: { (error, dbRef) in
+            
+            if error != nil{
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
             
             self.HideActivityIndicator()
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            return
+            NSLog("Succesfully set member status to canceled sharing by shared user")
             
-        }
+            //Add message to messages node
+            let title = String.SharedUserCanceledSharingTitle
+            let message = String.localizedStringWithFormat(NSLocalizedString("SharedUserCanceledSharingMessage", comment: ""), currentUser!.nickname!, listToCancel.name! ) 
+            let messagesRef = self.ref.child("messages").childByAutoId()
+            messagesRef.updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":currentUser!.id!, "messageType":eNotificationType.CancelSharingByOwner.rawValue], withCompletionBlock: { (error, dbRef) in
+                
+                if error != nil{
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                    
+                }
+                self.HideActivityIndicator()
+                NSLog("Succesfully added cancel by shared user message to messages node")
+                
+                //Add receipt to message/receipts
+                self.ref.child("message_receipts").child(messagesRef.key).updateChildValues([member.id!:"receipt"], withCompletionBlock: { (error, dbRef) in
+                    
+                    if error != nil{
+                        
+                        NSLog(error!.localizedDescription)
+                        let title = String.OnlineFetchRequestError
+                        let message = error!.localizedDescription
+                        self.ShowAlertMessage(title: title, message: message)
+                        return
+                        
+                    }
+                    self.HideActivityIndicator()
+                    NSLog("Succesfully added receipt to cancel sharing by shared user message_receipts")
+                    
+                })
+                
+            })
+            
+        })
+        
     }
     
     func GetStoresForGeofencing() -> Void {
         
+        if currentUser?.id == nil { return }
+        
         self.ShowActivityIndicator()
-        ref.child("users_shoppinglists").child(currentUser!.id!).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child("users_shoppinglists").child(Auth.auth().currentUser!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             
             if snapshot.value is NSNull {
                 
@@ -263,13 +359,13 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
                     
                 }
                 
-                self.listRef.child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
+                self.ref.child("shoppinglists").child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
                     
                     let store = listSnap.childSnapshot(forPath: "relatedStore").value as? String
                     
                     if store == nil { self.HideActivityIndicator(); return }
                     
-                    self.itemsRef.child(list.key).observeSingleEvent(of: .value, with: { (itemSnap) in
+                    self.ref.child("listItems").child(list.key).observeSingleEvent(of: .value, with: { (itemSnap) in
                         
                         if itemSnap.childrenCount == 0  { self.HideActivityIndicator(); return } // only observe store when list contains open items
                         
@@ -286,6 +382,7 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
                         let userInfo = ["store": store!]
                         
                         NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyStoreReceived, object: nil, userInfo: userInfo)
+                        self.HideActivityIndicator()
                         
                     })
                     
@@ -309,7 +406,7 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
     func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
         self.ShowActivityIndicator()
         
-        ref.child("users_shoppinglists").child(currentUser!.id!).child(listToDelete.id!).removeValue { (error, dbref) in
+        ref.child("shoppinglists").child(listToDelete.id!).child("status").setValue("deleted by owner", withCompletionBlock: { (error, dbRef) in
             
             if error != nil{
                 
@@ -323,10 +420,50 @@ class ShoppingBuddyListWebservice: IAlertMessageDelegate, IActivityAnimationServ
             
             NSLog("Succesfully deleted Shopping List from Firebase")
             
-            if let index = allShoppingLists.index(where: { $0.id == listToDelete.id }) {
-                allShoppingLists.remove(at: index)
+            DispatchQueue.main.async {
+                
+                if let index = allShoppingLists.index(where: { $0.id == listToDelete.id }) {
+                    allShoppingLists.remove(at: index)
+                }
+                
             }
             
+        })
+    }
+}
+
+
+extension ShoppingBuddyListWebservice: IActivityAnimationService, IAlertMessageDelegate {
+    
+    //MARK: - IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
+        HideActivityIndicator()
+        if alertMessageDelegate != nil {
+            DispatchQueue.main.async {
+                self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+            }
+        } else {
+            NSLog("alertMessageDelegate not set from calling class in ShoppingList")
+        }
+    }
+    
+    //MARK: - IActivityAnimationService implementation
+    func ShowActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            DispatchQueue.main.async {
+                self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
+            }
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator() in ShoppingList")
+        }
+    }
+    func HideActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            DispatchQueue.main.async {
+                self.activityAnimationServiceDelegate!.HideActivityIndicator!()
+            }
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator() in ShoppingList")
         }
     }
     

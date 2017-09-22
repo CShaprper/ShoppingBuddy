@@ -85,8 +85,11 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func FirebaseRequestStarted() { ShowActivityIndicator() }
     func FirebaseRequestFinished() { HideActivityIndicator() }
     func ShoppingBuddyUserLoggedOut() {}
-    func ShoppingBuddyUserLoggedIn() {
+    @objc func ShoppingBuddyUserLoggedIn() {
+        
         performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
+        // NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedIn, object: nil, userInfo: nil)
+        
     }
     
     
@@ -123,19 +126,19 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         self.view.endEditing(true)
         return true
     }
-    func txt_Nickname_TetxChanged(sender: DesignableTextField) -> Void {
+    @objc func txt_Nickname_TetxChanged(sender: DesignableTextField) -> Void {
         let isValid:Bool = ValidationFactory.Validate(type: eValidationType.textField, validationString: sender.text!, alertDelegate: nil)
         txt_Nickname.RightImageVisibility = !isValid
         if isValid == false { txt_Nickname.rightView?.shake() }
         if txt_Nickname.text! == "" { txt_Nickname.RightImageVisibility = false }
     }
-    func txt_Email_TextChanged(sender: DesignableTextField) -> Void{
+    @objc func txt_Email_TextChanged(sender: DesignableTextField) -> Void{
         let isValid:Bool = ValidationFactory.Validate(type: eValidationType.email, validationString: sender.text!, alertDelegate: nil)
         txt_Email.RightImageVisibility = !isValid
         if isValid == false { txt_Email.rightView?.shake() }
         if txt_Email.text! == "" { txt_Email.RightImageVisibility = false }
     }
-    func txt_Password_TextChanged(sender: DesignableTextField) -> Void{
+    @objc func txt_Password_TextChanged(sender: DesignableTextField) -> Void{
         let isValid:Bool = ValidationFactory.Validate(type: eValidationType.password, validationString: sender.text!, alertDelegate: nil)
         txt_Password.RightImageVisibility = !isValid
         if isValid == false { txt_Password.rightView?.shake() }
@@ -144,19 +147,19 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     
     
     //MARK: - Notification Listener targets
-    func KeyboardWillShow(sender: Notification) -> Void {
+    @objc func KeyboardWillShow(sender: Notification) -> Void {
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             LoginContainerHolder.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
         }
     }
-    func KeyboardWillHide(sender: Notification) -> Void {
+    @objc func KeyboardWillHide(sender: Notification) -> Void {
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             LoginContainerHolder.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
         }
     }
     
     //MARK: - Wired targets
-    func LoginSignUpSegmentedControl_Changed(sender: UISegmentedControl) -> Void{
+    @objc func LoginSignUpSegmentedControl_Changed(sender: UISegmentedControl) -> Void{
         if sender.selectedSegmentIndex == 0{
             //Hide Nickname Container
             UIView.animate(withDuration: 0.5, delay: 0.4, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
@@ -192,7 +195,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             })
         }
     }
-    func btn_Login_Pressed(sender: UIButton) -> Void{
+    @objc func btn_Login_Pressed(sender: UIButton) -> Void{
         var isValid:Bool = false
         switch LoginSignUpSegmentedControl.selectedSegmentIndex {
         case 0:
@@ -223,7 +226,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         imgPicker.delegate = self
         self.present(imgPicker, animated: true, completion: nil)
     }
-    func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
+    @objc func btn_ResetPassword_Pressed(sender: UIButton) -> Void{
         let isValid = ValidationFactory.Validate(type: .email, validationString: txt_Email.text, alertDelegate: self)
         if isValid{
             sbUserWebservice.ResetUserPassword(email: txt_Email.text!)
@@ -308,15 +311,6 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         ButtonContainer.layer.borderColor = view.tintColor.cgColor
         ButtonContainer.layer.borderWidth = 1
     }
-}
-//Image Compression
-extension UIImage
-{
-    var highestQualityJPEGNSData: NSData? { return UIImageJPEGRepresentation(self, 1.0)! as NSData }
-    var highQualityJPEGNSData: NSData?    { return UIImageJPEGRepresentation(self, 0.75)! as NSData}
-    var mediumQualityJPEGNSData: NSData?  { return UIImageJPEGRepresentation(self, 0.5)! as NSData }
-    var lowQualityJPEGNSData: NSData?     { return UIImageJPEGRepresentation(self, 0.25)! as NSData}
-    var lowestQualityJPEGNSData: NSData?  { return UIImageJPEGRepresentation(self, 0.0)! as NSData }
 }
 extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {

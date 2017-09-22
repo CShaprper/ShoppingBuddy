@@ -63,20 +63,46 @@ LocationManagerEnteredRegion_AlertTitle = " in der Nähe";
 LocationManagerEnteredRegion_AlertMessage = "Du befindest Dich in der Nähe eines Shops Deiner aktiven Shopping Listen. Möchtest Du zum Shop navigiert werden?";
 
     //Shopping Cards
-lbl_ShoppingCardTotalItems_Label = "Gesamtanzahl:";
-lbl_ShoppingCardOpenItems_Label = "Offen:";
+lbl_ShoppingCardTotalItems_Label = "Anzahl:";
+lbl_ShoppingCardOpenItems_Label = "offen:";
 
     //ShareListPopUp
 lbl_ShareListTitle = "Liste mit Freund teilen";
 txt_ShareOpponentEmailPlaceholder = "E-Mail des Freundes";
 
-    //Share List Message
-ShareListMessage = "möchte eine Shopping Liste mit Dir teilen.";
+    // Messages
+UserEmailNotFoundTitle = "User nicht gefunden!";
+UserEmailNotFoundMessage = "%@ wurde nicht gefunden! Es existiert kein Shopping Buddy User mit dieser e-mail!";
+ShareListMessage = "%@ möchte eine Shopping Liste mit Dir teilen.";
 ShareListTitle = "Einladung von";
+ShareListAcceptedTitle = "Teilen Akzeptiert!";
+ShareListAcceptedMessage = "hat Deine Einladung akzeptiert.";
+NotAllowedToShareListAlertTitle = "Teilen nicht möglich!";
+NotAllowedToShareListAlertMessage = "Du kannst nur Listen Teilen, die Du selbst erstellt hast.";
+DeleteMessage = "löschen";
+lbl_CancelSharing = "Teilen mit Freund beenden";
+ListCurrentlyNotSharedTitle = "Teilen beenden";
+ListCurrentlyNotSharedMessage = "Diese Liste wird aktuell mit niemandem geteilt. Teilen beenden nicht möglich!";
+CancelSharingSelectedMemberAlertTitle = "Teilen beenden?";
+CancelSharingSelectedMemberAlertMessage = "Diese Aktion beendet das Teilen der Liste mit ";
+ListOwnerCanceledSharingTitle = "Teilen beendet!";
+ListOwnerCanceledSharingMessage = "%@ hat %@ aus der Gruppenliste '%@' entfernt!";
+SharedUserCanceledSharingTitle = "Teilen beendet!";
+SharedUserCanceledSharingMessage = "%@ hat die Gruppenliste '%@' verlassen!";
+ListItemAddedTitle = "Artikel hinzugefügt!";
+ListItemAddedMessage = "%@ hat %@ zur Liste '%@' hinzugefügt";
+SharingDeclinedMessageTitle = "Einladung Abgelehnt!";
+SharingDeclinedMessageMessage = "%@ hat Deine Einladung zum Teilen Deiner Liste abgelehnt.";
+
+
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Liste Löschen?";
 ShoppingListDeleteAlertMessage = "Beim Löschen der Liste werden alle Listenelemente ebenfalls gelöscht.";
+
+    //Cancel Sharing List Message
+CancelSharingTitle = "Teilen beenden?";
+CancelSharingMessage = "Wenn Du Teilen beendest, kannst Du die Shopping Liste Deines Freundes nicht mehr einsehen!";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";

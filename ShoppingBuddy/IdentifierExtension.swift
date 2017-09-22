@@ -23,4 +23,11 @@ extension String{
     
     //InvatationCell Identifier
     static let InvitationCell_Identifier = "InvitationCell"
+    
+    
+    static let ListMemberCell_Identifier = "ListMemberCell"
+    static let ListMemberCell2_Identifier = "ListMemberCellTwo"
+    
+    static let ShowCancelSharingpopOver_Identifier = "ShowCancelSharingpopOver"
+    static let CancelSharingMemberCell_Identifier = "CancelSharingMemberCell"
 }

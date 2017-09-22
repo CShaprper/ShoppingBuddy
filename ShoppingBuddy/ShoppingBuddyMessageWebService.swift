@@ -12,26 +12,398 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimationService {
+class ShoppingBuddyMessageWebservice {
     
     var alertMessageDelegate: IAlertMessageDelegate?
     var activityAnimationServiceDelegate: IActivityAnimationService?
+    internal var sbUserService:ShoppingBuddyUserWebservice!
     
-    private var ref = Database.database().reference()
-    private var userRef = Database.database().reference().child("users")
+    internal var ref = Database.database().reference()
+    internal var userRef = Database.database().reference().child("users")
     
+    init() {
+        sbUserService = ShoppingBuddyUserWebservice()
+    }
+    
+    
+    //Share Functions
+    func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {
+        
+        self.ShowActivityIndicator()
+        
+        userRef.queryOrdered(byChild: "email").queryEqual(toValue: friendsEmail).observe(.value, with: { (snapshot) in
+            
+            if snapshot.value is NSNull {
+                
+                let title = String.UserEmailNotFoundTitle
+                let message = String.localizedStringWithFormat(NSLocalizedString("UserEmailNotFoundMessage", comment: ""), friendsEmail)
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            for childs in snapshot.children {
+                
+                let receipt = childs as! DataSnapshot
+                
+                //Write invitation Data to receipt ref
+                let msgRef = self.ref.child("messages").childByAutoId()
+                let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
+                let inviteMessage = String.localizedStringWithFormat(NSLocalizedString("ShareListMessage", comment: ""), listOwner.nickname!) 
+                
+                //Add receipt to message_receipts node before creating message
+                self.ref.child("message_receipts").child(msgRef.key).updateChildValues([receipt.key:"receipt"], withCompletionBlock: { (error, dbRef) in
+                    
+                    if error != nil {
+                        
+                        NSLog(error!.localizedDescription)
+                        let title = String.OnlineFetchRequestError
+                        let message = error!.localizedDescription
+                        self.ShowAlertMessage(title: title, message: message)
+                        return
+                        
+                    }
+                    
+                    msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteMessage, "title":inviteTitle, "listID":list.id!, "messageType":eNotificationType.SharingInvitation.rawValue], withCompletionBlock: { (error, dbRef) in
+                        
+                        if error != nil {
+                            
+                            NSLog(error!.localizedDescription)
+                            let title = String.OnlineFetchRequestError
+                            let message = error!.localizedDescription
+                            self.ShowAlertMessage(title: title, message: message)
+                            return
+                            
+                        }
+                        
+                        self.HideActivityIndicator()
+                        NSLog("Succesfully added SharingInvitation to messages")
+                        
+                    })
+                    
+                })
+                
+            }
+            
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+    }
+    
+    func AcceptInvitation(invitation: ShoppingBuddyMessage) -> Void {
+        
+        self.ShowActivityIndicator()
+        let inviteAccepetdMessage = "\(currentUser!.nickname! ) \(String.ShareListAcceptedMessage)"
+        
+        let msgRef = ref.child("messages").childByAutoId()
+        
+        //Add receipt to sharing accepted message before creating message
+        self.ref.child("message_receipts").child(msgRef.key).child(invitation.senderID!).setValue("receipt", withCompletionBlock: { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            //delete sharing invitation message after accepted and before sending accepted message
+            self.ref.child("messages").child(invitation.id!).removeValue(completionBlock: { (error, dbRef) in
+                
+                if error != nil {
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                    
+                }
+                
+                //delete all users_messages node related to the invitation message
+                for receipt in invitation.receipts {
+                    
+                    self.ref.child("users_messages").child(receipt.memberID!).child(invitation.id!).removeValue(completionBlock: { (error, dbRef) in
+                        
+                        if error != nil {
+                            
+                            NSLog(error!.localizedDescription)
+                            let title = String.OnlineFetchRequestError
+                            let message = error!.localizedDescription
+                            self.ShowAlertMessage(title: title, message: message)
+                            return
+                            
+                        }
+                        
+                        //Add invite accepted message
+                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteAccepetdMessage, "title":String.ShareListAcceptedTitle, "listID":invitation.listID!, "messageType":eNotificationType.SharingAccepted.rawValue], withCompletionBlock: { (error, dbRef) in
+                            
+                            if error != nil {
+                                
+                                NSLog(error!.localizedDescription)
+                                let title = String.OnlineFetchRequestError
+                                let message = error!.localizedDescription
+                                self.ShowAlertMessage(title: title, message: message)
+                                return
+                                
+                            }
+                            
+                            self.HideActivityIndicator()
+                            NSLog("Successfully accepted invite node")
+                            
+                        })
+                        
+                        
+                    })
+                    
+                }
+                
+            })
+            
+            
+        })
+        
+    }
+    
+    func DeclineSharingInvitation(message: ShoppingBuddyMessage) -> Void {
+        
+        
+        let msgRef = ref.child("messages").childByAutoId()
+        ref.child("message_receipts").child(msgRef.key).child(message.senderID!).setValue("DeclineSharingInvitation") { (error, dbRef) in
+        
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            //delete sharing invitation message after declined and before sending accepted message
+            self.ref.child("messages").child(message.id!).removeValue(completionBlock: { (error, dbRef) in
+                
+                if error != nil {
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                    
+                }
+
+                //delete all users_messages node related to the invite message
+                for receipt in message.receipts {
+                    
+                    self.ref.child("users_messages").child(receipt.memberID!).child(message.id!).removeValue(completionBlock: { (error, dbRef) in
+                        
+                        if error != nil {
+                            
+                            NSLog(error!.localizedDescription)
+                            let title = String.OnlineFetchRequestError
+                            let message = error!.localizedDescription
+                            self.ShowAlertMessage(title: title, message: message)
+                            return
+                            
+                        }
+                        
+                        //Add invite declined message
+                        let title = String.SharingDeclinedMessageTitle
+                        let msg = String.localizedStringWithFormat(String.SharingDeclinedMessageMessage, currentUser!.nickname!)
+                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":msg, "title":title, "listID":message.listID!, "messageType":eNotificationType.DeclinedSharingInvitation.rawValue], withCompletionBlock: { (error, dbRef) in
+                            
+                            if error != nil {
+                                
+                                NSLog(error!.localizedDescription)
+                                let title = String.OnlineFetchRequestError
+                                let message = error!.localizedDescription
+                                self.ShowAlertMessage(title: title, message: message)
+                                return
+                                
+                            }
+                            
+                            self.HideActivityIndicator()
+                            NSLog("Successfully accepted invite node")
+                            
+                        })
+                        
+                        
+                    })
+                    
+                }
+                
+            })
+            
+        }
+        
+        
+    }
+    
+    func DeleteMessage(messageID: String) -> Void {
+        
+        self.ShowActivityIndicator()
+        ref.child("users_messages").child(currentUser!.id!).child(messageID).removeValue { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            self.HideActivityIndicator()
+            NSLog("Successfully removed invite accepted message")
+        }
+        
+    }
+    
+    func ObserveAllMessages() -> Void {
+        
+        if currentUser?.id == nil { return }
+        ShowActivityIndicator()
+        
+        ref.child("users_messages").child(currentUser!.id!).observe(.value, with: { (alluserMessagesSnap) in
+            
+            allMessages = []
+            
+            if alluserMessagesSnap.value is NSNull {
+                
+                allMessages = []
+                self.HideActivityIndicator()
+                NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
+                return
+                
+            }
+            
+            for messages in alluserMessagesSnap.children {
+                
+                let msg = messages as! DataSnapshot
+                self.ObserveMessage(messageID: msg.key)
+                
+            }
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            
+        }
+        
+    }
+    
+    
+    func ObserveMessage(messageID:String) -> Void {
+        
+        ShowActivityIndicator()
+        ref.child("messages").child(messageID).observeSingleEvent(of: .value, with: { (messageSnap) in
+            
+            if messageSnap.value is NSNull { self.HideActivityIndicator(); return }
+            
+            var newMsg = ShoppingBuddyMessage()
+            newMsg.id = messageSnap.key
+            newMsg.message = messageSnap.childSnapshot(forPath: "message").value as? String
+            newMsg.title = messageSnap.childSnapshot(forPath: "title").value as? String
+            newMsg.listID = messageSnap.childSnapshot(forPath: "listID").value as? String
+            newMsg.senderID = messageSnap.childSnapshot(forPath: "senderID").value as? String
+            newMsg.messageType = messageSnap.childSnapshot(forPath: "messageType").value as? String
+            
+            
+            self.ref.child("message_receipts").child(messageID).observeSingleEvent(of: .value, with: { (receiptsSnap) in
+                
+                //get all receipts
+                var newReceipts = [ShoppingListMember]()
+                for receipts in receiptsSnap.children {
+                    
+                    let receipt = receipts as! DataSnapshot
+                    var member = ShoppingListMember()
+                    member.memberID = receipt.key
+                    member.status = receipt.value as? String
+                    newReceipts.append(member)
+                    
+                    self.getUser(userID: member.memberID!)
+                    
+                }
+                newMsg.receipts = newReceipts
+                
+                if let index = allMessages.index(where: { $0.id == newMsg.id }) {
+                    
+                    allMessages[index] = newMsg
+                    
+                } else {
+                    
+                    allMessages.append(newMsg)
+                    
+                }
+                    
+                    //all invites received so lets inform userWebservice to download all users
+                    NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
+                    
+                
+                self.HideActivityIndicator()
+                
+            }, withCancel: { (error) in
+                
+                
+                NSLog(error.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                
+            })
+            
+            
+        }) { (error) in
+            
+            NSLog(error.localizedDescription)
+            let title = String.OnlineFetchRequestError
+            let message = error.localizedDescription
+            self.ShowAlertMessage(title: title, message: message)
+            
+        }
+    }
+    
+    private func getUser(userID:String) -> Void {
+        
+        //download user if unknown
+        if let _ = allUsers.index(where: { $0.id == userID }) { }
+        else {
+            sbUserService.ObserveUser(userID:userID)
+        }
+    }
+}
+extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimationService {
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.ShowActivityIndicator!()
+            DispatchQueue.main.async {
+                self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
+            }
         } else {
             NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingBuddyMessageWebservice")
         }
     }
     func HideActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.HideActivityIndicator!()
+            DispatchQueue.main.async {
+                self.activityAnimationServiceDelegate!.HideActivityIndicator!()
+            }
         } else {
             NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingBuddyMessageWebservice")
         }
@@ -49,111 +421,4 @@ class ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimationS
         }
     }
     
-    func AcceptInvitation(invitation: ShoppingBuddyInvitation) -> Void {
-        
-        self.ShowActivityIndicator()
-        let inviteAccepetdMessage = "\(currentUser!.nickname! ) \(String.ShareListAcceptedMessage)"
-        
-        ref.child("invites").child(invitation.id!).updateChildValues(["inviteAcceptedTitle":String.ShareListTitle, "inviteAcceptedMessage":inviteAccepetdMessage, "status":"accepted"], withCompletionBlock: { (error, dbRef) in
-            
-            if error != nil {
-                
-                NSLog(error!.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-                
-            }
-            
-            self.HideActivityIndicator()
-            NSLog("Successfully accepted invite node")
-            
-        })
-        
-    }
-     
-    
-    func ObserveAllInvites() -> Void {
-        
-        ShowActivityIndicator()
-        ref.child("users_invites").child(currentUser!.id!).observe(.value, with: { (allInvitesSnap) in
-            
-            if allInvitesSnap.value is NSNull { self.HideActivityIndicator(); return }
-            
-            for invites in allInvitesSnap.children {
-                
-                let invite = invites as! DataSnapshot
-                self.ObserveInvitation(inviteID: invite.key)
-                
-            }
-            
-        }) { (error) in
-            
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            
-        }
-        
-    }
-    
-    
-    func ObserveInvitation(inviteID:String) -> Void {
-        
-        ShowActivityIndicator()
-        ref.child("invites").child(inviteID).observe(.value, with: { (inviteSnap) in
-            
-            if inviteSnap.value is NSNull {
-                
-                self.HideActivityIndicator()
-                if let index = allInvites.index(where: { $0.id == inviteID }) {
-                    
-                    allInvites.remove(at: index)
-                    NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
-                    
-                }
-                
-                return
-                
-            }
-            
-            var newInvite = ShoppingBuddyInvitation()
-            newInvite.id = inviteSnap.key
-            newInvite.inviteMessage = inviteSnap.childSnapshot(forPath: "inviteMessage").value as? String
-            newInvite.inviteTitle = inviteSnap.childSnapshot(forPath: "inviteTitle").value as? String
-            newInvite.listID = inviteSnap.childSnapshot(forPath: "listID").value as? String
-            newInvite.senderID = inviteSnap.childSnapshot(forPath: "senderID").value as? String
-            newInvite.receiptID = inviteSnap.childSnapshot(forPath: "receiptID").value as? String
-            
-            if let index = allInvites.index(where: { $0.id == newInvite.id }) {
-                
-                allInvites[index] = newInvite
-                
-            } else {
-                
-                allInvites.append(newInvite)
-                
-            }
-            self.HideActivityIndicator()
-            
-            
-            //all invites received so lets inform userWebservice to download all users
-            NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
-            
-            
-        }) { (error) in
-            
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            
-        }
-        
-        
-        
-    }
 }
-

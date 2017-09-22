@@ -74,12 +74,36 @@ lbl_ShareListTitle = "Partager la liste";
 txt_ShareOpponentEmailPlaceholder = "Compartir lista con amigos";
 
     //Share List Message
+UserEmailNotFoundTitle = "User not found!";
+UserEmailNotFoundMessage = " could not be found. A user with this e-mail does not exist as Shopping Buddy user."; //user email not found
 ShareListMessage = "voudrait partager ses listes de courses avec vous.";
 ShareListTitle = "Invitation from";
+ShareListAcceptedTitle = "Sharing accepted";
+ShareListAcceptedMessage = "accepted your sharing invite.";
+NotAllowedToShareListAlertTitle = "Sharing forbidden!";
+NotAllowedToShareListAlertMessage = "You are only able to share lists that you have created.";
+DeleteMessage = "delete";
+lbl_CancelSharing = "Cancel sharing with friend";
+ListCurrentlyNotSharedTitle = "Cancel Sharing";
+ListCurrentlyNotSharedMessage = "This list is currently not shared. Cancel sharing is not possible!";
+CancelSharingSelectedMemberAlertTitle = "Cancel Sharing?";
+CancelSharingSelectedMemberAlertMessage = "This action will cancel the sharing of this list with ";
+ListOwnerCanceledSharingTitle = "Sharing canceled!";
+ListOwnerCanceledSharingMessage = "%@ removed %@ from group list '%@'!";
+SharedUserCanceledSharingTitle = "Sharing canceled!";
+SharedUserCanceledSharingMessage = "%@ has left the group list %@.";
+ListItemAddedTitle = "Article added!";
+ListItemAddedMessage = "%@ added '%' to shopping list '%@'";
+SharingDeclinedMessageTitle = "Sharing invite declined";
+SharingDeclinedMessageMessage = "%@ declined your list sharing invitation.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Supprimer la liste de courses ?";
 ShoppingListDeleteAlertMessage = "Cela supprimera la liste ainsi que tous ses ÈlÈments.";
+
+    //Cancel Sharing List Message
+CancelSharingTitle = "Cancel sharing?";
+CancelSharingMessage = "After canceling the sharing you won't be able to see your friends list.";
 
     //Firebase Fetch errors
 OnlineFetchRequestError = "Web Request Error";

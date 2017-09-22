@@ -66,7 +66,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     }
     
     //MARK: - Wired actions
-    func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
+    @objc func GeofenceRadiusSlider_Changed(sender: UISlider) -> Void {
         let value = roundf(sender.value * 2) / 2
         print(value)
         GeofenceRadiusSlider.value = value

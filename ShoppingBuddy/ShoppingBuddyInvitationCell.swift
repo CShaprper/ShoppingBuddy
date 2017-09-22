@@ -21,7 +21,7 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
         // Initialization code
     }
     
-    func ConfigureCell(invitation: ShoppingBuddyInvitation) -> Void{
+    func ConfigureCell(invitation: ShoppingBuddyMessage) -> Void{
         self.backgroundColor = UIColor.clear
         
         SenderProfileImage.layer.cornerRadius = SenderProfileImage.frame.width * 0.5
@@ -39,8 +39,8 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
             
         }
         
-        lbl_InviteTitle.text = invitation.inviteTitle != nil ? invitation.inviteTitle! : ""
-        lbl_IvitationMessage.text = invitation.inviteMessage != nil ? invitation.inviteMessage! : ""
+        lbl_InviteTitle.text = invitation.title != nil ? invitation.title! : ""
+        lbl_IvitationMessage.text = invitation.message != nil ? invitation.message! : ""
         
         let whiteRoundedView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height - 5))
         

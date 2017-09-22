@@ -15,6 +15,7 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     
     private var blurrView:UIVisualEffectView!
+    internal var sbUserService:ShoppingBuddyUserWebservice!
     internal var sbMessageWebservice:ShoppingBuddyMessageWebservice!
     
     
@@ -30,16 +31,23 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         tabBarItem.title = String.MessagesControllerTitle
         
         //NotificationListener
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AllInvitesReceived), name: NSNotification.Name.AllInvitesReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SharingInviteReceived), name: NSNotification.Name.SharingInviteReceived, object: nil)
         
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
         sbMessageWebservice.activityAnimationServiceDelegate = self
         sbMessageWebservice.alertMessageDelegate = self
-        sbMessageWebservice.ObserveAllInvites()
+        sbMessageWebservice.ObserveAllMessages()
+        
+        //sbUserWebservice
+        sbUserService = ShoppingBuddyUserWebservice()
+        sbUserService.activityAnimationServiceDelegate = self
+        sbUserService.alertMessageDelegate = self
     }
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated) 
+        super.viewWillAppear(animated)
     }
     
     //MARK: - IAlertMessageDelegate
@@ -72,11 +80,29 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
     }
     
     //MARK: - Notification listener selectors
-    func AllInvitesReceived(notification: Notification) -> Void {
+    @objc func AllInvitesReceived(notification: Notification) -> Void {
         
-         InvitationsTableView.reloadData()
+        InvitationsTableView.reloadData()
         
-    } 
+        for msg in allMessages{
+            
+            if let _ = allUsers.index(where: { $0.id == msg.senderID }){ }
+            else {  sbUserService.ObserveUser(userID: msg.senderID!) }
+            
+        }
+        
+    }
+    
+    @objc func SharingInviteReceived(notification: Notification) -> Void {
+        
+        
+    }
+    
+    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {
+        
+        InvitationsTableView.reloadData()   
+        
+    }
 }
 
 extension MessagesController: UITableViewDelegate, UITableViewDataSource{
@@ -86,14 +112,14 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allInvites.count
-
+        return allMessages.count
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: String.InvitationCell_Identifier, for: indexPath) as! ShoppingBuddyInvitationCell
         
-        let invite = allInvites[indexPath.row]
+        let invite = allMessages[indexPath.row]
         
         cell.ConfigureCell(invitation: invite)
         
@@ -106,25 +132,37 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        let accept = UITableViewRowAction(style: .normal, title: String.AcceptInvitation) { (action, index) in
+        if allMessages[indexPath.row].messageType == eNotificationType.SharingInvitation.rawValue {
+            //Set tableview buttons for Sharing Invites
+            let accept = UITableViewRowAction(style: .normal, title: String.AcceptInvitation) { (action, index) in
+                
+                self.sbMessageWebservice.AcceptInvitation(invitation: allMessages[indexPath.row])
+                tableView.setEditing(false, animated: true)
+                
+            }
+            accept.backgroundColor = UIColor.green
             
-            self.sbMessageWebservice.AcceptInvitation(invitation: allInvites[indexPath.row])
-            tableView.setEditing(false, animated: true)
+            let decline = UITableViewRowAction(style: .destructive, title: String.DeclineInvitation) { (action, indexp) in
+                
+                tableView.setEditing(false, animated: true)
+                self.sbMessageWebservice.DeclineSharingInvitation(message: allMessages[indexPath.row])
+                
+            }
+            return [accept, decline]
             
-            //tableView.deleteRows(at: [indexPath], with: .fade)
+        } else {
             
-        }
-        accept.backgroundColor = UIColor.green
-        
-        let decline = UITableViewRowAction(style: .destructive, title: String.DeclineInvitation) { (action, index) in
+            let delete = UITableViewRowAction(style: .destructive, title: "delete", handler: { (action, indexp) in
+                
+                self.sbMessageWebservice.DeleteMessage(messageID: allMessages[indexPath.row].id!)
+                allMessages.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                tableView.setEditing(false, animated: true)
+                
+            })
+            return [delete]
             
-            tableView.setEditing(false, animated: true)
-            
-            //tableView.deleteRows(at: [indexPath], with: .fade)
-            
-        }
-        
-        return [accept, decline]
+        } 
     }
     
     
@@ -132,22 +170,6 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
-    }
-    
-    
-    
-    // editing the table view.
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        print(indexPath.row) 
-        /*
-         if editingStyle == .delete {
-         
-         // Delete the row from the data source
-         tableView.deleteRows(at: [indexPath], with: .fade)
-         
-         } else if editingStyle == .insert {
-         
-         }*/
     }
     
     

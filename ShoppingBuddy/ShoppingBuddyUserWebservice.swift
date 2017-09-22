@@ -7,55 +7,32 @@
 //
 
 import Foundation
+import UIKit
 import FirebaseCore
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseMessaging
 import FirebaseStorage
 
-class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnimationService, URLSessionDelegate {
+class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     var activityAnimationServiceDelegate:IActivityAnimationService?
     var alertMessageDelegate: IAlertMessageDelegate?
     
-    private var ref = Database.database().reference()
-    private var userRef = Database.database().reference().child("users")
+    internal var ref = Database.database().reference()
+    internal var userRef = Database.database().reference().child("users")
     
     override init() {
         super.init()
     }
     
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
-                self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
-            }
-        }
-    }
-    func HideActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
-                self.activityAnimationServiceDelegate!.HideActivityIndicator!()
-            }
-        }
-    }
-    
-    //MARK: - IAlertMessageDelegate implementation
-    func ShowAlertMessage(title: String, message: String) {
-        HideActivityIndicator()
-        if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
-                self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
-            }
-        }
-    }
-    
     //CurrentUser Download
     func GetCurrentUser(){
         ShowActivityIndicator()
-        userRef.child(Auth.auth().currentUser!.uid).observe(.value, with: { (snapshot) in
+        userRef.child(Auth.auth().currentUser!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             
             if snapshot.value is NSNull { self.HideActivityIndicator(); return }
+            
+            if currentUser == nil { return }
             
             currentUser!.id = snapshot.key
             currentUser!.email = snapshot.childSnapshot(forPath: "email").value as? String
@@ -64,38 +41,15 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
             currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
             currentUser!.userProfileImageFromURL()
             
-            allUsers.append(currentUser!)
-            
-            NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
-            
-        }) { (error) in
-            
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            
-        }
-    }
-    
-    
-    func ObserveUsersFriends() -> Void {
-        
-        ShowActivityIndicator()
-        ref.child("users_friends").child(currentUser!.id!).observe(.value, with: { (friendsSnap) in
-            
-            if friendsSnap.value is NSNull { self.HideActivityIndicator(); return }
-            
-  
-            for friendSnap in friendsSnap.children {
+            DispatchQueue.main.async {
                 
-                let friend = friendSnap as! DataSnapshot
-                self.ObserveUser(userID: friend.key)
+                allUsers.append(currentUser!)
+                self.HideActivityIndicator()
+                NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
                 
             }
             
             
-            
         }) { (error) in
             
             NSLog(error.localizedDescription)
@@ -104,13 +58,12 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
             self.ShowAlertMessage(title: title, message: message)
             
         }
-        
     }
     
     func ObserveUser(userID: String){
         
         ShowActivityIndicator()
-        userRef.child(userID).observe(.value, with: { (userSnap) in
+        userRef.child(userID).observeSingleEvent(of: .value, with: { (userSnap) in
             
             if userSnap.value is NSNull { self.HideActivityIndicator(); return }
             
@@ -122,9 +75,13 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
             newUser.profileImageURL = userSnap.childSnapshot(forPath: "profileImageURL").value as? String
             newUser.userProfileImageFromURL()
             
-            allUsers.append(newUser)
+            DispatchQueue.main.async {
+                
+                allUsers.append(newUser)
+                self.HideActivityIndicator()
+                
+            }
             
-            // NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
             
         }) { (error) in
             
@@ -196,6 +153,7 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
                 }
                 return
             } else {
+                
                 let sbUser = ShoppingBuddyUser()
                 sbUser.profileImage = profileImage
                 sbUser.nickname = nickname
@@ -229,51 +187,6 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
             NSLog("Refreshed User fcmToken")
         }
     }
-    
-    /*
-     private func UserProfileImageDownloadTask(url:URL) -> Void {
-     
-     self.ShowActivityIndicator()
-     if let _ = allUsers.index(where: { $0.profileImageURL == url.absoluteString }) {
-     
-     HideActivityIndicator()
-     NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
-     return
-     
-     }
-     
-     let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-     
-     if error != nil {
-     
-     NSLog(error!.localizedDescription)
-     let title = String.OnlineFetchRequestError
-     let message = error!.localizedDescription
-     self.ShowAlertMessage(title: title, message: message)
-     return
-     
-     }
-     
-     DispatchQueue.main.async {
-     
-     if let downloadImage = UIImage(data: data!) {
-     
-     if let index = allUsers.index(where: { $0.profileImageURL == url.absoluteString }) {
-     
-     allUsers[index].profileImage = allUsers[index].profileImage == nil ? downloadImage : nil
-     
-     }
-     
-     self.HideActivityIndicator()
-     
-     
-     NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
-     
-     }
-     }
-     }
-     task.resume()
-     }*/
     
     func ResetUserPassword(email:String){
         
@@ -319,6 +232,55 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
         }
     }
     
+    func changeUserProfileImage(forUserID:String, image:UIImage) -> Void {
+        if let uploadData = image.mediumQualityJPEGNSData {
+            let imagesRef = Storage.storage().reference().child(forUserID)
+            let _ = imagesRef.putData(uploadData as Data, metadata: nil, completion: { (metadata, error) in
+                
+                if error != nil {
+                    
+                    NSLog(error!.localizedDescription)
+                    let title = String.OnlineFetchRequestError
+                    let message = error!.localizedDescription
+                    self.ShowAlertMessage(title: title, message: message)
+                    return
+                    
+                }
+                
+                
+                if let imgURL =  metadata?.downloadURL()?.absoluteString {
+
+                    self.ref.child("users").child(forUserID).child("profileImageURL").setValue(imgURL, withCompletionBlock: { (err, ref) in
+                        
+                        if err != nil {
+                            
+                            NSLog(err!.localizedDescription)
+                            let title = String.OnlineFetchRequestError
+                            let message = err!.localizedDescription
+                            self.ShowAlertMessage(title: title, message: message)
+                            return
+                            
+                        }
+                        
+                        self.HideActivityIndicator()
+                        NSLog("Succesfully saved user to Firebase")
+                        if let index = allUsers.index(where: { $0.id == forUserID}) {
+                            
+                            allUsers[index].profileImage = image
+                            allUsers[index].profileImageURL = imgURL
+                            
+                        }
+                        NotificationCenter.default.post(name: Notification.Name.CurrentUserCreated, object: nil, userInfo: nil)
+                        
+                    })
+                }
+                
+                print("Successfully uploaded prodcut image!")
+                
+            }) // end: let _ = imagesRef.putData
+        }//end: if let let uploadData
+    }
+    
     //MARK: - Helpers
     private func SaveNewUserWithUIDtoFirebase(shoppingBuddyUser:ShoppingBuddyUser, user: User?) -> Void {
         
@@ -341,36 +303,66 @@ class ShoppingBuddyUserWebservice:NSObject, IAlertMessageDelegate, IActivityAnim
                         
                     }
                     
-                    DispatchQueue.main.async {
+                    
+                    if let imgURL =  metadata?.downloadURL()?.absoluteString {
                         
-                        if let imgURL =  metadata?.downloadURL()?.absoluteString {
+                        let token:String = Messaging.messaging().fcmToken!
+                        let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
+                        self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                             
-                            let token:String = Messaging.messaging().fcmToken!
-                            let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
-                            self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
+                            if err != nil {
                                 
-                                if err != nil {
-                                    
-                                    NSLog(err!.localizedDescription)
-                                    let title = String.OnlineFetchRequestError
-                                    let message = err!.localizedDescription
-                                    self.ShowAlertMessage(title: title, message: message)
-                                    return
-                                    
-                                } else {
-                                    
-                                    self.HideActivityIndicator()
-                                    NSLog("Succesfully saved user to Firebase")
-                                    
-                                }
-                            })
-                        }
-                        
-                        print("Successfully uploaded prodcut image!")
-                        
-                    }//end: Dispatch Queue
+                                NSLog(err!.localizedDescription)
+                                let title = String.OnlineFetchRequestError
+                                let message = err!.localizedDescription
+                                self.ShowAlertMessage(title: title, message: message)
+                                return
+                                
+                            } else {
+                                
+                                self.HideActivityIndicator()
+                                NSLog("Succesfully saved user to Firebase")
+                                NotificationCenter.default.post(name: Notification.Name.CurrentUserCreated, object: nil, userInfo: nil)
+                                
+                            }
+                        })
+                    }
+                    
+                    print("Successfully uploaded prodcut image!")
+                    
                 }) // end: let _ = imagesRef.putData
             }//end: if let let uploadData
         }
     }
+}
+extension ShoppingBuddyUserWebservice: IAlertMessageDelegate, IActivityAnimationService {
+    
+    //MARK: - IActivityAnimationService implementation
+    func ShowActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            activityAnimationServiceDelegate!.ShowActivityIndicator!()
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingListItem")
+        }
+    }
+    func HideActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            activityAnimationServiceDelegate!.HideActivityIndicator!()
+        } else {
+            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingListItem")
+        }
+    }
+    
+    //MARK: IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
+        self.HideActivityIndicator()
+        if alertMessageDelegate != nil {
+            DispatchQueue.main.async {
+                self.alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
+            }
+        } else {
+            NSLog("AlertMessageDelegate not set from calling class in ShoppingListItem")
+        }
+    }
+    
 }

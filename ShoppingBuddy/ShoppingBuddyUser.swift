@@ -32,10 +32,14 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
         
         if let index = allUsers.index(where: { $0.profileImageURL == self.profileImageURL }) {
             
-            if allUsers[index].profileImage == nil { return }
+            if allUsers[index].profileImage == nil {
+                let uTask = self.uSession.downloadTask(with: URL(string: self.profileImageURL!)!)
+                uTask.resume()
+                return
+            }
             
             self.profileImage = allUsers[index].profileImage!
-            NSLog("UserProfileImage set from ImageCache!")
+            NSLog("UserProfileImage for \(self.nickname!) set from ImageCache!")
             NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
             return
             
@@ -49,14 +53,21 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
             
         }
     }
+    
     internal func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL){
         
         if let image = try? UIImage(data: Data(contentsOf: location)), image != nil {
             
+            if let index = allUsers.index(where: { $0.profileImageURL == self.profileImageURL }){
+                
+                allUsers[index].profileImage = image
+                
+            }
+            
             self.profileImage = image
             self.localImageLocation = location.absoluteString
             NSLog("Added UserProfileImage for \(self.nickname!) to allUsers")
-            NSLog("UserProfileImage set from DownloadTask!")
+            NSLog("UserProfileImage for \(self.nickname!) set from DownloadTask!")
             NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
             
         } else {
@@ -67,6 +78,7 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
         }
         
     }
+    
     internal func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         
         if error != nil {

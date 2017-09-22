@@ -20,7 +20,7 @@ public extension Notification.Name {
     static let ShoppingBuddyListDataReceived = Notification.Name("ShoppingBuddyListDataReceived")
     
     //Notification names on UserWebservice
-    static let SharingInvitationNotification = Notification.Name("SharingInvitationNotification")
+    static let PushNotificationReceived = Notification.Name("PushNotificationReceived") 
     static let ShoppingBuddyUserLoggedOut = Notification.Name("ShoppingBuddyUserLoggedOut")
     static let ShoppingBuddyUserLoggedIn = Notification.Name("ShoppingBuddyUserLoggedIn")
     static let UserProfileImageDownloadFinished = Notification.Name("UserProfileImageDownloadFinished")
@@ -33,4 +33,8 @@ public extension Notification.Name {
     static let ListItemSaved = Notification.Name("ListItemSaved")
     static let ListItemReceived = Notification.Name("ListItemReceived")
     
+    static let UserAcceptedSharing = Notification.Name("UserAcceptedSharing")
+    
+    static let CurrentUserCreated = Notification.Name("CurrentUserCreated")
+    static let SharingInviteReceived = Notification.Name("SharingInviteReceived")
 }

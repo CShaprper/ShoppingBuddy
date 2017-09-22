@@ -9,7 +9,7 @@
 import UIKit
 import FirebaseAuth
 
-class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IActivityAnimationService {
+class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IActivityAnimationService, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -63,6 +63,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var lbl_ShoppingCardOpenItems: UILabel!
     @IBOutlet var btn_ShoppingCardShareList: UIButton!
     @IBOutlet var ShoppingListOwnerImage: UIImageView!
+    @IBOutlet var CardOneMembersCollectionView: UICollectionView!
+    @IBOutlet var btn_CancelSharingCardOne: UIButton!
+    
     
     //Shopping List Card2
     @IBOutlet var ShoppingListCard2: UIView!
@@ -78,6 +81,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var lbl_ShoppingCard2OpenItems: UILabel!
     @IBOutlet var btn_ShoppingCard2ShareList: UIButton!
     @IBOutlet var ShoppingListCard2OwnerImage: UIImageView!
+    @IBOutlet var CardTwoMembersCollectionView: UICollectionView!
+    @IBOutlet var btn_CancelSharingCardTwo: UIButton!
+    
     
     //Share List PopUp
     @IBOutlet var ShareListPopUp: UIView!
@@ -85,11 +91,18 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var txt_ShareListOpponentEmail: UITextField!
     @IBOutlet var btn_ShareListSave: UIButton!
     
+    
     //InviatationNotification
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
-    @IBOutlet var lbl_InviteMessage: UILabel!
+    @IBOutlet var txt_InviteMessage: UITextView!
     @IBOutlet var InviteUserImage: UIImageView!
+    
+    //Cancel Sharing PopUp
+    @IBOutlet var CancelSharingPopUp: UIView!
+    @IBOutlet var CancelSharingMemberCollectionView: UICollectionView!
+    @IBOutlet var lbl_CancelSharing: UILabel!
+    
     
     
     //MARK:- Member
@@ -110,6 +123,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ConfigureView()
         
         //Notification Listeners
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyListDataReceived), name: NSNotification.Name.ShoppingBuddyListDataReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ListItemSaved), name: NSNotification.Name.ListItemSaved, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ListItemReceived), name: NSNotification.Name.ListItemReceived, object: nil)
@@ -131,20 +145,37 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     //MARK: - IShoppingBuddyListItemWebService implementation
-    func ListItemSaved() {
+    @objc func ListItemSaved() {
         
         lbl_ShoppingCardTotalItems.text = String(allShoppingLists[currentShoppingListIndex].items.count)
         lbl_ShoppingCardOpenItems.text = String(allShoppingLists[currentShoppingListIndex].items.filter({ $0.isSelected! == false }).count)
         
     }
     
-    func ListItemReceived() {
+    @objc func ListItemReceived() {
         
         //Sort items and reload TableView
         SortShoppingListItemsArrayBy_isSelected()
         
     }
     
+    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {
+        
+        CardOneMembersCollectionView.reloadData()
+        CardTwoMembersCollectionView.reloadData()
+        RefreshCardView()
+        
+    }
+    
+    
+    //MARK: - IAlertMessageDelegate implementation
+    func ShowAlertMessage(title: String, message: String) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+        
+    }
     
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
@@ -167,18 +198,39 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     
     //MARK: - IFirebaseListWebService implementation
-    func ShoppingBuddyListDataReceived() {
+    @objc func ShoppingBuddyListDataReceived() {
         
-        ShoppingListDetailTableView.reloadData()
-        SortShoppingListItemsArrayBy_isSelected()
-        /*
-        for list in allShoppingLists {
-            if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == list.ownerImageURL }) {
-                if let listindex = allShoppingLists.index(where: { $0.id == list.id }) {
-                    allShoppingLists[listindex].ownerImage = ProfileImageCache[index].UserProfileImage!
-                }
+        //download user if unknown
+        for list in allShoppingLists{
+            
+            if let _ = allUsers.index(where: { $0.id == list.owneruid }) {}
+            else {
+                
+                //download user
+                let sbUserService = ShoppingBuddyUserWebservice()
+                sbUserService.alertMessageDelegate = self
+                sbUserService.activityAnimationServiceDelegate = self
+                sbUserService.ObserveUser(userID: list.owneruid!)
+                
             }
-        }*/
+            
+            for member in list.members {
+                
+                if let _ = allUsers.index(where: { $0.id == member.memberID }) {}
+                else {
+                    
+                    //download user
+                    let sbUserService = ShoppingBuddyUserWebservice()
+                    sbUserService.alertMessageDelegate = self
+                    sbUserService.activityAnimationServiceDelegate = self
+                    sbUserService.ObserveUser(userID: member.memberID!)
+                    
+                }
+                
+            }
+            
+        }
+        
         RefreshCardView()
         
     }
@@ -187,12 +239,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         ShoppingListCard2OwnerImage.alpha = 1
         ShoppingListOwnerImage.alpha = 1
+        RefreshCardView()
         
     }
     
     func ShoppingBuddyNewListSaved(listID:String) {
         
-        sbListWebservice.ObserveSingleList(listID: listID)
+        sbListWebservice.ObserveAllList()
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         
     }
@@ -207,19 +260,50 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     
-    //MARK: - IAlertMessageDelegate implementation
-    func ShowAlertMessage(title: String, message: String) {
+    //MARK: - Wired Actions
+    //MARK: Buttons
+    @objc func btn_CancelSharingCardOne_Pressed(sender: UIButton) -> Void {
         
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+        cancelSharing()
+        CardOneMembersCollectionView.reloadData()
         
     }
     
+    @objc func btn_CancelSharingCardTwo_Pressed(sender: UIButton) -> Void {
+        
+        cancelSharing()
+        CardOneMembersCollectionView.reloadData()
+        
+    }
     
-    //MARK: - Wired Actions
-    //Shopping List
-    func btn_SaveList_Pressed(sender: UIButton) -> Void {
+    private func cancelSharing() -> Void {
+        
+        if allShoppingLists[currentShoppingListIndex].members.count == 0 {
+            
+            let title = String.ListCurrentlyNotSharedTitle
+            let message = String.ListCurrentlyNotSharedMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        if ShowBlurrView() {
+            
+            lbl_CancelSharing.text = String.lbl_CancelSharing
+            CancelSharingPopUp.layer.shadowColor  = UIColor.black.cgColor
+            CancelSharingPopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+            CancelSharingPopUp.layer.shadowOpacity  = 1
+            CancelSharingPopUp.layer.shadowRadius  = 10
+            CancelSharingPopUp.frame.size.width = 300
+            CancelSharingPopUp.center = view.center
+            view.addSubview(CancelSharingPopUp)
+            CancelSharingPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            
+        }
+        
+    }
+    
+    @objc func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
@@ -228,36 +312,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             HideAddListPopUp()
         }
     }
-    @IBAction func btn_AddShoppingList_Pressed(_ sender: UIBarButtonItem) {
-        ShowAddShoppingListPopUp()
-    }
-    func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
-        HideAddListPopUp()
-        HideShareListPopUp()
-        ShoppingListDetailView.removeFromSuperview()
-    }
-    func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
-        NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
-        HideBlurrView()
-        HideListDetailView()
-        HideAddItemPopUp()
-        RefreshCardView()
-    }
-    func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
-        HideAddListPopUp()
-    }
-    func AddItemPopUp_OutsideTouch(sender: UITapGestureRecognizer) -> Void {
-        if view.subviews.contains(AddItemPopUp){
-            AddItemPopUp.removeFromSuperview()
-        }
-    }
-    func AddShoppingListPopUp_OutsideTouch(sender: UITapGestureRecognizer) -> Void {
-        if view.subviews.contains(AddShoppingListPopUp){
-            AddShoppingListPopUp.removeFromSuperview()
-        }
-    }
     //Shopping List Items
-    func btn_SaveItem_Pressed(sender: UIButton) -> Void {
+    @objc func btn_SaveItem_Pressed(sender: UIButton) -> Void {
         
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
@@ -267,7 +323,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             var newListItem = ShoppingListItem()
             newListItem.itemName = txt_ItemName.text!
             newListItem.listID = allShoppingLists[currentShoppingListIndex].id!
-            sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem)
+            sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem, currentShoppingListIndex: currentShoppingListIndex)
             
             HideAddItemPopUp()
             
@@ -275,17 +331,64 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    func btn_ShareListSave_Pressed(sender: UIButton) -> Void {
+    @objc func btn_ShareListSave_Pressed(sender: UIButton) -> Void {
         
         var isValid:Bool = false
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         
         if isValid {
             
-            sbListWebservice.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: allShoppingLists[currentShoppingListIndex], listOwner: currentUser!)
+            let sbMessageService = ShoppingBuddyMessageWebservice()
+            sbMessageService.alertMessageDelegate = self
+            sbMessageService.activityAnimationServiceDelegate = self
+            sbMessageService.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: allShoppingLists[currentShoppingListIndex], listOwner: currentUser!)
             HideShareListPopUp()
+            
         }
         
+    }
+    
+    @objc func btn_ShoppingCardShareList_Pressed(sender: UIButton) -> Void {
+        ShowShareListPopUp()
+    }
+    
+    @objc func btn_ShoppingCard2ShareList_Pressed(sender: UIButton) -> Void {
+        ShowShareListPopUp()
+    }
+    
+    @IBAction func btn_AddShoppingList_Pressed(_ sender: UIBarButtonItem) {
+        ShowAddShoppingListPopUp()
+    }
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    //MARK: Gesture Recognizers
+    @objc func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
+        HideAddListPopUp()
+        HideShareListPopUp()
+        CancelSharingPopUp.removeFromSuperview()
+        ShoppingListDetailView.removeFromSuperview()
+    }
+    @objc func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
+        NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
+        HideBlurrView()
+        HideListDetailView()
+        HideAddItemPopUp()
+        RefreshCardView()
+    }
+    func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
+        HideAddListPopUp()
+    }
+    @objc func AddItemPopUp_OutsideTouch(sender: UITapGestureRecognizer) -> Void {
+        if view.subviews.contains(AddItemPopUp){
+            AddItemPopUp.removeFromSuperview()
+        }
+    }
+    @objc func AddShoppingListPopUp_OutsideTouch(sender: UITapGestureRecognizer) -> Void {
+        if view.subviews.contains(AddShoppingListPopUp){
+            AddShoppingListPopUp.removeFromSuperview()
+        }
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -308,15 +411,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         return false
         
     }
-    
-    func btn_ShoppingCardShareList_Pressed(sender: UIButton) -> Void {
-        ShowShareListPopUp()
-    }
-    
-    func btn_ShoppingCard2ShareList_Pressed(sender: UIButton) -> Void {
-        ShowShareListPopUp()
-    }
-    func HandleShoppingItemPan(sender: UIPanGestureRecognizer) -> Void {
+    @objc func HandleShoppingItemPan(sender: UIPanGestureRecognizer) -> Void {
         let swipeLocation = panRecognizer.location(in: self.ShoppingListDetailTableView)
         if let swipedIndexPath = ShoppingListDetailTableView.indexPathForRow(at: swipeLocation) {
             if let swipedCell = self.ShoppingListDetailTableView.cellForRow(at: swipedIndexPath) {
@@ -337,9 +432,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let xPercentFromCenter = point.x / view.center.x
                 
                 //calculate distance to drop item
-                let dropHeight = (ShoppingListDetailTableView.frame.height - swipeLocation.y) * 1.5
+                let dropHeight = abs((ShoppingListDetailTableView.frame.height - swipeLocation.y) * 2.5)
                 
-                let rightDropLimit:CGFloat = 0.9
+                let rightDropLimit:CGFloat = 0.45
                 let leftDropLimit:CGFloat = 0.25
                 
                 if abs(xPercentFromCenter) < rightDropLimit && velocity.x > 0{
@@ -359,11 +454,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
                 //Trash can image should bo on top
                 view.bringSubview(toFront: TrashImage)
-                TrashImage.alpha =  xPercentFromCenter > rightDropLimit ? 1 : 0
+                TrashImage.alpha =  xPercentFromCenter >= rightDropLimit ? 1 : 0
                 
                 //Perform animations on gesture .ended state
                 if panRecognizer.state == UIGestureRecognizerState.ended {
-                    if xPercentFromCenter <= -0.25 && isSelected! == false{
+                    if xPercentFromCenter <= -leftDropLimit && isSelected! == false{
                         //Shake Cart
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                             
@@ -391,7 +486,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             
                         })
                     }
-                    else if xPercentFromCenter >= 0.75{
+                    else if xPercentFromCenter >= rightDropLimit{
                         //Shake Trash
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                             
@@ -621,6 +716,41 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                         
                     }
                     
+                    self.RefreshCardView()
+                    if allShoppingLists.isEmpty {
+                        
+                        self.TrashImage.alpha = 0
+                        self.TrashImage.transform = .identity
+                        
+                    } else {
+                        
+                        self.ResetCardAfterSwipeOff(card: card)
+                        
+                    }
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (UIAlertAction) -> Void in
+                    self.ShoppingListCard.transform = .identity
+                    self.ShoppingListCard2.transform = .identity
+                }))
+                
+                self.present(alert, animated: true, completion: nil)
+                
+            } else {
+                
+                let title = String.CancelSharingTitle
+                let message = String.CancelSharingMessage
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (UIAlertAction) -> Void in
+                    
+                    self.sbListWebservice.DeleteShoppingListFromFirebase(listToDelete: allShoppingLists[self.currentShoppingListIndex])
+                    if let index = allShoppingLists.index(where: { $0.id == allShoppingLists[self.currentShoppingListIndex].id }) {
+                        
+                        allShoppingLists.remove(at: index)
+                        self.DecrementCurrentShoppingListIndex()
+                        
+                    }
+                    
                     if allShoppingLists.isEmpty {
                         
                         self.TrashImage.alpha = 0
@@ -640,17 +770,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 }))
                 
                 self.present(alert, animated: true, completion: nil)
-            } else {
-                let title = "Permission Denied"
-                let message = "Your are only allowed to delete your own lists!"
-                self.ShowAlertMessage(title: title, message: message)
-                self.ResetCardAfterSwipeOff(card: card)
+                
             }
         })
     }
     private func ResetCardAfterSwipeOff(card: UIView) -> Void {
         
-        self.SetNewCardValues()
+        IncrementCurrentShoppingListIndex()
+        self.RefreshCardView()
+        
         TrashImage.alpha = 0
         TrashImage.transform = .identity
         card.alpha = 0
@@ -662,18 +790,19 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             view.bringSubview(toFront: ShoppingListCard)
             ShoppingListCard2.transform = .identity
             ShoppingListCard2.transform = CGAffineTransform(rotationAngle: Double(8).degreesToRadians)
-            RefreshCardView()
             
         } else {
             
             view.bringSubview(toFront: ShoppingListCard2)
             ShoppingListCard.transform = .identity
             ShoppingListCard.transform = CGAffineTransform(rotationAngle: Double(5).degreesToRadians)
-            RefreshCardView()
+            
         }
     }
     
     func RefreshCardView(){
+        
+        if currentShoppingListIndex >= allShoppingLists.count { currentShoppingListIndex = 0 }
         
         if allShoppingLists.isEmpty {
             
@@ -707,36 +836,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             }
         }
     }
-    private func SetNewCardValues() -> Void {
-        
-        if allShoppingLists.count == 0 { return }
-        IncrementCurrentShoppingListIndex()
-        
-        NSLog("Shopping list array Count \(allShoppingLists.count)")
-        NSLog("Current Shopping List Index \(currentShoppingListIndex)")
-        NSLog("Current List Title \(allShoppingLists[currentShoppingListIndex].name!)")
-        
-        if allShoppingLists.count == 1 {
-            
-            SetCardOneValues(index: 0)
-            SetCardTwoValues(index: 0)
-            return
-            
-        }
-        
-        if currentUpperCard == 1 {
-            
-            SetCardOneValues(index: currentShoppingListIndex)
-            SetCardTwoValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
-            
-        } else {
-            
-            SetCardOneValues(index: determineLowerCardIndex(currentUpperListIndex: currentShoppingListIndex))
-            SetCardTwoValues(index: currentShoppingListIndex)
-            
-        }
-        
-    }
     
     private func IncrementCurrentShoppingListIndex() -> Void {
         
@@ -750,14 +849,24 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    private func determineLowerCardIndex(currentUpperListIndex:Int) -> Int {
+    internal func determineLowerCardIndex(currentUpperListIndex:Int) -> Int {
         
-        let lowerCardIndex = currentUpperListIndex == allShoppingLists.count - 1 ? 1 : currentUpperListIndex + 1
+        var lowerCardIndex:Int = 0
+        if allShoppingLists.count > 1 {
+            
+            lowerCardIndex = currentUpperListIndex == allShoppingLists.count - 1 ? 1 : currentUpperListIndex + 1
+            
+        } else {
+            
+            lowerCardIndex = currentUpperListIndex == allShoppingLists.count - 1 ? 0 : currentUpperListIndex + 1
+            
+        }
         return lowerCardIndex
         
     }
     
     private func SetCardOneValues(index: Int) -> Void{
+        
         
         lbl_ShoppingListCardTitle.text = allShoppingLists[index].name!
         lbl_ShoppingCardStoreName.text = allShoppingLists[index].relatedStore!
@@ -774,11 +883,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        HideShareListButtonIfCurrentUserNotIsListOwner()
-        
+        CardOneMembersCollectionView.reloadData()
+        SortShoppingListItemsArrayBy_isSelected()
+        ShoppingListDetailTableView.reloadData()
     }
     
     private func SetCardTwoValues(index: Int) -> Void{
+        
         
         lbl_ShoppingListCard2Title.text = allShoppingLists[index].name!
         lbl_ShoppingCard2StoreName.text = allShoppingLists[index].relatedStore!
@@ -794,36 +905,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        HideShareListButtonIfCurrentUserNotIsListOwner()
-        
-    }
-    private func HideShareListButtonIfCurrentUserNotIsListOwner() -> Void {
-        
-        //Hide share list button
-        if allShoppingLists[currentShoppingListIndex].owneruid == nil { return }
-        if  allShoppingLists[currentShoppingListIndex].owneruid! != UserDefaults.standard.string(forKey: eUserDefaultKey.CurrentUserID.rawValue) {
-            
-            if currentUpperCard == 1 {
-                
-                btn_ShoppingCardShareList.alpha = 0
-                
-            } else { btn_ShoppingCard2ShareList.alpha = 0 }
-            
-            return            
-        }
-        
-        if currentUpperCard == 1 {
-            
-            btn_ShoppingCardShareList.alpha = 1
-            
-        } else { btn_ShoppingCard2ShareList.alpha = 1 }
-        
+        CardTwoMembersCollectionView.reloadData()
+        SortShoppingListItemsArrayBy_isSelected()
+        ShoppingListDetailTableView.reloadData()
     }
     
-    //MARK: - Notification listener selectors     
+    //MARK: - Notification listener selectors
     func CurrentUserReceived(notification: Notification) -> Void {
         
-        // userdata received so lets observe his lists            
+        // userdata received so lets observe his lists
         //    sbListWebservice.ObserveAllList()
         
     }
@@ -837,7 +927,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     //MARK: Keyboard Notification Listener targets
-    func KeyboardWillShow(sender: Notification) -> Void {
+    @objc func KeyboardWillShow(sender: Notification) -> Void {
         
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             
@@ -848,7 +938,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
         
     }
-    func KeyboardWillHide(sender: Notification) -> Void {
+    @objc func KeyboardWillHide(sender: Notification) -> Void {
         
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             
@@ -871,7 +961,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    func ShowAddItemPopUp() -> Void{
+    @objc func ShowAddItemPopUp() -> Void{
         
         if view.subviews.contains(AddItemPopUp){
             
@@ -888,6 +978,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     func ShowShareListPopUp() -> Void{
+        
+        if allShoppingLists[currentShoppingListIndex].owneruid! != currentUser!.id! {
+            let title = String.NotAllowedToShareListAlertTitle
+            let message = String.NotAllowedToShareListAlertMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+        }
         
         if ShowBlurrView() {
             
@@ -941,6 +1038,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
+    func hideCanceSharingPopUp() -> Void {
+        
+        HideBlurrView()
+        CancelSharingPopUp.removeFromSuperview()
+        
+    }
+    
     func HideShareListPopUp() -> Void {
         
         HideBlurrView()
@@ -974,6 +1078,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func SortShoppingListItemsArrayBy_isSelected() -> Void {
         
+        if allShoppingLists.isEmpty { return }
+        
         if allShoppingLists[currentShoppingListIndex].items.isEmpty {
             
             ShoppingListDetailTableView.reloadData()
@@ -992,7 +1098,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    func HideSharingInvitationNotification() -> Void {
+    @objc func HideSharingInvitationNotification() -> Void {
         UIView.animate(withDuration: 1, animations: {
             self.InvitationNotification.center.y = -self.InvitationNotification.frame.size.height * 2 - self.topLayoutGuide.length
         }) { (true) in
@@ -1002,29 +1108,53 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
     }
     
-    func ShowSharingInvitationNotification(notification: Notification) -> Void {
+    @objc func PushNotificationReceived(notification: Notification) -> Void {
         
         guard let info = notification.userInfo else { return }
-        let pnh = PushNotificationHelper()
-        guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
         
-        lbl_InviteTitle.text = invite.inviteTitle!
-        lbl_InviteMessage.text = invite.inviteMessage!
+        guard let notificationTitle = info["notificationTitle"] as? String,
+            let notificationMessage = info["notificationMessage"] as? String,
+            let senderID = info["senderID"] as? String else { return }
         
-        /*
-        if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.sender!.profileImageURL } ) {
+        lbl_InviteTitle.text = notificationTitle
+        txt_InviteMessage.text = notificationMessage
+        
+        if let index = allUsers.index(where: { $0.id == senderID } ) {
             
-            invite.sender!.profileImage = ProfileImageCache[index].UserProfileImage!
-            InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
-            displaySharingInvatationNotification()
+            if allUsers[index].profileImage! != #imageLiteral(resourceName: "userPlaceholder") {
+                InviteUserImage.image = allUsers[index].profileImage!
+                displayNotification()
+            } else {
+                
+                let dpGroup = DispatchGroup()
+                dpGroup.enter()
+                
+                let sbuserService = ShoppingBuddyUserWebservice()
+                sbuserService.activityAnimationServiceDelegate = self
+                sbuserService.alertMessageDelegate = self
+                sbuserService.ObserveUser(userID: senderID)
+                
+                ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
+                
+                dpGroup.leave()
+            }
             
         } else {
             
-            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.sender!.profileImageURL!)!)
+            let dpGroup = DispatchGroup()
+            dpGroup.enter()
             
-        }*/
-        
+            let sbuserService = ShoppingBuddyUserWebservice()
+            sbuserService.activityAnimationServiceDelegate = self
+            sbuserService.alertMessageDelegate = self
+            sbuserService.ObserveUser(userID: senderID)
+            
+            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
+            
+            dpGroup.leave()
+        }
     }
+    
     private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
         
         let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -1038,20 +1168,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 return
                 
             }
-            
-            DispatchQueue.main.async {
+            if let downloadImage = UIImage(data: data!) {
+                self.InviteUserImage.image = downloadImage
+                self.displayNotification()
                 
-                if let downloadImage = UIImage(data: data!) {
-                    //TODO: take a look in runtime
-                    self.InviteUserImage.image = downloadImage
-                    self.displaySharingInvatationNotification()
-                    
-                }
             }
         }
         task.resume()
     }
-    private func displaySharingInvatationNotification() -> Void {        
+    private func displayNotification() -> Void {
         
         //Invite Notification View
         InvitationNotification.center.x = view.center.x
@@ -1061,6 +1186,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         InviteUserImage.clipsToBounds = true
         InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         InviteUserImage.layer.borderWidth = 3
+        InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
+        InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
+        InvitationNotification.layer.shadowOpacity  = 1
+        InvitationNotification.layer.shadowRadius  = 10
+        
+        let size = txt_InviteMessage.sizeThatFits(CGSize(width: txt_InviteMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+        InvitationNotification.frame.size.height = size.height + 50
         
         view.addSubview(InvitationNotification)
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
@@ -1073,7 +1205,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     
     
-    func ConfigureView() -> Void {        
+    func ConfigureView() -> Void {
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
         
@@ -1098,9 +1230,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
         AddShoppingListButton.tintColor = UIColor.ColorPaletteTintColor()
         
+        
         //Datasource & Delegate
         ShoppingListDetailTableView.dataSource = self
         ShoppingListDetailTableView.delegate = self
+        CardOneMembersCollectionView.delegate = self
+        CardOneMembersCollectionView.dataSource = self
+        CardTwoMembersCollectionView.delegate = self
+        CardTwoMembersCollectionView.dataSource = self
+        CancelSharingMemberCollectionView.dataSource = self
+        CancelSharingMemberCollectionView.delegate = self
         
         //RefreshControl AddListItem
         refreshControl = UIRefreshControl()
@@ -1127,10 +1266,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
         
         //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: NSNotification.Name.PushNotificationReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
-   
+        
         
         //Add Shopping List PopUp
         AddShoppingListPopUp.layer.shadowColor  = UIColor.black.cgColor
@@ -1144,7 +1283,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         txt_RelatedStore.textColor = UIColor.black
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
-        txt_ListName.textColor = UIColor.black 
+        txt_ListName.textColor = UIColor.black
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
         AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
@@ -1193,6 +1332,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         btn_ShoppingCardShareList.addTarget(self, action: #selector(btn_ShoppingCardShareList_Pressed), for: .touchUpInside)
         btn_ShoppingCard2ShareList.addTarget(self, action: #selector(btn_ShoppingCard2ShareList_Pressed), for: .touchUpInside)
+        btn_CancelSharingCardOne.addTarget(self, action: #selector(btn_CancelSharingCardOne_Pressed), for: .touchUpInside)
+        btn_CancelSharingCardTwo.addTarget(self, action: #selector(btn_CancelSharingCardTwo_Pressed), for: .touchUpInside)
         
         //Shopping List Cards owner Profile Images
         ShoppingListCard2OwnerImage.layer.cornerRadius = ShoppingListCard2OwnerImage.frame.width * 0.5
@@ -1240,6 +1381,180 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
     }
+    
+    // MARK: UICollectionViewDataSource
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if collectionView == self.CardOneMembersCollectionView {
+            
+            let myCell = cell as! ListMembersCell
+            myCell.MemberProfileImage.layer.cornerRadius = myCell.MemberProfileImage.frame.size.width * 0.5
+            
+        } else if collectionView == self.CardTwoMembersCollectionView{
+            
+            let myCell = cell as! ListMembersTwoCell
+            myCell.MemberProfileImageTwo.layer.cornerRadius = myCell.MemberProfileImageTwo.frame.size.width * 0.5
+            
+        } else if collectionView == self.CancelSharingMemberCollectionView {
+            
+            let myCell = cell as! CancelSharingMemberCell
+            myCell.MemberProfileImage.layer.cornerRadius = myCell.MemberProfileImage.frame.size.width * 0.5
+            
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        
+        return 1
+        
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        if allShoppingLists.isEmpty { return 0 }
+        
+        return allShoppingLists[currentShoppingListIndex].members.count
+        
+        
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if collectionView == self.CardOneMembersCollectionView {
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String.ListMemberCell_Identifier, for: indexPath) as! ListMembersCell
+            
+            if let index = allUsers.index(where: { $0.id == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID }){
+                
+                cell.ConfigureCell(user: allUsers[index], member: allShoppingLists[currentShoppingListIndex].members[indexPath.row])
+                
+            } else {
+                
+                cell.MemberProfileImage.image = #imageLiteral(resourceName: "userPlaceholder")
+                
+            }
+            
+            return cell
+            
+        } else if collectionView == self.CardTwoMembersCollectionView {
+            
+            let cell2 = collectionView.dequeueReusableCell(withReuseIdentifier: String.ListMemberCell2_Identifier, for: indexPath) as! ListMembersTwoCell
+            
+            if let index = allUsers.index(where: { $0.id == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID  }){
+                
+                cell2.ConfigureCell(user: allUsers[index], member: allShoppingLists[currentShoppingListIndex].members[indexPath.row])
+                
+            } else {
+                
+                cell2.MemberProfileImageTwo.image = #imageLiteral(resourceName: "userPlaceholder")
+                
+            }
+            
+            return cell2
+            
+        } else {
+            
+            let cell3 = collectionView.dequeueReusableCell(withReuseIdentifier: String.CancelSharingMemberCell_Identifier, for: indexPath) as! CancelSharingMemberCell
+            
+            if let index = allUsers.index(where: { $0.id == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID  }){
+                
+                cell3.ConfigureCell(user: allUsers[index], member: allShoppingLists[currentShoppingListIndex].members[indexPath.row])
+                
+            } else {
+                
+                cell3.MemberProfileImage.image = #imageLiteral(resourceName: "userPlaceholder")
+                
+            }
+            
+            return cell3
+            
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var widthPerItem:CGFloat
+        var heightPerItem:CGFloat
+        if collectionView == self.CardOneMembersCollectionView {
+            
+            widthPerItem = CardOneMembersCollectionView.frame.width / round(CardOneMembersCollectionView.frame.width / 60)
+            heightPerItem = CardOneMembersCollectionView.frame.height / round(CardOneMembersCollectionView.frame.height / 60)
+            
+        } else {
+            
+            widthPerItem = CardTwoMembersCollectionView.frame.width / round(CardTwoMembersCollectionView.frame.width / 60)
+            heightPerItem = CardTwoMembersCollectionView.frame.height / round(CardTwoMembersCollectionView.frame.height / 60)
+            
+        }
+        
+        return CGSize(width: widthPerItem, height: heightPerItem)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if collectionView == self.CancelSharingMemberCollectionView {
+            
+            
+            var selectedUser:ShoppingBuddyUser
+            if let index = allUsers.index(where: { $0.id! == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID  } ){
+                
+                selectedUser = allUsers[index]
+                
+            } else { return }
+            
+            if isCurrentUserShoppingListOwner() {
+                //Cancel Sharing By List Owner
+                
+                let title = String.CancelSharingSelectedMemberAlertTitle
+                let message = String.CancelSharingSelectedMemberAlertMessage + selectedUser.nickname!
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
+                    
+                    self.sbListWebservice.CancelSharingByOwnerForUser(userToDelete:selectedUser, listToCancel: allShoppingLists[self.currentShoppingListIndex])
+                    allShoppingLists[self.currentShoppingListIndex].members.remove(at: indexPath.row)
+                    //collectionView.deleteItems(at: [indexPath])
+                    self.CardOneMembersCollectionView.reloadData()
+                    self.CardTwoMembersCollectionView.reloadData()
+                    self.hideCanceSharingPopUp()
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) -> Void in
+                    
+                    self.hideCanceSharingPopUp()
+                    
+                }))
+                
+                present(alert, animated: true, completion: nil)
+                
+                
+            }
+            
+        }
+        
+    }
+    
+    private func isCurrentUserShoppingListOwner() -> Bool {
+        
+        if allShoppingLists[currentShoppingListIndex].owneruid! == Auth.auth().currentUser!.uid { return true }
+        else { return false }
+        
+    }
+    
+    private func isSelectedUserToCancelListOwner(indexPath: IndexPath) -> Bool {
+        
+        if allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID!  == Auth.auth().currentUser!.uid { return true }
+        else { return false }
+        
+    }
 }
 extension Double {
     var degreesToRadians: CGFloat { return CGFloat(self) * .pi / 180 }
@@ -1252,6 +1567,8 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
         
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if allShoppingLists.isEmpty { return 0 }
         
         return allShoppingLists[currentShoppingListIndex].items.count
         

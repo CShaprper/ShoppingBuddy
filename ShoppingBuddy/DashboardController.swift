@@ -11,24 +11,21 @@ import MapKit
 import CoreLocation
 import UserNotifications
 import FirebaseAuth
+import MobileCoreServices
 
 var possibleRegionsPerStore:Int = 4
 
-class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAnimationService{
+class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAnimationService, UIGestureRecognizerDelegate{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MapView: MKMapView!
-    @IBOutlet var lbl_DebugMonitoredRegions: UILabel!
-    @IBOutlet var lbl_DebugHasUserMovedDistance: UILabel!
     @IBOutlet var UserProfileImage: UIImageView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     //NotificationView
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
     @IBOutlet var lbl_InviteMessage: UILabel!
-    @IBOutlet var InviteUserImage: UIImageView!
-    
-    
+    @IBOutlet var InviteUserImage: UIImageView!     
     
     
     //MARK: - Member
@@ -45,7 +42,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         ConfigureView()
     }
     override func didReceiveMemoryWarning() {
@@ -60,6 +56,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         if UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue) {
             
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+            
         }
         
     }
@@ -91,27 +88,44 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     
+    @objc func UserProfileImageTapped(_ sender: UITapGestureRecognizer) {
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) == false { return }
+        let imgPicker = UIImagePickerController()
+        imgPicker.sourceType = .photoLibrary
+        imgPicker.allowsEditing = true
+        imgPicker.delegate = self
+        self.present(imgPicker, animated: true, completion: nil)
+
+    }
     
     
-    func ShoppingBuddyUserLoggedOut()  -> Void {
+    @objc func ShoppingBuddyUserLoggedOut()  -> Void {
         
         allShoppingLists = []
         allUsers = []
-        allInvites = []
+        allMessages = []
         currentUser = nil
         
     }
-    func ShoppingBuddyUserLoggedIn()  -> Void {
+    @objc func ShoppingBuddyUserLoggedIn()  -> Void {
         
-        
+        sbUserWebservice.GetCurrentUser()
         
     }
-    func UserProfileImageDownloadFinished()  -> Void {
+    @objc func CurrentUserCreated(notification: Notification) -> Void {
+        
+        sbUserWebservice.GetCurrentUser()
+        
+    }
+    
+    @objc func UserProfileImageDownloadFinished()  -> Void {
         
         if let index = allUsers.index(where: { $0.profileImageURL == currentUser!.profileImageURL }) {
             
             UserProfileImage.image = allUsers[index].profileImage
             UserProfileImage.alpha = 1
+            
+            UserProfileImage.image = currentUser!.profileImage
             
         }
         HideActivityIndicator()
@@ -136,10 +150,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     
     //MARK: - Notificarion listeners
-    func CurrentUserReceived(notification: Notification) -> Void {
+    @objc func CurrentUserReceived(notification: Notification) -> Void {
         
-        sbMessagesWebService.ObserveAllInvites()
-        sbUserWebservice.ObserveUsersFriends()
+        sbMessagesWebService.ObserveAllMessages() 
         sbListWebservice.GetStoresForGeofencing()
         
     }
@@ -147,49 +160,59 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     
     //MARK: - Wired Actions
-    func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void {
+    @objc func LogOutBarButtonItemPressed(sender: UIBarButtonItem) -> Void {
         
         sbUserWebservice.LogFirebaseUserOut()
         
     }
-    func SegueToLoginController(sender: Notification) -> Void {
+    @objc func SegueToLoginController(sender: Notification) -> Void {
         
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
         
     }
     
-    func HideSharingInvitationNotification() -> Void {
+    @objc func HideNotification() -> Void {
+        
         UIView.animate(withDuration: 1, animations: {
+            
             self.InvitationNotification.center.y = -self.InvitationNotification.frame.size.height * 2 - self.topLayoutGuide.length
+            
         }) { (true) in
+            
             if self.view.subviews.contains(self.InvitationNotification) {
+                
                 self.InvitationNotification.removeFromSuperview()
+                
             }
+            
         }
+        
     }
     
-    func ShowSharingInvitationNotification(notification: Notification) -> Void {
-        /*
+    @objc func PushNotificationReceived(notification: Notification) -> Void {
+        
          guard let info = notification.userInfo else { return }
-         let pnh = PushNotificationHelper()
-         guard let invite = pnh.createChoppingBuddyIntitationObject(userInfo: info) else { return }
+        
+        guard let notificationTitle = info["notificationTitle"] as? String,
+        let notificationMessage = info["notificationMessage"] as? String,
+            let senderID = info["senderID"] as? String else { return }
+        
+         lbl_InviteTitle.text = notificationTitle
+         lbl_InviteMessage.text = notificationMessage
          
-         lbl_InviteTitle.text = invite.inviteTitle!
-         lbl_InviteMessage.text = invite.inviteMessage!
+         if let index = allUsers.index(where: { $0.id == senderID } ) {
+            
+         InviteUserImage.image = allUsers[index].profileImage!
+         displayNotification()
          
-         if let index = ProfileImageCache.index(where: { $0.ProfileImageURL == invite.senderProfileImageURL } ) {
-         
-         invite.senderImage = ProfileImageCache[index].UserProfileImage!
-         InviteUserImage.image = ProfileImageCache[index].UserProfileImage!
-         displaySharingInvatationNotification()
-         
-         } else {
-         
-         ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: invite.senderProfileImageURL!)!)
+         } else {         
+            
+            displayNotification()
          
          }
-         */
+        
     }
+    
     private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
         
         let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
@@ -210,15 +233,14 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
                     
                     //TODO: take a look at runtime
                     self.InviteUserImage.image = downloadImage
-                    self.displaySharingInvatationNotification()
+                    self.displayNotification()
                     
                 }
             }
         }
         task.resume()
     }
-    private func displaySharingInvatationNotification() -> Void {
-        
+    private func displayNotification() -> Void {
         
         //Invite Notification View
         InvitationNotification.center.x = view.center.x
@@ -228,36 +250,54 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         InviteUserImage.clipsToBounds = true
         InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         InviteUserImage.layer.borderWidth = 3
+        InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
+        InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
+        InvitationNotification.layer.shadowOpacity  = 1
+        InvitationNotification.layer.shadowRadius  = 10
         
         view.addSubview(InvitationNotification)
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
+        
         UIView.animate(withDuration: 1) {
+            
             self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+            
         }
-        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
+        
+        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideNotification), userInfo: nil, repeats: false)
         
     }
     
     
     
     //MARK: - Helper Functions
-    func ConfigureView() -> Void {
+    func ConfigureView() -> Void {        
+        //UserProfileImage
+        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
+        UserProfileImage.clipsToBounds = true
+        UserProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        UserProfileImage.layer.borderWidth = 3
+        UserProfileImage.image = #imageLiteral(resourceName: "userPlaceholder")
+        UserProfileImage.layer.shadowColor  = UIColor.black.cgColor
+        UserProfileImage.layer.shadowOffset  = CGSize(width: 30, height:30)
+        UserProfileImage.layer.shadowOpacity  = 1
+        UserProfileImage.layer.shadowRadius  = 10
+        
+        let profileImageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UserProfileImageTapped))
+        profileImageGestureRecognizer.delegate = self
+    
+        UserProfileImage.addGestureRecognizer(profileImageGestureRecognizer)
         
         //Shopping Buddy Message Webservice
         sbMessagesWebService = ShoppingBuddyMessageWebservice()
+        sbMessagesWebService.activityAnimationServiceDelegate = self
+        sbMessagesWebService.alertMessageDelegate = self
         
         //Firebase User
         sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.alertMessageDelegate = self
         sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.GetCurrentUser()
-        
-        //UserProfileImage
-        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
-        UserProfileImage.clipsToBounds = true
-        UserProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        UserProfileImage.layer.borderWidth = 3
-        UserProfileImage.alpha = 0
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle
@@ -267,8 +307,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         //Load all Stores
         sbListWebservice = ShoppingBuddyListWebservice()
+        sbListWebservice.activityAnimationServiceDelegate = self
         sbListWebservice.alertMessageDelegate = self
-        // sbListWebservice.ObserveAllList()
         
         
         //Notification Listener
@@ -276,10 +316,12 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         NotificationCenter.default.addObserver(self, selector: #selector(CurrentUserReceived), name: NSNotification.Name.CurrentUserReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShowSharingInvitationNotification), name: NSNotification.Name.SharingInvitationNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: NSNotification.Name.PushNotificationReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyStoreReceived), name: NSNotification.Name.ShoppingBuddyStoreReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CurrentUserCreated), name: NSNotification.Name.CurrentUserCreated, object: nil)
+        
         
         
         MapView.delegate = self
@@ -303,7 +345,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 2
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        logoutButton.setTitleTextAttributes([NSShadowAttributeName:shadow, NSStrokeWidthAttributeName:-1, NSStrokeColorAttributeName:UIColor.black, NSForegroundColorAttributeName:UIColor.ColorPaletteTintColor(), NSFontAttributeName:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
+        logoutButton.setTitleTextAttributes([NSAttributedStringKey.shadow:shadow, NSAttributedStringKey.strokeWidth:-1, NSAttributedStringKey.strokeColor:UIColor.black, NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor(), NSAttributedStringKey.font:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
     }
     func ShowNotification(title:String, message:String) -> Void {
@@ -349,7 +391,6 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 }
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-        lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
         self.userLocation = userLocation.coordinate
         mapView.centerCoordinate = userLocation.coordinate
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
@@ -372,8 +413,9 @@ extension DashboardController: MKMapViewDelegate{
             PerformLocalShopSearch()
         }
     }
+    
     //MARK: - IShoppingBuddyListWebService implementation
-    func ShoppingBuddyStoreReceived(notification: Notification) {
+    @objc func ShoppingBuddyStoreReceived(notification: Notification) {
         
         guard let userInfo = notification.userInfo else { return }
         guard let store = userInfo["store"] as? String else { return }
@@ -403,7 +445,7 @@ extension DashboardController: MKMapViewDelegate{
         }
     }
     //MARK: MKMapViewDelegate Helper
-    func PerformLocalShopSearch() -> Void{
+    @objc func PerformLocalShopSearch() -> Void{
         // Stop monitoring old regions
         self.StopMonitoringForOldRegions()
         
@@ -477,7 +519,6 @@ extension DashboardController: MKMapViewDelegate{
             self.locationManager.startMonitoring(for: region)
             
             NSLog("Monitored Regions: \(self.locationManager.monitoredRegions.count)")
-            NSLog("MapSpan: \(self.mapSpan)")
             NSLog("Start monitoring for Region: \(region) with Radius \(region.radius)" )
             
         }
@@ -489,9 +530,9 @@ extension DashboardController: MKMapViewDelegate{
             
             if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
                 
-                NSLog("Adding Annotation at location: \(String(describing: mapItem.placemark.coordinate))")
-                NSLog("Adding Annotation Title: \(String(describing: mapItem.name))")
-                NSLog("Adding Annotation Subtitle: \(String(describing: mapItem.placemark.title))")
+//                NSLog("Adding Annotation at location: \(String(describing: mapItem.placemark.coordinate))")
+//                NSLog("Adding Annotation Title: \(String(describing: mapItem.name))")
+//                NSLog("Adding Annotation Subtitle: \(String(describing: mapItem.placemark.title))")
                 let annotation = CustomMapAnnotation()
                 annotation.image = #imageLiteral(resourceName: "map-Marker-green")
                 annotation.coordinate = mapItem.placemark.coordinate
@@ -517,7 +558,7 @@ extension DashboardController: MKMapViewDelegate{
             return MKOverlayRenderer()
         }
         
-        NSLog("Drawing Circular Overlay")
+//        NSLog("Drawing Circular Overlay")
         let circleRenderer = MKCircleRenderer(circle: circleOverlay)
         circleRenderer.strokeColor = UIColor.red
         circleRenderer.alpha = 1
@@ -545,8 +586,8 @@ extension DashboardController: MKMapViewDelegate{
         if  let lastUserLocation = ReadLastUserLocationFromUserDefaults() {
             
             let distance = userLocation.location?.distance(from: lastUserLocation)
-            if distance != nil && distance! > mapSpan * 0.25{
-                lbl_DebugHasUserMovedDistance.text = "User moved > mapSpan: \(debugcounter += 1)"
+            if distance != nil && distance! > mapSpan * 0.25  {
+                
                 UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
                 return true
                 
@@ -602,8 +643,8 @@ extension DashboardController: MKMapViewDelegate{
         for region in locationManager.monitoredRegions {
             
             locationManager.stopMonitoring(for: region)
-            NSLog("removing Region: " + region.identifier)
-            NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
+//            NSLog("removing Region: " + region.identifier)
+//            NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
             
         }
         
@@ -638,7 +679,6 @@ extension DashboardController: CLLocationManagerDelegate {
         
         if let location = locations.first {
             
-            lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
             userLocation = location.coordinate
             MapView.centerCoordinate = location.coordinate
             
@@ -668,16 +708,14 @@ extension DashboardController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
         
-        lbl_DebugMonitoredRegions.text = "Current monitored regions: \(locationManager.monitoredRegions.count)"
-        
         // Add region overlay circel
         if let circularRegion = region as? CLCircularRegion {
             
-            NSLog("Started monitoring for Region: \(region.identifier) with radius: \(circularRegion.radius)")
-            NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
+//            NSLog("Started monitoring for Region: \(region.identifier) with radius: \(circularRegion.radius)")
+//            NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
             let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
             self.MapView.add(circle)
-            NSLog("Adding circular Overlay")
+//            NSLog("Adding circular Overlay")
             
         }
         
@@ -687,5 +725,32 @@ extension DashboardController: CLLocationManagerDelegate {
         NSLog("locationManager failed with error")
         NSLog(error.localizedDescription)
         
+    }
+}
+extension DashboardController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let mediaType = info[UIImagePickerControllerMediaType] as! String
+        if mediaType == kUTTypeImage as String {
+            var image : UIImage!
+            if let img = info[UIImagePickerControllerEditedImage] as? UIImage
+            {
+                image = img
+                
+            }
+            else if let img = info[UIImagePickerControllerOriginalImage] as? UIImage
+            {
+                image = img
+            }
+            self.UserProfileImage.image = image
+            self.UserProfileImage.layer.cornerRadius = self.UserProfileImage.frame.width * 0.5
+            self.UserProfileImage.clipsToBounds = true
+            
+            let sbUserService = ShoppingBuddyUserWebservice()
+            sbUserService.alertMessageDelegate = self
+            sbUserService.activityAnimationServiceDelegate = self
+            sbUserService.changeUserProfileImage(forUserID: Auth.auth().currentUser!.uid, image: image)
+            
+            }
+        self.dismiss(animated: true, completion: nil)
     }
 }

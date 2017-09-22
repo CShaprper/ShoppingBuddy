@@ -11,11 +11,13 @@ import UIKit
 import Firebase
 import GooglePlaces
 import UserNotifications
+import FirebaseMessaging
 import FirebaseDatabase
 
 var allShoppingLists:[ShoppingList] = []
 var allUsers:[ShoppingBuddyUser] = []
-var allInvites:[ShoppingBuddyInvitation] = []
+var allMessages:[ShoppingBuddyMessage] = []
+var allShoppingListMember:[ShoppingListMember] = []
 var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()  
 
 @UIApplicationMain
@@ -64,24 +66,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category]) 
         
         if #available(iOS 10.0, *) {
+                UNUserNotificationCenter.current().delegate = self
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
+                
                 if error != nil{ print(error!.localizedDescription); return }
+                
                 if granted {
+                    
                     application.registerForRemoteNotifications()
                     application.registerUserNotificationSettings(notificationSettings)
+                    
                 }
                 else {
+                    
                     application.unregisterForRemoteNotifications() //todo: remove token from firebase
                     application.registerUserNotificationSettings(notificationSettings)
+                    
                 }
             })
         } else {
             // Fallback on earlier versions
-            //If user is not on iOS 10 use the old methods
             let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
             let setting = UIUserNotificationSettings(types: type, categories: [category])
             UIApplication.shared.registerUserNotificationSettings(setting)
             UIApplication.shared.registerForRemoteNotifications()
+            
         }
         
         //Set standard Map Zoom
@@ -95,15 +104,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
     }
+
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
-        Messaging.messaging().setAPNSToken(deviceToken, type: .sandbox)
-        Messaging.messaging().setAPNSToken(deviceToken, type: .prod)
+        Messaging.messaging().apnsToken = deviceToken
+         let sbUserWebservice = ShoppingBuddyUserWebservice()
+        sbUserWebservice.SetNewFcmToken(token: Messaging.messaging().fcmToken!)
+
         NSLog("Successfully registered for RemoteNotifications with token")
-        let sbUserWebservice = ShoppingBuddyUserWebservice()
-        sbUserWebservice.SetNewFcmToken(token: tokenString(deviceToken))
-        
+        NSLog(tokenString(deviceToken))
     }
     func tokenString(_ deviceToken:Data) -> String{
         //code to make a token string
@@ -116,6 +126,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
+        NSLog(fcmToken)
         let sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.SetNewFcmToken(token: fcmToken)
     }
@@ -125,7 +136,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
- 
+        UIApplication.shared.applicationIconBadgeNumber += 1
+        Messaging.messaging().appDidReceiveMessage(userInfo)
         let pnh = PushNotificationHelper()
         pnh.SendNotificationDependendOnPushNotificationType(userInfo: userInfo)
        
@@ -155,6 +167,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
 }
 

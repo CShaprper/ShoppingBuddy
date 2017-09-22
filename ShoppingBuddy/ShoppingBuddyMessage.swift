@@ -8,13 +8,18 @@
 
 import UIKit
 
-struct ShoppingBuddyInvitation {
+struct ShoppingBuddyMessage {
     
     var id:String?
-    var inviteMessage:String?
-    var inviteTitle:String?
+    var message:String?
+    var title:String?
     var listID:String?
     var senderID:String?
-    var receiptID:String?    
+    var messageType:String?
+    var receipts:[ShoppingListMember]!
+    
+    init() {
+        receipts = []
+    }
     
 }

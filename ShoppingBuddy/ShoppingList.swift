@@ -18,7 +18,7 @@ struct ShoppingList{
     var name:String?
     var relatedStore:String?
     var items:[ShoppingListItem]!
-    var members:[String]!
+    var members:[ShoppingListMember]!
     
     init() {
         items = []
