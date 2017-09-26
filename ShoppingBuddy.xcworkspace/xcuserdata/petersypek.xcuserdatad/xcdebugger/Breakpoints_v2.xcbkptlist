@@ -509,7 +509,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "151"
             endingLineNumber = "151"
-            landmarkName = "CurrentUserCreated(notification:)"
+            landmarkName = "UserProfileImageDownloadFinished(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -525,7 +525,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "146"
             endingLineNumber = "146"
-            landmarkName = "ShoppingBuddyUserLoggedIn(notification:)"
+            landmarkName = "CurrentUserCreated(notification:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -589,8 +589,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "188"
             endingLineNumber = "188"
-            landmarkName = "CurrentUserReceived(notification:)"
-            landmarkType = "7">
+            landmarkName = "DashboardController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -813,7 +813,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "564"
             endingLineNumber = "564"
-            landmarkName = "PerformLocalShopSearch(notification:)"
+            landmarkName = "StartMonitoringGeofenceRegions(mapItems:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -877,7 +877,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "250"
             endingLineNumber = "250"
-            landmarkName = "btn_PinHomePosition_Pressed(sender:)"
+            landmarkName = "ShowSharingInvatationNotificationAfterImageDownload(url:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
