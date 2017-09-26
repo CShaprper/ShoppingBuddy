@@ -12,6 +12,7 @@ import CoreLocation
 import UserNotifications
 import FirebaseAuth
 import MobileCoreServices
+import GoogleMobileAds
 
 var possibleRegionsPerStore:Int = 4
 
@@ -25,8 +26,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
     @IBOutlet var lbl_InviteMessage: UILabel!
-    @IBOutlet var InviteUserImage: UIImageView!     
-    
+    @IBOutlet var InviteUserImage: UIImageView!
+    @IBOutlet var LupeImage: UIImageView!
+    @IBOutlet var btn_PinHomePosition: UIButton!
     
     //MARK: - Member
     var debugcounter:Int = 0 //can be removed in release
@@ -38,6 +40,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     private var sbMessagesWebService:ShoppingBuddyMessageWebservice!
     var sbListWebservice:ShoppingBuddyListWebservice!
     var timer:Timer!
+    var bannerView:GADBannerView!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -49,15 +52,37 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        let image = #imageLiteral(resourceName: "Lupe").cgImage
+        let maskLayer = CALayer()
+        maskLayer.contents = image
+        
+        // Just some test values. Adjust them to see different results
+        let originalPhotoFrame = CGRect(x: 0,y: 0, width: 510, height: 536)
+        let backgroundLayerFrame = CGRect(x: 0, y: 0, width: LupeImage.frame.width, height: LupeImage.frame.height)
+        
+        // Now figure out whether the ScaleAspectFit was horizontally or vertically bound.
+        let horizScale = backgroundLayerFrame.width / originalPhotoFrame.width
+        let vertScale = backgroundLayerFrame.height / originalPhotoFrame.height
+        let myScale = min(horizScale, vertScale)
+        
+        // So we don't need to do each of these calculations on a separate line, but for ease of explanation…
+        // Now we can calculate the size to scale originalPhoto
+        let scaledSize = CGSize(width: originalPhotoFrame.size.width * myScale,
+                                height: originalPhotoFrame.size.height * myScale)
+        // And now we need to center originalPhoto inside backgroundLayerFrame
+        let scaledOrigin = CGPoint(x: (backgroundLayerFrame.width - scaledSize.width) / 2,
+                                   y: (backgroundLayerFrame.height - scaledSize.height) / 2)
+        
+        // Put it all together
+        let scaledPhotoRect = CGRect(origin: scaledOrigin, size: scaledSize)
+        maskLayer.frame = scaledPhotoRect
+        MapView.layer.mask = maskLayer
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue) {
-            
-            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-            
-        }
+        PerformLocalShopSearch(notification: nil)
         
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -69,7 +94,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     
     
-    
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() -> Void {
         
@@ -77,13 +101,18 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         ActivityIndicator.center = view.center
         ActivityIndicator.color = UIColor.green
         ActivityIndicator.startAnimating()
-        view.addSubview(ActivityIndicator)
+        
+       // view.addSubview(ActivityIndicator)
         
     }
     func HideActivityIndicator()  -> Void {
         
         if view.subviews.contains(ActivityIndicator) {
-            ActivityIndicator.removeFromSuperview()
+            DispatchQueue.main.async {
+                
+                self.ActivityIndicator.removeFromSuperview()
+                
+            }
         }
         
     }
@@ -95,11 +124,11 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         imgPicker.allowsEditing = true
         imgPicker.delegate = self
         self.present(imgPicker, animated: true, completion: nil)
-
+        
     }
     
     
-    @objc func ShoppingBuddyUserLoggedOut()  -> Void {
+    @objc func ShoppingBuddyUserLoggedOut(notification: Notification)  -> Void {
         
         allShoppingLists = []
         allUsers = []
@@ -107,7 +136,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         currentUser = nil
         
     }
-    @objc func ShoppingBuddyUserLoggedIn()  -> Void {
+    @objc func ShoppingBuddyUserLoggedIn(notification: Notification)  -> Void {
         
         sbUserWebservice.GetCurrentUser()
         
@@ -118,14 +147,13 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     
-    @objc func UserProfileImageDownloadFinished()  -> Void {
+    @objc func UserProfileImageDownloadFinished(notification:Notification)  -> Void {
         
         if let index = allUsers.index(where: { $0.profileImageURL == currentUser!.profileImageURL }) {
             
-            UserProfileImage.image = allUsers[index].profileImage
-            UserProfileImage.alpha = 1
-            
-            UserProfileImage.image = currentUser!.profileImage
+            self.UserProfileImage.image = allUsers[index].profileImage
+            self.UserProfileImage.alpha = 1
+            self.UserProfileImage.image = currentUser!.profileImage
             
         }
         HideActivityIndicator()
@@ -152,7 +180,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     //MARK: - Notificarion listeners
     @objc func CurrentUserReceived(notification: Notification) -> Void {
         
-        sbMessagesWebService.ObserveAllMessages() 
+        sbMessagesWebService.ObserveAllMessages()
         sbListWebservice.GetStoresForGeofencing()
         
     }
@@ -165,7 +193,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         sbUserWebservice.LogFirebaseUserOut()
         
     }
-    @objc func SegueToLoginController(sender: Notification) -> Void {
+    @objc func SegueToLoginController(notification: Notification) -> Void {
         
         performSegue(withIdentifier: String.SegueToLoginController_Identifier, sender: nil)
         
@@ -191,25 +219,30 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     @objc func PushNotificationReceived(notification: Notification) -> Void {
         
-         guard let info = notification.userInfo else { return }
+        guard let info = notification.userInfo else { return }
         
         guard let notificationTitle = info["notificationTitle"] as? String,
-        let notificationMessage = info["notificationMessage"] as? String,
+            let notificationMessage = info["notificationMessage"] as? String,
             let senderID = info["senderID"] as? String else { return }
         
-         lbl_InviteTitle.text = notificationTitle
-         lbl_InviteMessage.text = notificationMessage
-         
-         if let index = allUsers.index(where: { $0.id == senderID } ) {
+        lbl_InviteTitle.text = notificationTitle
+        lbl_InviteMessage.text = notificationMessage
+        
+        if let index = allUsers.index(where: { $0.id == senderID } ) {
             
-         InviteUserImage.image = allUsers[index].profileImage!
-         displayNotification()
-         
-         } else {         
+            InviteUserImage.image = allUsers[index].profileImage!
+            displayNotification()
+            
+        } else {
             
             displayNotification()
-         
-         }
+            
+        }
+        
+    }
+    @objc func btn_PinHomePosition_Pressed(sender: UIButton) -> Void {
+        
+        SaveCurrentLocationAsHomeLocation(coordinate: self.userLocation!)
         
     }
     
@@ -271,7 +304,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     
     //MARK: - Helper Functions
-    func ConfigureView() -> Void {        
+    func ConfigureView() -> Void {
         //UserProfileImage
         UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
         UserProfileImage.clipsToBounds = true
@@ -283,9 +316,20 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         UserProfileImage.layer.shadowOpacity  = 1
         UserProfileImage.layer.shadowRadius  = 10
         
+        //Notification Listener DahsboardController
+        NotificationCenter.default.addObserver(forName: .UserProfileImageDownloadFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDownloadFinished)
+        NotificationCenter.default.addObserver(forName: .CurrentUserReceived, object: nil, queue: OperationQueue.main, using: CurrentUserReceived)
+        NotificationCenter.default.addObserver(forName: .SegueToLogInController, object: nil, queue: OperationQueue.main, using: SegueToLoginController)
+        NotificationCenter.default.addObserver(forName: .PerformLocalShopSearch, object: nil, queue: OperationQueue.main, using: PerformLocalShopSearch)
+        NotificationCenter.default.addObserver(forName: .PushNotificationReceived, object: nil, queue: OperationQueue.main, using: PushNotificationReceived)
+        NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedOut, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedOut)
+        NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedIn, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedIn)
+        NotificationCenter.default.addObserver(forName: .ShoppingBuddyStoreReceived, object: nil, queue: OperationQueue.main, using: ShoppingBuddyStoreReceived)
+        NotificationCenter.default.addObserver(forName: .CurrentUserCreated, object: nil, queue: OperationQueue.main, using: CurrentUserCreated)
+        
         let profileImageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UserProfileImageTapped))
         profileImageGestureRecognizer.delegate = self
-    
+        
         UserProfileImage.addGestureRecognizer(profileImageGestureRecognizer)
         
         //Shopping Buddy Message Webservice
@@ -310,20 +354,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         sbListWebservice.activityAnimationServiceDelegate = self
         sbListWebservice.alertMessageDelegate = self
         
-        
-        //Notification Listener
-        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(CurrentUserReceived), name: NSNotification.Name.CurrentUserReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(SegueToLoginController), name: NSNotification.Name.SegueToLogInController, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(PerformLocalShopSearch), name: NSNotification.Name.PerformLocalShopSearch, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: NSNotification.Name.PushNotificationReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedOut), name: NSNotification.Name.ShoppingBuddyUserLoggedOut, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyStoreReceived), name: NSNotification.Name.ShoppingBuddyStoreReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(CurrentUserCreated), name: NSNotification.Name.CurrentUserCreated, object: nil)
-        
-        
-        
         MapView.delegate = self
         MapView.userTrackingMode = .follow
         MapView.showsUserLocation = true
@@ -339,6 +369,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         locationManager.distanceFilter = CLLocationDistance(exactly: mapSpan * 0.25)!
         self.RequestGPSAuthorization()
         
+        //Pin Home Position Button
+        btn_PinHomePosition.addTarget(self, action: #selector(btn_PinHomePosition_Pressed), for: .touchUpInside)
+        
         //LogOut Button
         let logoutButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
         let shadow = NSShadow()
@@ -347,6 +380,64 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
         logoutButton.setTitleTextAttributes([NSAttributedStringKey.shadow:shadow, NSAttributedStringKey.strokeWidth:-1, NSAttributedStringKey.strokeColor:UIColor.black, NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor(), NSAttributedStringKey.font:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
         self.navigationItem.leftBarButtonItem = logoutButton
+        
+        let firstAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        firstAction.identifier = "startNavigation"
+        firstAction.title = "Start Navigation"
+        firstAction.activationMode = UIUserNotificationActivationMode.background
+        firstAction.isDestructive = false
+        firstAction.isAuthenticationRequired = false
+        
+        let secondAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        secondAction.identifier = "cancel"
+        secondAction.title = "Cancel"
+        secondAction.activationMode = UIUserNotificationActivationMode.background
+        secondAction.isDestructive = true
+        secondAction.isAuthenticationRequired = false
+        
+        let notificationActions = [firstAction, secondAction]
+        
+        let category = UIMutableUserNotificationCategory()
+        category.identifier = "CATEGORY_IDENTIFIER"
+        category.setActions(notificationActions, for: .default)
+        
+        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category])
+        
+        //Register for Remote Notifications
+        if #available(iOS 11.0, *) {
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
+                
+                if error != nil{ print(error!.localizedDescription); return }
+                
+                if granted {
+                    
+                    DispatchQueue.main.async{
+                        UIApplication.shared.registerForRemoteNotifications()
+                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                    }
+                    
+                }
+                else {
+                    
+                    DispatchQueue.main.async{
+                        UIApplication.shared.unregisterForRemoteNotifications() //todo: remove token from firebase
+                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                    }
+                    
+                }
+            })
+        } else {
+            // Fallback on earlier versions
+            let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
+            let setting = UIUserNotificationSettings(types: type, categories: [category])
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.registerUserNotificationSettings(setting)
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+            
+        }
     }
     func ShowNotification(title:String, message:String) -> Void {
         
@@ -389,33 +480,38 @@ extension DashboardController: UNUserNotificationCenterDelegate{
         
     }
 }
+
+
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        
         self.userLocation = userLocation.coordinate
         mapView.centerCoordinate = userLocation.coordinate
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
         mapView.setRegion(region, animated: false)
         
+        /* not needed when PinCurrent user location
         if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue){
             //Update initial User Position
             UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
             
             //Search nearby Shops
-            PerformLocalShopSearch()
-        }
-        else if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
+            PerformLocalShopSearch(notification: nil)
+        }*/
+        if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
             //Search nearby Shops
-            PerformLocalShopSearch()
+            PerformLocalShopSearch(notification: nil)
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         }
+            /* not needed when PinCurrent user location
         else if HasUserMovedDistanceGreaterMapSpan(userLocation: userLocation){
             //Search nearby Shops
-            PerformLocalShopSearch()
-        }
+            PerformLocalShopSearch(notification: nil)
+        }*/
     }
     
     //MARK: - IShoppingBuddyListWebService implementation
-    @objc func ShoppingBuddyStoreReceived(notification: Notification) {
+    func ShoppingBuddyStoreReceived(notification: Notification) {
         
         guard let userInfo = notification.userInfo else { return }
         guard let store = userInfo["store"] as? String else { return }
@@ -439,13 +535,14 @@ extension DashboardController: MKMapViewDelegate{
             }
             
             NSLog("Matches found for \(store)")
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation { 
                 self.StartMonitoringGeofenceRegions(mapItems: response!.mapItems)
             }
         }
     }
     //MARK: MKMapViewDelegate Helper
-    @objc func PerformLocalShopSearch() -> Void{
+    func PerformLocalShopSearch(notification: Notification?) -> Void{
+        
         // Stop monitoring old regions
         self.StopMonitoringForOldRegions()
         
@@ -496,7 +593,9 @@ extension DashboardController: MKMapViewDelegate{
             
             self.SetAnnotations(mapItem: mapItem)
             if cnt == possibleRegionsPerStore { return cnt }
-            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: userLocation!, location2: mapItem.placemark.coordinate)
+            
+            let locationToMonitore = ReadUsersLocationToMonitoreFromUserDefaults()
+            let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: locationToMonitore!.coordinate, location2: mapItem.placemark.coordinate)
             
             //Monitore 6th nearest stores if regions count still below 20
             if locationManager.monitoredRegions.count < 20 && distanceToUser >= minDistance && distanceToUser < maxDistance {
@@ -513,26 +612,20 @@ extension DashboardController: MKMapViewDelegate{
     
     private func MonitoreCircularRegion(mapItem: MKMapItem) -> Void {
         
-        DispatchQueue.main.async {
+        OperationQueue.main.addOperation {
             
             let region = CLCircularRegion(center: mapItem.placemark.coordinate, radius: CLLocationDistance(self.radiusToMonitore), identifier: "\(UUID().uuidString)\("SB_")\(mapItem.name!)")
             self.locationManager.startMonitoring(for: region)
-            
-            NSLog("Monitored Regions: \(self.locationManager.monitoredRegions.count)")
-            NSLog("Start monitoring for Region: \(region) with Radius \(region.radius)" )
             
         }
         
     }
     private func SetAnnotations(mapItem: MKMapItem) -> Void {
         
-        DispatchQueue.main.async {
+        OperationQueue.main.addOperation {
             
             if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
-                
-//                NSLog("Adding Annotation at location: \(String(describing: mapItem.placemark.coordinate))")
-//                NSLog("Adding Annotation Title: \(String(describing: mapItem.name))")
-//                NSLog("Adding Annotation Subtitle: \(String(describing: mapItem.placemark.title))")
+
                 let annotation = CustomMapAnnotation()
                 annotation.image = #imageLiteral(resourceName: "map-Marker-green")
                 annotation.coordinate = mapItem.placemark.coordinate
@@ -558,7 +651,7 @@ extension DashboardController: MKMapViewDelegate{
             return MKOverlayRenderer()
         }
         
-//        NSLog("Drawing Circular Overlay")
+        //        NSLog("Drawing Circular Overlay")
         let circleRenderer = MKCircleRenderer(circle: circleOverlay)
         circleRenderer.strokeColor = UIColor.red
         circleRenderer.alpha = 1
@@ -581,6 +674,8 @@ extension DashboardController: MKMapViewDelegate{
         
     }
     //HasUserMovedDistanceGreaterMapSpan
+    //TODO: remove and change for static home position
+    /*
     private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool {
         
         if  let lastUserLocation = ReadLastUserLocationFromUserDefaults() {
@@ -596,11 +691,11 @@ extension DashboardController: MKMapViewDelegate{
         }
         
         return false
-    }
-    private func ReadLastUserLocationFromUserDefaults() -> CLLocation? {
+    }*/
+    private func ReadUsersLocationToMonitoreFromUserDefaults() -> CLLocation? {
         
-        let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.LastUserLatitude.rawValue)
-        let longitude = UserDefaults.standard.double(forKey: eUserDefaultKey.LastUserLongitude.rawValue)
+        let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLatitude.rawValue)
+        let longitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLongitude.rawValue)
         
         if latitude > 0 && longitude > 0 {
             
@@ -610,6 +705,17 @@ extension DashboardController: MKMapViewDelegate{
             
         else { return nil }
     }
+    
+    private func SaveCurrentLocationAsHomeLocation(coordinate: CLLocationCoordinate2D) -> Void {
+        
+        UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.HomeLatitude.rawValue)
+        UserDefaults.standard.set(coordinate.longitude, forKey: eUserDefaultKey.HomeLongitude.rawValue)
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        
+    }
+    
+    //TODO: remove and change for static home position
+    /*
     private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void {
         
         UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
@@ -617,7 +723,7 @@ extension DashboardController: MKMapViewDelegate{
         UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.LastUserLatitude.rawValue)
         UserDefaults.standard.set(coordinate.longitude, forKey: eUserDefaultKey.LastUserLongitude.rawValue)
         
-    }
+    }*/
     private func RemoveOldGeofenceOverlays() -> Void {
         
         for overlay in self.MapView.overlays {
@@ -642,14 +748,15 @@ extension DashboardController: MKMapViewDelegate{
         
         for region in locationManager.monitoredRegions {
             
-            locationManager.stopMonitoring(for: region)
-//            NSLog("removing Region: " + region.identifier)
-//            NSLog("Monitored regions \(self.locationManager.monitoredRegions.count)")
+            locationManager.stopMonitoring(for: region) 
             
         }
         
     }
 }
+
+
+
 extension DashboardController: CLLocationManagerDelegate {
     
     func RequestGPSAuthorization() -> Void {
@@ -661,6 +768,11 @@ extension DashboardController: CLLocationManagerDelegate {
         }
         
         if CLLocationManager.authorizationStatus() == .authorizedAlways {
+            
+            locationManager.startMonitoringSignificantLocationChanges()
+            
+        }
+        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
             
             locationManager.startMonitoringSignificantLocationChanges()
             
@@ -680,6 +792,8 @@ extension DashboardController: CLLocationManagerDelegate {
         if let location = locations.first {
             
             userLocation = location.coordinate
+            let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            MapView.setRegion(region, animated: false)
             MapView.centerCoordinate = location.coordinate
             
         }
@@ -711,11 +825,8 @@ extension DashboardController: CLLocationManagerDelegate {
         // Add region overlay circel
         if let circularRegion = region as? CLCircularRegion {
             
-//            NSLog("Started monitoring for Region: \(region.identifier) with radius: \(circularRegion.radius)")
-//            NSLog("Monitored Regions: \(locationManager.monitoredRegions.count)")
             let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
             self.MapView.add(circle)
-//            NSLog("Adding circular Overlay")
             
         }
         
@@ -727,6 +838,8 @@ extension DashboardController: CLLocationManagerDelegate {
         
     }
 }
+
+
 extension DashboardController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let mediaType = info[UIImagePickerControllerMediaType] as! String
@@ -750,7 +863,44 @@ extension DashboardController: UIImagePickerControllerDelegate, UINavigationCont
             sbUserService.activityAnimationServiceDelegate = self
             sbUserService.changeUserProfileImage(forUserID: Auth.auth().currentUser!.uid, image: image)
             
-            }
+        }
         self.dismiss(animated: true, completion: nil)
+    }
+}
+extension DashboardController: GADBannerViewDelegate {
+    /// Tells the delegate an ad request loaded an ad.
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("adViewDidReceiveAd")
+        UIView.animate(withDuration: 2) {
+            self.bannerView.alpha = 1
+        }
+    }
+    
+    /// Tells the delegate an ad request failed.
+    func adView(_ bannerView: GADBannerView,
+                didFailToReceiveAdWithError error: GADRequestError) {
+        print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+    }
+    
+    /// Tells the delegate that a full screen view will be presented in response
+    /// to the user clicking on an ad.
+    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+        print("adViewWillPresentScreen")
+    }
+    
+    /// Tells the delegate that the full screen view will be dismissed.
+    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+        print("adViewWillDismissScreen")
+    }
+    
+    /// Tells the delegate that the full screen view has been dismissed.
+    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+        print("adViewDidDismissScreen")
+    }
+    
+    /// Tells the delegate that a user click will open another app (such as
+    /// the App Store), backgrounding the current app.
+    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+        print("adViewWillLeaveApplication")
     }
 }

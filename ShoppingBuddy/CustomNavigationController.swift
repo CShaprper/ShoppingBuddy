@@ -21,18 +21,24 @@ class CustomNavigationController: UINavigationController {
         super.viewWillAppear(animated)
         
         //Global NavigationBar Style
-        navigationBar.tintColor = UIColor.ColorPaletteSecondDarkest()
-        navigationBar.barTintColor = UIColor.ColorPaletteSecondBrightest()
+        navigationBar.tintColor = UIColor.ColorPaletteBrightest()
+        navigationBar.barTintColor = UIColor.ColorPaletteBrightest()
         let shadow = NSShadow()
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 35
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        let textAttributes = [NSAttributedStringKey.shadow.rawValue:shadow,
-                              NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor(),
-                              NSAttributedStringKey.font:UIFont(name: "Courgette-Regular", size: 20)!] as! [String : Any]
-        navigationBar.titleTextAttributes = textAttributes
-        navigationBar.clipsToBounds = false 
-        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "UpperNavBar"), for: .default)
+//        let textAttributes = [NSAttributedStringKey.shadow.rawValue: shadow,
+//                              NSAttributedStringKey.foregroundColor: UIColor.ColorPaletteTintColor(),
+//                              NSAttributedStringKey.font: UIFont(name: "Courgette-Regular", size: 20)!] as [AnyHashable : NSObject]
+//        navigationBar.titleTextAttributes = textAttributes as? [NSAttributedStringKey : Any]
+        navigationBar.clipsToBounds = false
+        
+        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTop"), for: .default)
+//        if #available(iOS 11, *){
+//            navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTopIOS11"), for: .default)
+//        } else {
+//        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTop"), for: .default)
+//        }
     }
     
     override func didReceiveMemoryWarning() {

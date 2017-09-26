@@ -15,6 +15,8 @@ enum eUserDefaultKey:String {
     case ListIDsArray = "ListIDsArray"
     case LastUserLatitude = "LastUserLatitude"
     case LastUserLongitude = "LastUserLongitude"
+    case HomeLatitude = "HomeLatitude"
+    case HomeLongitude = "HomeLongitude"
     case isInitialLocationUpdate = "isInitialLocationUpdate"
     case NeedToUpdateGeofence = "NeedToUpdateGeofence"
     case UserProfileImageURL = "UserProfileImageURL"

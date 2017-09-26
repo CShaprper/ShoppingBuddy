@@ -13,30 +13,4 @@ target 'ShoppingBuddy' do
   pod 'Firebase/Auth'
   pod 'Firebase/Storage'
 
-  target 'ShoppingBuddyTests' do
-    inherit! :search_paths
-    # Pods for testing
-    pod 'GooglePlaces'
-    pod 'Firebase/Core'
-    pod 'Firebase/AdMob'
-    pod 'Firebase/Messaging'
-    pod 'Firebase/Database'
-    pod 'Firebase/Auth'
-    pod 'Firebase/Storage'
-    
-  end
-
-  target 'ShoppingBuddyUITests' do
-    inherit! :search_paths
-    # Pods for testing
-    pod 'GooglePlaces'
-    pod 'Firebase/Core'
-    pod 'Firebase/AdMob'
-    pod 'Firebase/Messaging'
-    pod 'Firebase/Database'
-    pod 'Firebase/Auth'
-    pod 'Firebase/Storage'
-    
-  end
-
 end

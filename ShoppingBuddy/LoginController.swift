@@ -33,6 +33,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     //Activity Indicator
     @IBOutlet var ActivityIndicatior: UIActivityIndicatorView!
     @IBOutlet var LogInLogoImage: UIImageView!
+
     
     
     //MARK: Member
@@ -47,9 +48,9 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         ConfigureViewElements()
         
         //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyUserLoggedIn), name: NSNotification.Name.ShoppingBuddyUserLoggedIn, object: nil)
+         NotificationCenter.default.addObserver(forName: .UIKeyboardWillShow, object: nil, queue: OperationQueue.main, using: KeyboardWillShow)
+        NotificationCenter.default.addObserver(forName: .UIKeyboardWillHide, object: nil, queue: OperationQueue.main, using: KeyboardWillHide)
+         NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedIn, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedIn)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -85,12 +86,17 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func FirebaseRequestStarted() { ShowActivityIndicator() }
     func FirebaseRequestFinished() { HideActivityIndicator() }
     func ShoppingBuddyUserLoggedOut() {}
-    @objc func ShoppingBuddyUserLoggedIn() {
+    @objc func ShoppingBuddyUserLoggedIn(notification:Notification) {
         
         performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
         // NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedIn, object: nil, userInfo: nil)
         
     }
+    @IBAction func btn_PinHomePosition_pressed(_ sender: Any) {
+    
+    NSLog("Resrrsrsrrsr")
+    }
+    
     
     
     //MARK: - IShoppingBuddyUserWebservice Impementation
@@ -147,13 +153,13 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     
     
     //MARK: - Notification Listener targets
-    @objc func KeyboardWillShow(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+    func KeyboardWillShow(notification: Notification) -> Void {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             LoginContainerHolder.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
         }
     }
-    @objc func KeyboardWillHide(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+    func KeyboardWillHide(notification: Notification) -> Void {
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             LoginContainerHolder.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
         }
     }
@@ -238,7 +244,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     func ConfigureViewElements() -> Void{
         //sbUserWebservice
         sbUserWebservice = ShoppingBuddyUserWebservice()
-        sbUserWebservice.activityAnimationServiceDelegate = self
+        //sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.alertMessageDelegate = self
         
         view.tintColor = UIColor.ColorPaletteSecondDarkest()

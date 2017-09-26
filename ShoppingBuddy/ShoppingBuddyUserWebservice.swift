@@ -40,14 +40,11 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             currentUser!.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
             currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
             currentUser!.userProfileImageFromURL()
-            
-            DispatchQueue.main.async {
                 
                 allUsers.append(currentUser!)
                 self.HideActivityIndicator()
-                NotificationCenter.default.post(name: Notification.Name.CurrentUserReceived, object: nil, userInfo: nil)
-                
-            }
+                NotificationCenter.default.post(name: .CurrentUserReceived, object: nil, userInfo: nil)
+            
             
             
         }) { (error) in
@@ -74,13 +71,10 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             newUser.fcmToken = userSnap.childSnapshot(forPath: "fcmToken").value as? String
             newUser.profileImageURL = userSnap.childSnapshot(forPath: "profileImageURL").value as? String
             newUser.userProfileImageFromURL()
-            
-            DispatchQueue.main.async {
                 
                 allUsers.append(newUser)
                 self.HideActivityIndicator()
-                
-            }
+            
             
             
         }) { (error) in

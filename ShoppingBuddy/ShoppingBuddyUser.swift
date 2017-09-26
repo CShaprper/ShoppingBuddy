@@ -40,7 +40,7 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
             
             self.profileImage = allUsers[index].profileImage!
             NSLog("UserProfileImage for \(self.nickname!) set from ImageCache!")
-            NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+            NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
             return
             
         }
@@ -61,19 +61,17 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
             if let index = allUsers.index(where: { $0.profileImageURL == self.profileImageURL }){
                 
                 allUsers[index].profileImage = image
+                allUsers[index].localImageLocation = location.absoluteString
+                NSLog("Added UserProfileImage for \(self.nickname!) to allUsers")
+                NSLog("UserProfileImage for \(self.nickname!) set from DownloadTask!")
+                NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
                 
-            }
-            
-            self.profileImage = image
-            self.localImageLocation = location.absoluteString
-            NSLog("Added UserProfileImage for \(self.nickname!) to allUsers")
-            NSLog("UserProfileImage for \(self.nickname!) set from DownloadTask!")
-            NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+            } 
             
         } else {
             
             self.profileImage = #imageLiteral(resourceName: "userPlaceholder")
-            NotificationCenter.default.post(name: Notification.Name.UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+            NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
             
         }
         

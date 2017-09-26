@@ -23,11 +23,14 @@ var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate,MessagingDelegate {
     
-    var window: UIWindow? 
+    var window: UIWindow?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {         
         //Google places
         GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
+        
+        //AdMob
+        GADMobileAds.configure(withApplicationID: "ca-app-pub-6831541133910222~4514978949")
         
         //Firebase
         FirebaseApp.configure()
@@ -42,60 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //Set Badegcount to zero
         UIApplication.shared.applicationIconBadgeNumber = 0
         
-        
-        let firstAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
-        firstAction.identifier = "startNavigation"
-        firstAction.title = "Start Navigation"
-        firstAction.activationMode = UIUserNotificationActivationMode.background
-        firstAction.isDestructive = false
-        firstAction.isAuthenticationRequired = false
-        
-        let secondAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
-        secondAction.identifier = "cancel"
-        secondAction.title = "Cancel"
-        secondAction.activationMode = UIUserNotificationActivationMode.background
-        secondAction.isDestructive = true
-        secondAction.isAuthenticationRequired = false
-        
-        let notificationActions = [firstAction, secondAction]
-        
-        let category = UIMutableUserNotificationCategory()
-        category.identifier = "CATEGORY_IDENTIFIER"
-        category.setActions(notificationActions, for: .default)
-        
-        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category]) 
-        
-        if #available(iOS 10.0, *) {
-                UNUserNotificationCenter.current().delegate = self
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
-                
-                if error != nil{ print(error!.localizedDescription); return }
-                
-                if granted {
-                    
-                    application.registerForRemoteNotifications()
-                    application.registerUserNotificationSettings(notificationSettings)
-                    
-                }
-                else {
-                    
-                    application.unregisterForRemoteNotifications() //todo: remove token from firebase
-                    application.registerUserNotificationSettings(notificationSettings)
-                    
-                }
-            })
-        } else {
-            // Fallback on earlier versions
-            let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
-            let setting = UIUserNotificationSettings(types: type, categories: [category])
-            UIApplication.shared.registerUserNotificationSettings(setting)
-            UIApplication.shared.registerForRemoteNotifications()
-            
-        }
-        
         //Set standard Map Zoom
-        if UserDefaults.standard.value(forKey: eUserDefaultKey.MonitoredRadius.rawValue) == nil{
-            UserDefaults.standard.set(7000, forKey: eUserDefaultKey.MapSpan.rawValue)
+        if UserDefaults.standard.value(forKey: eUserDefaultKey.MonitoredRadius.rawValue) != nil{
+            UserDefaults.standard.set(9000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
         
         //Set standard value

@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseAuth
+import GoogleMobileAds
 
 class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IActivityAnimationService, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     //MARK: - Outlets
@@ -116,17 +117,28 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     var currentUpperCard:Int!
     var sbListWebservice:ShoppingBuddyListWebservice!
     var sbListItemWebservice: ShoppingBuddyListItemWebservice!
+    var bannerView:GADBannerView!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
-        
-        //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyListDataReceived), name: NSNotification.Name.ShoppingBuddyListDataReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ListItemSaved), name: NSNotification.Name.ListItemSaved, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ListItemReceived), name: NSNotification.Name.ListItemReceived, object: nil)
+//        
+//        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
+//        bannerView.frame = CGRect(x: 0, y: 0, width: 320, height: 50)
+//        bannerView.alpha = 0
+//        bannerView.adUnitID = "ca-app-pub-6831541133910222/1418042316"
+//        bannerView.rootViewController = self
+//        let request = GADRequest()
+//        request.testDevices = [kGADSimulatorID,"faff03ee8b3c887a15d0f375da4ceb0daad26b1e"]
+//        bannerView.load(request)
+//        bannerView.delegate = self
+//        bannerView.rootViewController = self
+//        bannerView.translatesAutoresizingMaskIntoConstraints = false
+//        bannerView.center.x = view.center.x
+//        view.addSubview(bannerView)
+//        bannerView.bottomAnchor.constraint(equalTo: BackgroundImage.bottomAnchor).isActive = true
+//        bannerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -160,10 +172,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {
-        
-        CardOneMembersCollectionView.reloadData()
-        CardTwoMembersCollectionView.reloadData()
-        RefreshCardView()
+        OperationQueue.main.addOperation {
+            
+            self.CardOneMembersCollectionView.reloadData()
+            self.CardTwoMembersCollectionView.reloadData()
+            self.RefreshCardView()
+            
+        }
         
     }
     
@@ -296,6 +311,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             CancelSharingPopUp.layer.shadowRadius  = 10
             CancelSharingPopUp.frame.size.width = 300
             CancelSharingPopUp.center = view.center
+            CancelSharingMemberCollectionView.reloadData()
             view.addSubview(CancelSharingPopUp)
             CancelSharingPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
             
@@ -878,14 +894,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
             
-            ShoppingListOwnerImage.alpha = 1
-            ShoppingListOwnerImage.image = allUsers[userIndex].profileImage
+            OperationQueue.main.addOperation({
+                self.ShoppingListOwnerImage.alpha = 1
+                self.ShoppingListOwnerImage.image = allUsers[userIndex].profileImage
+            })
             
         }
-        
-        CardOneMembersCollectionView.reloadData()
-        SortShoppingListItemsArrayBy_isSelected()
-        ShoppingListDetailTableView.reloadData()
+        OperationQueue.main.addOperation({
+        self.CardOneMembersCollectionView.reloadData()
+        self.SortShoppingListItemsArrayBy_isSelected()
+        })
     }
     
     private func SetCardTwoValues(index: Int) -> Void{
@@ -900,14 +918,17 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
             
-            ShoppingListCard2OwnerImage.alpha = 1
-            ShoppingListCard2OwnerImage.image = allUsers[userIndex].profileImage
+            OperationQueue.main.addOperation({
+                self.ShoppingListCard2OwnerImage.alpha = 1
+                self.ShoppingListCard2OwnerImage.image = allUsers[userIndex].profileImage
+            })
             
         }
         
-        CardTwoMembersCollectionView.reloadData()
-        SortShoppingListItemsArrayBy_isSelected()
-        ShoppingListDetailTableView.reloadData()
+        OperationQueue.main.addOperation({
+            self.SortShoppingListItemsArrayBy_isSelected()
+            self.CardTwoMembersCollectionView.reloadData()
+        })
     }
     
     //MARK: - Notification listener selectors
@@ -1082,13 +1103,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if allShoppingLists[currentShoppingListIndex].items.isEmpty {
             
-            ShoppingListDetailTableView.reloadData()
+            self.ShoppingListDetailTableView.reloadData()
             return
             
         }
         
-        allShoppingLists[currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! }
-        ShoppingListDetailTableView.reloadData()
+        allShoppingLists[self.currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! }
+        self.ShoppingListDetailTableView.reloadData()
+        
         
     }
     
@@ -1266,9 +1288,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListDetailTableView.addGestureRecognizer(panRecognizer)
         
         //Notification Listeners
-        NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: NSNotification.Name.PushNotificationReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: .UserProfileImageDownloadFinished, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShoppingBuddyListDataReceived), name: .ShoppingBuddyListDataReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ListItemSaved), name: .ListItemSaved, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ListItemReceived), name: .ListItemReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: .PushNotificationReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name: .UIKeyboardWillHide, object: nil)
         
         
         //Add Shopping List PopUp
@@ -1619,4 +1645,41 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
      }
      }
      */
+}
+extension ShoppingListController: GADBannerViewDelegate {
+    /// Tells the delegate an ad request loaded an ad.
+    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
+        print("adViewDidReceiveAd")
+        UIView.animate(withDuration: 2) {
+            self.bannerView.alpha = 1
+        }
+    }
+    
+    /// Tells the delegate an ad request failed.
+    func adView(_ bannerView: GADBannerView,
+                didFailToReceiveAdWithError error: GADRequestError) {
+        print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+    }
+    
+    /// Tells the delegate that a full screen view will be presented in response
+    /// to the user clicking on an ad.
+    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
+        print("adViewWillPresentScreen")
+    }
+    
+    /// Tells the delegate that the full screen view will be dismissed.
+    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
+        print("adViewWillDismissScreen")
+    }
+    
+    /// Tells the delegate that the full screen view has been dismissed.
+    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
+        print("adViewDidDismissScreen")
+    }
+    
+    /// Tells the delegate that a user click will open another app (such as
+    /// the App Store), backgrounding the current app.
+    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
+        print("adViewWillLeaveApplication")
+    }
 }

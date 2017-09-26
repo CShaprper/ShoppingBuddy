@@ -28,9 +28,26 @@ class CustomTabBarController: UITabBarController {
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 1
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-        let textAttributes = [NSAttributedStringKey.font.rawValue:UIFont(name: "Courgette-Regular", size: 10)!] as [String : Any]
-         UITabBarItem.appearance().setTitleTextAttributes(textAttributes, for: .normal)
-        tabBar.backgroundImage = #imageLiteral(resourceName: "BottomNavBar")
+        
+        //choose normal and selected fonts here
+        let normalTitleFont = UIFont(name: "Courgette-Regular", size: 10)!
+        
+        //choose normal and selected colors here
+        let normalTitleColor = UIColor.gray
+        
+        let attributesNormal = [
+            NSAttributedStringKey.foregroundColor : normalTitleColor,
+            NSAttributedStringKey.font :normalTitleFont
+        ]
+        UIBarButtonItem.appearance().setTitleTextAttributes(attributesNormal, for: .normal)
+
+        tabBar.backgroundImage = #imageLiteral(resourceName: "NavBarBottom")
+//        if  UIDevice()
+//        {
+//            tabBar.backgroundImage = #imageLiteral(resourceName: "NavBarBottomIOS11")
+//        } else {
+//
+//        }
         
         tabBar.items?[0].title = String.DashboardControllerTitle
         tabBar.items?[1].title = String.ShoppingListControllerTitle
@@ -59,26 +76,36 @@ class CustomTabBarController: UITabBarController {
     
     //MARK: - TabBar
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        
+        let selectedTitleFont = UIFont(name: "Courgette-Regular", size: 8)!
+        let selectedTitleColor = UIColor.ColorPaletteTintColor()
+        
+        let attributesSelected = [
+            NSAttributedStringKey.foregroundColor : selectedTitleColor,
+            NSAttributedStringKey.font :selectedTitleFont
+        ]
+        
         switch item.title! {
         case String.DashboardControllerTitle:
             tabBar.tintColor = UIColor.ColorPaletteTintColor()
-            item.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor()], for: .selected)
+            item.setTitleTextAttributes(attributesSelected, for: .selected)
             break
         case String.ShoppingListControllerTitle:
             tabBar.tintColor = UIColor.ColorPaletteTintColor()
-            item.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor()], for: .selected)
+            item.setTitleTextAttributes(attributesSelected, for: .selected)
             break
         case String.SettingsControllerTitle:
             tabBar.tintColor = UIColor.ColorPaletteTintColor()
-            item.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor()], for: .selected)
+            item.setTitleTextAttributes(attributesSelected, for: .selected)
             break
         case String.MessagesControllerTitle:
             tabBar.tintColor = UIColor.ColorPaletteTintColor()
-            item.setTitleTextAttributes([NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor()], for: .selected)
+            item.setTitleTextAttributes(attributesSelected, for: .selected)
             break
         default:
             break
         }
+        
     } 
     
     //MARK: - Helper Functions
