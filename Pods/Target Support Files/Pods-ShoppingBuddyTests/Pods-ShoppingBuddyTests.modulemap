@@ -1,6 +1,0 @@
-framework module Pods_ShoppingBuddyTests {
-  umbrella header "Pods-ShoppingBuddyTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
