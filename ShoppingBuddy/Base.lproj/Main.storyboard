@@ -417,7 +417,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence Radius" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGc-eJ-fvr">
-                                <rect key="frame" x="82.5" y="69" width="156.5" height="25.5"/>
+                                <rect key="frame" x="82" y="69" width="156.5" height="25.5"/>
                                 <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
                                 <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -544,17 +544,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7GJ-Xq-eQQ">
-                                                    <rect key="frame" x="8" y="11.5" width="70" height="70"/>
+                                                    <rect key="frame" x="0.0" y="11.5" width="70" height="70"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="b9k-38-b7a"/>
                                                         <constraint firstAttribute="height" constant="70" id="yDW-Zz-gba"/>
                                                     </constraints>
                                                 </imageView>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="NFD-dR-3ds">
-                                                    <rect key="frame" x="86" y="11.5" width="206" height="70"/>
+                                                    <rect key="frame" x="0.0" y="11.5" width="0.0" height="70"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="749" text="Invitation Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="hfA-1g-8ca">
-                                                            <rect key="frame" x="0.0" y="0.0" width="206" height="23"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="0.0" height="23"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="23" id="vm0-CF-NtA"/>
                                                             </constraints>
@@ -563,7 +563,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Invitation Message: You are invited to list xyz" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="KJo-jL-C5w">
-                                                            <rect key="frame" x="0.0" y="23" width="206" height="47"/>
+                                                            <rect key="frame" x="0.0" y="23" width="0.0" height="47"/>
                                                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -1189,7 +1189,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cancel Sharing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PjI-35-lhI">
-                            <rect key="frame" x="44.5" y="77" width="152" height="28"/>
+                            <rect key="frame" x="45" y="77" width="152" height="28"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                             <color key="textColor" red="0.21112695340000001" green="0.99378865959999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -1795,9 +1795,18 @@
                                         </constraints>
                                         <state key="normal" image="PinOrange"/>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Obx-5n-bum">
+                                        <rect key="frame" x="230.5" y="42" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="4uO-8G-DrN"/>
+                                            <constraint firstAttribute="height" constant="50" id="6sW-wG-QJ7"/>
+                                        </constraints>
+                                        <state key="normal" image="DoubleArrow"/>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="Obx-5n-bum" firstAttribute="centerX" secondItem="PcZ-QS-bs8" secondAttribute="centerX" id="8NI-9W-L6y"/>
                                     <constraint firstItem="NUe-re-gZq" firstAttribute="width" secondItem="I36-n1-ip1" secondAttribute="width" multiplier="0.72" id="BOu-VB-9GY"/>
                                     <constraint firstAttribute="bottom" secondItem="I36-n1-ip1" secondAttribute="bottom" id="DF8-PQ-IPB"/>
                                     <constraint firstAttribute="trailing" secondItem="I36-n1-ip1" secondAttribute="trailing" constant="10" id="FeT-R2-ajn"/>
@@ -1810,6 +1819,7 @@
                                     <constraint firstItem="I36-n1-ip1" firstAttribute="top" secondItem="7m3-JM-aNR" secondAttribute="top" id="aAD-eL-PkG"/>
                                     <constraint firstItem="PcZ-QS-bs8" firstAttribute="top" secondItem="7m3-JM-aNR" secondAttribute="top" constant="-10" id="f2i-2F-zQ4"/>
                                     <constraint firstItem="I36-n1-ip1" firstAttribute="leading" secondItem="7m3-JM-aNR" secondAttribute="leading" constant="10" id="job-C9-Jhf"/>
+                                    <constraint firstItem="Obx-5n-bum" firstAttribute="top" secondItem="PcZ-QS-bs8" secondAttribute="bottom" constant="2" id="nk9-tP-DCe"/>
                                     <constraint firstItem="NUe-re-gZq" firstAttribute="height" secondItem="I36-n1-ip1" secondAttribute="height" multiplier="0.95" id="qgG-cI-WG9"/>
                                     <constraint firstItem="cd4-FF-7su" firstAttribute="width" secondItem="NUe-re-gZq" secondAttribute="width" id="y9I-mQ-QTK"/>
                                 </constraints>
@@ -1860,6 +1870,7 @@
                         <outlet property="MapView" destination="NUe-re-gZq" id="cJu-A5-SSf"/>
                         <outlet property="UserProfileImage" destination="qWh-Ig-8Co" id="QFM-n2-5wn"/>
                         <outlet property="btn_PinHomePosition" destination="PcZ-QS-bs8" id="VZp-ak-Dcg"/>
+                        <outlet property="btn_SwitchMapView" destination="Obx-5n-bum" id="GOF-qf-1zE"/>
                         <outlet property="lbl_InviteMessage" destination="ldn-Pg-54X" id="Ddv-zD-9Fv"/>
                         <outlet property="lbl_InviteTitle" destination="Srx-d8-Ca9" id="y5U-HW-z8F"/>
                         <segue destination="5el-h7-Kap" kind="presentation" identifier="SegueToLoginController" id="nv6-pW-Gd9"/>
@@ -2042,6 +2053,7 @@
         <image name="BackGroundImage" width="375" height="666"/>
         <image name="BuyButton" width="850" height="290"/>
         <image name="CancelSharing" width="200" height="200"/>
+        <image name="DoubleArrow" width="100" height="100"/>
         <image name="Listpad" width="294" height="362"/>
         <image name="Lupe2" width="255" height="268"/>
         <image name="Map" width="900" height="800"/>

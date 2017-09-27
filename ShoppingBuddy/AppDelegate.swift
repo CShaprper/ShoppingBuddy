@@ -9,7 +9,6 @@
 
 import UIKit
 import Firebase
-import GooglePlaces
 import UserNotifications
 import FirebaseMessaging
 import FirebaseDatabase
@@ -27,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {         
         //Google places
-        GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
+        //GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
         
         //AdMob
         GADMobileAds.configure(withApplicationID: "ca-app-pub-6831541133910222~4514978949")

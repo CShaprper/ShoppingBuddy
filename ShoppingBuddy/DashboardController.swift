@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import FirebaseMessaging
 import CoreLocation
 import UserNotifications
 import FirebaseAuth
@@ -29,6 +30,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var InviteUserImage: UIImageView!
     @IBOutlet var LupeImage: UIImageView!
     @IBOutlet var btn_PinHomePosition: UIButton!
+    @IBOutlet var btn_SwitchMapView: UIButton!
     
     //MARK: - Member
     var debugcounter:Int = 0 //can be removed in release
@@ -46,6 +48,14 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
+        
+   
+        for region in locationManager.monitoredRegions {
+           
+            if region.identifier.lowercased().contains("aldi") { print("Aldi found")}
+          print(region.identifier)
+            
+        }
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -199,6 +209,12 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     
+    func btn_SwitchMapView_Pressed(sender: UIButton) -> Void {
+        
+        MapView.mapType = MapView.mapType == .standard ? .hybrid : .standard
+        
+    }
+    
     @objc func HideNotification() -> Void {
         
         UIView.animate(withDuration: 1, animations: {
@@ -305,6 +321,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
+        //btn Switch MapView
+        btn_SwitchMapView.addTarget(self, action: #selector(btn_SwitchMapView_Pressed), for: .touchUpInside)
+        
         //UserProfileImage
         UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
         UserProfileImage.clipsToBounds = true
@@ -472,6 +491,10 @@ extension DashboardController: UNUserNotificationCenterDelegate{
     @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         NSLog("NotificationReceived in Foreground")
+        UIApplication.shared.applicationIconBadgeNumber += 1
+        Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+        let pnh = PushNotificationHelper()
+        pnh.SendNotificationDependendOnPushNotificationType(userInfo: notification.request.content.userInfo)
         
     }
     //Lets you know action decision from Notification

@@ -6,11 +6,14 @@ target 'ShoppingBuddy' do
   use_frameworks!
   # Pods for ShoppingBuddy
   pod 'GooglePlaces'
+  pod 'GooglePlacePicker'
+  pod 'GoogleMaps'
   pod 'Firebase/Core'
   pod 'Firebase/AdMob'
   pod 'Firebase/Messaging'
   pod 'Firebase/Database'
   pod 'Firebase/Auth'
-  pod 'Firebase/Storage'
+  pod 'Firebase/Storage' 
+  
 
 end
