@@ -18,7 +18,8 @@ class ShoppingBuddyUser:NSObject {
     var fcmToken:String?
     var profileImageURL:String?
     var localImageLocation:String?
-    var profileImage:UIImage? 
+    var profileImage:UIImage?
+    var dlType:eUserDLType?
     
     lazy var uSession:URLSession = {
         let config = URLSessionConfiguration.default
@@ -28,7 +29,9 @@ class ShoppingBuddyUser:NSObject {
 }
 extension ShoppingBuddyUser: URLSessionDownloadDelegate {
     
-    public func userProfileImageFromURL() {
+    public func userProfileImageFromURL(dlType:eUserDLType) {
+        
+        self.dlType = dlType
         
         if let index = allUsers.index(where: { $0.profileImageURL == self.profileImageURL }) {
             
@@ -39,8 +42,16 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
             }
             
             self.profileImage = allUsers[index].profileImage!
-            NSLog("UserProfileImage for \(self.nickname!) set from ImageCache!")
-            NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+            
+            switch dlType {
+                
+            case .DownloadForPushNotification:
+                NotificationCenter.default.post(name: .UserProfileImageDLForPushNotificationFinished, object: nil, userInfo: nil)
+                break
+            default:
+                NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+                
+            }
             return
             
         }
@@ -64,7 +75,16 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
                 allUsers[index].localImageLocation = location.absoluteString
                 NSLog("Added UserProfileImage for \(self.nickname!) to allUsers")
                 NSLog("UserProfileImage for \(self.nickname!) set from DownloadTask!")
-                NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+                
+                switch self.dlType! {
+                    
+                case .DownloadForPushNotification:
+                    NotificationCenter.default.post(name: .UserProfileImageDLForPushNotificationFinished, object: nil, userInfo: nil)
+                    break
+                default:
+                    NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+                    break
+                }
                 
             } 
             

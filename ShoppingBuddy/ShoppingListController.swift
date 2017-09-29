@@ -56,7 +56,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var lbl_ShoppingListCardTitle: UILabel!
     @IBOutlet var ShoppingListCardPanRecognizer: UIPanGestureRecognizer!
     @IBOutlet var ShoppingCardTapGestureRecognizer: UITapGestureRecognizer!
-    @IBOutlet var ShoppingCardStoreImage: UIImageView!
     @IBOutlet var lbl_ShoppingCardStoreName: UILabel!
     @IBOutlet var lbl_ShoppingCardTotalItemsLabel: UILabel!
     @IBOutlet var lbl_ShoppingCardTotalItems: UILabel!
@@ -66,6 +65,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var ShoppingListOwnerImage: UIImageView!
     @IBOutlet var CardOneMembersCollectionView: UICollectionView!
     @IBOutlet var btn_CancelSharingCardOne: UIButton!
+    @IBOutlet var btn_StoreCardOne: UIButton!
     
     
     //Shopping List Card2
@@ -74,7 +74,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var lbl_ShoppingListCard2Title: UILabel!
     @IBOutlet var ShoppingListCard2PanRecognizer: UIPanGestureRecognizer!
     @IBOutlet var ShoppingCard2TapGestureRecognizer: UITapGestureRecognizer!
-    @IBOutlet var ShoppingCard2StoreImage: UIImageView!
     @IBOutlet var lbl_ShoppingCard2StoreName: UILabel!
     @IBOutlet var lbl_ShoppingCard2TotalItemsLabel: UILabel!
     @IBOutlet var lbl_ShoppingCard2TotalItems: UILabel!
@@ -84,6 +83,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var ShoppingListCard2OwnerImage: UIImageView!
     @IBOutlet var CardTwoMembersCollectionView: UICollectionView!
     @IBOutlet var btn_CancelSharingCardTwo: UIButton!
+    @IBOutlet var btn_StoreCardTwo: UIButton!
     
     
     //Share List PopUp
@@ -225,7 +225,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let sbUserService = ShoppingBuddyUserWebservice()
                 sbUserService.alertMessageDelegate = self
                 sbUserService.activityAnimationServiceDelegate = self
-                sbUserService.ObserveUser(userID: list.owneruid!)
+                sbUserService.ObserveUser(userID: list.owneruid!, dlType: .DownloadForShoppingList)
                 
             }
             
@@ -238,7 +238,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                     let sbUserService = ShoppingBuddyUserWebservice()
                     sbUserService.alertMessageDelegate = self
                     sbUserService.activityAnimationServiceDelegate = self
-                    sbUserService.ObserveUser(userID: member.memberID!)
+                    sbUserService.ObserveUser(userID: member.memberID!, dlType: .DownloadForShoppingList)
                     
                 }
                 
@@ -374,6 +374,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     @IBAction func btn_AddShoppingList_Pressed(_ sender: UIBarButtonItem) {
         ShowAddShoppingListPopUp()
+    }
+    
+    @objc func btn_Store_Pressed(sender: UIButton) -> Void {
+        
+        let sbMessageService = ShoppingBuddyMessageWebservice()
+        sbMessageService.alertMessageDelegate = self
+        sbMessageService.activityAnimationServiceDelegate = self
+        sbMessageService.SendWillGoToStoreMessage(list: allShoppingLists[currentShoppingListIndex])
+        
     }
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return .none
@@ -1085,7 +1094,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         if ShowBlurrView() {
             
             ShoppingListDetailView.frame.size.width = view.frame.width * 0.95
-            ShoppingListDetailView.frame.size.height = view.frame.height * 0.8
+            ShoppingListDetailView.frame.size.height = view.frame.height * 0.78
             ShoppingListDetailView.center = view.center
             lbl_ShoppingListDetailTitle.text = allShoppingLists[currentShoppingListIndex].name != nil ? allShoppingLists[currentShoppingListIndex].name : ""
             view.addSubview(ShoppingListDetailView)
@@ -1154,7 +1163,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let sbuserService = ShoppingBuddyUserWebservice()
                 sbuserService.activityAnimationServiceDelegate = self
                 sbuserService.alertMessageDelegate = self
-                sbuserService.ObserveUser(userID: senderID)
+                sbuserService.ObserveUser(userID: senderID, dlType: .DownloadForShoppingList)
                 
                 ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
                 
@@ -1169,7 +1178,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             let sbuserService = ShoppingBuddyUserWebservice()
             sbuserService.activityAnimationServiceDelegate = self
             sbuserService.alertMessageDelegate = self
-            sbuserService.ObserveUser(userID: senderID)
+            sbuserService.ObserveUser(userID: senderID, dlType: .DownloadForShoppingList)
             
             ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
             
@@ -1201,6 +1210,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     private func displayNotification() -> Void {
         
         //Invite Notification View
+        let size = txt_InviteMessage.sizeThatFits(CGSize(width: txt_InviteMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 20
         InvitationNotification.center.x = view.center.x
         InvitationNotification.center.y = -InvitationNotification.frame.height
         InvitationNotification.layer.cornerRadius = 30
@@ -1213,15 +1224,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         InvitationNotification.layer.shadowOpacity  = 1
         InvitationNotification.layer.shadowRadius  = 10
         
-        let size = txt_InviteMessage.sizeThatFits(CGSize(width: txt_InviteMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
-        InvitationNotification.frame.size.height = size.height + 50
-        
         view.addSubview(InvitationNotification)
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
-        UIView.animate(withDuration: 1) {
+        
+        UIView.animate(withDuration: 2) {
+            
             self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+            
         }
-        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
+        
+        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
         
     }
     
@@ -1369,6 +1381,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListOwnerImage.layer.cornerRadius = ShoppingListOwnerImage.frame.width * 0.5
         ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListOwnerImage.layer.borderWidth = 3
+        
+        //Card One/Two Store Buttons
+        btn_StoreCardOne.addTarget(self, action: #selector(btn_Store_Pressed), for: .touchUpInside)
+        btn_StoreCardTwo.addTarget(self, action: #selector(btn_Store_Pressed), for: .touchUpInside)
         
         if allShoppingLists.count > 1 {
             

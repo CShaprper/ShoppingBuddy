@@ -16,4 +16,5 @@ enum eNotificationType:String {
     case CancelSharingBySharedUser = "CancelSharingBySharedUser"
     case ListItemAddedBySharedUser = "ListItemAddedBySharedUser"
     case DeclinedSharingInvitation = "DeclinedSharingInvitation"
+    case WillGoShoppingMessage = "WillGoShoppingMessage"
 }

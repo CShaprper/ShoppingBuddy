@@ -430,6 +430,59 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
         })
 
     }//*********************************************************************************************************** 
+
+    //*********************************************************************************************************** 
+    //handle Will go for shopping message
+    //*********************************************************************************************************** 
+    if (String(msgData.messageType) == 'WillGoShoppingMessage') {
+
+        return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
+
+            var promises = []
+            memberSnap.forEach(function (listMember) {
+
+                promises.push(admin.database().ref('users_messages').child(listMember.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+
+                    return admin.database().ref('users').child(listMember.key).once('value').then(userSnap => {
+
+                        var userData = userSnap.val()
+
+                        if (msgData.senderID != userSnap.key) {
+
+                            console.log('sending Push to ' + userData.fcmToken)
+
+                            //create Notification Payload
+                            var payload = {
+                                notification: {
+                                    title: msgData.title,
+                                    body: msgData.message,
+                                    badge: '1',
+                                    sound: 'default',
+                                    sbID: String(event.data.key),
+                                    senderID: msgData.senderID,
+                                    listID: msgData.listID,
+                                    receiptID: listMember.key,
+                                    notificationType: String(msgData.messageType),
+                                }
+                            }
+
+                            return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
+
+                                console.log("Successfully sent list item added message:", response)
+                                console.log(response.results[0].error)
+
+                            }).catch((err) => { console.log("Error sending Push", err) })
+
+                        }
+                    })
+
+                }))
+
+            })
+
+        })
+
+    }//*********************************************************************************************************** 
 });
 
 //****************************************************************************************************************/

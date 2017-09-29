@@ -12,7 +12,9 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
     //MARK: - Outlets
     @IBOutlet var SenderProfileImage: UIImageView!
     @IBOutlet var lbl_InviteTitle: UILabel!
-    @IBOutlet var lbl_IvitationMessage: UILabel!
+    @IBOutlet var lblMessage: UILabel!
+    @IBOutlet var RoundedView: UIView!
+    
     
     
     
@@ -40,19 +42,10 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
         }
         
         lbl_InviteTitle.text = invitation.title != nil ? invitation.title! : ""
-        lbl_IvitationMessage.text = invitation.message != nil ? invitation.message! : ""
-        
-        let whiteRoundedView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height - 5))
-        
-        whiteRoundedView.layer.backgroundColor = UIColor.white.cgColor
-        whiteRoundedView.layer.masksToBounds = true
-        whiteRoundedView.layer.cornerRadius = 20
-        whiteRoundedView.layer.shadowOffset = CGSize(width: -1, height: 10)
-        whiteRoundedView.layer.shadowOpacity = 0.2
-        
-    
-        self.contentView.addSubview(whiteRoundedView)
-        self.contentView.sendSubview(toBack: whiteRoundedView)
+        lblMessage.text = invitation.message != nil ? invitation.message! : ""
+        RoundedView.layer.borderColor = tintColor.cgColor
+        RoundedView.layer.borderWidth = 5
+        RoundedView.layer.cornerRadius = 30
         
     }
 

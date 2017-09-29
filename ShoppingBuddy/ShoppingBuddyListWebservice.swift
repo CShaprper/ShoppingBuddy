@@ -146,7 +146,7 @@ class ShoppingBuddyListWebservice {
         //download user if unknown
         if let _ = allUsers.index(where: { $0.id == userID }) { }
         else {
-            sbUserService.ObserveUser(userID:userID)
+            sbUserService.ObserveUser(userID:userID, dlType: .DownloadForShoppingList)
         }
     }
     

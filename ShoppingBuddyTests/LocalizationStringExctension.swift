@@ -95,10 +95,15 @@ extension String{
     static let ListOwnerCanceledSharingMessage = NSLocalizedString("ListOwnerCanceledSharingMessage", comment: "") 
     static let SharedUserCanceledSharingTitle = NSLocalizedString("SharedUserCanceledSharingTitle", comment: "")
     static let SharedUserCanceledSharingMessage = NSLocalizedString("SharedUserCanceledSharingMessage", comment: "")
-    static let ListItemAddedTitle = NSLocalizedString("ListItemAddedTitle", comment: "")
-    static let ListItemAddedMessage = NSLocalizedString("ListItemAddedMessage", comment: "")
     static let SharingDeclinedMessageTitle = NSLocalizedString("SharingDeclinedMessageTitle", comment: "")
     static let SharingDeclinedMessageMessage = NSLocalizedString("SharingDeclinedMessageMessage", comment: "")
+    
+    //List item Added Message
+    static let ListItemAddedTitle = NSLocalizedString("ListItemAddedTitle", comment: "")
+    static let ListItemAddedMessage = NSLocalizedString("ListItemAddedMessage", comment: "")
+    
+    static let WillGoShoppingMessageTitle = NSLocalizedString("WillGoShoppingMessageTitle", comment: "")
+    static let WillGoShoppingMessageMessage = NSLocalizedString("WillGoShoppingMessageMessage", comment: "")
     
     //Delete List Message
     static let ShoppingListDeleteAlertTitle = NSLocalizedString("ShoppingListDeleteAlertTitle", comment: "")

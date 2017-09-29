@@ -85,9 +85,12 @@ ListOwnerCanceledSharingMessage = "%@ removed %@ from group list '%@'!";
 SharedUserCanceledSharingTitle = "Sharing canceled!";
 SharedUserCanceledSharingMessage = "%@ has left the group list %@.";
 ListItemAddedTitle = "Article added!";
-ListItemAddedMessage = "%@ added '%' to shopping list '%@'";
+ListItemAddedMessage = "%@ added '%' to group list '%@'.";
 SharingDeclinedMessageTitle = "Sharing invite declined";
 SharingDeclinedMessageMessage = "%@ declined your list sharing invitation.";
+
+WillGoShoppingMessageTitle = "%@ goes for shopping";
+WillGoShoppingMessageMessage = "%@ goes to %@ for shopping. Last chance to add articles to group list '%@'.";
 
     //ShareListPopUp
 lbl_ShareListTitle = "Agregar la lista";

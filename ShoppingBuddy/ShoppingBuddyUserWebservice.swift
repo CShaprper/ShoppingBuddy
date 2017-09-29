@@ -39,7 +39,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             currentUser!.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
             currentUser!.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
             currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
-            currentUser!.userProfileImageFromURL()
+            currentUser!.userProfileImageFromURL(dlType: .DownloadForCurrentUser)
                 
                 allUsers.append(currentUser!)
                 self.HideActivityIndicator()
@@ -57,7 +57,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
         }
     }
     
-    func ObserveUser(userID: String){
+    func ObserveUser(userID: String, dlType:eUserDLType){
         
         ShowActivityIndicator()
         userRef.child(userID).observeSingleEvent(of: .value, with: { (userSnap) in
@@ -70,7 +70,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             newUser.nickname = userSnap.childSnapshot(forPath: "nickname").value as? String
             newUser.fcmToken = userSnap.childSnapshot(forPath: "fcmToken").value as? String
             newUser.profileImageURL = userSnap.childSnapshot(forPath: "profileImageURL").value as? String
-            newUser.userProfileImageFromURL()
+            newUser.userProfileImageFromURL(dlType: dlType)
                 
                 allUsers.append(newUser)
                 self.HideActivityIndicator()

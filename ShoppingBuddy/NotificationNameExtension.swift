@@ -37,4 +37,7 @@ public extension Notification.Name {
     
     static let CurrentUserCreated = Notification.Name("CurrentUserCreated")
     static let SharingInviteReceived = Notification.Name("SharingInviteReceived")
+    
+    //Notification names on UserProfileImageDownloads
+    static let UserProfileImageDLForPushNotificationFinished = Notification.Name("UserProfileImageDLForPushNotificationFinished")
 }

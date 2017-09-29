@@ -26,7 +26,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     //NotificationView
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
-    @IBOutlet var lbl_InviteMessage: UILabel!
+    @IBOutlet var txt_NotificationMessage: UITextView!
     @IBOutlet var InviteUserImage: UIImageView!
     @IBOutlet var LupeImage: UIImageView!
     @IBOutlet var btn_PinHomePosition: UIButton!
@@ -209,7 +209,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     
-    func btn_SwitchMapView_Pressed(sender: UIButton) -> Void {
+    @objc func btn_SwitchMapView_Pressed(sender: UIButton) -> Void {
         
         MapView.mapType = MapView.mapType == .standard ? .hybrid : .standard
         
@@ -242,18 +242,16 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             let senderID = info["senderID"] as? String else { return }
         
         lbl_InviteTitle.text = notificationTitle
-        lbl_InviteMessage.text = notificationMessage
+        txt_NotificationMessage.text = notificationMessage
         
         if let index = allUsers.index(where: { $0.id == senderID } ) {
             
             InviteUserImage.image = allUsers[index].profileImage!
-            displayNotification()
-            
-        } else {
-            
-            displayNotification()
             
         }
+            
+            displayNotification()
+            
         
     }
     @objc func btn_PinHomePosition_Pressed(sender: UIButton) -> Void {
@@ -261,37 +259,11 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         SaveCurrentLocationAsHomeLocation(coordinate: self.userLocation!)
         
     }
-    
-    private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
-        
-        let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if error != nil {
-                
-                NSLog(error!.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-                
-            }
-            
-            DispatchQueue.main.async {
-                
-                if let downloadImage = UIImage(data: data!) {
-                    
-                    //TODO: take a look at runtime
-                    self.InviteUserImage.image = downloadImage
-                    self.displayNotification()
-                    
-                }
-            }
-        }
-        task.resume()
-    }
     private func displayNotification() -> Void {
         
         //Invite Notification View
+        let size = txt_NotificationMessage.sizeThatFits(CGSize(width: txt_NotificationMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 20
         InvitationNotification.center.x = view.center.x
         InvitationNotification.center.y = -InvitationNotification.frame.height
         InvitationNotification.layer.cornerRadius = 30
@@ -305,15 +277,14 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         InvitationNotification.layer.shadowRadius  = 10
         
         view.addSubview(InvitationNotification)
-        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
         
-        UIView.animate(withDuration: 1) {
+        UIView.animate(withDuration: 2) {
             
             self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
             
         }
         
-        timer = Timer.scheduledTimer(timeInterval: 4, target: self, selector: #selector(HideNotification), userInfo: nil, repeats: false)
+        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(HideNotification), userInfo: nil, repeats: false)
         
     }
     
@@ -513,24 +484,11 @@ extension DashboardController: MKMapViewDelegate{
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
         mapView.setRegion(region, animated: false)
         
-        /* not needed when PinCurrent user location
-        if UserDefaults.standard.bool(forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue){
-            //Update initial User Position
-            UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
-            
-            //Search nearby Shops
-            PerformLocalShopSearch(notification: nil)
-        }*/
         if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
             //Search nearby Shops
             PerformLocalShopSearch(notification: nil)
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         }
-            /* not needed when PinCurrent user location
-        else if HasUserMovedDistanceGreaterMapSpan(userLocation: userLocation){
-            //Search nearby Shops
-            PerformLocalShopSearch(notification: nil)
-        }*/
     }
     
     //MARK: - IShoppingBuddyListWebService implementation
@@ -696,25 +654,7 @@ extension DashboardController: MKMapViewDelegate{
         return pinView
         
     }
-    //HasUserMovedDistanceGreaterMapSpan
-    //TODO: remove and change for static home position
-    /*
-    private func HasUserMovedDistanceGreaterMapSpan(userLocation:MKUserLocation) -> Bool {
-        
-        if  let lastUserLocation = ReadLastUserLocationFromUserDefaults() {
-            
-            let distance = userLocation.location?.distance(from: lastUserLocation)
-            if distance != nil && distance! > mapSpan * 0.25  {
-                
-                UpdateLastUserLocationFromUserDefaults(coordinate: userLocation.coordinate)
-                return true
-                
-            }
-            
-        }
-        
-        return false
-    }*/
+    
     private func ReadUsersLocationToMonitoreFromUserDefaults() -> CLLocation? {
         
         let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLatitude.rawValue)
@@ -737,16 +677,6 @@ extension DashboardController: MKMapViewDelegate{
         
     }
     
-    //TODO: remove and change for static home position
-    /*
-    private func UpdateLastUserLocationFromUserDefaults(coordinate: CLLocationCoordinate2D) -> Void {
-        
-        UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-        UserDefaults.standard.set(false, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
-        UserDefaults.standard.set(coordinate.latitude, forKey: eUserDefaultKey.LastUserLatitude.rawValue)
-        UserDefaults.standard.set(coordinate.longitude, forKey: eUserDefaultKey.LastUserLongitude.rawValue)
-        
-    }*/
     private func RemoveOldGeofenceOverlays() -> Void {
         
         for overlay in self.MapView.overlays {

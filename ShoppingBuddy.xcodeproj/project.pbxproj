@@ -46,6 +46,7 @@
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
 		CFD48DE91F586C5E000B403A /* ShoppingBuddyInvitationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */; };
+		CFDB30FD1F7D57DE00415825 /* eUserDLType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
 		CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */; };
 		CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFE4A1CE1F23C0DC002A12C7 /* Main.storyboard */; };
@@ -123,6 +124,7 @@
 		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE531F3289400032AA9F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyInvitationCell.swift; sourceTree = "<group>"; };
+		CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eUserDLType.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				CFE874441F59AC7500DA6CDC /* Supporting Files */,
+				CFB2AA611F24B87A00AACB5B /* Helper */,
 				CFE4A1FA1F23C432002A12C7 /* Model */,
 				CFE4A1F81F23C40B002A12C7 /* View */,
 				CFE4A1F91F23C420002A12C7 /* Controller */,
@@ -316,7 +319,6 @@
 				CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */,
 				CFE4A2081F23C8EB002A12C7 /* IValidationService.swift */,
 				CF5F43931F47215300B9D1B9 /* IActivityAnimationService.swift */,
-				CFB2AA611F24B87A00AACB5B /* Helper */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -365,6 +367,7 @@
 				CFF319451F33742700F91272 /* eUserDefaultKey.swift */,
 				CFE874471F59ADFF00DA6CDC /* eNotificationType.swift */,
 				CF40A4F21F76D00800A35BE0 /* eIAPIdentifier.swift */,
+				CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */,
 			);
 			name = Enum;
 			sourceTree = "<group>";
@@ -554,6 +557,7 @@
 				CF2C4EA91F266F3600F046F4 /* StatusBarExtension.swift in Sources */,
 				CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */,
 				CFE4A20B1F23C974002A12C7 /* ValidationFactory.swift in Sources */,
+				CFDB30FD1F7D57DE00415825 /* eUserDLType.swift in Sources */,
 				CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */,
 				CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */,
 				CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */,

@@ -25,6 +25,30 @@ class ShoppingBuddyMessageWebservice {
         sbUserService = ShoppingBuddyUserWebservice()
     }
     
+    func SendWillGoToStoreMessage(list: ShoppingList) -> Void {
+        
+        self.ShowActivityIndicator()
+        let msgTitle = String.localizedStringWithFormat(String.WillGoShoppingMessageTitle, currentUser!.nickname!)
+        let msgMessage = String.localizedStringWithFormat(String.WillGoShoppingMessageMessage, currentUser!.nickname!, list.relatedStore!, list.name!)
+        
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.WillGoShoppingMessage.rawValue]) { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NSLog("Succesfully added Will Go Shopping to messages")
+            
+        }
+    }
+    
     
     //Share Functions
     func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {
@@ -383,7 +407,7 @@ class ShoppingBuddyMessageWebservice {
         //download user if unknown
         if let _ = allUsers.index(where: { $0.id == userID }) { }
         else {
-            sbUserService.ObserveUser(userID:userID)
+            sbUserService.ObserveUser(userID:userID, dlType: .DownloadForMessagesController)
         }
     }
 }

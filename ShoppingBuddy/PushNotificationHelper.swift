@@ -6,49 +6,90 @@
 //  Copyright © 2017 Peter Sypek. All rights reserved.
 //
 
-import Foundation
+import UIKit
+var notificationInfo: [AnyHashable : Any]?
 
-class PushNotificationHelper {
+class PushNotificationHelper:NSObject, URLSessionDownloadDelegate {
+    internal var profileImageURL:String!
+    internal var notificationType:eNotificationType?
+    
+    lazy var uSession:URLSession = {
+        let config = URLSessionConfiguration.default
+        return URLSession(configuration: config, delegate: self, delegateQueue: nil)
+    }()
+    
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(forName: .UserProfileImageDLForPushNotificationFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDLForPushNotificationFinished)
+    }
+    
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        
+        if let image = try? UIImage(data: Data(contentsOf: location)), image != nil {
+            
+            if let index = allUsers.index(where: { $0.profileImageURL == profileImageURL }){
+                
+                allUsers[index].profileImage = image
+                allUsers[index].localImageLocation = location.absoluteString
+                NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
+                
+            }
+        }
+    }
     
     func SendNotificationDependendOnPushNotificationType(userInfo: [AnyHashable : Any]) -> Void {
         
-        let notificationType = getNotificationType(userInfo: userInfo)
+        notificationType = getNotificationType(userInfo: userInfo)
         
-        switch notificationType {
+        switch notificationType! {
         case .NotSet:
             break
             
         case .SharingInvitation:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.SharingInviteReceived, object: nil, userInfo: nil)
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
             
         case .SharingAccepted:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             NotificationCenter.default.post(name: Notification.Name.UserAcceptedSharing, object: nil, userInfo: nil)
             break
             
         case .CancelSharingBySharedUser:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
             
         case .CancelSharingByOwner:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
             
         case .ListItemAddedBySharedUser:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
             
         case .DeclinedSharingInvitation:
-            let notificationInfo = getNotificationData(userInfo: userInfo)
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
+            
+        case .WillGoShoppingMessage:
+            let not = getNotificationData(userInfo: userInfo)
+            if not == nil { return }
+            NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
+            break
+            
         }
         
         
@@ -69,7 +110,7 @@ class PushNotificationHelper {
             
         case eNotificationType.SharingAccepted.rawValue:
             return eNotificationType.SharingAccepted
-        
+            
         case eNotificationType.CancelSharingByOwner.rawValue:
             return eNotificationType.CancelSharingByOwner
             
@@ -78,6 +119,12 @@ class PushNotificationHelper {
             
         case eNotificationType.ListItemAddedBySharedUser.rawValue:
             return eNotificationType.ListItemAddedBySharedUser
+            
+        case eNotificationType.ListItemAddedBySharedUser.rawValue:
+            return eNotificationType.ListItemAddedBySharedUser
+            
+        case eNotificationType.WillGoShoppingMessage.rawValue:
+            return eNotificationType.WillGoShoppingMessage
             
         default:
             return eNotificationType.NotSet
@@ -95,21 +142,46 @@ class PushNotificationHelper {
         guard let notificationTitle = alert["title"] as? String,
             let notificationMessage = alert["body"] as? String else { return nil }
         
-        downloadUserImage(senderID: senderID)
+        //set notification info
+        notificationInfo = userInfo
         
-        let notificationInfo = ["notificationTitle": notificationTitle, "notificationMessage":notificationMessage, "senderID":senderID, "listID":listID]
-        return notificationInfo
+        //profile image URL exists?
+        if needDownloadUserProfileImage(userID: senderID) {
+            
+            downloadUser(userID: senderID, dlType: .DownloadForPushNotification)
+            
+        } else {
+            
+            //no new user download necessary return notification info from push
+            notificationInfo = ["notificationTitle": notificationTitle, "notificationMessage":notificationMessage, "senderID":senderID, "listID":listID]
+            return notificationInfo
+            
+        }
+        
+        return nil
         
     }
     
-    private func downloadUserImage(senderID: String) -> Void {
+    private func needDownloadUserProfileImage(userID: String) -> Bool {
         
-        if let _ = allUsers.index(where: { $0.id == senderID }) { }
-        else {
-            let sbUserService = ShoppingBuddyUserWebservice()
-            sbUserService.ObserveUser(userID: senderID)
-        }
+        if let _ = allUsers.index(where: { $0.id == userID }) { return false }
+        return true
+        
+    }
+    
+    private func downloadUser(userID:String, dlType:eUserDLType) {
+        
+        let sbUserService = ShoppingBuddyUserWebservice()
+        sbUserService.ObserveUser(userID: userID, dlType: dlType)
+        
+    }
+    
+    func UserProfileImageDLForPushNotificationFinished(notification:Notification) -> Void {
+        
+        //send out notification after image downloaded with pre saved  notification inf
+        SendNotificationDependendOnPushNotificationType(userInfo: notificationInfo!)
         
     }
     
 }
+

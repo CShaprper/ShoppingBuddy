@@ -24,23 +24,6 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
-//        bannerView.frame = CGRect(x: 0, y: 0, width: 320, height: 50)
-//        bannerView.alpha = 0
-//        bannerView.adUnitID = "ca-app-pub-6831541133910222/1418042316"
-//        bannerView.rootViewController = self
-//        let request = GADRequest()
-//        request.testDevices = [kGADSimulatorID,"faff03ee8b3c887a15d0f375da4ceb0daad26b1e"]
-//        bannerView.load(request)
-//        bannerView.delegate = self
-//        bannerView.rootViewController = self
-//        bannerView.translatesAutoresizingMaskIntoConstraints = false
-//        bannerView.center.x = view.center.x
-//        view.addSubview(bannerView)
-//        bannerView.bottomAnchor.constraint(equalTo: BackgroundImage.bottomAnchor).isActive = true
-//        bannerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        
-        
         //SetNavigationBar Title
         navigationItem.title = String.MessagesControllerTitle
         
@@ -62,6 +45,9 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         sbUserService = ShoppingBuddyUserWebservice()
         sbUserService.activityAnimationServiceDelegate = self
         sbUserService.alertMessageDelegate = self
+        
+        InvitationsTableView.rowHeight = UITableViewAutomaticDimension
+        InvitationsTableView.estimatedRowHeight = 93
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -104,7 +90,7 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         for msg in allMessages{
             
             if let _ = allUsers.index(where: { $0.id == msg.senderID }){ }
-            else {  sbUserService.ObserveUser(userID: msg.senderID!) }
+            else {  sbUserService.ObserveUser(userID: msg.senderID!, dlType: .DownloadForMessagesController) }
             
         }
         
@@ -214,41 +200,4 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
      // Pass the selected object to the new view controller.
      }
      */
-}
-extension MessagesController: GADBannerViewDelegate {
-    /// Tells the delegate an ad request loaded an ad.
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        print("adViewDidReceiveAd")
-        UIView.animate(withDuration: 2) {
-            self.bannerView.alpha = 1
-        }
-    }
-    
-    /// Tells the delegate an ad request failed.
-    func adView(_ bannerView: GADBannerView,
-                didFailToReceiveAdWithError error: GADRequestError) {
-        print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
-    }
-    
-    /// Tells the delegate that a full screen view will be presented in response
-    /// to the user clicking on an ad.
-    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
-        print("adViewWillPresentScreen")
-    }
-    
-    /// Tells the delegate that the full screen view will be dismissed.
-    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewWillDismissScreen")
-    }
-    
-    /// Tells the delegate that the full screen view has been dismissed.
-    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewDidDismissScreen")
-    }
-    
-    /// Tells the delegate that a user click will open another app (such as
-    /// the App Store), backgrounding the current app.
-    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        print("adViewWillLeaveApplication")
-    }
 }

@@ -90,11 +90,12 @@ ListOwnerCanceledSharingMessage = "%@ hat %@ aus der Gruppenliste '%@' entfernt!
 SharedUserCanceledSharingTitle = "Teilen beendet!";
 SharedUserCanceledSharingMessage = "%@ hat die Gruppenliste '%@' verlassen!";
 ListItemAddedTitle = "Artikel hinzugefügt!";
-ListItemAddedMessage = "%@ hat %@ zur Liste '%@' hinzugefügt";
+ListItemAddedMessage = "%@ hat %@ zur Gruppenliste '%@' hinzugefügt.";
 SharingDeclinedMessageTitle = "Einladung Abgelehnt!";
 SharingDeclinedMessageMessage = "%@ hat Deine Einladung zum Teilen Deiner Liste abgelehnt.";
 
-
+WillGoShoppingMessageTitle = "%@ geht einkaufen!";
+WillGoShoppingMessageMessage = "%@ geht zu %@. Letzte Chance weitere Artikel zur Gruppenliste '%@' hinzuzufügen.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Liste Löschen?";
