@@ -39,6 +39,11 @@ class ValidationFactory {
             validationService.alertMessageDelegate = alertDelegate
             return validationService.Validate(validationString: validationString)
             
+        case .fullVersionUser:
+            let validationService = FullVersionUserValidationService()
+            validationService.alertMessageDelegate = alertDelegate
+            return validationService.Validate()
+            
         default:
             return false
         }

@@ -92,10 +92,22 @@ SharedUserCanceledSharingMessage = "%@ hat die Gruppenliste '%@' verlassen!";
 ListItemAddedTitle = "Artikel hinzugefügt!";
 ListItemAddedMessage = "%@ hat %@ zur Gruppenliste '%@' hinzugefügt.";
 SharingDeclinedMessageTitle = "Einladung Abgelehnt!";
-SharingDeclinedMessageMessage = "%@ hat Deine Einladung zum Teilen Deiner Liste abgelehnt.";
+SharingDeclinedMessageMessage = "%@ hat die Einladung zum Teilen der Deiner Liste abgelehnt.";
+LeaveGroupListAlertTitle = "Gruppenliste verlassen!";
+LeaveGroupListAlertMessage = "Möchtest Du die Gruppenliste '%@' verlassen?";
 
 WillGoShoppingMessageTitle = "%@ geht einkaufen!";
-WillGoShoppingMessageMessage = "%@ geht zu %@. Letzte Chance weitere Artikel zur Gruppenliste '%@' hinzuzufügen.";
+WillGoShoppingMessageMessage = "%@ geht zu %@. Letzte Chance fehlende Artikel zu '%@' hinzuzufügen.";
+
+    //In App Purchases
+PurchaseRestoreAlertTitle = "Einkauf Wiederhergestellt";
+PurchaseRestoreAlertMessage = "Danke %@ Dein Einkauf wurde wieder hergestellt.";
+PurchaseDeniedAlertTitle = "Einkauf Verweigert";
+PurchaseDeniedAlertTitle = "Du hast keine Genehmigung Apps über den App Store zu erwerben!";
+FullVersionNeededAlertTitle = "Premium Version nötig";
+FullVersionNeededArticleAlertMessage = "Du brauchst die Premium Version um mehr als 7 Artikel zu speichern.";
+FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version um Listen mit mehr als einem User zu teilen.";
+FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version mehr als eine Liste zu speichern.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Liste Löschen?";

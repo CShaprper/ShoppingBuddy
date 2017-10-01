@@ -257,7 +257,7 @@ class ShoppingBuddyListWebservice {
         
         //Add message for canceled user to messages node
         let title = String.ListOwnerCanceledSharingTitle
-        let message = String.localizedStringWithFormat(NSLocalizedString("ListOwnerCanceledSharingMessage", comment: ""), currentUser!.nickname!, userToDelete.nickname!, listToCancel.name!)
+        let message = String.localizedStringWithFormat(String.ListOwnerCanceledSharingMessage, currentUser!.nickname!, userToDelete.nickname!, listToCancel.name!)
         self.ref.child("messages").childByAutoId().updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":Auth.auth().currentUser!.uid, "messageType":eNotificationType.CancelSharingByOwner.rawValue, "userIDToDelete": userToDelete.id!], withCompletionBlock: { (error, dbRef) in
             
             if error != nil{
@@ -279,8 +279,11 @@ class ShoppingBuddyListWebservice {
     func CancelSharingBySharedUserForMember(member:ShoppingBuddyUser, listToCancel:ShoppingList) -> Void {
         
         self.ShowActivityIndicator()
-        ref.child("shoppinglists").child(listToCancel.id!).child("members").child(member.id!).setValue(eNotificationType.CancelSharingBySharedUser.rawValue, withCompletionBlock: { (error, dbRef) in
-            
+        //Add message to messages node
+        let title = String.SharedUserCanceledSharingTitle
+        let message = String.localizedStringWithFormat(String.SharedUserCanceledSharingMessage, currentUser!.nickname!, listToCancel.name! )
+        let messagesRef = self.ref.child("messages").childByAutoId().updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":Auth.auth().currentUser!.uid, "messageType":eNotificationType.CancelSharingBySharedUser.rawValue, "userIDToDelete": member.id!]) { (error, dbRef) in
+        
             if error != nil{
                 
                 NSLog(error!.localizedDescription)
@@ -291,47 +294,8 @@ class ShoppingBuddyListWebservice {
                 
             }
             
-            self.HideActivityIndicator()
-            NSLog("Succesfully set member status to canceled sharing by shared user")
             
-            //Add message to messages node
-            let title = String.SharedUserCanceledSharingTitle
-            let message = String.localizedStringWithFormat(NSLocalizedString("SharedUserCanceledSharingMessage", comment: ""), currentUser!.nickname!, listToCancel.name! ) 
-            let messagesRef = self.ref.child("messages").childByAutoId()
-            messagesRef.updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":currentUser!.id!, "messageType":eNotificationType.CancelSharingByOwner.rawValue], withCompletionBlock: { (error, dbRef) in
-                
-                if error != nil{
-                    
-                    NSLog(error!.localizedDescription)
-                    let title = String.OnlineFetchRequestError
-                    let message = error!.localizedDescription
-                    self.ShowAlertMessage(title: title, message: message)
-                    return
-                    
-                }
-                self.HideActivityIndicator()
-                NSLog("Succesfully added cancel by shared user message to messages node")
-                
-                //Add receipt to message/receipts
-                self.ref.child("message_receipts").child(messagesRef.key).updateChildValues([member.id!:"receipt"], withCompletionBlock: { (error, dbRef) in
-                    
-                    if error != nil{
-                        
-                        NSLog(error!.localizedDescription)
-                        let title = String.OnlineFetchRequestError
-                        let message = error!.localizedDescription
-                        self.ShowAlertMessage(title: title, message: message)
-                        return
-                        
-                    }
-                    self.HideActivityIndicator()
-                    NSLog("Succesfully added receipt to cancel sharing by shared user message_receipts")
-                    
-                })
-                
-            })
-            
-        })
+        }
         
     }
     

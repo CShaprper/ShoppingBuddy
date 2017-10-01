@@ -9,7 +9,5 @@
 import Foundation
 
 enum eIAPIndentifier:String{
-    case QuaterlySubscription = "ShoppingBuddy"
-    case HalfYearSubscription = "ShoppingBuddy6M"
-    case AnnualSbsrciption = "SB_Annual_Subscription"
+    case SBFullVersion = "SB_App_Purchase"
 }

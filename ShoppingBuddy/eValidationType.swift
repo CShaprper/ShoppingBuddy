@@ -16,4 +16,5 @@ enum eValidationType{
     case textField
     case segmentedControl
     case housenumber
+    case fullVersionUser
 }

@@ -49,17 +49,6 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         self.view.endEditing(true)
         return true
     }
-    //MARK: Keyboard Notification Listener targets
-    func KeyboardWillShow(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            // AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
-        }
-    }
-    func KeyboardWillHide(sender: Notification) -> Void {
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            // AddStorePopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
-        }
-    }
     
     //MARK: IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
@@ -78,7 +67,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     }
     @objc func btn_HalfYearSubscription_Pressed(sender: UIButton) -> Void {
         
-        iapHelper.buyProduct(productIdentifier: eIAPIndentifier.QuaterlySubscription.rawValue)
+        iapHelper.buyProduct(productIdentifier: eIAPIndentifier.SBFullVersion.rawValue)
         
     }
     
@@ -86,22 +75,6 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     func ConfigureView() -> Void{
         
         btn_HalfYearSubscription.addTarget(self, action: #selector(btn_HalfYearSubscription_Pressed), for: .touchUpInside)
-        
-        //        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
-        //        bannerView.frame = CGRect(x: 0, y: 0, width: 320, height: 50)
-        //        bannerView.alpha = 0
-        //        bannerView.adUnitID = "ca-app-pub-6831541133910222/1418042316"
-        //        bannerView.rootViewController = self
-        //        let request = GADRequest()
-        //        request.testDevices = [kGADSimulatorID,"faff03ee8b3c887a15d0f375da4ceb0daad26b1e"]
-        //        bannerView.load(request)
-        //        bannerView.delegate = self
-        //        bannerView.rootViewController = self
-        //        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        //        bannerView.center.x = view.center.x
-        //        view.addSubview(bannerView)
-        //        bannerView.bottomAnchor.constraint(equalTo: BackgroundView.bottomAnchor).isActive = true
-        //        bannerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
         

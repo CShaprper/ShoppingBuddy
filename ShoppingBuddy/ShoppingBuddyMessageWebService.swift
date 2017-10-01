@@ -60,7 +60,7 @@ class ShoppingBuddyMessageWebservice {
             if snapshot.value is NSNull {
                 
                 let title = String.UserEmailNotFoundTitle
-                let message = String.localizedStringWithFormat(NSLocalizedString("UserEmailNotFoundMessage", comment: ""), friendsEmail)
+                let message = String.localizedStringWithFormat(String.UserEmailNotFoundMessage, friendsEmail)
                 self.ShowAlertMessage(title: title, message: message)
                 return
                 
@@ -73,7 +73,7 @@ class ShoppingBuddyMessageWebservice {
                 //Write invitation Data to receipt ref
                 let msgRef = self.ref.child("messages").childByAutoId()
                 let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
-                let inviteMessage = String.localizedStringWithFormat(NSLocalizedString("ShareListMessage", comment: ""), listOwner.nickname!) 
+                let inviteMessage = String.localizedStringWithFormat(String.ShareListMessage, listOwner.nickname!) 
                 
                 //Add receipt to message_receipts node before creating message
                 self.ref.child("message_receipts").child(msgRef.key).updateChildValues([receipt.key:"receipt"], withCompletionBlock: { (error, dbRef) in

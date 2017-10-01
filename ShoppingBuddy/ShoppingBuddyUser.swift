@@ -20,6 +20,7 @@ class ShoppingBuddyUser:NSObject {
     var localImageLocation:String?
     var profileImage:UIImage?
     var dlType:eUserDLType?
+    var fullVersionStatus:Bool?
     
     lazy var uSession:URLSession = {
         let config = URLSessionConfiguration.default

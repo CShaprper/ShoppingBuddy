@@ -67,10 +67,9 @@ class ShoppingBuddyListItemWebservice {
                 
             }
             
-            //Add message to messages node
-            //TODO: variate by language
+            //Add message to messages node  
             let title = String.ListItemAddedTitle
-            let message = String.localizedStringWithFormat(NSLocalizedString("ListItemAddedMessage", comment: ""), currentUser!.nickname!, listItem.itemName!, allShoppingLists[currentShoppingListIndex].name!) 
+            let message = String.localizedStringWithFormat(String.ListItemAddedMessage, currentUser!.nickname!, listItem.itemName!, allShoppingLists[currentShoppingListIndex].name!) 
             
             messagesRef.updateChildValues(["listID":listItem.listID!, "title":title, "message":message, "senderID":currentUser!.id!, "messageType":eNotificationType.ListItemAddedBySharedUser.rawValue], withCompletionBlock: { (error, dbRef) in
                 

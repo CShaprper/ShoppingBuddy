@@ -135,6 +135,14 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
         
     }
     
+    //MARK: - Change FullVersionUser
+    func ChangeFullVersionUserStatus(status: Bool) -> Void {
+        
+        self.ShowActivityIndicator()
+        ref.child("users").child(Auth.auth().currentUser!.uid).child("FullVersionUserStatus").setValue(status)       
+        
+    }
+    
     //MARK:- Firebase Auth Section
     func CreateNewFirebaseUser(profileImage:UIImage, nickname: String, email: String, password: String) {
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in

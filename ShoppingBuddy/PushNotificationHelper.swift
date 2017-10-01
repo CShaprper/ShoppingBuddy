@@ -126,6 +126,9 @@ class PushNotificationHelper:NSObject, URLSessionDownloadDelegate {
         case eNotificationType.WillGoShoppingMessage.rawValue:
             return eNotificationType.WillGoShoppingMessage
             
+        case eNotificationType.DeclinedSharingInvitation.rawValue:
+            return eNotificationType.DeclinedSharingInvitation
+            
         default:
             return eNotificationType.NotSet
             

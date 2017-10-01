@@ -123,22 +123,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     override func viewDidLoad() {
         super.viewDidLoad()
         ConfigureView()
-//        
-//        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
-//        bannerView.frame = CGRect(x: 0, y: 0, width: 320, height: 50)
-//        bannerView.alpha = 0
-//        bannerView.adUnitID = "ca-app-pub-6831541133910222/1418042316"
-//        bannerView.rootViewController = self
-//        let request = GADRequest()
-//        request.testDevices = [kGADSimulatorID,"faff03ee8b3c887a15d0f375da4ceb0daad26b1e"]
-//        bannerView.load(request)
-//        bannerView.delegate = self
-//        bannerView.rootViewController = self
-//        bannerView.translatesAutoresizingMaskIntoConstraints = false
-//        bannerView.center.x = view.center.x
-//        view.addSubview(bannerView)
-//        bannerView.bottomAnchor.constraint(equalTo: BackgroundImage.bottomAnchor).isActive = true
-//        bannerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -321,6 +305,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     @objc func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
+        
+        //Validate FullVersion
+        isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
+        if !isValid && allShoppingLists.count >= 1 {
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededListCountAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+        }
+        
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ListName.text, alertDelegate: self)
         isValid = ValidationFactory.Validate(type: .textField, validationString: txt_RelatedStore.text, alertDelegate: self)
         if isValid{
@@ -332,8 +326,17 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @objc func btn_SaveItem_Pressed(sender: UIButton) -> Void {
         
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
         
+        //Validate FullVersion
+        isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
+        if !isValid && allShoppingLists[currentShoppingListIndex].items.count >= 7 {
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededArticleAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+        }
+        
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
         if isValid{
             
             var newListItem = ShoppingListItem()
@@ -350,8 +353,17 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @objc func btn_ShareListSave_Pressed(sender: UIButton) -> Void {
         
         var isValid:Bool = false
-        isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         
+        //Validate FullVersion
+        isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
+        if !isValid && allShoppingLists[currentShoppingListIndex].members.count >= 1 {
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededSharingAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+        }
+        
+        isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
             
             let sbMessageService = ShoppingBuddyMessageWebservice()
@@ -1545,23 +1557,45 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if collectionView == self.CancelSharingMemberCollectionView {
             
-            
-            var selectedUser:ShoppingBuddyUser
-            if let index = allUsers.index(where: { $0.id! == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID  } ){
-                
-                selectedUser = allUsers[index]
-                
-            } else { return }
-            
             if isCurrentUserShoppingListOwner() {
-                //Cancel Sharing By List Owner
                 
+                //Cancel Sharing By List Owner
+                guard let selectedUser = getSelectedUser(indexPath: indexPath) else { return }
+                
+                //Show message that this will cancel sharing with selected user
                 let title = String.CancelSharingSelectedMemberAlertTitle
                 let message = String.CancelSharingSelectedMemberAlertMessage + selectedUser.nickname!
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
                 alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
                     
                     self.sbListWebservice.CancelSharingByOwnerForUser(userToDelete:selectedUser, listToCancel: allShoppingLists[self.currentShoppingListIndex])
+                    allShoppingLists[self.currentShoppingListIndex].members.remove(at: indexPath.row)
+                    //collectionView.deleteItems(at: [indexPath])
+                    self.CardOneMembersCollectionView.reloadData()
+                    self.CardTwoMembersCollectionView.reloadData()
+                    self.hideCanceSharingPopUp()
+                    
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) -> Void in
+                    
+                    self.hideCanceSharingPopUp()
+                    
+                }))
+                
+                present(alert, animated: true, completion: nil)
+                
+            } else {
+                
+                //Cancel sharing by list member - list member leaves group list
+                guard let selectedUser = getSelectedUser(indexPath: indexPath) else { return }
+                
+                // Ask user if he wants to leave the group list
+                let title = String.LeaveGroupListAlertTitle
+                let message = String.LeaveGroupListAlertMessage + selectedUser.nickname!
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
+                    
+                    self.sbListWebservice.CancelSharingBySharedUserForMember(member: selectedUser, listToCancel: allShoppingLists[self.currentShoppingListIndex])
                     allShoppingLists[self.currentShoppingListIndex].members.remove(at: indexPath.row)
                     //collectionView.deleteItems(at: [indexPath])
                     self.CardOneMembersCollectionView.reloadData()
@@ -1584,6 +1618,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
+    private func getSelectedUser(indexPath: IndexPath) -> ShoppingBuddyUser? {
+        
+        if let index = allUsers.index(where: { $0.id! == allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID  } ){
+            
+            return allUsers[index]
+            
+        } else { return nil }
+        
+    }
+    
     private func isCurrentUserShoppingListOwner() -> Bool {
         
         if allShoppingLists[currentShoppingListIndex].owneruid! == Auth.auth().currentUser!.uid { return true }
@@ -1591,7 +1635,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    private func isSelectedUserToCancelListOwner(indexPath: IndexPath) -> Bool {
+    private func isSelectedUserListOwner(indexPath: IndexPath) -> Bool {
         
         if allShoppingLists[currentShoppingListIndex].members[indexPath.row].memberID!  == Auth.auth().currentUser!.uid { return true }
         else { return false }

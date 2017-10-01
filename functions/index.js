@@ -309,69 +309,64 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
     //handle cancel sharing by Shared User message
     if (String(msgData.messageType) == 'CancelSharingBySharedUser') {
 
-        //get receiptID
-        return admin.database().ref('message_receipts').child(event.params.messageID).once('value').then(receiptSnap => {
+        //delete shopping list from your own users_shoppinglists
+        return admin.database().ref('users_shoppinglists').child(msgData.senderID).child(msgData.listID).set(null).then(() => {
 
-            //iterate all receipts
-            var promises = []
-            receiptSnap.forEach(function (receipt) {
+            //get message receipts receiptID
+            return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
 
-                //Set message key at user_messages 
-                promises.push(admin.database().ref('users_messages').child(receipt.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+                //iterate all receipts
+                var promises = []
+                memberSnap.forEach(function (receipt) {
 
-                    //delete shopping list from your own users_shoppinglists
-                    return admin.database().ref('users_shoppinglists').child(receipt.key).child(msgData.listID).set(null).then(() => {
+                    //Set message key at user_messages 
+                    promises.push(admin.database().ref('users_messages').child(receipt.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
 
-                        //delete self as observer from shopping list
-                        return admin.database().ref('shoppinglist_member').child(msgData.listID).child(msgData.senderID).set(null).then(() => {
+                        //Send push all other list members 
+                        return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
 
-                            //Send push all other list members 
-                            return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
+                            var promises = []
+                            memberSnap.forEach(function (listMember) {
 
-                                var promises = []
-                                memberSnap.forEach(function (listMember) {
+                                promises.push(admin.database().ref('users').child(listMember.key).once('value').then(userSnap => {
 
-                                    promises.push(admin.database().ref('users').child(listMember.key).once('value').then(userSnap => {
+                                    var userData = userSnap.val()
 
-                                        var userData = userSnap.val()
+                                    console.log('sending Push to ' + userData.fcmToken)
 
-                                        console.log('sending Push to ' + userData.fcmToken)
-
-                                        //create Notification Payload
-                                        var payload = {
-                                            notification: {
-                                                title: msgData.title,
-                                                body: msgData.message,
-                                                badge: '1',
-                                                sound: 'default',
-                                                sbID: String(event.data.key),
-                                                senderID: msgData.senderID,
-                                                listID: msgData.listID,
-                                                receiptID: listMember.key,
-                                                notificationType: String(msgData.messageType),
-                                            }
+                                    //create Notification Payload
+                                    var payload = {
+                                        notification: {
+                                            title: msgData.title,
+                                            body: msgData.message,
+                                            badge: '1',
+                                            sound: 'default',
+                                            sbID: String(event.data.key),
+                                            senderID: msgData.senderID,
+                                            listID: msgData.listID,
+                                            receiptID: listMember.key,
+                                            notificationType: String(msgData.messageType),
                                         }
+                                    }
 
-                                        return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
+                                    return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
 
-                                            console.log("Successfully sent list item added message:", response)
-                                            console.log(response.results[0].error)
+                                        console.log("Successfully sent list item added message:", response)
+                                        console.log(response.results[0].error)
 
-                                        }).catch((err) => { console.log("Error sending Push", err) })
+                                    }).catch((err) => { console.log("Error sending Push", err) })
 
-                                    }))
-
-                                })
+                                }))
 
                             })
 
                         })
 
-                    })
+                    }))
 
-                }))
-
+                })
             })
+
         })
 
     }//*********************************************************************************************************** 

@@ -88,9 +88,11 @@ extension String{
     static let NotAllowedToShareListAlertMessage = NSLocalizedString("NotAllowedToShareListAlertMessage", comment: "")
     static let ListCurrentlyNotSharedTitle = NSLocalizedString("ListCurrentlyNotSharedTitle", comment: "")
     static let ListCurrentlyNotSharedMessage = NSLocalizedString("ListCurrentlyNotSharedMessage", comment: "")
-    static let lbl_CancelSharing = NSLocalizedString("lbl_CancelSharing", comment: "")
+    static let lbl_CancelSharing = NSLocalizedString("lbl_CancelSharing", comment: "") 
     static let CancelSharingSelectedMemberAlertTitle = NSLocalizedString("CancelSharingSelectedMemberAlertTitle", comment: "")
     static let CancelSharingSelectedMemberAlertMessage = NSLocalizedString("CancelSharingSelectedMemberAlertMessage", comment: "")
+    static let LeaveGroupListAlertTitle = NSLocalizedString("LeaveGroupListAlertTitle", comment: "")
+    static let LeaveGroupListAlertMessage = NSLocalizedString("LeaveGroupListAlertMessage", comment: "")
     static let ListOwnerCanceledSharingTitle = NSLocalizedString("ListOwnerCanceledSharingTitle", comment: "")
     static let ListOwnerCanceledSharingMessage = NSLocalizedString("ListOwnerCanceledSharingMessage", comment: "") 
     static let SharedUserCanceledSharingTitle = NSLocalizedString("SharedUserCanceledSharingTitle", comment: "")
@@ -118,4 +120,14 @@ extension String{
     //Messages TableView EditActions
     static let AcceptInvitation = NSLocalizedString("AcceptInvitation", comment: "")
     static let DeclineInvitation = NSLocalizedString("DeclineInvitation", comment: "")
+    
+    //In App Purchases
+    static let PurchaseRestoreAlertTitle = NSLocalizedString("PurchaseRestoreAlertTitle", comment: "")
+    static let PurchaseRestoreAlertMessage = NSLocalizedString("PurchaseRestoreAlertMessage", comment: "")
+    static let PurchaseDeniedAlertTitle = NSLocalizedString("PurchaseDeniedAlertTitle", comment: "")
+    static let PurchaseDeniedAlertMessage = NSLocalizedString("PurchaseDeniedAlertMessage", comment: "")
+    static let FullVersionNeededAlertTitle = NSLocalizedString("FullVersionNeededAlertTitle", comment: "")
+    static let FullVersionNeededArticleAlertMessage = NSLocalizedString("FullVersionNeededArticleAlertMessage", comment: "")
+    static let FullVersionNeededSharingAlertMessage = NSLocalizedString("FullVersionNeededSharingAlertMessage", comment: "")
+    static let FullVersionNeededListCountAlertMessage = NSLocalizedString("FullVersionNeededListCountAlertMessage", comment: "")
 }

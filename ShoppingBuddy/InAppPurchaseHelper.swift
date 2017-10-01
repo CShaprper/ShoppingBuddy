@@ -8,15 +8,30 @@
 
 import StoreKit
 
-class IAPHelper:NSObject, IAlertMessageDelegate {
+class IAPHelper:NSObject, IAlertMessageDelegate, IActivityAnimationService {
     var alertMessageDelegate: IAlertMessageDelegate?
+    var activityAnimationServiceDelegate: IActivityAnimationService?
+    var sbUserService:ShoppingBuddyUserWebservice!
     fileprivate var products:[SKProduct]?
     fileprivate var productsRequest: SKProductsRequest?
-    fileprivate var productIdentifiers = Set([eIAPIndentifier.HalfYearSubscription.rawValue, eIAPIndentifier.QuaterlySubscription.rawValue, eIAPIndentifier.AnnualSbsrciption.rawValue])
+    fileprivate var productIdentifiers = Set([eIAPIndentifier.SBFullVersion.rawValue])
+    
+    override init() {
+        super.init()
+        sbUserService = ShoppingBuddyUserWebservice()
+        sbUserService.alertMessageDelegate = alertMessageDelegate
+        sbUserService.activityAnimationServiceDelegate = activityAnimationServiceDelegate
+    }
 
     func ShowAlertMessage(title: String, message: String) {
         if alertMessageDelegate != nil {
-            alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
+            alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
+        }
+    }
+    
+    func ShowActivityIndicator() {
+        if activityAnimationServiceDelegate != nil {
+            activityAnimationServiceDelegate!.ShowActivityIndicator!()
         }
     }
     
@@ -30,8 +45,8 @@ class IAPHelper:NSObject, IAlertMessageDelegate {
             
         } else {
             
-            let title = ""
-            let message = ""
+            let title = String.PurchaseDeniedAlertTitle
+            let message = String.PurchaseDeniedAlertMessage
             self.ShowAlertMessage(title: title, message: message)
             
         }
@@ -63,19 +78,16 @@ class IAPHelper:NSObject, IAlertMessageDelegate {
       
         for transaction:SKPaymentTransaction in queue.transactions as [SKPaymentTransaction] {
             
-            if transaction.payment.productIdentifier == eIAPIndentifier.HalfYearSubscription.rawValue
+            if transaction.payment.productIdentifier == eIAPIndentifier.SBFullVersion.rawValue
             {
-                print("Consumable Product Purchased")
-                // Unlock Feature
-            }
-            else if transaction.payment.productIdentifier == eIAPIndentifier.QuaterlySubscription.rawValue
-            {
-                print("Non-Consumable Product Purchased")
-                // Unlock Feature
+                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
             }
         }
         
-       self.ShowAlertMessage(title: "Thank You", message: "Your purchase(s) were restored.")
+        let title = String.PurchaseRestoreAlertTitle
+         let message = String.localizedStringWithFormat(String.PurchaseRestoreAlertMessage, currentUser!.nickname!)
+        
+       self.ShowAlertMessage(title: title, message: message)
         
     }
 }
@@ -111,12 +123,18 @@ extension IAPHelper: SKPaymentTransactionObserver {
             switch (transaction.transactionState) {
             case .purchased:
                 complete(transaction: transaction)
+                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
+                sbUserService.ChangeFullVersionUserStatus(status: true)
                 break
             case .failed:
                 fail(transaction: transaction)
+                UserDefaults.standard.set(false, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
+                sbUserService.ChangeFullVersionUserStatus(status: false)
                 break
             case .restored:
                 restore(transaction: transaction)
+                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
+                sbUserService.ChangeFullVersionUserStatus(status: true)
                 break
             case .deferred:
                 break
@@ -127,27 +145,33 @@ extension IAPHelper: SKPaymentTransactionObserver {
     }
     
     private func complete(transaction: SKPaymentTransaction) {
+        
         print("complete...")
-        //TODO: Remove ads
-        //deliverPurchaseNotificationFor(identifier: transaction.payment.productIdentifier)
         SKPaymentQueue.default().finishTransaction(transaction)
+        
     }
     
     private func restore(transaction: SKPaymentTransaction) {
         guard let productIdentifier = transaction.original?.payment.productIdentifier else { return }
         
         print("restore... \(productIdentifier)")
-        //TODO: Remove ads
-        //deliverPurchaseNotificationFor(identifier: productIdentifier)
         SKPaymentQueue.default().finishTransaction(transaction)
+        
     }
     
     private func fail(transaction: SKPaymentTransaction) {
+        
         print("fail...")
         if let transactionError = transaction.error as NSError? {
+            
             if transactionError.code != SKError.paymentCancelled.rawValue {
-                print("Transaction Error: \(String(describing: transaction.error?.localizedDescription))")
+                
+                let title = "App Store Error"
+                let message = transaction.error!.localizedDescription
+                 ShowAlertMessage(title: title, message: message)
+                
             }
+            
         }
         
         SKPaymentQueue.default().finishTransaction(transaction)

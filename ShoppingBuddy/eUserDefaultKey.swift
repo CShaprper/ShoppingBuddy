@@ -21,4 +21,5 @@ enum eUserDefaultKey:String {
     case NeedToUpdateGeofence = "NeedToUpdateGeofence"
     case UserProfileImageURL = "UserProfileImageURL"
     case CurrentUserID = "CurrentUserID"
+    case isFullVersionUser = "isFullVersionUser"
 }

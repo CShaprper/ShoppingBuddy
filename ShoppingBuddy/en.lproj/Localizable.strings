@@ -94,9 +94,21 @@ ListItemAddedTitle = "Article added!";
 ListItemAddedMessage = "%@ added '%' to group list '%@'.";
 SharingDeclinedMessageTitle = "Sharing invite declined";
 SharingDeclinedMessageMessage = "%@ declined your list sharing invitation.";
+LeaveGroupListAlertTitle = "Leave Shared List!";
+LeaveGroupListAlertMessage = "Do you want to leave the shared list '%@'?";
 
 WillGoShoppingMessageTitle = "%@ goes for shopping";
 WillGoShoppingMessageMessage = "%@ goes to %@ for shopping. Last chance to add articles to group list '%@'.";
+
+    //In App Purchases
+PurchaseRestoreAlertTitle = "Purchase Restored";
+PurchaseRestoreAlertMessage = "Thank you %@ your purcahse is restored.";
+PurchaseDeniedAlertTitle = "Purchase Denied";
+PurchaseDeniedAlertTitle = "You are not allowed to purchase App Store products!";
+FullVersionNeededAlertTitle = "Premium Version Needed";
+FullVersionNeededArticleAlertMessage = "You need the premium version to save more than seven articles.";
+FullVersionNeededSharingAlertMessage = "You need the premium version to share lists with more than one person.";
+FullVersionNeededSharingAlertMessage = "You need the premium version to save more than one list.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Delete shopping list?";
