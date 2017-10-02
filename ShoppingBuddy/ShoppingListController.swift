@@ -66,6 +66,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CardOneMembersCollectionView: UICollectionView!
     @IBOutlet var btn_CancelSharingCardOne: UIButton!
     @IBOutlet var btn_StoreCardOne: UIButton!
+    @IBOutlet var CardOneListOwnerStarImage: UIImageView!
     
     
     //Shopping List Card2
@@ -84,6 +85,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CardTwoMembersCollectionView: UICollectionView!
     @IBOutlet var btn_CancelSharingCardTwo: UIButton!
     @IBOutlet var btn_StoreCardTwo: UIButton!
+    @IBOutlet var CardTwoListOwnerStarImage: UIImageView!
     
     
     //Share List PopUp
@@ -98,6 +100,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var lbl_InviteTitle: UILabel!
     @IBOutlet var txt_InviteMessage: UITextView!
     @IBOutlet var InviteUserImage: UIImageView!
+    @IBOutlet var NotificationUserStarImage: UIImageView!
     
     //Cancel Sharing PopUp
     @IBOutlet var CancelSharingPopUp: UIView!
@@ -915,6 +918,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
             
+            if allUsers[userIndex].isFullVersionUser != nil {
+                CardOneListOwnerStarImage.alpha = allUsers[userIndex].isFullVersionUser! ? 1 : 0
+            } else {
+                CardOneListOwnerStarImage.alpha = 0
+            }
+            
             OperationQueue.main.addOperation({
                 self.ShoppingListOwnerImage.alpha = 1
                 self.ShoppingListOwnerImage.image = allUsers[userIndex].profileImage
@@ -938,6 +947,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[index].items))"
         
         if let userIndex = allUsers.index(where: { $0.id == allShoppingLists[index].owneruid }) {
+            
+            if allUsers[userIndex].isFullVersionUser != nil {
+                CardTwoListOwnerStarImage.alpha = allUsers[userIndex].isFullVersionUser! ? 1 : 0
+            } else {
+                CardTwoListOwnerStarImage.alpha = 0
+            }
             
             OperationQueue.main.addOperation({
                 self.ShoppingListCard2OwnerImage.alpha = 1
@@ -1166,59 +1181,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             if allUsers[index].profileImage! != #imageLiteral(resourceName: "userPlaceholder") {
                 InviteUserImage.image = allUsers[index].profileImage!
+                if allUsers[index].isFullVersionUser != nil  {
+                    NotificationUserStarImage.alpha = allUsers[index].isFullVersionUser! ? 1 : 0
+                } else { NotificationUserStarImage.alpha = 0}
                 displayNotification()
-            } else {
                 
-                let dpGroup = DispatchGroup()
-                dpGroup.enter()
-                
-                let sbuserService = ShoppingBuddyUserWebservice()
-                sbuserService.activityAnimationServiceDelegate = self
-                sbuserService.alertMessageDelegate = self
-                sbuserService.ObserveUser(userID: senderID, dlType: .DownloadForShoppingList)
-                
-                ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
-                
-                dpGroup.leave()
             }
             
-        } else {
-            
-            let dpGroup = DispatchGroup()
-            dpGroup.enter()
-            
-            let sbuserService = ShoppingBuddyUserWebservice()
-            sbuserService.activityAnimationServiceDelegate = self
-            sbuserService.alertMessageDelegate = self
-            sbuserService.ObserveUser(userID: senderID, dlType: .DownloadForShoppingList)
-            
-            ShowSharingInvatationNotificationAfterImageDownload(url: URL(string: senderID)!)
-            
-            dpGroup.leave()
         }
     }
     
-    private func ShowSharingInvatationNotificationAfterImageDownload(url:URL) -> Void {
-        
-        let task:URLSessionDataTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-            
-            if error != nil {
-                
-                NSLog(error!.localizedDescription)
-                let title = String.OnlineFetchRequestError
-                let message = error!.localizedDescription
-                self.ShowAlertMessage(title: title, message: message)
-                return
-                
-            }
-            if let downloadImage = UIImage(data: data!) {
-                self.InviteUserImage.image = downloadImage
-                self.displayNotification()
-                
-            }
-        }
-        task.resume()
-    }
     private func displayNotification() -> Void {
         
         //Invite Notification View
@@ -1235,6 +1207,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
         InvitationNotification.layer.shadowOpacity  = 1
         InvitationNotification.layer.shadowRadius  = 10
+        
         
         view.addSubview(InvitationNotification)
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
@@ -1389,10 +1362,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListCard2OwnerImage.layer.cornerRadius = ShoppingListCard2OwnerImage.frame.width * 0.5
         ShoppingListCard2OwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListCard2OwnerImage.layer.borderWidth = 3
+        CardOneListOwnerStarImage.alpha = 0
         
         ShoppingListOwnerImage.layer.cornerRadius = ShoppingListOwnerImage.frame.width * 0.5
         ShoppingListOwnerImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ShoppingListOwnerImage.layer.borderWidth = 3
+        CardTwoListOwnerStarImage.alpha = 0
         
         //Card One/Two Store Buttons
         btn_StoreCardOne.addTarget(self, action: #selector(btn_Store_Pressed), for: .touchUpInside)

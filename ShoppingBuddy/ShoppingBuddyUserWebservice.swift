@@ -28,7 +28,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     //CurrentUser Download
     func GetCurrentUser(){
         ShowActivityIndicator()
-        userRef.child(Auth.auth().currentUser!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
+        userRef.child(Auth.auth().currentUser!.uid).observe(.value, with: { (snapshot) in
             
             if snapshot.value is NSNull { self.HideActivityIndicator(); return }
             
@@ -39,9 +39,18 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             currentUser!.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
             currentUser!.fcmToken = snapshot.childSnapshot(forPath: "fcmToken").value as? String
             currentUser!.profileImageURL = snapshot.childSnapshot(forPath: "profileImageURL").value as? String
+            currentUser!.isFullVersionUser = snapshot.childSnapshot(forPath: "isFullVersionUser").value as? Bool
             currentUser!.userProfileImageFromURL(dlType: .DownloadForCurrentUser)
                 
+            if let index = allUsers.index(where: { $0.id == currentUser!.id }){
+                
+                allUsers[index] = currentUser!
+                
+            } else {
+                
                 allUsers.append(currentUser!)
+                
+            }
                 self.HideActivityIndicator()
                 NotificationCenter.default.post(name: .CurrentUserReceived, object: nil, userInfo: nil)
             
@@ -69,10 +78,19 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             newUser.email = userSnap.childSnapshot(forPath: "email").value as? String
             newUser.nickname = userSnap.childSnapshot(forPath: "nickname").value as? String
             newUser.fcmToken = userSnap.childSnapshot(forPath: "fcmToken").value as? String
+            newUser.isFullVersionUser = userSnap.childSnapshot(forPath: "isFullVersionUser").value as? Bool
             newUser.profileImageURL = userSnap.childSnapshot(forPath: "profileImageURL").value as? String
             newUser.userProfileImageFromURL(dlType: dlType)
+            
+            if let index = allUsers.index(where: { $0.id == newUser.id }){
                 
+                allUsers[index] = newUser
+                
+            } else {
+               
                 allUsers.append(newUser)
+                
+            }
                 self.HideActivityIndicator()
             
             
@@ -139,7 +157,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     func ChangeFullVersionUserStatus(status: Bool) -> Void {
         
         self.ShowActivityIndicator()
-        ref.child("users").child(Auth.auth().currentUser!.uid).child("FullVersionUserStatus").setValue(status)       
+        ref.child("users").child(Auth.auth().currentUser!.uid).child("isFullVersionUser").setValue(status)       
         
     }
     
@@ -309,7 +327,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                     if let imgURL =  metadata?.downloadURL()?.absoluteString {
                         
                         let token:String = Messaging.messaging().fcmToken!
-                        let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL] as [String : Any])
+                        let values = (["nickname": shoppingBuddyUser.nickname!, "email": user!.email!, "fcmToken":token, "profileImageURL":imgURL, "isFullVersionUser":false] as [String : Any])
                         self.ref.child("users").child(user!.uid).updateChildValues(values as Any as! [AnyHashable : Any], withCompletionBlock: { (err, ref) in
                             
                             if err != nil {

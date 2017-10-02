@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 import GoogleMobileAds
 
 class SettingsController: UIViewController, UITextFieldDelegate, IValidationService{
@@ -67,6 +68,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     }
     @objc func btn_HalfYearSubscription_Pressed(sender: UIButton) -> Void {
         
+        Analytics.logEvent("UserPressedBuyButton", parameters: [AnalyticsParameterItemID : "BuyFullVersion" as NSObject] )
         iapHelper.buyProduct(productIdentifier: eIAPIndentifier.SBFullVersion.rawValue)
         
     }

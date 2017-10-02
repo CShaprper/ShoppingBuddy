@@ -165,7 +165,7 @@ class ShoppingBuddyListWebservice {
                     let member = members as! DataSnapshot
                     var m = ShoppingListMember()
                     m.listID = list.id!
-                    m.memberID = member.key
+                    m.memberID = member.key 
                     m.status = member.value as? String
                     
                     self.getUser(userID: m.memberID!)

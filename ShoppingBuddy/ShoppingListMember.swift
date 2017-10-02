@@ -9,7 +9,9 @@
 import Foundation
 
 struct ShoppingListMember {
+    
     var listID:String?
     var memberID:String?
     var status:String?
+    
 }

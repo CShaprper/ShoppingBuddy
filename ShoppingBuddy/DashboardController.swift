@@ -31,6 +31,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var LupeImage: UIImageView!
     @IBOutlet var btn_PinHomePosition: UIButton!
     @IBOutlet var btn_SwitchMapView: UIButton!
+    @IBOutlet var UserProfileImageStar: UIImageView!
     
     //MARK: - Member
     var debugcounter:Int = 0 //can be removed in release
@@ -190,6 +191,20 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     //MARK: - Notificarion listeners
     @objc func CurrentUserReceived(notification: Notification) -> Void {
         
+        if let index = allUsers.index(where: { $0.id == Auth.auth().currentUser!.uid }) {
+            
+            if allUsers[index].isFullVersionUser != nil {
+                
+                UserProfileImageStar.alpha = allUsers[index].isFullVersionUser! ? 1 : 0
+                
+            } else {
+                
+                UserProfileImageStar.alpha = 0
+                
+            }
+            
+        }
+        
         sbMessagesWebService.ObserveAllMessages()
         sbListWebservice.GetStoresForGeofencing()
         
@@ -305,6 +320,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         UserProfileImage.layer.shadowOffset  = CGSize(width: 30, height:30)
         UserProfileImage.layer.shadowOpacity  = 1
         UserProfileImage.layer.shadowRadius  = 10
+        UserProfileImageStar.alpha = 0
         
         //Notification Listener DahsboardController
         NotificationCenter.default.addObserver(forName: .UserProfileImageDownloadFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDownloadFinished)
