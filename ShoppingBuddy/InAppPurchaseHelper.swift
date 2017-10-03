@@ -68,9 +68,11 @@ class IAPHelper:NSObject, IAlertMessageDelegate, IActivityAnimationService {
         
     }
     
-    func restorePurchases(sender: UIButton) {
+    func restorePurchases() -> Void {
+        
         SKPaymentQueue.default().add(self)
         SKPaymentQueue.default().restoreCompletedTransactions()
+        
     }
     
     func paymentQueueRestoreCompletedTransactionsFinished(queue: SKPaymentQueue!) {
@@ -80,7 +82,7 @@ class IAPHelper:NSObject, IAlertMessageDelegate, IActivityAnimationService {
             
             if transaction.payment.productIdentifier == eIAPIndentifier.SBFullVersion.rawValue
             {
-                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
+                sbUserService.ChangeFullVersionUserStatus(status: true)
             }
         }
         
@@ -123,17 +125,14 @@ extension IAPHelper: SKPaymentTransactionObserver {
             switch (transaction.transactionState) {
             case .purchased:
                 complete(transaction: transaction)
-                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
                 sbUserService.ChangeFullVersionUserStatus(status: true)
                 break
             case .failed:
                 fail(transaction: transaction)
-                UserDefaults.standard.set(false, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
                 sbUserService.ChangeFullVersionUserStatus(status: false)
                 break
             case .restored:
                 restore(transaction: transaction)
-                UserDefaults.standard.set(true, forKey: eUserDefaultKey.isFullVersionUser.rawValue)
                 sbUserService.ChangeFullVersionUserStatus(status: true)
                 break
             case .deferred:

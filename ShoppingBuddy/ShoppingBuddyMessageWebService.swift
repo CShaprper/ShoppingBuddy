@@ -416,7 +416,7 @@ extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimat
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
             }
         } else {
@@ -425,7 +425,7 @@ extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimat
     }
     func HideActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.HideActivityIndicator!()
             }
         } else {
@@ -437,7 +437,7 @@ extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimat
     func ShowAlertMessage(title: String, message: String) {
         self.HideActivityIndicator()
         if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
             }
         } else {

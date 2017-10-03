@@ -61,7 +61,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         Messaging.messaging().apnsToken = deviceToken
          let sbUserWebservice = ShoppingBuddyUserWebservice()
+        if Messaging.messaging().fcmToken != nil {
         sbUserWebservice.SetNewFcmToken(token: Messaging.messaging().fcmToken!)
+        } else {
+            sbUserWebservice.SetNewFcmToken(token: tokenString(deviceToken))            
+        }
 
         NSLog("Successfully registered for RemoteNotifications with token")
         NSLog(tokenString(deviceToken))
@@ -92,7 +96,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let pnh = PushNotificationHelper()
         pnh.SendNotificationDependendOnPushNotificationType(userInfo: userInfo)
        
-    } 
+    }
+    
+    //Called in foreground
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        NSLog("NotificationReceived in Foreground")
+        UIApplication.shared.applicationIconBadgeNumber += 1
+        Messaging.messaging().appDidReceiveMessage(notification.request.content.userInfo)
+        let pnh = PushNotificationHelper()
+        pnh.SendNotificationDependendOnPushNotificationType(userInfo: notification.request.content.userInfo)
+        
+    }
+    //Lets you know action decision from Notification
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let action = response.actionIdentifier
+        let request = response.notification.request
+        let content = request.content
+        
+        if action == "startNavigation" {
+            
+            print("Start navigation from notification")
+            
+        }
+        
+        
+    }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

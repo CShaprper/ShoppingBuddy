@@ -199,7 +199,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     
-    //MARK: - IFirebaseListWebService implementation
+    //MARK: - Notification listener selectors
     @objc func ShoppingBuddyListDataReceived() {
         
         //download user if unknown
@@ -234,6 +234,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
         
         RefreshCardView()
+        
+    }
+    
+    
+    func CurrentUserReceived(notification: Notification) -> Void {
+        
+        // userdata received so lets observe his lists
+        //    sbListWebservice.ObserveAllList()
         
     }
     
@@ -694,6 +702,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     private func SwipeCardOffLeft(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat){
         
+        SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
+        
         UIView.animate(withDuration: swipeDuration, animations: {
             
             card.center.x = card.center.x - self.view.frame.size.width
@@ -706,6 +716,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         })
     }
     private func SwipeCardOffRight(swipeDuration: TimeInterval, card: UIView, ySpin: CGFloat){
+        
+        SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
         
         UIView.animate(withDuration: swipeDuration, animations: {
             
@@ -720,6 +732,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     private func SwipeCardOffTop(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat){
         
+        SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
+        
         UIView.animate(withDuration: swipeDuration, animations: {
             
             card.center.y = card.center.y - self.view.frame.size.height
@@ -732,6 +746,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         })
     }
     private func SwipeCardOffBottom(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat) -> Void {
+        
+        SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
         
         UIView.animate(withDuration: swipeDuration, animations: {
             
@@ -926,6 +942,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             OperationQueue.main.addOperation({
                 self.ShoppingListOwnerImage.alpha = 1
+                self.ShoppingListOwnerImage.layer.cornerRadius = self.ShoppingListOwnerImage.frame.width * 0.5
                 self.ShoppingListOwnerImage.image = allUsers[userIndex].profileImage
             })
             
@@ -956,6 +973,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             OperationQueue.main.addOperation({
                 self.ShoppingListCard2OwnerImage.alpha = 1
+                self.ShoppingListCard2OwnerImage.layer.cornerRadius = self.ShoppingListCard2OwnerImage.frame.width * 0.5
                 self.ShoppingListCard2OwnerImage.image = allUsers[userIndex].profileImage
             })
             
@@ -965,14 +983,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             self.SortShoppingListItemsArrayBy_isSelected()
             self.CardTwoMembersCollectionView.reloadData()
         })
-    }
-    
-    //MARK: - Notification listener selectors
-    func CurrentUserReceived(notification: Notification) -> Void {
-        
-        // userdata received so lets observe his lists
-        //    sbListWebservice.ObserveAllList()
-        
     }
     
     //MARK: - Textfield Delegate implementation
@@ -987,10 +997,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @objc func KeyboardWillShow(sender: Notification) -> Void {
         
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            var height = keyboardSize.height
+            if height == 0 { height = 275 }
             
-            AddItemPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
-            AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
-            ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: -keyboardSize.height * 0.33)
+            AddItemPopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
+            AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
+            ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
             
         }
         
@@ -1199,6 +1211,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         InvitationNotification.center.x = view.center.x
         InvitationNotification.center.y = -InvitationNotification.frame.height
         InvitationNotification.layer.cornerRadius = 30
+        InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        InvitationNotification.layer.borderWidth = 3
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
         InviteUserImage.clipsToBounds = true
         InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
@@ -1314,6 +1328,18 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         //Detail ListView
         btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)
         
+        //Shopping list Cards Shadows
+        ShoppingListCard.layer.shadowColor  = UIColor.black.cgColor
+        ShoppingListCard.layer.shadowOffset  = CGSize(width: 5, height:5)
+        ShoppingListCard.layer.shadowOpacity  = 1
+        ShoppingListCard.layer.shadowRadius  = 3
+        
+        
+        ShoppingListCard2.layer.shadowColor  = UIColor.black.cgColor
+        ShoppingListCard2.layer.shadowOffset  = CGSize(width: 5, height:5)
+        ShoppingListCard2.layer.shadowOpacity  = 1
+        ShoppingListCard2.layer.shadowRadius  = 3
+        
         //ShareListPoUp
         lbl_ShareOpponentTitle.text = String.lbl_ShareListTitle
         txt_ShareListOpponentEmail.placeholder = String.txt_ShareOpponentEmailPlaceholder
@@ -1339,7 +1365,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         AddItemPopUp.addGestureRecognizer(outsideAddItemPopUpTouch)
         
         ShoppingCartImage.alpha = 0
+        ShoppingCartImage.layer.shadowColor  = UIColor.black.cgColor
+        ShoppingCartImage.layer.shadowOffset  = CGSize(width: 5, height:5)
+        ShoppingCartImage.layer.shadowOpacity  = 1
+        ShoppingCartImage.layer.shadowRadius  = 3
+        
         TrashImage.alpha = 0
+        TrashImage.layer.shadowColor  = UIColor.black.cgColor
+        TrashImage.layer.shadowOffset  = CGSize(width: 5, height:5)
+        TrashImage.layer.shadowOpacity  = 1
+        TrashImage.layer.shadowRadius  = 3
         
         //Set Detailtableview bottom constraint
         DetailTableViewBottomConstraint.constant = view.frame.height * 0.115

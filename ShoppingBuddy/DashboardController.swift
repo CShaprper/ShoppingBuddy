@@ -23,6 +23,16 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var MapView: MKMapView!
     @IBOutlet var UserProfileImage: UIImageView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet var lbl_ObeservedStores: UILabel!
+    @IBOutlet var lbl_ObservedStoresCount: UILabel!
+    @IBOutlet var lbl_ObservedLists: UILabel!
+    @IBOutlet var lbl_ObservedListsCount: UILabel!
+    @IBOutlet var lbl_YourLists: UILabel!
+    @IBOutlet var lbl_YourListsCount: UILabel!
+    @IBOutlet var btn_IncreaseMapSpan: UIButton!
+    @IBOutlet var bnt_DecreaseMapSpan: UIButton!
+    
+    
     //NotificationView
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
@@ -50,13 +60,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         super.viewDidLoad()
         ConfigureView()
         
-   
-        for region in locationManager.monitoredRegions {
-           
-            if region.identifier.lowercased().contains("aldi") { print("Aldi found")}
-          print(region.identifier)
-            
-        }
+        lbl_ObservedStoresCount.text = String(locationManager.monitoredRegions.count)
+        
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -89,6 +94,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         let scaledPhotoRect = CGRect(origin: scaledOrigin, size: scaledSize)
         maskLayer.frame = scaledPhotoRect
         MapView.layer.mask = maskLayer
+        
+        UserProfileImage.layer.cornerRadius = UserProfileImage.frame.width * 0.5
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -97,7 +104,10 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     override func viewDidAppear(_ animated: Bool) {
+        
         super.viewDidAppear(animated)
+        refreshDashboardData()
+        
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -113,13 +123,13 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         ActivityIndicator.color = UIColor.green
         ActivityIndicator.startAnimating()
         
-       // view.addSubview(ActivityIndicator)
+        // view.addSubview(ActivityIndicator)
         
     }
     func HideActivityIndicator()  -> Void {
         
         if view.subviews.contains(ActivityIndicator) {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 
                 self.ActivityIndicator.removeFromSuperview()
                 
@@ -207,6 +217,26 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         sbMessagesWebService.ObserveAllMessages()
         sbListWebservice.GetStoresForGeofencing()
+        sbListWebservice.ObserveAllList()   
+        
+    }
+    
+    @objc func ShoppingBuddyListDataReceived(notification: Notification) -> Void {
+        
+        refreshDashboardData()
+        
+    }
+    
+    private func refreshDashboardData() -> Void {
+        
+        var ownListsCount:Int = 0
+        var observedListCount:Int = 0
+        for list in allShoppingLists {
+            if currentUser!.id == list.owneruid! { ownListsCount += 1 }
+            if currentUser!.id != list.owneruid! { observedListCount += 1 }
+        }
+        lbl_ObservedListsCount.text = String(observedListCount)
+        lbl_YourListsCount.text = String(ownListsCount)
         
     }
     
@@ -264,9 +294,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             InviteUserImage.image = allUsers[index].profileImage!
             
         }
-            
-            displayNotification()
-            
+        
+        displayNotification()
+        
         
     }
     @objc func btn_PinHomePosition_Pressed(sender: UIButton) -> Void {
@@ -274,14 +304,42 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         SaveCurrentLocationAsHomeLocation(coordinate: self.userLocation!)
         
     }
+    
+    @objc func btn_IncreaseMapSpan_Pressed(sender: UIButton) -> Void {
+        
+        var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        dist += 1000
+        mapSpan = dist
+        UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
+        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        
+    }
+    
+    @objc func btn_DecreaseMapSpan_Pressed(sender: UIButton) -> Void {
+        
+        var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        if dist == 1000 {
+            UserDefaults.standard.set(1000, forKey: eUserDefaultKey.MapSpan.rawValue)
+            mapSpan = 1000
+        } else {
+            dist -= 1000
+            mapSpan = dist
+            UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
+            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        }
+        
+    }
+    
     private func displayNotification() -> Void {
         
         //Invite Notification View
         let size = txt_NotificationMessage.sizeThatFits(CGSize(width: txt_NotificationMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
-        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 20
+        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 30
         InvitationNotification.center.x = view.center.x
         InvitationNotification.center.y = -InvitationNotification.frame.height
         InvitationNotification.layer.cornerRadius = 30
+        InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        InvitationNotification.layer.borderWidth = 3
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
         InviteUserImage.clipsToBounds = true
         InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
@@ -317,10 +375,15 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         UserProfileImage.layer.borderWidth = 3
         UserProfileImage.image = #imageLiteral(resourceName: "userPlaceholder")
         UserProfileImage.layer.shadowColor  = UIColor.black.cgColor
-        UserProfileImage.layer.shadowOffset  = CGSize(width: 30, height:30)
+        UserProfileImage.layer.shadowOffset  = CGSize(width: 20, height:20)
         UserProfileImage.layer.shadowOpacity  = 1
         UserProfileImage.layer.shadowRadius  = 10
         UserProfileImageStar.alpha = 0
+        
+        //Dashboard Messages
+        lbl_ObservedLists.text = String.lbl_ObservedListsText
+        lbl_YourLists.text = String.lbl_YourListsText
+        lbl_ObeservedStores.text = String.lbl_ObeservedStoresText
         
         //Notification Listener DahsboardController
         NotificationCenter.default.addObserver(forName: .UserProfileImageDownloadFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDownloadFinished)
@@ -332,6 +395,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedIn, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedIn)
         NotificationCenter.default.addObserver(forName: .ShoppingBuddyStoreReceived, object: nil, queue: OperationQueue.main, using: ShoppingBuddyStoreReceived)
         NotificationCenter.default.addObserver(forName: .CurrentUserCreated, object: nil, queue: OperationQueue.main, using: CurrentUserCreated)
+        NotificationCenter.default.addObserver(forName: .ShoppingBuddyListDataReceived, object: nil, queue: OperationQueue.main, using: ShoppingBuddyListDataReceived)
         
         let profileImageGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UserProfileImageTapped))
         profileImageGestureRecognizer.delegate = self
@@ -348,6 +412,25 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         sbUserWebservice.alertMessageDelegate = self
         sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.GetCurrentUser()
+        
+        //Magnifiying glass shadow
+        LupeImage.layer.shadowColor  = UIColor.black.cgColor
+        LupeImage.layer.shadowOffset  = CGSize(width: 20, height: 20)
+        LupeImage.layer.shadowOpacity  = 1
+        LupeImage.layer.shadowRadius  = 10
+        
+        //Increase / Decrease Map Span
+        btn_IncreaseMapSpan.layer.shadowColor  = UIColor.black.cgColor
+        btn_IncreaseMapSpan.layer.shadowOffset  = CGSize(width: 10, height: 5)
+        btn_IncreaseMapSpan.layer.shadowOpacity  = 1
+        btn_IncreaseMapSpan.layer.shadowRadius  = 3
+        btn_IncreaseMapSpan.addTarget(self, action: #selector(btn_IncreaseMapSpan_Pressed), for: .touchUpInside)
+        
+        bnt_DecreaseMapSpan.layer.shadowColor  = UIColor.black.cgColor
+        bnt_DecreaseMapSpan.layer.shadowOffset  = CGSize(width: 10, height: 5)
+        bnt_DecreaseMapSpan.layer.shadowOpacity  = 1
+        bnt_DecreaseMapSpan.layer.shadowRadius  = 3
+        bnt_DecreaseMapSpan.addTarget(self, action: #selector(btn_DecreaseMapSpan_Pressed), for: .touchUpInside)
         
         //SetNavigationBar Title
         navigationItem.title = String.DashboardControllerTitle
@@ -377,6 +460,10 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         //Pin Home Position Button
         btn_PinHomePosition.addTarget(self, action: #selector(btn_PinHomePosition_Pressed), for: .touchUpInside)
+        btn_PinHomePosition.layer.shadowColor  = UIColor.black.cgColor
+        btn_PinHomePosition.layer.shadowOffset  = CGSize(width: 10, height: 5)
+        btn_PinHomePosition.layer.shadowOpacity  = 1
+        btn_PinHomePosition.layer.shadowRadius  = 3
         
         //LogOut Button
         let logoutButton = UIBarButtonItem(title: "log out", style: UIBarButtonItemStyle.plain, target: self, action:#selector(LogOutBarButtonItemPressed))
@@ -418,7 +505,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
                 
                 if granted {
                     
-                    DispatchQueue.main.async{
+                    OperationQueue.main.addOperation{
                         UIApplication.shared.registerForRemoteNotifications()
                         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
                     }
@@ -426,7 +513,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
                 }
                 else {
                     
-                    DispatchQueue.main.async{
+                    OperationQueue.main.addOperation{
                         UIApplication.shared.unregisterForRemoteNotifications() //todo: remove token from firebase
                         UIApplication.shared.registerUserNotificationSettings(notificationSettings)
                     }
@@ -438,7 +525,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
             let setting = UIUserNotificationSettings(types: type, categories: [category])
             
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 UIApplication.shared.registerUserNotificationSettings(setting)
                 UIApplication.shared.registerForRemoteNotifications()
             }
@@ -487,8 +574,19 @@ extension DashboardController: UNUserNotificationCenterDelegate{
     //Lets you know action decision from Notification
     @available(iOS 10.0, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let action = response.actionIdentifier
+        let request = response.notification.request
+        let content = request.content
+        
+        if action == "startNavigation" {
+            
+            print("Start navigation from notification")
+            
+        }
+        
         
     }
+    
 }
 
 
@@ -592,6 +690,7 @@ extension DashboardController: MKMapViewDelegate{
             if cnt == possibleRegionsPerStore { return cnt }
             
             let locationToMonitore = ReadUsersLocationToMonitoreFromUserDefaults()
+            if locationToMonitore == nil { return 0 }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: locationToMonitore!.coordinate, location2: mapItem.placemark.coordinate)
             
             //Monitore 6th nearest stores if regions count still below 20
@@ -613,6 +712,7 @@ extension DashboardController: MKMapViewDelegate{
             
             let region = CLCircularRegion(center: mapItem.placemark.coordinate, radius: CLLocationDistance(self.radiusToMonitore), identifier: "\(UUID().uuidString)\("SB_")\(mapItem.name!)")
             self.locationManager.startMonitoring(for: region)
+            self.lbl_ObservedStoresCount.text = String(self.locationManager.monitoredRegions.count)
             
         }
         
@@ -622,7 +722,7 @@ extension DashboardController: MKMapViewDelegate{
         OperationQueue.main.addOperation {
             
             if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
-
+                
                 let annotation = CustomMapAnnotation()
                 annotation.image = #imageLiteral(resourceName: "map-Marker-green")
                 annotation.coordinate = mapItem.placemark.coordinate

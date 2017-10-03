@@ -24,7 +24,6 @@ class ShoppingBuddyListItemWebservice {
     
     //MARK: - Edit Functions
     func EditIsSelectedOnShoppingListItem(listItem: ShoppingListItem) -> Void {
-        self.ShowActivityIndicator()
         
         listItemRef.child(listItem.listID!).child(listItem.id!).child("isSelected").setValue(listItem.isSelected!)
         
@@ -50,22 +49,19 @@ class ShoppingBuddyListItemWebservice {
             var newListItem = listItem
             newListItem.id = itemRef.key
             
+            self.HideActivityIndicator()
             NotificationCenter.default.post(name: Notification.Name.ListItemSaved, object: nil, userInfo: nil)
             NSLog("Succesfully saved ShoppingListItem to Firebase")
             
-            
-            //Add Message if shoppinglist members available && the only one shopping list member is not owner
-            if allShoppingLists[currentShoppingListIndex].members.count == 1 && allShoppingLists[currentShoppingListIndex].members[0].status == "owner" { return }
-            
             let messagesRef = self.ref.child("messages").childByAutoId()
-            
+            /* Remove and all users will get permanent message
             for receipt in allShoppingLists[currentShoppingListIndex].members {
       
                 if receipt.memberID! == Auth.auth().currentUser!.uid { continue }
                  self.ref.child("message_receipts").child(messagesRef.key).updateChildValues([receipt.memberID!:"receipt"])
                  self.ref.child("users_messages").child(receipt.memberID!).child(messagesRef.key).setValue(eNotificationType.ListItemAddedBySharedUser.rawValue)
                 
-            }
+            }*/
             
             //Add message to messages node  
             let title = String.ListItemAddedTitle
@@ -100,7 +96,7 @@ class ShoppingBuddyListItemWebservice {
             newlistItem.sortNumber = snapshot.childSnapshot(forPath: "sortNumber").value as? Int
             newlistItem.itemName = snapshot.childSnapshot(forPath: "itemName").value as? String
             
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 
                 if let listIndex = allShoppingLists.index(where: { $0.id == listItem.listID! }) {
                     
@@ -116,6 +112,7 @@ class ShoppingBuddyListItemWebservice {
                         
                     }
                 }
+                self.HideActivityIndicator()
                 
             }
             
@@ -147,6 +144,7 @@ class ShoppingBuddyListItemWebservice {
                 
             }
             
+            self.HideActivityIndicator()
             NSLog("Succesfully deleted item of shopping list from Firebase")
             
         }
@@ -158,7 +156,7 @@ extension ShoppingBuddyListItemWebservice: IAlertMessageDelegate, IActivityAnima
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
             }
         } else {
@@ -167,7 +165,7 @@ extension ShoppingBuddyListItemWebservice: IAlertMessageDelegate, IActivityAnima
     }
     func HideActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.HideActivityIndicator!()
             }
         } else {
@@ -179,7 +177,7 @@ extension ShoppingBuddyListItemWebservice: IAlertMessageDelegate, IActivityAnima
     func ShowAlertMessage(title: String, message: String) {
         self.HideActivityIndicator()
         if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
             }
         } else {

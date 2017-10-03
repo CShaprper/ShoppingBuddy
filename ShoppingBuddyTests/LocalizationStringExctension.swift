@@ -42,6 +42,9 @@ extension String{
     
     //DashboardController
     static let DashboardControllerTitle = NSLocalizedString("DashboardControllerTitle", comment: "")
+    static let lbl_ObeservedStoresText = NSLocalizedString("lbl_ObeservedStoresText", comment: "")
+    static let lbl_ObservedListsText = NSLocalizedString("lbl_ObservedListsText", comment: "")
+    static let lbl_YourListsText = NSLocalizedString("lbl_YourListsText", comment: "")
     
     //SettingsController
     static let SettingsControllerTitle = NSLocalizedString("SettingsControllerTitle", comment: "")

@@ -34,6 +34,9 @@ LoginResetPassword = "Passwort zurücksetzen?";
 
     //DahboardController
 DashboardControllerTitle = "Dashboard";
+lbl_ObeservedStoresText = "Beobachtete Shops:";
+lbl_ObservedListsText = "Beobachtete Listen:";
+lbl_YourListsText = "Deine Listen:";
 
     //StoresController
 SettingsControllerTitle = "Einstellungen";
@@ -86,18 +89,18 @@ ListCurrentlyNotSharedMessage = "Diese Liste wird aktuell mit niemandem geteilt.
 CancelSharingSelectedMemberAlertTitle = "Teilen beenden?";
 CancelSharingSelectedMemberAlertMessage = "Diese Aktion beendet das Teilen der Liste mit ";
 ListOwnerCanceledSharingTitle = "Teilen beendet!";
-ListOwnerCanceledSharingMessage = "%@ hat %@ aus der Gruppenliste '%@' entfernt!";
+ListOwnerCanceledSharingMessage = "%@ hat '%@' aus der Gruppenliste '%@' entfernt!";
 SharedUserCanceledSharingTitle = "Teilen beendet!";
 SharedUserCanceledSharingMessage = "%@ hat die Gruppenliste '%@' verlassen!";
 ListItemAddedTitle = "Artikel hinzugefügt!";
-ListItemAddedMessage = "%@ hat %@ zur Gruppenliste '%@' hinzugefügt.";
+ListItemAddedMessage = "%@ hat '%@' zur Gruppenliste '%@' hinzugefügt.";
 SharingDeclinedMessageTitle = "Einladung Abgelehnt!";
 SharingDeclinedMessageMessage = "%@ hat die Einladung zum Teilen der Deiner Liste abgelehnt.";
 LeaveGroupListAlertTitle = "Gruppenliste verlassen!";
 LeaveGroupListAlertMessage = "Möchtest Du die Gruppenliste '%@' verlassen?";
 
 WillGoShoppingMessageTitle = "%@ geht einkaufen!";
-WillGoShoppingMessageMessage = "%@ geht zu %@. Letzte Chance fehlende Artikel zu '%@' hinzuzufügen.";
+WillGoShoppingMessageMessage = "%@ geht zu '%@'. Letzte Chance fehlende Artikel zu '%@' hinzuzufügen.";
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Einkauf Wiederhergestellt";
@@ -105,9 +108,9 @@ PurchaseRestoreAlertMessage = "Danke %@ Dein Einkauf wurde wieder hergestellt.";
 PurchaseDeniedAlertTitle = "Einkauf Verweigert";
 PurchaseDeniedAlertTitle = "Du hast keine Genehmigung Apps über den App Store zu erwerben!";
 FullVersionNeededAlertTitle = "Premium Version nötig";
-FullVersionNeededArticleAlertMessage = "Du brauchst die Premium Version um mehr als 7 Artikel zu speichern.";
-FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version um Listen mit mehr als einem User zu teilen.";
-FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version mehr als eine Liste zu speichern.";
+FullVersionNeededArticleAlertMessage = "Du brauchst die Premium Version wenn Du mehr als 7 Artikel speichern möchtest.";
+FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version wenn Du Listen mit mehr als einem User teilen möchtest.";
+FullVersionNeededListCountAlertMessage = "Du brauchst die Premium Version wenn Du mehr als eine Liste speichern möchtest.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Liste Löschen?";

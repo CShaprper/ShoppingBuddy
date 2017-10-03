@@ -19,7 +19,8 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     @IBOutlet var lbl_RadiusTwo: UILabel!
     @IBOutlet var lbl_RadiusThree: UILabel!
     @IBOutlet var lbl_RadiusFour: UILabel!
-    @IBOutlet var btn_HalfYearSubscription: UIButton!
+    @IBOutlet var btn_GetFullVersion: UIButton!
+    @IBOutlet var btn_RestorePurchase: UIButton!
     
     
     
@@ -66,17 +67,27 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         SetGeofenceRadiusSliderValue(value: value)
         UserDefaults.standard.set(value * 1000, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
     }
-    @objc func btn_HalfYearSubscription_Pressed(sender: UIButton) -> Void {
+    @objc func btn_GetFullVersion_Pressed(sender: UIButton) -> Void {
         
-        Analytics.logEvent("UserPressedBuyButton", parameters: [AnalyticsParameterItemID : "BuyFullVersion" as NSObject] )
+        Analytics.logEvent("UserPressedButton", parameters: [AnalyticsParameterItemID : "btn_GetFullVersion_Pressed" as NSObject] )
         iapHelper.buyProduct(productIdentifier: eIAPIndentifier.SBFullVersion.rawValue)
+        
+    }
+    
+    @objc func btn_RestorePurchase_Pressed(sender: UIButton) -> Void {
+        
+        Analytics.logEvent("UserPressedButton", parameters: [AnalyticsParameterItemID : "btn_RestorePurchase_Pressed" as NSObject] )
+        
+        iapHelper.restorePurchases()
         
     }
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void{
         
-        btn_HalfYearSubscription.addTarget(self, action: #selector(btn_HalfYearSubscription_Pressed), for: .touchUpInside)
+        btn_RestorePurchase.addTarget(self, action: #selector(btn_RestorePurchase_Pressed), for: .touchUpInside)
+        
+        btn_GetFullVersion.addTarget(self, action: #selector(btn_GetFullVersion_Pressed), for: .touchUpInside)
         
         GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
         

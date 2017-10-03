@@ -148,6 +148,7 @@ class ShoppingBuddyListWebservice {
         else {
             sbUserService.ObserveUser(userID:userID, dlType: .DownloadForShoppingList)
         }
+        
     }
     
     private func ObserveListMembers() -> Void {
@@ -180,7 +181,7 @@ class ShoppingBuddyListWebservice {
                 
                 if let index = allShoppingLists.index(where: { $0.id == list.id! }){
                     
-                    DispatchQueue.main.async {
+                    OperationQueue.main.addOperation {
                         allShoppingLists[index].members = newMembers
                     }
                 }
@@ -227,7 +228,7 @@ class ShoppingBuddyListWebservice {
                 }
                 if let index = allShoppingLists.index(where: { $0.id == list.id! }){
                     
-                    DispatchQueue.main.async {
+                    OperationQueue.main.addOperation {
                         allShoppingLists[index].items = newItems
                     }
                     
@@ -282,7 +283,7 @@ class ShoppingBuddyListWebservice {
         //Add message to messages node
         let title = String.SharedUserCanceledSharingTitle
         let message = String.localizedStringWithFormat(String.SharedUserCanceledSharingMessage, currentUser!.nickname!, listToCancel.name! )
-        let messagesRef = self.ref.child("messages").childByAutoId().updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":Auth.auth().currentUser!.uid, "messageType":eNotificationType.CancelSharingBySharedUser.rawValue, "userIDToDelete": member.id!]) { (error, dbRef) in
+        self.ref.child("messages").childByAutoId().updateChildValues(["listID":listToCancel.id!, "title":title, "message":message, "senderID":Auth.auth().currentUser!.uid, "messageType":eNotificationType.CancelSharingBySharedUser.rawValue, "userIDToDelete": member.id!]) { (error, dbRef) in
         
             if error != nil{
                 
@@ -384,7 +385,7 @@ class ShoppingBuddyListWebservice {
             
             NSLog("Succesfully deleted Shopping List from Firebase")
             
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 
                 if let index = allShoppingLists.index(where: { $0.id == listToDelete.id }) {
                     allShoppingLists.remove(at: index)
@@ -403,7 +404,7 @@ extension ShoppingBuddyListWebservice: IActivityAnimationService, IAlertMessageD
     func ShowAlertMessage(title: String, message: String) {
         HideActivityIndicator()
         if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
             }
         } else {
@@ -414,7 +415,7 @@ extension ShoppingBuddyListWebservice: IActivityAnimationService, IAlertMessageD
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
             }
         } else {
@@ -423,7 +424,7 @@ extension ShoppingBuddyListWebservice: IActivityAnimationService, IAlertMessageD
     }
     func HideActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.activityAnimationServiceDelegate!.HideActivityIndicator!()
             }
         } else {

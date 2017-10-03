@@ -22,12 +22,9 @@ class FullVersionUserValidationService: IValidationService {
     
     private func validateUserAsFullVersionUser() -> Bool {
         
-        let fullVersionStatus = UserDefaults.standard.bool(forKey: eUserDefaultKey.isFullVersionUser.rawValue)
-        if fullVersionStatus == false {
-            return false
-        }
+        if !currentUser!.isFullVersionUser! { return false }
         
-        return fullVersionStatus
+        return currentUser!.isFullVersionUser!
     }
     
     internal func ShowAlertMessage(title: String, message: String) {

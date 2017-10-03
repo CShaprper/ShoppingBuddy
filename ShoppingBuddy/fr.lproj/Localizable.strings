@@ -5,6 +5,10 @@
  Created by Peter Sypek on 22.07.17.
  Copyright © 2017 Peter Sypek. All rights reserved.
  */
+
+    // App Store text
+Subtitle = "Your shopping friend";
+
     //Validation Service Alert
 ValidationAlert_Title = "Erreur d'authentification";
     //Password
@@ -34,6 +38,9 @@ LoginResetPassword = "RÈinitialiser le mot de passe ?";
 
     //DahboardController
 DashboardControllerTitle = "Tableau de bord"; //Dashboard view of the app
+lbl_ObeservedStoresText = "Observed stores:";
+lbl_ObservedListsText = "Observed lists:";
+lbl_YourListsText = "Your lists:";
 
     //SettingsController
 SettingsControllerTitle = "ParamËtres"; //parameters of the app
@@ -89,18 +96,18 @@ ListCurrentlyNotSharedMessage = "This list is currently not shared. Cancel shari
 CancelSharingSelectedMemberAlertTitle = "Cancel Sharing?";
 CancelSharingSelectedMemberAlertMessage = "This action will cancel the sharing of this list with ";
 ListOwnerCanceledSharingTitle = "Sharing canceled!";
-ListOwnerCanceledSharingMessage = "%@ removed %@ from group list '%@'!";
+ListOwnerCanceledSharingMessage = "%@ removed '%@' from group list '%@'!";
 SharedUserCanceledSharingTitle = "Sharing canceled!";
-SharedUserCanceledSharingMessage = "%@ has left the group list %@.";
+SharedUserCanceledSharingMessage = "%@ has left the group list '%@'.";
 ListItemAddedTitle = "Article added!";
-ListItemAddedMessage = "%@ added '%' to group list '%@'.";
+ListItemAddedMessage = "%@ added '%@' to group list '%@'.";
 SharingDeclinedMessageTitle = "Sharing invite declined";
 SharingDeclinedMessageMessage = "%@ declined your list sharing invitation.";
-
-WillGoShoppingMessageTitle = "%@ goes for shopping";
-WillGoShoppingMessageMessage = "%@ goes to %@ for shopping. Last chance to add articles to group list '%@'.";
 LeaveGroupListAlertTitle = "Leave Shared List!";
 LeaveGroupListAlertMessage = "Do you want to leave the shared list '%@'?";
+
+WillGoShoppingMessageTitle = "%@ goes for shopping";
+WillGoShoppingMessageMessage = "%@ goes to '%@' for shopping. Last chance to add articles to group list '%@'.";
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Purchase Restored";
@@ -108,9 +115,9 @@ PurchaseRestoreAlertMessage = "Thank you %@ your purcahse is restored.";
 PurchaseDeniedAlertTitle = "Purchase Denied";
 PurchaseDeniedAlertTitle = "You are not allowed to purchase App Store products!";
 FullVersionNeededAlertTitle = "Premium Version Needed";
-FullVersionNeededArticleAlertMessage = "You need the premium version to save more than seven articles.";
-FullVersionNeededSharingAlertMessage = "You need the premium version to share lists with more than one person.";
-FullVersionNeededSharingAlertMessage = "You need the premium version to save more than one list.";
+FullVersionNeededArticleAlertMessage = "You need the premium version if you want to save more than seven articles.";
+FullVersionNeededSharingAlertMessage = "You need the premium version if you want to share lists with more than one person.";
+FullVersionNeededListCountAlertMessage = "You need the premium version if you want to save more than one list.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Supprimer la liste de courses ?";

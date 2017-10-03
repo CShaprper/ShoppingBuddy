@@ -166,7 +166,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
         Auth.auth().createUser(withEmail: email, password: password, completion: { (user, error) in
             if error != nil{
                 print(error!.localizedDescription)
-                DispatchQueue.main.async {
+                  OperationQueue.main.addOperation {
                     let title = ""
                     let message = ""
                     self.ShowAlertMessage(title: title, message: message)
@@ -360,14 +360,18 @@ extension ShoppingBuddyUserWebservice: IAlertMessageDelegate, IActivityAnimation
     //MARK: - IActivityAnimationService implementation
     func ShowActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.ShowActivityIndicator!()
+            OperationQueue.main.addOperation {
+            self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
+            }
         } else {
             NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingListItem")
         }
     }
     func HideActivityIndicator() {
         if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.HideActivityIndicator!()
+            OperationQueue.main.addOperation {
+            self.activityAnimationServiceDelegate!.HideActivityIndicator!()
+            }
         } else {
             NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingListItem")
         }
@@ -377,7 +381,7 @@ extension ShoppingBuddyUserWebservice: IAlertMessageDelegate, IActivityAnimation
     func ShowAlertMessage(title: String, message: String) {
         self.HideActivityIndicator()
         if alertMessageDelegate != nil {
-            DispatchQueue.main.async {
+            OperationQueue.main.addOperation {
                 self.alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
             }
         } else {

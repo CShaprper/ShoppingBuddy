@@ -30,6 +30,8 @@
 		CF73392E1F6300FB00FB396A /* ListMembersTwoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF73392D1F6300FB00FB396A /* ListMembersTwoCell.swift */; };
 		CF7389051F75847700F6D833 /* MarckScript-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF7389041F7582FD00F6D833 /* MarckScript-Regular.ttf */; };
 		CF7389061F75847900F6D833 /* Pacifico-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF7389031F7582F200F6D833 /* Pacifico-Regular.ttf */; };
+		CF7A64551F827167006DDC5D /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF7A64541F827167006DDC5D /* SoundPlayer.swift */; };
+		CF7A64581F827534006DDC5D /* swoosh.wav in Resources */ = {isa = PBXBuildFile; fileRef = CF7A64571F827250006DDC5D /* swoosh.wav */; };
 		CF9A7FCC1F35303300DB401A /* DesignableUISlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF9A7FCB1F35303300DB401A /* DesignableUISlider.swift */; };
 		CFAD850A1F274BB500F207E5 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */; };
 		CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAD850F1F27AAB500F207E5 /* SettingsController.swift */; };
@@ -101,6 +103,8 @@
 		CF73392D1F6300FB00FB396A /* ListMembersTwoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListMembersTwoCell.swift; sourceTree = "<group>"; };
 		CF7389031F7582F200F6D833 /* Pacifico-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pacifico-Regular.ttf"; sourceTree = "<group>"; };
 		CF7389041F7582FD00F6D833 /* MarckScript-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MarckScript-Regular.ttf"; sourceTree = "<group>"; };
+		CF7A64541F827167006DDC5D /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		CF7A64571F827250006DDC5D /* swoosh.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = swoosh.wav; sourceTree = "<group>"; };
 		CF9A7FCB1F35303300DB401A /* DesignableUISlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignableUISlider.swift; sourceTree = "<group>"; };
 		CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
 		CFAD850F1F27AAB500F207E5 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
@@ -206,8 +210,17 @@
 				CFE874451F59AD1C00DA6CDC /* PushNotificationHelper.swift */,
 				CF3D7D7A1F6ED9450075A42A /* ImageCompressionExtension.swift */,
 				CF40A4F01F76CAE000A35BE0 /* InAppPurchaseHelper.swift */,
+				CF7A64541F827167006DDC5D /* SoundPlayer.swift */,
 			);
 			name = "Helper Files";
+			sourceTree = "<group>";
+		};
+		CF7A64561F827244006DDC5D /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				CF7A64571F827250006DDC5D /* swoosh.wav */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 		CFAD850B1F2779B700F207E5 /* Fonts */ = {
@@ -360,6 +373,7 @@
 		CFE874441F59AC7500DA6CDC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CF7A64561F827244006DDC5D /* Sounds */,
 				CFE4A2001F23C4D3002A12C7 /* ShoppingBuddy.entitlements */,
 				CFE4A1D61F23C0DC002A12C7 /* Info.plist */,
 				CF0161CE1F489BEF00369DFC /* GoogleService-Info.plist */,
@@ -466,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */,
+				CF7A64581F827534006DDC5D /* swoosh.wav in Resources */,
 				CF7389051F75847700F6D833 /* MarckScript-Regular.ttf in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
 				CF0161CF1F489BEF00369DFC /* GoogleService-Info.plist in Resources */,
@@ -565,6 +580,7 @@
 				CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */,
 				CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */,
 				CF610C3D1F265ABD00B1B2DE /* DesignableUIView.swift in Sources */,
+				CF7A64551F827167006DDC5D /* SoundPlayer.swift in Sources */,
 				CF9A7FCC1F35303300DB401A /* DesignableUISlider.swift in Sources */,
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
 				CF033B581F57322000684963 /* ShoppingBuddyMessage.swift in Sources */,

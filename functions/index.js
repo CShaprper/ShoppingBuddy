@@ -413,12 +413,11 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
                         }).catch((err) => { console.log("Error sending Push", err) })
 
                     }
+                    //remove message
+                    console.log('deleting message')
+                    return admin.database().ref('messages').child(event.params.messageID).set(null)
 
                 }))
-
-                //remove message
-                console.log('deleting message')
-                return admin.database().ref('messages').child(event.params.messageID).set(null)
 
             })
 
