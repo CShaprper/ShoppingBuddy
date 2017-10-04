@@ -31,6 +31,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var lbl_YourListsCount: UILabel!
     @IBOutlet var btn_IncreaseMapSpan: UIButton!
     @IBOutlet var bnt_DecreaseMapSpan: UIButton!
+    @IBOutlet var NoteBook: UIImageView!
     
     
     //NotificationView
@@ -60,8 +61,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         super.viewDidLoad()
         ConfigureView()
         
+        sbUserWebservice.GetCurrentUser()
         lbl_ObservedStoresCount.text = String(locationManager.monitoredRegions.count)
-        
+        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -157,11 +159,10 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         currentUser = nil
         
     }
+    /* wird kurioser Weise mehrmals nacheinander aufgerufen
     @objc func ShoppingBuddyUserLoggedIn(notification: Notification)  -> Void {
-        
-        sbUserWebservice.GetCurrentUser()
-        
-    }
+
+    }*/
     @objc func CurrentUserCreated(notification: Notification) -> Void {
         
         sbUserWebservice.GetCurrentUser()
@@ -380,6 +381,11 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         UserProfileImage.layer.shadowRadius  = 10
         UserProfileImageStar.alpha = 0
         
+        NoteBook.layer.shadowColor  = UIColor.black.cgColor
+        NoteBook.layer.shadowOffset  = CGSize(width: 5, height:5)
+        NoteBook.layer.shadowOpacity  = 1
+        NoteBook.layer.shadowRadius  = 3 
+        
         //Dashboard Messages
         lbl_ObservedLists.text = String.lbl_ObservedListsText
         lbl_YourLists.text = String.lbl_YourListsText
@@ -392,7 +398,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         NotificationCenter.default.addObserver(forName: .PerformLocalShopSearch, object: nil, queue: OperationQueue.main, using: PerformLocalShopSearch)
         NotificationCenter.default.addObserver(forName: .PushNotificationReceived, object: nil, queue: OperationQueue.main, using: PushNotificationReceived)
         NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedOut, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedOut)
-        NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedIn, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedIn)
         NotificationCenter.default.addObserver(forName: .ShoppingBuddyStoreReceived, object: nil, queue: OperationQueue.main, using: ShoppingBuddyStoreReceived)
         NotificationCenter.default.addObserver(forName: .CurrentUserCreated, object: nil, queue: OperationQueue.main, using: CurrentUserCreated)
         NotificationCenter.default.addObserver(forName: .ShoppingBuddyListDataReceived, object: nil, queue: OperationQueue.main, using: ShoppingBuddyListDataReceived)
@@ -593,6 +598,7 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         
+        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         self.userLocation = userLocation.coordinate
         mapView.centerCoordinate = userLocation.coordinate
         let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)

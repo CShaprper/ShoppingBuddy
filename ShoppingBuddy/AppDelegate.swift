@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         //Set standard Map Zoom
-        if UserDefaults.standard.value(forKey: eUserDefaultKey.MonitoredRadius.rawValue) != nil{
+        if UserDefaults.standard.value(forKey: eUserDefaultKey.MapSpan.rawValue) == nil{
             UserDefaults.standard.set(9000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
         
