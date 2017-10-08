@@ -173,7 +173,9 @@ class ShoppingBuddyListWebservice {
                     
                     //dont append listowner
                     if m.memberID != list.owneruid {
-                        newMembers.append(m)
+                            
+                            newMembers.append(m)
+                            
                     }
                     
                 }
@@ -223,11 +225,24 @@ class ShoppingBuddyListWebservice {
                     newItem.isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
                     newItem.itemName = item.childSnapshot(forPath: "itemName").value as? String
                     newItem.sortNumber = item.childSnapshot(forPath: "sortNumber").value as? Int
-                    newItems.append(newItem)
+                    
+                    //Logic for FullVersionUser
+                    guard let user = currentUser else { return }
+                    guard let isFullVersionUser = user.isFullVersionUser else { return }
+                    
+                    if !isFullVersionUser && newItems.count >= 7 {
+                        
+                        continue
+                        
+                    } else {
+                        
+                        newItems.append(newItem)
+                        
+                    }
                     
                 }
                 if let index = allShoppingLists.index(where: { $0.id == list.id! }){
-                    
+                
                     OperationQueue.main.addOperation {
                         allShoppingLists[index].items = newItems
                     }

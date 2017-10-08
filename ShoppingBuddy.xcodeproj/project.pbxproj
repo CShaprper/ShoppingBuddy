@@ -13,6 +13,7 @@
 		CF033B581F57322000684963 /* ShoppingBuddyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B571F57322000684963 /* ShoppingBuddyMessage.swift */; };
 		CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */; };
 		CF053BC21F81ACA400B08C34 /* FullVersionUserValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */; };
+		CF0AFD991F88EF4300C415F7 /* UIViewShadowExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF16344E1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */; };
 		CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */; };
@@ -63,7 +64,7 @@
 		CFE4A2131F23C9A3002A12C7 /* TextfieldIValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A20F1F23C9A3002A12C7 /* TextfieldIValidationService.swift */; };
 		CFE4A2141F23C9A3002A12C7 /* SegmentedControlValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A2101F23C9A3002A12C7 /* SegmentedControlValidationService.swift */; };
 		CFE4A2171F23C9B8002A12C7 /* eValidationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A2161F23C9B8002A12C7 /* eValidationType.swift */; };
-		CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A21A1F23CE19002A12C7 /* LocalizationStringExctension.swift */; };
+		CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A21A1F23CE19002A12C7 /* LocalizationStringExtension.swift */; };
 		CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFE4A2381F23DC62002A12C7 /* Localizable.strings */; };
 		CFE824E61F2BC18B00BDB61F /* ShoppingListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */; };
 		CFE874461F59AD1C00DA6CDC /* PushNotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE874451F59AD1C00DA6CDC /* PushNotificationHelper.swift */; };
@@ -75,6 +76,10 @@
 		CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */; };
 		CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319451F33742700F91272 /* eUserDefaultKey.swift */; };
 		CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */; };
+		CFFCEA071F869E0900411B47 /* crushing-paper.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA061F869BAD00411B47 /* crushing-paper.wav */; };
+		CFFCEA091F869E3900411B47 /* crackle.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA081F869E3700411B47 /* crackle.wav */; };
+		CFFCEA0B1F869F7300411B47 /* squelch.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA0A1F869F6D00411B47 /* squelch.wav */; };
+		CFFCEA0D1F869FF000411B47 /* drip.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA0C1F869FED00411B47 /* drip.wav */; };
 		CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +91,7 @@
 		CF033B571F57322000684963 /* ShoppingBuddyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessage.swift; sourceTree = "<group>"; };
 		CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessageWebService.swift; sourceTree = "<group>"; };
 		CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullVersionUserValidationService.swift; sourceTree = "<group>"; };
+		CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewShadowExtension.swift; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListItemWebservice.swift; sourceTree = "<group>"; };
 		CF2C4EA61F26685000F046F4 /* UINavigatioBarExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigatioBarExtension.swift; sourceTree = "<group>"; };
@@ -146,7 +152,7 @@
 		CFE4A20F1F23C9A3002A12C7 /* TextfieldIValidationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextfieldIValidationService.swift; sourceTree = "<group>"; };
 		CFE4A2101F23C9A3002A12C7 /* SegmentedControlValidationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegmentedControlValidationService.swift; sourceTree = "<group>"; };
 		CFE4A2161F23C9B8002A12C7 /* eValidationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eValidationType.swift; sourceTree = "<group>"; };
-		CFE4A21A1F23CE19002A12C7 /* LocalizationStringExctension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizationStringExctension.swift; path = ShoppingBuddyTests/LocalizationStringExctension.swift; sourceTree = SOURCE_ROOT; };
+		CFE4A21A1F23CE19002A12C7 /* LocalizationStringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocalizationStringExtension.swift; path = ShoppingBuddyTests/LocalizationStringExtension.swift; sourceTree = SOURCE_ROOT; };
 		CFE4A2291F23DA9C002A12C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CFE4A22B1F23DAB6002A12C7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		CFE4A22F1F23DAD9002A12C7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -164,6 +170,10 @@
 		CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
 		CFF319451F33742700F91272 /* eUserDefaultKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eUserDefaultKey.swift; sourceTree = "<group>"; };
 		CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTabBarControllerDelegate.swift; sourceTree = "<group>"; };
+		CFFCEA061F869BAD00411B47 /* crushing-paper.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "crushing-paper.wav"; sourceTree = "<group>"; };
+		CFFCEA081F869E3700411B47 /* crackle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crackle.wav; sourceTree = "<group>"; };
+		CFFCEA0A1F869F6D00411B47 /* squelch.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = squelch.wav; sourceTree = "<group>"; };
+		CFFCEA0C1F869FED00411B47 /* drip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip.wav; sourceTree = "<group>"; };
 		CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		D5B3347F5B99BA03E15EB7B3 /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,6 +221,7 @@
 				CF3D7D7A1F6ED9450075A42A /* ImageCompressionExtension.swift */,
 				CF40A4F01F76CAE000A35BE0 /* InAppPurchaseHelper.swift */,
 				CF7A64541F827167006DDC5D /* SoundPlayer.swift */,
+				CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */,
 			);
 			name = "Helper Files";
 			sourceTree = "<group>";
@@ -218,7 +229,11 @@
 		CF7A64561F827244006DDC5D /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				CFFCEA0C1F869FED00411B47 /* drip.wav */,
+				CFFCEA0A1F869F6D00411B47 /* squelch.wav */,
+				CFFCEA081F869E3700411B47 /* crackle.wav */,
 				CF7A64571F827250006DDC5D /* swoosh.wav */,
+				CFFCEA061F869BAD00411B47 /* crushing-paper.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -350,7 +365,7 @@
 		CFE4A1FD1F23C48F002A12C7 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				CFE4A21A1F23CE19002A12C7 /* LocalizationStringExctension.swift */,
+				CFE4A21A1F23CE19002A12C7 /* LocalizationStringExtension.swift */,
 				CFE4A2381F23DC62002A12C7 /* Localizable.strings */,
 			);
 			name = Localization;
@@ -480,6 +495,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */,
+				CFFCEA071F869E0900411B47 /* crushing-paper.wav in Resources */,
+				CFFCEA0B1F869F7300411B47 /* squelch.wav in Resources */,
+				CFFCEA0D1F869FF000411B47 /* drip.wav in Resources */,
 				CF7A64581F827534006DDC5D /* swoosh.wav in Resources */,
 				CF7389051F75847700F6D833 /* MarckScript-Regular.ttf in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
@@ -490,6 +508,7 @@
 				CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */,
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
 				CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */,
+				CFFCEA091F869E3900411B47 /* crackle.wav in Resources */,
 				CF7389061F75847900F6D833 /* Pacifico-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +587,7 @@
 				CF033B541F57214700684963 /* MessagesController.swift in Sources */,
 				CF610C391F263BCD00B1B2DE /* CustomTabBarController.swift in Sources */,
 				CFBE245D1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift in Sources */,
-				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExctension.swift in Sources */,
+				CFE4A21C1F23CEBB002A12C7 /* LocalizationStringExtension.swift in Sources */,
 				CF2E47D31F6C105000CD6719 /* ShoppingListMember.swift in Sources */,
 				CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */,
 				CF30636E1F62E30100B640DB /* ListMembersCell.swift in Sources */,
@@ -585,6 +604,7 @@
 				CF2C4EA71F26685000F046F4 /* UINavigatioBarExtension.swift in Sources */,
 				CF033B581F57322000684963 /* ShoppingBuddyMessage.swift in Sources */,
 				CF5F43941F47215300B9D1B9 /* IActivityAnimationService.swift in Sources */,
+				CF0AFD991F88EF4300C415F7 /* UIViewShadowExtension.swift in Sources */,
 				CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */,
 				CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */,
 				CFB2AA631F24B8A100AACB5B /* NotificationNameExtension.swift in Sources */,

@@ -13,8 +13,7 @@ class ShoppingBuddyUser:NSObject {
     //MARK: - Member
     var id:String?
     var email:String?
-    var nickname:String?
-    var password:String?
+    var nickname:String? 
     var fcmToken:String?
     var profileImageURL:String?
     var localImageLocation:String?
@@ -37,7 +36,8 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
         if let index = allUsers.index(where: { $0.profileImageURL == self.profileImageURL }) {
             
             if allUsers[index].profileImage == nil {
-                let uTask = self.uSession.downloadTask(with: URL(string: self.profileImageURL!)!)
+                guard let imageURL = self.profileImageURL else { return }
+                let uTask = self.uSession.downloadTask(with: URL(string: imageURL)!)
                 uTask.resume()
                 return
             }
@@ -88,11 +88,6 @@ extension ShoppingBuddyUser: URLSessionDownloadDelegate {
                 }
                 
             } 
-            
-        } else {
-            
-            self.profileImage = #imageLiteral(resourceName: "userPlaceholder")
-            NotificationCenter.default.post(name: .UserProfileImageDownloadFinished, object: nil, userInfo: nil)
             
         }
         

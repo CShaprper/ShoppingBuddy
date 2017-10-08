@@ -37,6 +37,7 @@ DashboardControllerTitle = "Dashboard";
 lbl_ObeservedStoresText = "Beobachtete Shops:";
 lbl_ObservedListsText = "Beobachtete Listen:";
 lbl_YourListsText = "Deine Listen:";
+lbl_PinnedAddress = "Gepinnte Adresse:";
 
     //StoresController
 SettingsControllerTitle = "Einstellungen";
@@ -55,15 +56,15 @@ txt_ListName_Placeholder = "Liste Name";
     //Add Item PopUp
 lbl_AddItemPopUpTitle = "Element Einfügen";
 txt_ItemName_Placeholer = "Element Name";
-CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-DE";
+//CustomAddShoppingListRefreshControlImage = "AddShoppingListRefreshControl-DE";
 
     //LocationService
 GPSAuthorizationRequestDenied_AlertTitle = "Hinweis";
 GPSAuthorizationRequestDenied_AlertMessage = "Ohne GPS Autorisierung kannst Du die ortsgebundenen Funktionen nicht nutzen. Du wirst nicht auf naheliegende Shops aktiver Shopping Listen hingewiesen. Du kannst die Autorisierung jederzeit in den Einstellungen ";
 GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Einstellungen";
 GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "Nein Danke";
-LocationManagerEnteredRegion_AlertTitle = " in der Nähe";
-LocationManagerEnteredRegion_AlertMessage = "Du befindest Dich in der Nähe eines Shops Deiner aktiven Shopping Listen. Möchtest Du zum Shop navigiert werden?";
+LocationManagerEnteredRegion_AlertTitle = "%@ in der Nähe";
+LocationManagerEnteredRegion_AlertMessage = "Du hast noch offene Positionen auf für '%@' auf Deiner Liste!";
 
     //Shopping Cards
 lbl_ShoppingCardTotalItems_Label = "Anzahl:";
@@ -77,9 +78,9 @@ txt_ShareOpponentEmailPlaceholder = "E-Mail des Freundes";
 UserEmailNotFoundTitle = "User nicht gefunden!";
 UserEmailNotFoundMessage = "%@ wurde nicht gefunden! Es existiert kein Shopping Buddy User mit dieser e-mail!";
 ShareListMessage = "%@ möchte eine Shopping Liste mit Dir teilen.";
-ShareListTitle = "Einladung von";
+ShareListTitle = "Einladung von %@";
 ShareListAcceptedTitle = "Teilen Akzeptiert!";
-ShareListAcceptedMessage = "hat Deine Einladung akzeptiert.";
+ShareListAcceptedMessage = "%@ hat Deine Einladung akzeptiert.";
 NotAllowedToShareListAlertTitle = "Teilen nicht möglich!";
 NotAllowedToShareListAlertMessage = "Du kannst nur Listen Teilen, die Du selbst erstellt hast.";
 DeleteMessage = "löschen";
@@ -100,7 +101,7 @@ LeaveGroupListAlertTitle = "Gruppenliste verlassen!";
 LeaveGroupListAlertMessage = "Möchtest Du die Gruppenliste '%@' verlassen?";
 
 WillGoShoppingMessageTitle = "%@ geht einkaufen!";
-WillGoShoppingMessageMessage = "%@ geht zu '%@'. Letzte Chance fehlende Artikel zu '%@' hinzuzufügen.";
+WillGoShoppingMessageMessage = "%@ geht zu '%@'. Deine Chance noch fehlende Artikel zu '%@' hinzuzufügen.";
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Einkauf Wiederhergestellt";
@@ -127,3 +128,7 @@ OnlineFetchRequestError = "Web Request Error";
 MessagesControllerTitle = "Nachrichten";
 AcceptInvitation = "Annehmen";
 DeclineInvitation = "Ablehnen";
+
+    //Info Views
+DashboardOnboardingImage = "OnboardingDashboard-DE";
+ShoppingListsOnboardiongImage = "OnboardingShoppinglists-DE";

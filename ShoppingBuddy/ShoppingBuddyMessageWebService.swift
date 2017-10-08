@@ -72,7 +72,7 @@ class ShoppingBuddyMessageWebservice {
                 
                 //Write invitation Data to receipt ref
                 let msgRef = self.ref.child("messages").childByAutoId()
-                let inviteTitle = String.ShareListTitle + " \(listOwner.nickname!)"
+                let inviteTitle = String.localizedStringWithFormat(String.ShareListTitle , listOwner.nickname!)
                 let inviteMessage = String.localizedStringWithFormat(String.ShareListMessage, listOwner.nickname!) 
                 
                 //Add receipt to message_receipts node before creating message
@@ -124,7 +124,7 @@ class ShoppingBuddyMessageWebservice {
     func AcceptInvitation(invitation: ShoppingBuddyMessage) -> Void {
         
         self.ShowActivityIndicator()
-        let inviteAccepetdMessage = "\(currentUser!.nickname! ) \(String.ShareListAcceptedMessage)"
+        let inviteAccepetdMessage = String.localizedStringWithFormat(String.ShareListAcceptedMessage, currentUser!.nickname!)
         
         let msgRef = ref.child("messages").childByAutoId()
         

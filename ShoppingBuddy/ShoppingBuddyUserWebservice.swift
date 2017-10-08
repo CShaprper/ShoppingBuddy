@@ -32,8 +32,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             
             if snapshot.value is NSNull { self.HideActivityIndicator(); return }
             
-            if currentUser == nil { return }
-            
             currentUser!.id = snapshot.key
             currentUser!.email = snapshot.childSnapshot(forPath: "email").value as? String
             currentUser!.nickname = snapshot.childSnapshot(forPath: "nickname").value as? String
@@ -338,13 +336,14 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                                 self.ShowAlertMessage(title: title, message: message)
                                 return
                                 
-                            } else {
-                                
+                            }
                                 self.HideActivityIndicator()
                                 NSLog("Succesfully saved user to Firebase")
+                                let promocode = self.ref.child("users").child(user!.uid).childByAutoId()
+                                self.ref.child("users").child(user!.uid).child("promocode").setValue(promocode.key)
                                 NotificationCenter.default.post(name: Notification.Name.CurrentUserCreated, object: nil, userInfo: nil)
                                 
-                            }
+                             
                         })
                     }
                     

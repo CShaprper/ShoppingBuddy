@@ -84,51 +84,6 @@ class ShoppingBuddyListItemWebservice {
         }
     }
     
-    func ObserveListItem(listItem: ShoppingListItem) -> Void {
-        self.ShowActivityIndicator()
-        listItemRef.child(listItem.listID!).child(listItem.id!).observe(.value, with: { (snapshot) in
-            
-            if snapshot.value is NSNull { return }
-            var newlistItem = ShoppingListItem()
-            newlistItem.id = snapshot.key
-            newlistItem.listID = listItem.listID
-            newlistItem.isSelected = snapshot.childSnapshot(forPath: "isSelected").value as? Bool
-            newlistItem.sortNumber = snapshot.childSnapshot(forPath: "sortNumber").value as? Int
-            newlistItem.itemName = snapshot.childSnapshot(forPath: "itemName").value as? String
-            
-            OperationQueue.main.addOperation {
-                
-                if let listIndex = allShoppingLists.index(where: { $0.id == listItem.listID! }) {
-                    
-                    if let itemIndex = allShoppingLists[listIndex].items.index(where: { $0.id == listItem.id! }) {
-                        
-                        allShoppingLists[listIndex].items[itemIndex] = newlistItem
-                        NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
-                        
-                    } else {
-                        
-                        allShoppingLists[listIndex].items.append(newlistItem)
-                        NotificationCenter.default.post(name: Notification.Name.ListItemReceived, object: nil, userInfo: nil)
-                        
-                    }
-                }
-                self.HideActivityIndicator()
-                
-            }
-            
-            
-        }) { (error) in
-            
-            NSLog(error.localizedDescription)
-            let title = String.OnlineFetchRequestError
-            let message = error.localizedDescription
-            self.ShowAlertMessage(title: title, message: message)
-            return
-            
-        }
-        
-    }
-    
     //MARK: - Delete Functions
     func DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListItem){
         self.ShowActivityIndicator()

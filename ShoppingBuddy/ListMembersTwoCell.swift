@@ -22,7 +22,7 @@ class ListMembersTwoCell: UICollectionViewCell {
         MemberProfileImageTwo.layer.borderWidth = 3
         
         if user.isFullVersionUser != nil {
-            SharedMemberStarImage.alpha = user.isFullVersionUser! ? 1 : 0
+            SharedMemberStarImage.alpha = user.isFullVersionUser! == true ? 1 : 0
         } else {
             SharedMemberStarImage.alpha = 0
         }

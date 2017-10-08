@@ -19,11 +19,6 @@ class SoundPlayer {
             audioPlayer.prepareToPlay()
             audioPlayer.play()
         }
-        
-        /*let sound = UserDefaults.standard.bool(forKey: eUserDefaultKeys.SoundsOn.rawValue)
-        if sound {
-            audioPlayer.play()
-        }*/
     }
     
 }

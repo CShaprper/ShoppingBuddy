@@ -41,6 +41,7 @@ DashboardControllerTitle = "Tableau de bord"; //Dashboard view of the app
 lbl_ObeservedStoresText = "Observed stores:";
 lbl_ObservedListsText = "Observed lists:";
 lbl_YourListsText = "Your lists:";
+lbl_PinnedAddress = "Pinned address:";
 
     //SettingsController
 SettingsControllerTitle = "ParamËtres"; //parameters of the app
@@ -62,8 +63,8 @@ GPSAuthorizationRequestDenied_AlertTitle = "Commentaire GPS";
 GPSAuthorizationRequestDenied_AlertMessage = "Sans autorisation GPS, les services de localisation sont dÈsactivÈs. Vous ne serez pas notifiÈ de vos listes de courses lorsque vous serez ‡ proximitÈ d'un magasin.";
 GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "ParamËtres";  //parameters of the app
 GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "Non merci";
-LocationManagerEnteredRegion_AlertTitle = "A proximitÈ"; // Alert title when a store is nearby
-LocationManagerEnteredRegion_AlertMessage = "Souhaitez-vous commencer la navigation ?";
+LocationManagerEnteredRegion_AlertTitle = "%@ Nearby";
+LocationManagerEnteredRegion_AlertMessage = "You got open articles for '%@' on your shopping lists.";
 
     //InApp Purchase
 lbl_Abonnement_Monthly = "Abonnement mensuel";
@@ -83,10 +84,10 @@ txt_ShareOpponentEmailPlaceholder = "Compartir lista con amigos";
     //Share List Message
 UserEmailNotFoundTitle = "User not found!";
 UserEmailNotFoundMessage = " could not be found. A user with this e-mail does not exist as Shopping Buddy user."; //user email not found
-ShareListMessage = "voudrait partager ses listes de courses avec vous.";
-ShareListTitle = "Invitation from";
+ShareListMessage = "%@ voudrait partager ses listes de courses avec vous.";
+ShareListTitle = "Invitation from %@";
 ShareListAcceptedTitle = "Sharing accepted";
-ShareListAcceptedMessage = "accepted your sharing invite.";
+ShareListAcceptedMessage = "%@ accepted your sharing invite.";
 NotAllowedToShareListAlertTitle = "Sharing forbidden!";
 NotAllowedToShareListAlertMessage = "You are only able to share lists that you have created.";
 DeleteMessage = "delete";
@@ -111,7 +112,7 @@ WillGoShoppingMessageMessage = "%@ goes to '%@' for shopping. Last chance to add
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Purchase Restored";
-PurchaseRestoreAlertMessage = "Thank you %@ your purcahse is restored.";
+PurchaseRestoreAlertMessage = "Thank you %@ your purchase is restored.";
 PurchaseDeniedAlertTitle = "Purchase Denied";
 PurchaseDeniedAlertTitle = "You are not allowed to purchase App Store products!";
 FullVersionNeededAlertTitle = "Premium Version Needed";
@@ -134,3 +135,7 @@ OnlineFetchRequestError = "Web Request Error";
 MessagesControllerTitle = "Messages";
 AcceptInvitation = "Accepter";
 DeclineInvitation = "Refuser";
+
+    //Info Views
+DashboardOnboardingImage = "OnboardingDashboard-FR";
+ShoppingListsOnboardiongImage = "OnboardingShoppinglists-FR";

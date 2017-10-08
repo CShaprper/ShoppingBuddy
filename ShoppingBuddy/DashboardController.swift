@@ -32,6 +32,13 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @IBOutlet var btn_IncreaseMapSpan: UIButton!
     @IBOutlet var bnt_DecreaseMapSpan: UIButton!
     @IBOutlet var NoteBook: UIImageView!
+    @IBOutlet var lbl_PinnedAddress: UILabel!
+    @IBOutlet var lbl_Address: UILabel!
+    @IBOutlet var btn_Info: UIBarButtonItem!
+    
+    //Onboarding Info View
+    @IBOutlet var OnboardindInfoView: UIImageView!
+    
     
     
     //NotificationView
@@ -50,6 +57,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     internal var radiusToMonitore:CLLocationDistance!
     internal var mapSpan:Double!
     internal var userLocation:CLLocationCoordinate2D?
+    private var isInfoViewVisible:Bool!
     private var sbUserWebservice:ShoppingBuddyUserWebservice!
     private var sbMessagesWebService:ShoppingBuddyMessageWebservice!
     var sbListWebservice:ShoppingBuddyListWebservice!
@@ -64,6 +72,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         sbUserWebservice.GetCurrentUser()
         lbl_ObservedStoresCount.text = String(locationManager.monitoredRegions.count)
         mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        
+        GetReverseGeolocation()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -132,15 +142,14 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         if view.subviews.contains(ActivityIndicator) {
             OperationQueue.main.addOperation {
-                
-                self.ActivityIndicator.removeFromSuperview()
-                
+                self.ActivityIndicator.removeFromSuperview()                
             }
         }
         
     }
     
     @objc func UserProfileImageTapped(_ sender: UITapGestureRecognizer) {
+        
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) == false { return }
         let imgPicker = UIImagePickerController()
         imgPicker.sourceType = .photoLibrary
@@ -156,7 +165,19 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         allShoppingLists = []
         allUsers = []
         allMessages = []
-        currentUser = nil
+        currentUser!.id = nil
+        currentUser!.email = nil
+        currentUser!.fcmToken = nil
+        currentUser!.isFullVersionUser = nil
+        currentUser!.localImageLocation = nil
+        currentUser!.nickname = nil
+        currentUser!.profileImage = nil
+        currentUser!.profileImageURL = nil 
+        UserDefaults.standard.removeObject(forKey: eUserDefaultKey.HomeLatitude.rawValue)
+        UserDefaults.standard.removeObject(forKey: eUserDefaultKey.HomeLongitude.rawValue)
+        UserDefaults.standard.removeObject(forKey: eUserDefaultKey.CurrentUserID.rawValue)
+        UserDefaults.standard.removeObject(forKey: eUserDefaultKey.MapSpan.rawValue)
+        UserDefaults.standard.removeObject(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         
     }
     /* wird kurioser Weise mehrmals nacheinander aufgerufen
@@ -173,9 +194,10 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         if let index = allUsers.index(where: { $0.profileImageURL == currentUser!.profileImageURL }) {
             
-            self.UserProfileImage.image = allUsers[index].profileImage
-            self.UserProfileImage.alpha = 1
-            self.UserProfileImage.image = currentUser!.profileImage
+            OperationQueue.main.addOperation {
+                self.UserProfileImage.image = allUsers[index].profileImage
+                self.UserProfileImage.alpha = 1
+            }
             
         }
         HideActivityIndicator()
@@ -292,7 +314,12 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         if let index = allUsers.index(where: { $0.id == senderID } ) {
             
-            InviteUserImage.image = allUsers[index].profileImage!
+            guard let image = allUsers[index].profileImage else {
+                InviteUserImage.image = #imageLiteral(resourceName: "userPlaceholder")
+                displayNotification()
+                return
+            }
+            InviteUserImage.image = image
             
         }
         
@@ -303,20 +330,11 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @objc func btn_PinHomePosition_Pressed(sender: UIButton) -> Void {
         
         SaveCurrentLocationAsHomeLocation(coordinate: self.userLocation!)
+        GetReverseGeolocation()
         
     }
     
     @objc func btn_IncreaseMapSpan_Pressed(sender: UIButton) -> Void {
-        
-        var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
-        dist += 1000
-        mapSpan = dist
-        UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
-        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-        
-    }
-    
-    @objc func btn_DecreaseMapSpan_Pressed(sender: UIButton) -> Void {
         
         var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         if dist == 1000 {
@@ -325,8 +343,77 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         } else {
             dist -= 1000
             mapSpan = dist
+            guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
             UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
-            UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+            //UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+            let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            MapView.setRegion(region, animated: false)
+        }
+        
+    }
+    
+    @objc func btn_DecreaseMapSpan_Pressed(sender: UIButton) -> Void {
+        
+        guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
+        var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        dist += 1000
+        mapSpan = dist
+        UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
+        //UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+         let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+        MapView.setRegion(region, animated: false)
+        
+        
+        
+    }
+    @IBAction func btn_Info_Pressed(_ sender: UIBarButtonItem) {
+        
+        if isInfoViewVisible { hideInfoView() }
+        else { showInfoView() }
+        
+    }
+    
+    private func showInfoView() -> Void {
+        
+        if !isInfoViewVisible {
+            
+            isInfoViewVisible = true
+            
+            OnboardindInfoView.image = UIImage(named: String.DashboardOnboardingImage)
+            OnboardindInfoView.bounds = BackgroundView.bounds
+            OnboardindInfoView.alpha = 0
+            OnboardindInfoView.isUserInteractionEnabled = true
+            view.addSubview(OnboardindInfoView)
+            OnboardindInfoView.center = BackgroundView.center
+            OnboardindInfoView.transform = CGAffineTransform(translationX: 0, y: view.frame.height).scaledBy(x: 0.1, y: 0.1)
+            
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                
+                self.OnboardindInfoView.alpha = 1
+                self.OnboardindInfoView.transform = .identity
+                
+            }, completion: nil)
+            
+        }
+    }
+    
+    private func hideInfoView() -> Void {
+        
+        if isInfoViewVisible {
+            
+            isInfoViewVisible = false
+            UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                
+                self.OnboardindInfoView.alpha = 0
+                self.OnboardindInfoView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+                
+            }, completion: { (true) in
+                
+                if self.view.subviews.contains(self.OnboardindInfoView) {
+                    self.OnboardindInfoView.removeFromSuperview()
+                }
+                
+            })
         }
         
     }
@@ -366,6 +453,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
+        isInfoViewVisible = false
+        btn_Info.tintColor = UIColor.ColorPaletteTintColor()
+        
         //btn Switch MapView
         btn_SwitchMapView.addTarget(self, action: #selector(btn_SwitchMapView_Pressed), for: .touchUpInside)
         
@@ -390,6 +480,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         lbl_ObservedLists.text = String.lbl_ObservedListsText
         lbl_YourLists.text = String.lbl_YourListsText
         lbl_ObeservedStores.text = String.lbl_ObeservedStoresText
+        lbl_PinnedAddress.attributedText = NSAttributedString(string: String.lbl_PinnedAddress, attributes:
+            [NSAttributedStringKey.underlineStyle: NSUnderlineStyle.styleSingle.rawValue])
         
         //Notification Listener DahsboardController
         NotificationCenter.default.addObserver(forName: .UserProfileImageDownloadFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDownloadFinished)
@@ -477,66 +569,37 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         shadow.shadowBlurRadius = 2
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
         logoutButton.setTitleTextAttributes([NSAttributedStringKey.shadow:shadow, NSAttributedStringKey.strokeWidth:-1, NSAttributedStringKey.strokeColor:UIColor.black, NSAttributedStringKey.foregroundColor:UIColor.ColorPaletteTintColor(), NSAttributedStringKey.font:UIFont(name: "Courgette-Regular", size: 17)!], for: .normal)
-        self.navigationItem.leftBarButtonItem = logoutButton
+        self.navigationItem.leftBarButtonItem = logoutButton        
+      
+    }
+    
+    func GetReverseGeolocation(){
         
-        let firstAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
-        firstAction.identifier = "startNavigation"
-        firstAction.title = "Start Navigation"
-        firstAction.activationMode = UIUserNotificationActivationMode.background
-        firstAction.isDestructive = false
-        firstAction.isAuthenticationRequired = false
-        
-        let secondAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
-        secondAction.identifier = "cancel"
-        secondAction.title = "Cancel"
-        secondAction.activationMode = UIUserNotificationActivationMode.background
-        secondAction.isDestructive = true
-        secondAction.isAuthenticationRequired = false
-        
-        let notificationActions = [firstAction, secondAction]
-        
-        let category = UIMutableUserNotificationCategory()
-        category.identifier = "CATEGORY_IDENTIFIER"
-        category.setActions(notificationActions, for: .default)
-        
-        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge], categories: [category])
-        
-        //Register for Remote Notifications
-        if #available(iOS 11.0, *) {
-            UNUserNotificationCenter.current().delegate = self
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
-                
-                if error != nil{ print(error!.localizedDescription); return }
-                
-                if granted {
-                    
-                    OperationQueue.main.addOperation{
-                        UIApplication.shared.registerForRemoteNotifications()
-                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-                    }
-                    
-                }
-                else {
-                    
-                    OperationQueue.main.addOperation{
-                        UIApplication.shared.unregisterForRemoteNotifications() //todo: remove token from firebase
-                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
-                    }
-                    
-                }
-            })
-        } else {
-            // Fallback on earlier versions
-            let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
-            let setting = UIUserNotificationSettings(types: type, categories: [category])
+        guard let location = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
+        CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
             
-            OperationQueue.main.addOperation {
-                UIApplication.shared.registerUserNotificationSettings(setting)
-                UIApplication.shared.registerForRemoteNotifications()
+            if error != nil {
+                self.ShowAlertMessage(title: String.OnlineFetchRequestError, message: error!.localizedDescription)
             }
             
+            guard let pms = placemarks else { return }
+            
+            if pms.count > 0 {
+                
+                let pm = pms[0] as CLPlacemark
+                var street:String = ""
+                if pm.thoroughfare != nil { street = pm.thoroughfare! }
+                if pm.subThoroughfare != nil { street.append(" " + pm.subThoroughfare!) }
+                if pm.postalCode != nil { street.append(", " + pm.postalCode!) }
+                if pm.locality != nil { street.append(" " + pm.locality!) }
+                self.lbl_Address.text = street
+                
+            }
         }
+        
     }
+    
+    
     func ShowNotification(title:String, message:String) -> Void {
         
         if #available(iOS 10.0, *) {
@@ -695,7 +758,7 @@ extension DashboardController: MKMapViewDelegate{
             self.SetAnnotations(mapItem: mapItem)
             if cnt == possibleRegionsPerStore { return cnt }
             
-            let locationToMonitore = ReadUsersLocationToMonitoreFromUserDefaults()
+            let locationToMonitore = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults()
             if locationToMonitore == nil { return 0 }
             let distanceToUser = CalculateDistanceBetweenTwoCoordinates(location1: locationToMonitore!.coordinate, location2: mapItem.placemark.coordinate)
             
@@ -777,7 +840,7 @@ extension DashboardController: MKMapViewDelegate{
         
     }
     
-    private func ReadUsersLocationToMonitoreFromUserDefaults() -> CLLocation? {
+    private func ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() -> CLLocation? {
         
         let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLatitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLongitude.rawValue)
@@ -881,8 +944,8 @@ extension DashboardController: CLLocationManagerDelegate {
         
         var regionStr:String = ""
         regionStr = str.last!
-        let title = "\(regionStr) \(String.LocationManagerEnteredRegion_AlertTitle)"
-        let message = String.LocationManagerEnteredRegion_AlertMessage
+        let title =  String.localizedStringWithFormat(String.LocationManagerEnteredRegion_AlertTitle, regionStr)
+        let message = String.localizedStringWithFormat(String.LocationManagerEnteredRegion_AlertMessage, regionStr)
         ShowAlertMessage(title: title, message: message)
         ShowNotification(title: title, message: message)
         

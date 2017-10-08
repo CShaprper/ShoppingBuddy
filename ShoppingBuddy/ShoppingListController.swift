@@ -17,6 +17,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var ShoppingListDetailView: UIView!
     @IBOutlet var ListDetailBackgroundImage: UIImageView!
     @IBOutlet var AddShoppingListButton: UIBarButtonItem!
+    @IBOutlet var btn_info: UIBarButtonItem!
     
     //List Detail PopUp
     @IBOutlet var btn_CloseListDetailView: UIButton!
@@ -107,11 +108,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CancelSharingMemberCollectionView: UICollectionView!
     @IBOutlet var lbl_CancelSharing: UILabel!
     
+    //Onboarding image
+    @IBOutlet var OnboardindInfoView: UIImageView!
+    
     
     
     //MARK:- Member
+    private var isInfoViewVisible:Bool!
     var timer:Timer!
     var blurrView:UIVisualEffectView?
+    var blurrViewListItem:UIVisualEffectView?
     var refreshControl:UIRefreshControl!
     var refreshShoppingListControl:UIRefreshControl!
     var swipedCellIndex:Int!
@@ -272,6 +278,56 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     //MARK: - Wired Actions
     //MARK: Buttons
+    @IBAction func btn_Info_Pressed(_ sender: UIBarButtonItem) {
+        
+        if isInfoViewVisible { hideInfoView() }
+        else { showInfoView() }
+        
+    }
+    private func showInfoView() -> Void {
+        
+        if !isInfoViewVisible {
+            
+            isInfoViewVisible = true
+            
+            OnboardindInfoView.image = UIImage(named: String.ShoppingListsOnboardiongImage)
+            OnboardindInfoView.bounds = BackgroundImage.bounds
+            OnboardindInfoView.alpha = 0
+            OnboardindInfoView.isUserInteractionEnabled = true
+            view.addSubview(OnboardindInfoView)
+            OnboardindInfoView.center = BackgroundImage.center
+            OnboardindInfoView.transform = CGAffineTransform(translationX: 0, y: view.frame.height).scaledBy(x: 0.1, y: 0.1)
+            
+            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                
+                self.OnboardindInfoView.alpha = 1
+                self.OnboardindInfoView.transform = .identity
+                
+            }, completion: nil)
+            
+        }
+    }
+    
+    private func hideInfoView() -> Void {
+        
+        if isInfoViewVisible {
+            
+            isInfoViewVisible = false
+            UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                
+                self.OnboardindInfoView.alpha = 0
+                self.OnboardindInfoView.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+                
+            }, completion: { (true) in
+                
+                if self.view.subviews.contains(self.OnboardindInfoView) {
+                    self.OnboardindInfoView.removeFromSuperview()
+                }
+                
+            })
+        }
+        
+    }
     @objc func btn_CancelSharingCardOne_Pressed(sender: UIButton) -> Void {
         
         cancelSharing()
@@ -413,17 +469,26 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     //MARK: Gesture Recognizers
     @objc func BlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
+        
         HideAddListPopUp()
         HideShareListPopUp()
         CancelSharingPopUp.removeFromSuperview()
         ShoppingListDetailView.removeFromSuperview()
+        
+    }
+    @objc func blurrViewListItem_Tapped(sender: UITapGestureRecognizer) -> Void {
+
+            HideAddItemPopUp()
+        
     }
     @objc func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
+        
         NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
         HideBlurrView()
         HideListDetailView()
         HideAddItemPopUp()
         RefreshCardView()
+        
     }
     func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
         HideAddListPopUp()
@@ -485,56 +550,28 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let rightDropLimit:CGFloat = 0.45
                 let leftDropLimit:CGFloat = 0.25
                 
-                if abs(xPercentFromCenter) < rightDropLimit && velocity.x > 0{
+                //Stop translation of cell at 25% movement over view
+                //&& allow swipe left only on unselected items
+                if abs(xPercentFromCenter) < rightDropLimit && velocity.x > 0 && isSelected! == false{
                     swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
                 }
                 
-                //Stop translation of cell at 25% movement over view
-                //&& allow swipe left only on unselected items
-                if abs(xPercentFromCenter) < leftDropLimit && velocity.x < 0 && isSelected! == false{
+                if abs(xPercentFromCenter) < leftDropLimit && velocity.x < 0 {
                     swipedCell.transform = CGAffineTransform(translationX: point.x, y: 0)
                 }
                 
                 print(xPercentFromCenter)
-                //Shopping cart image should bo on top
-                view.bringSubview(toFront: ShoppingCartImage)
-                ShoppingCartImage.alpha =  xPercentFromCenter < -0.25 && isSelected! == false ? 1 : 0
-                
-                //Trash can image should bo on top
+                //image should be on top
                 view.bringSubview(toFront: TrashImage)
-                TrashImage.alpha =  xPercentFromCenter >= rightDropLimit ? 1 : 0
+               TrashImage.alpha =  xPercentFromCenter < -0.25 ? 1 : 0
+                
+                //image should be on top
+                view.bringSubview(toFront: ShoppingCartImage)
+                ShoppingCartImage.alpha =  xPercentFromCenter >= rightDropLimit && isSelected! == false ? 1 : 0
                 
                 //Perform animations on gesture .ended state
                 if panRecognizer.state == UIGestureRecognizerState.ended {
-                    if xPercentFromCenter <= -leftDropLimit && isSelected! == false{
-                        //Shake Cart
-                        UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                            
-                            self.ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
-                            
-                        })
-                        //Drop item to cart
-                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
-                            
-                            swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45).scaledBy(x: 0.3, y: 0.3)
-                            
-                        }, completion: { (true) in
-                            
-                            if allShoppingLists[self.currentShoppingListIndex].items.count > self.swipedCellIndex {
-                                
-                                allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex].isSelected = true
-                                self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex])
-                                
-                            }
-                            
-                            self.ShoppingCartImage.alpha = 0
-                            self.ShoppingCartImage.transform = .identity
-                            swipedCell.transform = .identity
-                            self.HideActivityIndicator()
-                            
-                        })
-                    }
-                    else if xPercentFromCenter >= rightDropLimit{
+                    if xPercentFromCenter <= -leftDropLimit {
                         //Shake Trash
                         UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
                             
@@ -543,13 +580,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                         })
                         UIView.animate(withDuration: 0.5, delay: 0.1, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
                             
-                            swipedCell.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.8, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+                            swipedCell.transform = CGAffineTransform.init(translationX: -(self.view.frame.width * 0.35), y: dropHeight).rotated(by: -45).scaledBy(x: 0.3, y: 0.3)
                             
                         }, completion: { (true) in
                             
                             if let index = allShoppingLists.index(where: {$0.id == allShoppingLists[self.currentShoppingListIndex].id!}){
                                 
                                 if allShoppingLists[index].items.isEmpty { return }
+                                 SoundPlayer.PlaySound(filename: "crackle", filetype: "wav")
                                 self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: allShoppingLists[index].items[self.swipedCellIndex])
                                 allShoppingLists[index].items.remove(at: self.swipedCellIndex)
                                 self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
@@ -560,6 +598,34 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             self.TrashImage.transform = .identity
                             swipedCell.alpha = 0
                             swipedCell.transform = .identity
+                            
+                        })
+                    } else if xPercentFromCenter >= rightDropLimit && isSelected! == false{
+                        //Shake Cart
+                        UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                            
+                            self.ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
+                            
+                        })
+                        //Drop item to cart
+                        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                            
+                            swipedCell.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.8, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+                            
+                        }, completion: { (true) in
+                            
+                            if allShoppingLists[self.currentShoppingListIndex].items.count > self.swipedCellIndex {
+                                
+                                SoundPlayer.PlaySound(filename: "drip", filetype: "wav")
+                                allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex].isSelected = true
+                                self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[self.currentShoppingListIndex].items[self.swipedCellIndex])
+                                
+                            }
+                            
+                            self.ShoppingCartImage.alpha = 0
+                            self.ShoppingCartImage.transform = .identity
+                            swipedCell.transform = .identity
+                            self.HideActivityIndicator()
                             
                         })
                     } else {
@@ -923,7 +989,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     private func SetCardOneValues(index: Int) -> Void{
         
-        
         lbl_ShoppingListCardTitle.text = allShoppingLists[index].name!
         lbl_ShoppingCardStoreName.text = allShoppingLists[index].relatedStore!
         lbl_ShoppingCardTotalItemsLabel.text = String.lbl_ShoppingCardTotalItems_Label
@@ -1023,27 +1088,35 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //MARK: - Helper Functions
     func ShowAddShoppingListPopUp() -> Void {
         
+        if ShowBlurrView() {
+        
         AddShoppingListPopUp.frame.size.width = 280
         AddShoppingListPopUp.center = view.center
         view.addSubview(AddShoppingListPopUp)
         AddShoppingListPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            
+        }
         
     }
     
     @objc func ShowAddItemPopUp() -> Void{
         
-        if view.subviews.contains(AddItemPopUp){
+        if showListItemBlurrView()  {
             
-            refreshControl.endRefreshing()
-            return
-            
-        }
+            if view.subviews.contains(AddItemPopUp){
+                
+                refreshControl.endRefreshing()
+                return
+                
+            }
         
         AddItemPopUp.frame.size.width = 280
         AddItemPopUp.center = view.center
         view.addSubview(AddItemPopUp)
         AddItemPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
         refreshControl.endRefreshing()
+            
+        }
         
     }
     func ShowShareListPopUp() -> Void{
@@ -1064,6 +1137,24 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
+    }
+    
+    func showListItemBlurrView() -> Bool {
+        
+        if blurrViewListItem == nil {
+            
+            blurrViewListItem = UIVisualEffectView()
+            blurrViewListItem!.effect = UIBlurEffect(style: .light)
+            blurrViewListItem!.bounds = view.bounds
+            blurrViewListItem!.center = view.center
+            let blurrViewListItemTap = UITapGestureRecognizer(target: self, action: #selector(blurrViewListItem_Tapped))
+            blurrViewListItem!.addGestureRecognizer(blurrViewListItemTap)
+            view.addSubview(blurrViewListItem!)
+            return true
+            
+        }
+        
+        return false
     }
     
     func ShowBlurrView() -> Bool{
@@ -1122,6 +1213,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     func HideAddItemPopUp() -> Void {
+        
+        refreshControl.endRefreshing()
+        if blurrViewListItem != nil {
+            blurrViewListItem!.removeFromSuperview()
+            blurrViewListItem = nil
+        }
         
         txt_ItemName.text = ""
         AddItemPopUp.removeFromSuperview()
@@ -1239,6 +1336,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     
     func ConfigureView() -> Void {
+        isInfoViewVisible = false
+        btn_info.tintColor = UIColor.ColorPaletteTintColor()
+        
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
         
@@ -1310,20 +1410,22 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         //Add Shopping List PopUp
         AddShoppingListPopUp.layer.shadowColor  = UIColor.black.cgColor
-        AddShoppingListPopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+        AddShoppingListPopUp.layer.shadowOffset = CGSize(width: 30, height:30)
         AddShoppingListPopUp.layer.shadowOpacity  = 1
         AddShoppingListPopUp.layer.shadowRadius  = 10
         AddShoppingListPopUp.bringSubview(toFront: btn_SaveList)
         lbl_AddListPopUpTitle.text = String.lbl_AddListPopUpTitle
+        
+        //txt Related STore
         txt_RelatedStore.delegate = self
         txt_RelatedStore.placeholder = String.txt_RelatedStore_Placeholder
         txt_RelatedStore.textColor = UIColor.black
+        
+        //txt List Name
         txt_ListName.delegate = self
         txt_ListName.placeholder = String.txt_ListName_Placeholder
         txt_ListName.textColor = UIColor.black
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
-        let addShoppingListOutsideTap =  UITapGestureRecognizer(target: self, action: #selector(AddShoppingListPopUp_OutsideTouch))
-        AddShoppingListPopUp.addGestureRecognizer(addShoppingListOutsideTap)
         
         //Detail ListView
         btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)
@@ -1364,12 +1466,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListDetailView.addGestureRecognizer(outsideAddItemPopUpTouch)
         AddItemPopUp.addGestureRecognizer(outsideAddItemPopUpTouch)
         
+        //Shopping bag image
         ShoppingCartImage.alpha = 0
         ShoppingCartImage.layer.shadowColor  = UIColor.black.cgColor
         ShoppingCartImage.layer.shadowOffset  = CGSize(width: 5, height:5)
         ShoppingCartImage.layer.shadowOpacity  = 1
         ShoppingCartImage.layer.shadowRadius  = 3
         
+        //Trash image
         TrashImage.alpha = 0
         TrashImage.layer.shadowColor  = UIColor.black.cgColor
         TrashImage.layer.shadowOffset  = CGSize(width: 5, height:5)
@@ -1540,17 +1644,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         var widthPerItem:CGFloat
         var heightPerItem:CGFloat
-        if collectionView == self.CardOneMembersCollectionView {
             
-            widthPerItem = CardOneMembersCollectionView.frame.width / round(CardOneMembersCollectionView.frame.width / 60)
-            heightPerItem = CardOneMembersCollectionView.frame.height / round(CardOneMembersCollectionView.frame.height / 60)
-            
-        } else {
-            
-            widthPerItem = CardTwoMembersCollectionView.frame.width / round(CardTwoMembersCollectionView.frame.width / 60)
-            heightPerItem = CardTwoMembersCollectionView.frame.height / round(CardTwoMembersCollectionView.frame.height / 60)
-            
-        }
+            widthPerItem = CardOneMembersCollectionView.frame.width / 4
+            heightPerItem = CardOneMembersCollectionView.frame.width / 4
         
         return CGSize(width: widthPerItem, height: heightPerItem)
     }

@@ -40,6 +40,7 @@ DashboardControllerTitle = "Tablero";
 lbl_ObeservedStoresText = "Observed stores:";
 lbl_ObservedListsText = "Observed lists:";
 lbl_YourListsText = "Your lists:";
+lbl_PinnedAddress = "Pinned address:";
 
     //SettingsController
 SettingsControllerTitle = "Configuraciones"; //parameters of the app
@@ -61,8 +62,8 @@ GPSAuthorizationRequestDenied_AlertTitle = "Comentario GPS";
 GPSAuthorizationRequestDenied_AlertMessage = "Sin autorizaciÛn GPS, los servicios de localizaciÛn estan desactivados. No estara informado de sus listas de compras cuando estara a proximidad de une tienda.";
 GPSAuthorizationRequestDenied_AlertActionSettingsTitle = "Configuraciones";  //parameters of the app
 GPSAuthorizationRequestDenied_AlertActionSettingsNoTitle = "No gracias";
-LocationManagerEnteredRegion_AlertTitle = "A proximidad"; // Alert title when a store is nearby
-LocationManagerEnteredRegion_AlertMessage = "ø Quiere empezar la navegaciÛn ?";
+LocationManagerEnteredRegion_AlertTitle = "%@ Nearby";
+LocationManagerEnteredRegion_AlertMessage = "You got open articles for '%@' on your shopping lists.";
 
     //InApp Purchase
 lbl_Abonnement_Monthly = "SuscripciÛn mensual";
@@ -77,7 +78,7 @@ UserEmailNotFoundMessage = " could not be found. A user with this e-mail does no
 lbl_ShoppingCardTotalItems_Label = "Total items:";
 lbl_ShoppingCardOpenItems_Label = "Open items:";
 ShareListAcceptedTitle = "Sharing accepted";
-ShareListAcceptedMessage = "accepted your sharing invite.";
+ShareListAcceptedMessage = "%@ accepted your sharing invite.";
 NotAllowedToShareListAlertTitle = "Sharing forbidden!";
 NotAllowedToShareListAlertMessage = "You are only able to share lists that you have created.";
 DeleteMessage = "delete";
@@ -102,7 +103,7 @@ WillGoShoppingMessageMessage = "%@ goes to '%@' for shopping. Last chance to add
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Purchase Restored";
-PurchaseRestoreAlertMessage = "Thank you %@ your purcahse is restored.";
+PurchaseRestoreAlertMessage = "Thank you %@ your purchase is restored.";
 PurchaseDeniedAlertTitle = "Purchase Denied";
 PurchaseDeniedAlertTitle = "You are not allowed to purchase App Store products!";
 FullVersionNeededAlertTitle = "Premium Version Needed";
@@ -116,7 +117,7 @@ txt_ShareOpponentEmailPlaceholder = "Correo electrónico de sus amigos";
 
     //Share List Message
 ShareListMessage = "quiere agregar sus listas de compras con usted.";
-ShareListTitle = "Invitation from";
+ShareListTitle = "Invitation from %@";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Eliminar la lista de compras ?";
@@ -133,3 +134,7 @@ OnlineFetchRequestError = "Web Request Error";
 MessagesControllerTitle = "Messages";
 AcceptInvitation = "Aceptar";
 DeclineInvitation = "Rechazar";
+
+    //Info Views
+DashboardOnboardingImage = "OnboardingDashboard-ES";
+ShoppingListsOnboardiongImage = "OnboardingShoppinglists-ES";

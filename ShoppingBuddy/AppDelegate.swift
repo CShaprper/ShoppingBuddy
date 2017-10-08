@@ -20,7 +20,7 @@ var allShoppingListMember:[ShoppingListMember] = []
 var currentUser:ShoppingBuddyUser? = ShoppingBuddyUser()  
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate,MessagingDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     
     var window: UIWindow?
     
@@ -87,7 +87,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-        print(remoteMessage)
+        print(remoteMessage.appData)
+        let pnh = PushNotificationHelper()
+        pnh.SendNotificationDependendOnPushNotificationType(userInfo: remoteMessage.appData)
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
@@ -97,6 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         pnh.SendNotificationDependendOnPushNotificationType(userInfo: userInfo)
        
     }
+
     
     //Called in foreground
     @available(iOS 10.0, *)
@@ -122,6 +125,67 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         
+    }
+    
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        let firstAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        firstAction.identifier = "startNavigation"
+        firstAction.title = "Start Navigation"
+        firstAction.activationMode = UIUserNotificationActivationMode.background
+        firstAction.isDestructive = false
+        firstAction.isAuthenticationRequired = false
+        
+        let secondAction:UIMutableUserNotificationAction = UIMutableUserNotificationAction()
+        secondAction.identifier = "cancel"
+        secondAction.title = "Cancel"
+        secondAction.activationMode = UIUserNotificationActivationMode.background
+        secondAction.isDestructive = true
+        secondAction.isAuthenticationRequired = false
+        
+        let notificationActions = [firstAction, secondAction]
+        
+        let category = UIMutableUserNotificationCategory()
+        category.identifier = "CATEGORY_IDENTIFIER"
+        category.setActions(notificationActions, for: .default)
+        
+        let notificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: [category])
+        
+        //Register for Remote Notifications
+        if #available(iOS 11.0, *) {
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound], completionHandler: { (granted, error) in
+                
+                if error != nil{ print(error!.localizedDescription); return }
+                
+                if granted {
+                    
+                    OperationQueue.main.addOperation{
+                        UIApplication.shared.registerForRemoteNotifications()
+                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                    }
+                    
+                }
+                else {
+                    
+                    OperationQueue.main.addOperation{
+                        UIApplication.shared.unregisterForRemoteNotifications() //todo: remove token from firebase
+                        UIApplication.shared.registerUserNotificationSettings(notificationSettings)
+                    }
+                    
+                }
+            })
+        } else {
+            // Fallback on earlier versions
+            let type: UIUserNotificationType = [UIUserNotificationType.badge, UIUserNotificationType.alert, UIUserNotificationType.sound]
+            let setting = UIUserNotificationSettings(types: type, categories: [category])
+            
+            OperationQueue.main.addOperation {
+                UIApplication.shared.registerUserNotificationSettings(setting)
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+            
+        }
+        return true
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
