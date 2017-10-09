@@ -89,6 +89,8 @@ extension String{
     static let CancelSharingMessage = NSLocalizedString("CancelSharingMessage", comment: "")
     static let NotAllowedToShareListAlertTitle = NSLocalizedString("NotAllowedToShareListAlertTitle", comment: "")
     static let NotAllowedToShareListAlertMessage = NSLocalizedString("NotAllowedToShareListAlertMessage", comment: "")
+    static let ListDeleteNotAllowedAlertTitle = NSLocalizedString("ListDeleteNotAllowedAlertTitle", comment: "")
+    static let ListDeleteNotAllowedAlertMessage = NSLocalizedString("ListDeleteNotAllowedAlertMessage", comment: "")
     static let ListCurrentlyNotSharedTitle = NSLocalizedString("ListCurrentlyNotSharedTitle", comment: "")
     static let ListCurrentlyNotSharedMessage = NSLocalizedString("ListCurrentlyNotSharedMessage", comment: "")
     static let lbl_CancelSharing = NSLocalizedString("lbl_CancelSharing", comment: "") 
@@ -103,6 +105,15 @@ extension String{
     static let SharingDeclinedMessageTitle = NSLocalizedString("SharingDeclinedMessageTitle", comment: "")
     static let SharingDeclinedMessageMessage = NSLocalizedString("SharingDeclinedMessageMessage", comment: "")
     static let lbl_PinnedAddress = NSLocalizedString("lbl_PinnedAddress", comment: "")
+    
+    //Send Message PopUp
+    static let lbl_SendMessagePopUp = NSLocalizedString("lbl_SendMessagePopUp", comment: "")
+    static let btn_SendMessagePopUp_HeadingToStoreContent = NSLocalizedString("btn_SendMessagePopUp_HeadingToStoreContent", comment: "")
+    static let btn_SendMessagePopUp_ListChangedContent = NSLocalizedString("btn_SendMessagePopUp_ListChangedContent", comment: "")
+    static let txt_SendMessagePopUp_CustomMessagePalceholder = NSLocalizedString("txt_SendMessagePopUp_CustomMessagePalceholder", comment: "")
+    static let ChangedTheListMessageTitle = NSLocalizedString("ChangedTheListMessageTitle", comment: "")
+    static let ChangedTheListMessageMessage = NSLocalizedString("ChangedTheListMessageMessage", comment: "")
+    static let CustomMessageTitle = NSLocalizedString("CustomMessageTitle", comment: "")
     
     //List item Added Message
     static let ListItemAddedTitle = NSLocalizedString("ListItemAddedTitle", comment: "")

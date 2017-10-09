@@ -365,8 +365,8 @@
 		CFE4A1FD1F23C48F002A12C7 /* Localization */ = {
 			isa = PBXGroup;
 			children = (
-				CFE4A21A1F23CE19002A12C7 /* LocalizationStringExtension.swift */,
 				CFE4A2381F23DC62002A12C7 /* Localizable.strings */,
+				CFE4A21A1F23CE19002A12C7 /* LocalizationStringExtension.swift */,
 			);
 			name = Localization;
 			sourceTree = "<group>";

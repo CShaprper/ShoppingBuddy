@@ -71,7 +71,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         sbUserWebservice.GetCurrentUser()
         lbl_ObservedStoresCount.text = String(locationManager.monitoredRegions.count)
-        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+        mapSpan = abs(UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue))
         
         GetReverseGeolocation()
     }
@@ -337,7 +337,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     @objc func btn_IncreaseMapSpan_Pressed(sender: UIButton) -> Void {
         
         var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
-        if dist == 1000 {
+        if dist <= 1000 {
             UserDefaults.standard.set(1000, forKey: eUserDefaultKey.MapSpan.rawValue)
             mapSpan = 1000
         } else {
@@ -345,7 +345,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
             mapSpan = dist
             guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
             UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
-            //UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
             let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
             MapView.setRegion(region, animated: false)
         }
@@ -357,10 +356,10 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
         var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         dist += 1000
-        mapSpan = dist
+        mapSpan = abs(dist)
         UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
         //UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-         let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+         let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
         MapView.setRegion(region, animated: false)
         
         
@@ -930,7 +929,7 @@ extension DashboardController: CLLocationManagerDelegate {
         if let location = locations.first {
             
             userLocation = location.coordinate
-            let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
             MapView.setRegion(region, animated: false)
             MapView.centerCoordinate = location.coordinate
             

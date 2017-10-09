@@ -49,6 +49,61 @@ class ShoppingBuddyMessageWebservice {
         }
     }
     
+    func SendChangedTheListMessage(list: ShoppingList) -> Void {
+        
+        guard let user = currentUser else { return }
+        
+        self.ShowActivityIndicator()
+        let msgTitle = String.localizedStringWithFormat(String.ChangedTheListMessageTitle, user.nickname!)
+        let msgMessage = String.localizedStringWithFormat(String.ChangedTheListMessageMessage, user.nickname!, list.relatedStore!, list.name!)
+        
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ChangedTheListMessage.rawValue]) { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NSLog("Succesfully added Will Go Shopping to messages")
+            
+        }
+        
+    }
+    
+    
+    
+    func SendCustomMessage(message: String, list: ShoppingList) -> Void {
+        
+        guard let user = currentUser else { return }
+        
+        self.ShowActivityIndicator()
+        let msgTitle = String.localizedStringWithFormat(String.CustomMessageTitle, user.nickname!)
+        
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":message, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.CustomMessage.rawValue]) { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NSLog("Succesfully added Will Go Shopping to messages")
+            
+        }
+        
+    }
+    
     
     //Share Functions
     func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {

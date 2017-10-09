@@ -83,6 +83,8 @@ ShareListAcceptedTitle = "Teilen Akzeptiert!";
 ShareListAcceptedMessage = "%@ hat Deine Einladung akzeptiert.";
 NotAllowedToShareListAlertTitle = "Teilen nicht möglich!";
 NotAllowedToShareListAlertMessage = "Du kannst nur Listen Teilen, die Du selbst erstellt hast.";
+ListDeleteNotAllowedAlertTitle = "Löschen nicht möglich!";
+ListDeleteNotAllowedAlertMessage = "Du kannst nur Listen löschen, die Du selbst erstellt hast.";
 DeleteMessage = "löschen";
 lbl_CancelSharing = "Teilen mit Freund beenden";
 ListCurrentlyNotSharedTitle = "Teilen beenden";
@@ -132,3 +134,12 @@ DeclineInvitation = "Ablehnen";
     //Info Views
 DashboardOnboardingImage = "OnboardingDashboard-DE";
 ShoppingListsOnboardiongImage = "OnboardingShoppinglists-DE";
+
+    //SendMessage PopUp
+lbl_SendMessagePopUp = "Nachricht senden";
+btn_SendMessagePopUp_HeadingToStoreContent = "Ich gehe einkaufen!";
+btn_SendMessagePopUp_ListChangedContent = "Ich habe die Liste angepasst!";
+txt_SendMessagePopUp_CustomMessagePalceholder = "Nachricht eingeben";
+ChangedTheListMessageTitle = "Liste geändert!";
+ChangedTheListMessageMessage = "%@ hat die Liste angepasst. Schau mal drüber.";
+CustomMessageTitle = "Nachricht von %@";

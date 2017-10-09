@@ -86,7 +86,9 @@ ShareListTitle = "Invitation from %@";
 ShareListAcceptedTitle = "Sharing accepted";
 ShareListAcceptedMessage = "%@ accepted your sharing invite.";
 NotAllowedToShareListAlertTitle = "Sharing forbidden!";
-NotAllowedToShareListAlertMessage = "You are only able to share lists that you have created.";
+NotAllowedToShareListAlertMessage = "You are only able to share lists that are created by yourself.";
+ListDeleteNotAllowedAlertTitle = "Delete forbidden!";
+ListDeleteNotAllowedAlertMessage = "You are only able to delete lists that are created by yourself.";
 DeleteMessage = "delete";
 lbl_CancelSharing = "Cancel sharing with friend";
 ListCurrentlyNotSharedTitle = "Cancel Sharing";
@@ -136,3 +138,12 @@ DeclineInvitation = "decline";
     //Info Views
 DashboardOnboardingImage = "OnboardingDashboard-EN";
 ShoppingListsOnboardiongImage = "OnboardingShoppinglists-EN";
+
+    //SendMessage PopUp
+lbl_SendMessagePopUp = "Send Message";
+btn_SendMessagePopUp_HeadingToStoreContent = "I'am heading to store!";
+btn_SendMessagePopUp_ListChangedContent = "I changed the list!";
+txt_SendMessagePopUp_CustomMessagePalceholder = "enter message";
+ChangedTheListMessageTitle = "List changed!";
+ChangedTheListMessageMessage = "%@ changed the list. Take a look.";
+CustomMessageTitle = "Message from %@";

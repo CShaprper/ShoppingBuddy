@@ -9,6 +9,7 @@
 import Foundation
 
 enum eNotificationType:String {
+    
     case SharingInvitation = "SharingInvitation"
     case SharingAccepted = "SharingAccepted"
     case NotSet = "NotSet"
@@ -17,4 +18,7 @@ enum eNotificationType:String {
     case ListItemAddedBySharedUser = "ListItemAddedBySharedUser"
     case DeclinedSharingInvitation = "DeclinedSharingInvitation"
     case WillGoShoppingMessage = "WillGoShoppingMessage"
+    case ChangedTheListMessage = "ChangedTheListMessage"
+    case CustomMessage = "CustomMessage"
+    
 }
