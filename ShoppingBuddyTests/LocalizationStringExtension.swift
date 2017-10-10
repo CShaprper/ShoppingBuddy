@@ -110,10 +110,13 @@ extension String{
     static let lbl_SendMessagePopUp = NSLocalizedString("lbl_SendMessagePopUp", comment: "")
     static let btn_SendMessagePopUp_HeadingToStoreContent = NSLocalizedString("btn_SendMessagePopUp_HeadingToStoreContent", comment: "")
     static let btn_SendMessagePopUp_ListChangedContent = NSLocalizedString("btn_SendMessagePopUp_ListChangedContent", comment: "")
+    static let btn_SendMessagePopUp_DidTheShoppingContent = NSLocalizedString("btn_SendMessagePopUp_DidTheShoppingContent", comment: "")
     static let txt_SendMessagePopUp_CustomMessagePalceholder = NSLocalizedString("txt_SendMessagePopUp_CustomMessagePalceholder", comment: "")
     static let ChangedTheListMessageTitle = NSLocalizedString("ChangedTheListMessageTitle", comment: "")
     static let ChangedTheListMessageMessage = NSLocalizedString("ChangedTheListMessageMessage", comment: "")
     static let CustomMessageTitle = NSLocalizedString("CustomMessageTitle", comment: "")
+    static let ErrandsFinishedAlertTitle = NSLocalizedString("ErrandsFinishedAlertTitle", comment: "")
+    static let ErrandsFinishedAlertMessage = NSLocalizedString("ErrandsFinishedAlertMessage", comment: "")
     
     //List item Added Message
     static let ListItemAddedTitle = NSLocalizedString("ListItemAddedTitle", comment: "")

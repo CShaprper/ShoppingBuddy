@@ -14,6 +14,7 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
     @IBOutlet var lbl_InviteTitle: UILabel!
     @IBOutlet var lblMessage: UILabel!
     @IBOutlet var RoundedView: UIView!
+    @IBOutlet var lbl_Date: UILabel!
     
     
     
@@ -43,6 +44,7 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
         
         lbl_InviteTitle.text = invitation.title != nil ? invitation.title! : ""
         lblMessage.text = invitation.message != nil ? invitation.message! : ""
+        lbl_Date.text = invitation.date != nil ? invitation.date! : ""
         RoundedView.layer.borderColor = tintColor.cgColor
         RoundedView.layer.borderWidth = 5
         RoundedView.layer.cornerRadius = 30

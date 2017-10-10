@@ -49,7 +49,7 @@
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
 		CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CFC6BCDC1F3264B500366553 /* InfoPlist.strings */; };
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
-		CFD48DE91F586C5E000B403A /* ShoppingBuddyInvitationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */; };
+		CFD48DE91F586C5E000B403A /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD48DE81F586C5E000B403A /* MessageCell.swift */; };
 		CFDB30FD1F7D57DE00415825 /* eUserDLType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
 		CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */; };
@@ -135,7 +135,7 @@
 		CFC6BCDB1F3264B500366553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE501F326D650032AA9F /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CFC8CE531F3289400032AA9F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyInvitationCell.swift; sourceTree = "<group>"; };
+		CFD48DE81F586C5E000B403A /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eUserDLType.swift; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -278,7 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				CFB1371C1F2B479A0076476D /* ShoppingListItemTableViewCell.swift */,
-				CFD48DE81F586C5E000B403A /* ShoppingBuddyInvitationCell.swift */,
+				CFD48DE81F586C5E000B403A /* MessageCell.swift */,
 				CF30636D1F62E30100B640DB /* ListMembersCell.swift */,
 				CF73392D1F6300FB00FB396A /* ListMembersTwoCell.swift */,
 				CFB37C271F657BA700E263CD /* CancelSharingMemberCell.swift */,
@@ -612,7 +612,7 @@
 				CFB635A41F3A2F6E00D8C592 /* ShoppingBuddyUser.swift in Sources */,
 				CF40A4F31F76D00800A35BE0 /* eIAPIdentifier.swift in Sources */,
 				CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */,
-				CFD48DE91F586C5E000B403A /* ShoppingBuddyInvitationCell.swift in Sources */,
+				CFD48DE91F586C5E000B403A /* MessageCell.swift in Sources */,
 				CFE4A2091F23C8EB002A12C7 /* IValidationService.swift in Sources */,
 				CFAD85101F27AAB500F207E5 /* SettingsController.swift in Sources */,
 				CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */,

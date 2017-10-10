@@ -99,10 +99,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var SendMessagePopUp: UIView!
     @IBOutlet var btn_SendMessagePopUp_HeadingToStore: UIButton!
     @IBOutlet var btn_SendMessagePopUp_ListChanged: UIButton!
+    @IBOutlet var btn_SendMessagePopUp_DidTheShopping: UIButton!
     @IBOutlet var SendMessagePopUp_HeadingToStore_ProfileImage: UIImageView!
     @IBOutlet var SendMessagePopUp_HeadingToStore_StarImage: UIImageView!
     @IBOutlet var SendMessagePopUp_ListChanged_ProfileImage: UIImageView!
     @IBOutlet var SendMessagePopUp_ListChanged_StarImage: UIImageView!
+    @IBOutlet var SendMessagePopUp_DidTheShopping_ProfileImage: UIImageView!
+    @IBOutlet var SendMessagePopUp_DidTheShopping_StarImage: UIImageView!
     @IBOutlet var HeadingToStoreBubble: DesignableUIView!
     @IBOutlet var ListChangedBubble: DesignableUIView!
     @IBOutlet var txt_SendMessagePopUp_CustomMessage: UITextField!
@@ -168,6 +171,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         SendMessagePopUp_ListChanged_ProfileImage.layer.borderWidth = 3
         SendMessagePopUp_ListChanged_StarImage.alpha = 0
         
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.cornerRadius = SendMessagePopUp_DidTheShopping_ProfileImage.frame.width * 0.5
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderWidth = 3
+        SendMessagePopUp_DidTheShopping_ProfileImage.alpha = 0
+        
         HeadingToStoreBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         HeadingToStoreBubble.layer.borderWidth = 3
         
@@ -176,9 +184,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         btn_SendMessagePopUp_ListChanged.setTitle(String.btn_SendMessagePopUp_ListChangedContent, for: .normal)
         btn_SendMessagePopUp_HeadingToStore.setTitle(String.btn_SendMessagePopUp_HeadingToStoreContent, for: .normal)
+        btn_SendMessagePopUp_DidTheShopping.setTitle(String.btn_SendMessagePopUp_DidTheShoppingContent, for: .normal)
         
         btn_SendMessagePopUp_HeadingToStore.addTarget(self, action: #selector(btn_SendMessagePopUp_HeadingToStore_Pressed), for: .touchUpInside)
         btn_SendMessagePopUp_ListChanged.addTarget(self, action: #selector(btn_SendMessagePopUp_ListChanged_Pressed), for: .touchUpInside)
+        btn_SendMessagePopUp_DidTheShopping.addTarget(self, action: #selector(btn_SendMessagePopUp_DidTheShopping_Pressed), for: .touchUpInside)
         
         txt_SendMessagePopUp_CustomMessage.placeholder = String.txt_SendMessagePopUp_CustomMessagePalceholder
         txt_SendMessagePopUp_CustomMessage.layer.cornerRadius = 10
@@ -448,7 +458,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         HideSendMessagePopUp()
         
     }
+    @objc func btn_SendMessagePopUp_DidTheShopping_Pressed(sender: UIButton) -> Void {
+     
+        sbMessageWebService.SendErrandsCompletedMessage(list: allShoppingLists[currentShoppingListIndex])
+        HideSendMessageBlurrView()
+        HideSendMessagePopUp()
+        
+    }
     
+    //MARK: List actions
     @objc func btn_SaveList_Pressed(sender: UIButton) -> Void {
         var isValid:Bool = false
         
@@ -1241,8 +1259,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             SendMessagePopUp_HeadingToStore_ProfileImage.image = currentUser?.profileImage != nil ? currentUser?.profileImage! : #imageLiteral(resourceName: "userPlaceholder")
             SendMessagePopUp_ListChanged_ProfileImage.image = currentUser?.profileImage != nil ? currentUser?.profileImage! : #imageLiteral(resourceName: "userPlaceholder")
+            SendMessagePopUp_DidTheShopping_ProfileImage.image = currentUser?.profileImage != nil ? currentUser?.profileImage! : #imageLiteral(resourceName: "userPlaceholder")
             SendMessagePopUp_HeadingToStore_StarImage.alpha = currentUser!.isFullVersionUser! ? 1 :0
             SendMessagePopUp_ListChanged_StarImage.alpha = currentUser!.isFullVersionUser! ? 1 :0
+            SendMessagePopUp_DidTheShopping_StarImage.alpha = currentUser!.isFullVersionUser! ? 1 :0
             
             SendMessagePopUp.frame.size.width = 300
             SendMessagePopUp.center = view.center

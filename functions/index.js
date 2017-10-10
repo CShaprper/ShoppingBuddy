@@ -373,110 +373,9 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
 
 
     //*********************************************************************************************************** 
-    //handle  CustomMessage  
-    //*********************************************************************************************************** 
-    if (String(msgData.messageType) == 'CustomMessage') {
-
-        return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
-
-            var promises = []
-            memberSnap.forEach(function (listMember) {
-
-                promises.push(admin.database().ref('users').child(listMember.key).once('value').then(userSnap => {
-
-                    var userData = userSnap.val()
-
-                    if (msgData.senderID != userSnap.key) {
-
-                        console.log('sending Push to ' + userData.fcmToken)
-
-                        //create Notification Payload
-                        var payload = {
-                            notification: {
-                                title: msgData.title,
-                                body: msgData.message,
-                                badge: '1',
-                                sound: 'default',
-                                sbID: String(event.data.key),
-                                senderID: msgData.senderID,
-                                listID: msgData.listID,
-                                receiptID: listMember.key,
-                                notificationType: String(msgData.messageType),
-                            }
-                        }
-
-                        return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
-
-                            console.log("Successfully sent changed list message:", response)
-                            console.log(response.results[0].error)
-
-                        }).catch((err) => { console.log("Error sending Push", err) })
-
-                    }
-
-                }))
-
-            })
-
-        })
-
-    }//*********************************************************************************************************** 
-
-
-    //*********************************************************************************************************** 
-    //handle list changed list message
-    //*********************************************************************************************************** 
-    if (String(msgData.messageType) == 'ChangedTheListMessage') {
-
-        return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
-
-            var promises = []
-            memberSnap.forEach(function (listMember) {
-
-                promises.push(admin.database().ref('users').child(listMember.key).once('value').then(userSnap => {
-
-                    var userData = userSnap.val()
-
-                    if (msgData.senderID != userSnap.key) {
-
-                        console.log('sending Push to ' + userData.fcmToken)
-
-                        //create Notification Payload
-                        var payload = {
-                            notification: {
-                                title: msgData.title,
-                                body: msgData.message,
-                                badge: '1',
-                                sound: 'default',
-                                sbID: String(event.data.key),
-                                senderID: msgData.senderID,
-                                listID: msgData.listID,
-                                receiptID: listMember.key,
-                                notificationType: String(msgData.messageType),
-                            }
-                        }
-
-                        return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
-
-                            console.log("Successfully sent changed list message:", response)
-                            console.log(response.results[0].error)
-
-                        }).catch((err) => { console.log("Error sending Push", err) })
-
-                    }
-
-                }))
-
-            })
-
-        })
-
-    }//*********************************************************************************************************** 
-
-
-    //*********************************************************************************************************** 
     //handle list item added by shared user
     //*********************************************************************************************************** 
+    /*
     if (String(msgData.messageType) == 'ListItemAddedBySharedUser') {
 
         return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
@@ -525,12 +424,13 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
 
         })
 
-    }//*********************************************************************************************************** 
+    }*/
+    //***********************************************************************************************************  
 
     //*********************************************************************************************************** 
-    //handle Will go for shopping message
+    //handle ErrandsCompletedMessage / WillGoShoppingMessage / ChangedTheListMessage
     //*********************************************************************************************************** 
-    if (String(msgData.messageType) == 'WillGoShoppingMessage') {
+    if (String(msgData.messageType) == 'ErrandsCompletedMessage' || String(msgData.messageType) == 'WillGoShoppingMessage' || String(msgData.messageType) == 'ChangedTheListMessage' || String(msgData.messageType) == 'CustomMessage') {
 
         return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
 
@@ -541,44 +441,88 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
 
                     var userData = userSnap.val()
 
-                    if (msgData.senderID != userSnap.key) {
+                    return admin.database().ref('users_messages').child(listMember.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
 
-                        return admin.database().ref('users_messages').child(listMember.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+                        //add receipt to message_receipts node
+                        return admin.database().ref('message_receipts').child(event.params.messageID).child(listMember.key).set(msgData.messageType + '_Receipt').then(() => {
 
-                            //add receipt to message_receipts node
-                            return admin.database().ref('message_receipts').child(event.params.messageID).child(listMember.key).set('WillGoShoppingMessage_Receipt').then(() => {
+                            console.log('sending Push to ' + userData.fcmToken)
 
-                                console.log('sending Push to ' + userData.fcmToken)
-
-                                //create Notification Payload
-                                var payload = {
-                                    notification: {
-                                        title: msgData.title,
-                                        body: msgData.message,
-                                        badge: '1',
-                                        sound: 'default',
-                                        sbID: String(event.data.key),
-                                        senderID: msgData.senderID,
-                                        listID: msgData.listID,
-                                        receiptID: listMember.key,
-                                        notificationType: String(msgData.messageType),
-                                    }
+                            //create Notification Payload
+                            var payload = {
+                                notification: {
+                                    title: msgData.title,
+                                    body: msgData.message,
+                                    badge: '1',
+                                    sound: 'default',
+                                    sbID: String(event.data.key),
+                                    senderID: msgData.senderID,
+                                    listID: msgData.listID,
+                                    receiptID: listMember.key,
+                                    notificationType: String(msgData.messageType),
                                 }
+                            }
 
-                                return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
+                            return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
 
-                                    console.log("Successfully sent list item added message:", response)
-                                    console.log(response.results[0].error)
+                                console.log(response.results[0].error)
 
-                                }).catch((err) => { console.log("Error sending Push", err) })
+                            }).catch((err) => { console.log("Error sending Push", err) })
 
-
-                            })
 
                         })
-                    }
+
+                    })
 
                 }))
+
+            })
+
+        }).then(() => {
+
+            //Get listowner uid
+            return admin.database().ref('shoppinglists').child(msgData.listID).child('owneruid').once('value').then(owneruid => {
+
+                //Get the user data with fetched uid
+                return admin.database().ref('users').child(owneruid.val()).once('value').then(ownerSnap => {
+
+                    var ownerData = ownerSnap.val()
+
+                    //Set a node to users Messages for Errands completed message
+                    return admin.database().ref('users_messages').child(owneruid.val()).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+
+                        //add receipt to message_receipts node
+                        return admin.database().ref('message_receipts').child(event.params.messageID).child(owneruid.val()).set(msgData.messageType + '_Receipt').then(() => {
+
+                            console.log('sending Push to ' + ownerData.nickname)
+
+                            //create Notification Payload
+                            var payload = {
+                                notification: {
+                                    title: msgData.title,
+                                    body: msgData.message,
+                                    badge: '1',
+                                    sound: 'default',
+                                    sbID: String(event.data.key),
+                                    senderID: msgData.senderID,
+                                    listID: msgData.listID,
+                                    receiptID: owneruid.val(),
+                                    notificationType: String(msgData.messageType),
+                                }
+                            }
+
+                        })
+
+                        return admin.messaging().sendToDevice(ownerData.fcmToken, payload).then(response => {
+
+                            console.log(response.results[0].error)
+
+                        }).catch((err) => { console.log("Error sending Push", err) })
+
+                    })
+
+
+                })
 
             })
 
@@ -647,7 +591,7 @@ exports.handle_NewShoppingList_OnCreate = functions.database.ref('/shoppinglists
 exports.handle_UsersMessages_MessageDelete = functions.database.ref('/users_messages/{userID}/{messageID}').onDelete(event => {
 
     //user deleted message in users_Messages node so lets delete user on Message/receipts node
-    return admin.database().ref('message_receipts').child(event.params.messageID).set(null)
+    return admin.database().ref('message_receipts').child(event.params.messageID).child(event.params.userID).set(null)
 
 })
 

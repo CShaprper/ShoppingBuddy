@@ -20,5 +20,6 @@ enum eNotificationType:String {
     case WillGoShoppingMessage = "WillGoShoppingMessage"
     case ChangedTheListMessage = "ChangedTheListMessage"
     case CustomMessage = "CustomMessage"
+    case ErrandsCompletedMessage = "ErrandsCompletedMessage"
     
 }

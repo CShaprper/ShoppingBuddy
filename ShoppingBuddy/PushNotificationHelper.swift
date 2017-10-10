@@ -114,6 +114,13 @@ class PushNotificationHelper:NSObject, URLSessionDownloadDelegate {
             NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
             break
             
+        case .ErrandsCompletedMessage:
+            var not = getNotificationData(userInfo: userInfo)
+            if not == nil { not = getFirNotificationData(userInfo: userInfo) }
+            if not == nil { return }
+            NotificationCenter.default.post(name: Notification.Name.PushNotificationReceived, object: nil, userInfo: notificationInfo)
+            break
+            
         }
         
         
@@ -161,6 +168,9 @@ class PushNotificationHelper:NSObject, URLSessionDownloadDelegate {
         case eNotificationType.CustomMessage.rawValue:
             return eNotificationType.CustomMessage
             
+        case eNotificationType.ErrandsCompletedMessage.rawValue:
+            return eNotificationType.ErrandsCompletedMessage
+            
         default:
             return eNotificationType.NotSet
             
@@ -206,6 +216,9 @@ class PushNotificationHelper:NSObject, URLSessionDownloadDelegate {
             
         case eNotificationType.CustomMessage.rawValue:
             return eNotificationType.CustomMessage
+            
+        case eNotificationType.ErrandsCompletedMessage.rawValue:
+            return eNotificationType.ErrandsCompletedMessage
             
         default:
             return eNotificationType.NotSet

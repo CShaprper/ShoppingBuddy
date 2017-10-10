@@ -16,6 +16,7 @@ struct ShoppingBuddyMessage {
     var listID:String?
     var senderID:String?
     var messageType:String?
+    var date:String?
     var receipts:[ShoppingListMember]!
     
     init() {

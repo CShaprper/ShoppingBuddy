@@ -18,11 +18,19 @@ class ShoppingBuddyMessageWebservice {
     var activityAnimationServiceDelegate: IActivityAnimationService?
     internal var sbUserService:ShoppingBuddyUserWebservice!
     
+    var dateFormatter:DateFormatter!
+    
     internal var ref = Database.database().reference()
     internal var userRef = Database.database().reference().child("users")
     
     init() {
+        
+        dateFormatter = DateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.current.languageCode!) as Locale
+        dateFormatter.dateStyle = DateFormatter.Style.medium
+        dateFormatter.timeStyle = DateFormatter.Style.short
         sbUserService = ShoppingBuddyUserWebservice()
+        
     }
     
     func SendWillGoToStoreMessage(list: ShoppingList) -> Void {
@@ -30,8 +38,7 @@ class ShoppingBuddyMessageWebservice {
         self.ShowActivityIndicator()
         let msgTitle = String.localizedStringWithFormat(String.WillGoShoppingMessageTitle, currentUser!.nickname!)
         let msgMessage = String.localizedStringWithFormat(String.WillGoShoppingMessageMessage, currentUser!.nickname!, list.relatedStore!, list.name!)
-        
-        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.WillGoShoppingMessage.rawValue]) { (error, dbRef) in
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.WillGoShoppingMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
             
             if error != nil {
                 
@@ -54,10 +61,9 @@ class ShoppingBuddyMessageWebservice {
         guard let user = currentUser else { return }
         
         self.ShowActivityIndicator()
-        let msgTitle = String.localizedStringWithFormat(String.ChangedTheListMessageTitle, user.nickname!)
-        let msgMessage = String.localizedStringWithFormat(String.ChangedTheListMessageMessage, user.nickname!, list.relatedStore!, list.name!)
-        
-        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ChangedTheListMessage.rawValue]) { (error, dbRef) in
+        let msgTitle = String.localizedStringWithFormat(String.ChangedTheListMessageTitle)
+        let msgMessage = String.localizedStringWithFormat(String.ChangedTheListMessageMessage, user.nickname!, list.name!, list.relatedStore!)
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ChangedTheListMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
             
             if error != nil {
                 
@@ -76,16 +82,40 @@ class ShoppingBuddyMessageWebservice {
         
     }
     
-    
+    func SendErrandsCompletedMessage(list: ShoppingList) -> Void {
+        
+        guard let user = currentUser else { return }
+        
+        self.ShowActivityIndicator()
+        let msgTitle = String.localizedStringWithFormat(String.ErrandsFinishedAlertTitle)
+        let msgMessage = String.localizedStringWithFormat(String.ErrandsFinishedAlertMessage, user.nickname!, list.name!, list.relatedStore!)
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ErrandsCompletedMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NSLog("Succesfully added Will Go Shopping to messages")
+            
+        }
+        
+    }
     
     func SendCustomMessage(message: String, list: ShoppingList) -> Void {
         
         guard let user = currentUser else { return }
         
         self.ShowActivityIndicator()
-        let msgTitle = String.localizedStringWithFormat(String.CustomMessageTitle, user.nickname!)
         
-        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":message, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.CustomMessage.rawValue]) { (error, dbRef) in
+        let msgTitle = String.localizedStringWithFormat(String.CustomMessageTitle, user.nickname!)
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":message, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.CustomMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
             
             if error != nil {
                 
@@ -143,7 +173,7 @@ class ShoppingBuddyMessageWebservice {
                         
                     }
                     
-                    msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteMessage, "title":inviteTitle, "listID":list.id!, "messageType":eNotificationType.SharingInvitation.rawValue], withCompletionBlock: { (error, dbRef) in
+                    msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteMessage, "title":inviteTitle, "listID":list.id!, "messageType":eNotificationType.SharingInvitation.rawValue, "date":self.dateFormatter.string(from: Date())], withCompletionBlock: { (error, dbRef) in
                         
                         if error != nil {
                             
@@ -225,7 +255,7 @@ class ShoppingBuddyMessageWebservice {
                         }
                         
                         //Add invite accepted message
-                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteAccepetdMessage, "title":String.ShareListAcceptedTitle, "listID":invitation.listID!, "messageType":eNotificationType.SharingAccepted.rawValue], withCompletionBlock: { (error, dbRef) in
+                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":inviteAccepetdMessage, "title":String.ShareListAcceptedTitle, "listID":invitation.listID!, "messageType":eNotificationType.SharingAccepted.rawValue, "date":self.dateFormatter.string(from: Date())], withCompletionBlock: { (error, dbRef) in
                             
                             if error != nil {
                                 
@@ -301,7 +331,7 @@ class ShoppingBuddyMessageWebservice {
                         //Add invite declined message
                         let title = String.SharingDeclinedMessageTitle
                         let msg = String.localizedStringWithFormat(String.SharingDeclinedMessageMessage, currentUser!.nickname!)
-                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":msg, "title":title, "listID":message.listID!, "messageType":eNotificationType.DeclinedSharingInvitation.rawValue], withCompletionBlock: { (error, dbRef) in
+                        msgRef.updateChildValues(["senderID":currentUser!.id!, "message":msg, "title":title, "listID":message.listID!, "messageType":eNotificationType.DeclinedSharingInvitation.rawValue, "date":self.dateFormatter.string(from: Date())], withCompletionBlock: { (error, dbRef) in
                             
                             if error != nil {
                                 
@@ -401,6 +431,7 @@ class ShoppingBuddyMessageWebservice {
             newMsg.listID = messageSnap.childSnapshot(forPath: "listID").value as? String
             newMsg.senderID = messageSnap.childSnapshot(forPath: "senderID").value as? String
             newMsg.messageType = messageSnap.childSnapshot(forPath: "messageType").value as? String
+            newMsg.date = messageSnap.childSnapshot(forPath: "date").value as? String
             
             
             self.ref.child("message_receipts").child(messageID).observeSingleEvent(of: .value, with: { (receiptsSnap) in
