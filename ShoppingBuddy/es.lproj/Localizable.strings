@@ -112,6 +112,7 @@ FullVersionNeededAlertTitle = "Premium Version Needed";
 FullVersionNeededArticleAlertMessage = "You need the premium version if you want to save more than seven articles.";
 FullVersionNeededSharingAlertMessage = "You need the premium version if you want to share lists with more than one person.";
 FullVersionNeededListCountAlertMessage = "You need the premium version if you want to save more than one list.";
+FullVersionNeededMessagesAlertMessage = "You need the premium version if you want to send messages.";
 
     //ShareListPopUp
 lbl_ShareListTitle = "Agregar la lista";

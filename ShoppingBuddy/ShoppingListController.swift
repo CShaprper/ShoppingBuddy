@@ -28,6 +28,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CustomAddShoppingListRefreshControl: UIView!
     @IBOutlet var CustomAddShoppingListRefreshControlImage: UIImageView!
     @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var EditListItemsTableViewRows: UIButton!
     
     //Add Shopping List PopUp
     @IBOutlet var AddShoppingListPopUp: UIView!
@@ -150,51 +151,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         super.viewDidLoad()
         ConfigureView()
         
-        sbMessageWebService = ShoppingBuddyMessageWebservice()
-        sbMessageWebService.activityAnimationServiceDelegate = self
-        sbMessageWebService.alertMessageDelegate = self
-        
-        SendMessagePopUp.layer.shadowColor  = UIColor.black.cgColor
-        SendMessagePopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
-        SendMessagePopUp.layer.shadowOpacity  = 1
-        SendMessagePopUp.layer.shadowRadius  = 10
-        
-        lbl_SendMessagePopUp.text = String.lbl_SendMessagePopUp
-        
-        SendMessagePopUp_HeadingToStore_ProfileImage.layer.cornerRadius = SendMessagePopUp_HeadingToStore_ProfileImage.frame.width * 0.5
-        SendMessagePopUp_HeadingToStore_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        SendMessagePopUp_HeadingToStore_ProfileImage.layer.borderWidth = 3
-        SendMessagePopUp_HeadingToStore_StarImage.alpha = 0
-        
-        SendMessagePopUp_ListChanged_ProfileImage.layer.cornerRadius = SendMessagePopUp_ListChanged_ProfileImage.frame.width * 0.5
-        SendMessagePopUp_ListChanged_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        SendMessagePopUp_ListChanged_ProfileImage.layer.borderWidth = 3
-        SendMessagePopUp_ListChanged_StarImage.alpha = 0
-        
-        SendMessagePopUp_DidTheShopping_ProfileImage.layer.cornerRadius = SendMessagePopUp_DidTheShopping_ProfileImage.frame.width * 0.5
-        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderWidth = 3
-        SendMessagePopUp_DidTheShopping_ProfileImage.alpha = 0
-        
-        HeadingToStoreBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        HeadingToStoreBubble.layer.borderWidth = 3
-        
-        ListChangedBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        ListChangedBubble.layer.borderWidth = 3
-        
-        btn_SendMessagePopUp_ListChanged.setTitle(String.btn_SendMessagePopUp_ListChangedContent, for: .normal)
-        btn_SendMessagePopUp_HeadingToStore.setTitle(String.btn_SendMessagePopUp_HeadingToStoreContent, for: .normal)
-        btn_SendMessagePopUp_DidTheShopping.setTitle(String.btn_SendMessagePopUp_DidTheShoppingContent, for: .normal)
-        
-        btn_SendMessagePopUp_HeadingToStore.addTarget(self, action: #selector(btn_SendMessagePopUp_HeadingToStore_Pressed), for: .touchUpInside)
-        btn_SendMessagePopUp_ListChanged.addTarget(self, action: #selector(btn_SendMessagePopUp_ListChanged_Pressed), for: .touchUpInside)
-        btn_SendMessagePopUp_DidTheShopping.addTarget(self, action: #selector(btn_SendMessagePopUp_DidTheShopping_Pressed), for: .touchUpInside)
-        
-        txt_SendMessagePopUp_CustomMessage.placeholder = String.txt_SendMessagePopUp_CustomMessagePalceholder
-        txt_SendMessagePopUp_CustomMessage.layer.cornerRadius = 10
-        txt_SendMessagePopUp_CustomMessage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        txt_SendMessagePopUp_CustomMessage.layer.borderWidth = 3
-        txt_SendMessagePopUp_CustomMessage.delegate = self
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -446,6 +402,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     @objc func btn_SendMessagePopUp_HeadingToStore_Pressed(sender: UIButton) -> Void {
         
+        guard let user = currentUser else { return }
+        if !user.isFullVersionUser! {
+            
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededMessagesAlertMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+                
+        }
+        
         sbMessageWebService.SendWillGoToStoreMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -453,13 +419,33 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     @objc func btn_SendMessagePopUp_ListChanged_Pressed(sender: UIButton) -> Void {
         
+        guard let user = currentUser else { return }
+        if !user.isFullVersionUser! {
+            
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededMessagesAlertMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
         sbMessageWebService.SendChangedTheListMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
         
     }
     @objc func btn_SendMessagePopUp_DidTheShopping_Pressed(sender: UIButton) -> Void {
-     
+        
+        guard let user = currentUser else { return }
+        if !user.isFullVersionUser! {
+            
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededMessagesAlertMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
         sbMessageWebService.SendErrandsCompletedMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -540,6 +526,28 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
+    @objc func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
+        
+        NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
+        HideBlurrView()
+        HideListDetailView()
+        HideAddItemPopUp()
+        RefreshCardView()
+        
+    }
+    
+    @objc func EditListItemsTableViewRows_Pressed(sender: UIButton) -> Void {
+        
+        if ShoppingListDetailTableView.isEditing {
+            ShoppingListDetailTableView.isEditing  = false
+            //Todo: edit lisitems sortnumber
+            sbListWebservice.OrderShoppingListItems(list: allShoppingLists[currentShoppingListIndex])
+        } else {
+            ShoppingListDetailTableView.isEditing  = true
+        }
+        
+    }
+    
     @objc func btn_ShoppingCardShareList_Pressed(sender: UIButton) -> Void {
         ShowShareListPopUp()
     }
@@ -574,8 +582,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     @objc func blurrViewListItem_Tapped(sender: UITapGestureRecognizer) -> Void {
-
-            HideAddItemPopUp()
+        
+        HideAddItemPopUp()
         
     }
     @objc func blurrViewSendMessage_Tapped(sender: UITapGestureRecognizer) -> Void {
@@ -589,15 +597,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         txt_SendMessagePopUp_CustomMessage.text = ""
         SendMessagePopUp.removeFromSuperview()
         
-        
-    }
-    @objc func btn_CloseListDetailView_Pressed(sender: UIButton) -> Void {
-        
-        NotificationCenter.default.post(name: Notification.Name.PerformLocalShopSearch, object: nil, userInfo: nil)
-        HideBlurrView()
-        HideListDetailView()
-        HideAddItemPopUp()
-        RefreshCardView()
         
     }
     func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
@@ -673,7 +672,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 print(xPercentFromCenter)
                 //image should be on top
                 view.bringSubview(toFront: TrashImage)
-               TrashImage.alpha =  xPercentFromCenter < -0.25 ? 1 : 0
+                TrashImage.alpha =  xPercentFromCenter < -0.25 ? 1 : 0
                 
                 //image should be on top
                 view.bringSubview(toFront: ShoppingCartImage)
@@ -697,7 +696,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             if let index = allShoppingLists.index(where: {$0.id == allShoppingLists[self.currentShoppingListIndex].id!}){
                                 
                                 if allShoppingLists[index].items.isEmpty { return }
-                                 SoundPlayer.PlaySound(filename: "crackle", filetype: "wav")
+                                SoundPlayer.PlaySound(filename: "crackle", filetype: "wav")
                                 self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: allShoppingLists[index].items[self.swipedCellIndex])
                                 allShoppingLists[index].items.remove(at: self.swipedCellIndex)
                                 self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
@@ -1096,8 +1095,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         OperationQueue.main.addOperation({
-        self.CardOneMembersCollectionView.reloadData()
-        self.SortShoppingListItemsArrayBy_isSelected()
+            self.CardOneMembersCollectionView.reloadData()
+            self.SortShoppingListItemsArrayBy_isSelected()
         })
     }
     
@@ -1137,6 +1136,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         if textField.returnKeyType == UIReturnKeyType.send {
+            
+            guard let user = currentUser else { return true }
+            if !user.isFullVersionUser! {
+                
+                let title = String.FullVersionNeededAlertTitle
+                let message = String.FullVersionNeededMessagesAlertMessage
+                self.ShowAlertMessage(title: title, message: message)
+                return true
+                
+            }
             
             if txt_SendMessagePopUp_CustomMessage == nil {
                 return true
@@ -1185,11 +1194,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     func ShowAddShoppingListPopUp() -> Void {
         
         if ShowBlurrView() {
-        
-        AddShoppingListPopUp.frame.size.width = 280
-        AddShoppingListPopUp.center = view.center
-        view.addSubview(AddShoppingListPopUp)
-        AddShoppingListPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            
+            AddShoppingListPopUp.frame.size.width = 280
+            AddShoppingListPopUp.center = view.center
+            view.addSubview(AddShoppingListPopUp)
+            AddShoppingListPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
             
         }
         
@@ -1205,12 +1214,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 return
                 
             }
-        
-        AddItemPopUp.frame.size.width = 280
-        AddItemPopUp.center = view.center
-        view.addSubview(AddItemPopUp)
-        AddItemPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
-        refreshControl.endRefreshing()
+            
+            AddItemPopUp.frame.size.width = 280
+            AddItemPopUp.center = view.center
+            view.addSubview(AddItemPopUp)
+            AddItemPopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            refreshControl.endRefreshing()
             
         }
         
@@ -1267,6 +1276,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             SendMessagePopUp.frame.size.width = 300
             SendMessagePopUp.center = view.center
             view.addSubview(SendMessagePopUp)
+            SendMessagePopUp.bringSubview(toFront:SendMessagePopUp_HeadingToStore_StarImage)
+            SendMessagePopUp.bringSubview(toFront:SendMessagePopUp_ListChanged_StarImage)
+            SendMessagePopUp.bringSubview(toFront:SendMessagePopUp_DidTheShopping_ProfileImage)
+            SendMessagePopUp.bringSubview(toFront:SendMessagePopUp_DidTheShopping_StarImage)
             SendMessagePopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
             
         }
@@ -1394,7 +1407,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        allShoppingLists[self.currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! }
+        allShoppingLists[self.currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! && $0.sortNumber! > $0.sortNumber! }
         self.ShoppingListDetailTableView.reloadData()
         
         
@@ -1478,6 +1491,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func ConfigureView() -> Void {
         isInfoViewVisible = false
+        currentShoppingListIndex = 0
         btn_info.tintColor = UIColor.ColorPaletteTintColor()
         
         //SetNavigationBar Title
@@ -1508,6 +1522,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         //Datasource & Delegate
         ShoppingListDetailTableView.dataSource = self
         ShoppingListDetailTableView.delegate = self
+        ShoppingListDetailTableView.isEditing = false
         CardOneMembersCollectionView.delegate = self
         CardOneMembersCollectionView.dataSource = self
         CardTwoMembersCollectionView.delegate = self
@@ -1566,6 +1581,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         //Detail ListView
         btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)
+        EditListItemsTableViewRows.tintColor = UIColor.ColorPaletteTintColor()
+        EditListItemsTableViewRows.addTarget(self, action: #selector(EditListItemsTableViewRows_Pressed), for: .touchUpInside)
         
         //Shopping list Cards Shadows
         ShoppingListCard.layer.shadowColor  = UIColor.black.cgColor
@@ -1685,6 +1702,54 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             lbl_ShoppingCard2OpenItems.text = "\(GetOpenItemsCount(shoppingItems: allShoppingLists[0].items))"
             
         }
+        
+        sbMessageWebService = ShoppingBuddyMessageWebservice()
+        sbMessageWebService.activityAnimationServiceDelegate = self
+        sbMessageWebService.alertMessageDelegate = self
+        
+        SendMessagePopUp.layer.shadowColor  = UIColor.black.cgColor
+        SendMessagePopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+        SendMessagePopUp.layer.shadowOpacity  = 1
+        SendMessagePopUp.layer.shadowRadius  = 10
+        
+        lbl_SendMessagePopUp.text = String.lbl_SendMessagePopUp
+        
+        SendMessagePopUp_HeadingToStore_ProfileImage.layer.cornerRadius = SendMessagePopUp_HeadingToStore_ProfileImage.frame.width * 0.5
+        SendMessagePopUp_HeadingToStore_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        SendMessagePopUp_HeadingToStore_ProfileImage.layer.borderWidth = 3
+        SendMessagePopUp_HeadingToStore_StarImage.alpha = 0
+        
+        SendMessagePopUp_ListChanged_ProfileImage.layer.cornerRadius = SendMessagePopUp_ListChanged_ProfileImage.frame.width * 0.5
+        SendMessagePopUp_ListChanged_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        SendMessagePopUp_ListChanged_ProfileImage.layer.borderWidth = 3
+        SendMessagePopUp_ListChanged_StarImage.alpha = 0
+        
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.cornerRadius = SendMessagePopUp_DidTheShopping_ProfileImage.frame.width * 0.5
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        SendMessagePopUp_DidTheShopping_ProfileImage.layer.borderWidth = 3
+        SendMessagePopUp_DidTheShopping_StarImage.alpha = 0
+        
+        HeadingToStoreBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        HeadingToStoreBubble.layer.borderWidth = 3
+        
+        ListChangedBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        ListChangedBubble.layer.borderWidth = 3
+        
+        btn_SendMessagePopUp_ListChanged.setTitle(String.btn_SendMessagePopUp_ListChangedContent, for: .normal)
+        btn_SendMessagePopUp_HeadingToStore.setTitle(String.btn_SendMessagePopUp_HeadingToStoreContent, for: .normal)
+        btn_SendMessagePopUp_DidTheShopping.setTitle(String.btn_SendMessagePopUp_DidTheShoppingContent, for: .normal)
+        
+        btn_SendMessagePopUp_HeadingToStore.addTarget(self, action: #selector(btn_SendMessagePopUp_HeadingToStore_Pressed), for: .touchUpInside)
+        btn_SendMessagePopUp_ListChanged.addTarget(self, action: #selector(btn_SendMessagePopUp_ListChanged_Pressed), for: .touchUpInside)
+        btn_SendMessagePopUp_DidTheShopping.addTarget(self, action: #selector(btn_SendMessagePopUp_DidTheShopping_Pressed), for: .touchUpInside)
+        
+        txt_SendMessagePopUp_CustomMessage.placeholder = String.txt_SendMessagePopUp_CustomMessagePalceholder
+        txt_SendMessagePopUp_CustomMessage.layer.cornerRadius = 10
+        txt_SendMessagePopUp_CustomMessage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        txt_SendMessagePopUp_CustomMessage.layer.borderWidth = 3
+        txt_SendMessagePopUp_CustomMessage.delegate = self
+        
+        
     }
     
     // MARK: UICollectionViewDataSource
@@ -1781,9 +1846,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         var widthPerItem:CGFloat
         var heightPerItem:CGFloat
-            
-            widthPerItem = CardOneMembersCollectionView.frame.width / 4
-            heightPerItem = CardOneMembersCollectionView.frame.width / 4
+        
+        widthPerItem = CardOneMembersCollectionView.frame.width / 4
+        heightPerItem = CardOneMembersCollectionView.frame.width / 4
         
         return CGSize(width: widthPerItem, height: heightPerItem)
     }
@@ -1926,9 +1991,30 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
         return tableView.frame.height / 7
     }
     // conditional rearranging of the table view.
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { 
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        let itemToMove =  allShoppingLists[currentShoppingListIndex].items[sourceIndexPath.row]
+        allShoppingLists[currentShoppingListIndex].items.remove(at: sourceIndexPath.row)
+        allShoppingLists[currentShoppingListIndex].items.insert(itemToMove, at: destinationIndexPath.row)
+        
+        tableView.reloadData()
+        
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return .none
+    }
+    
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
     }
     /*
      // conditional editing of the table view.

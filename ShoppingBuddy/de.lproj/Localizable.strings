@@ -111,9 +111,10 @@ PurchaseRestoreAlertMessage = "Danke %@ Dein Einkauf wurde wieder hergestellt.";
 PurchaseDeniedAlertTitle = "Einkauf Verweigert";
 PurchaseDeniedAlertTitle = "Du hast keine Genehmigung Apps über den App Store zu erwerben!";
 FullVersionNeededAlertTitle = "Premium Version nötig";
-FullVersionNeededArticleAlertMessage = "Du brauchst die Premium Version wenn Du mehr als 7 Artikel speichern möchtest.";
+FullVersionNeededArticleAlertMessage = "Du brauchst die Premium Version wenn Du mehr als 10 Artikel speichern möchtest.";
 FullVersionNeededSharingAlertMessage = "Du brauchst die Premium Version wenn Du Listen mit mehr als einem User teilen möchtest.";
 FullVersionNeededListCountAlertMessage = "Du brauchst die Premium Version wenn Du mehr als eine Liste speichern möchtest.";
+FullVersionNeededMessagesAlertMessage = "Du brauchst die Premium Version wenn Du Nachrichten versenden möchtest.";
 
     //Delete List Message
 ShoppingListDeleteAlertTitle = "Liste Löschen?";
@@ -142,7 +143,7 @@ btn_SendMessagePopUp_ListChangedContent = "Ich habe die Liste angepasst!";
 btn_SendMessagePopUp_DidTheShoppingContent = "Ich habe die Einkäufe erledigt!";
 txt_SendMessagePopUp_CustomMessagePalceholder = "Nachricht eingeben";
 ChangedTheListMessageTitle = "Liste geändert!";
-ChangedTheListMessageMessage = "%@ hat die Liste '%@' für shop '%@' angepasst. Schau mal drüber.";
+ChangedTheListMessageMessage = "%@ hat die Liste '%@' angepasst. Schau mal drüber.";
 CustomMessageTitle = "Nachricht von %@";
 ErrandsFinishedAlertTitle = "Einkäufe erledigt!";
-ErrandsFinishedAlertMessage = "%@ hat die Einkäufe für '%@' bei '%@' erledigt.";
+ErrandsFinishedAlertMessage = "%@ hat die Einkäufe der Liste '%@' erledigt.";

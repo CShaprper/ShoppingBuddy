@@ -213,7 +213,7 @@ class ShoppingBuddyListWebservice {
         //Read List items
         for list in allShoppingLists {
             
-            self.ref.child("listItems").child(list.id!).observe(.value, with: { (itemSnap) in
+            self.ref.child("listItems").child(list.id!).queryOrdered(byChild: "sortNumber").observe(.value, with: { (itemSnap) in
                 
                 var newItems = [ShoppingListItem]()
                 for items in itemSnap.children {
@@ -379,6 +379,17 @@ class ShoppingBuddyListWebservice {
                 
             }
         })
+    }
+    
+    func OrderShoppingListItems(list: ShoppingList) -> Void {
+        
+        self.ShowActivityIndicator()
+        
+        for i in 0..<list.items.count{
+             ref.child("listItems").child(list.items[i].id!).child("sortNumber").setValue(i + 1)
+        }
+        self.HideActivityIndicator()
+        
     }
     
     

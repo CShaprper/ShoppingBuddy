@@ -148,6 +148,7 @@ extension String{
     static let FullVersionNeededArticleAlertMessage = NSLocalizedString("FullVersionNeededArticleAlertMessage", comment: "")
     static let FullVersionNeededSharingAlertMessage = NSLocalizedString("FullVersionNeededSharingAlertMessage", comment: "")
     static let FullVersionNeededListCountAlertMessage = NSLocalizedString("FullVersionNeededListCountAlertMessage", comment: "")
+    static let FullVersionNeededMessagesAlertMessage = NSLocalizedString("FullVersionNeededMessagesAlertMessage", comment: "")
     
     //InfoView Image names
     static let DashboardOnboardingImage = NSLocalizedString("DashboardOnboardingImage", comment: "")

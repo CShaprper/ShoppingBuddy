@@ -54,14 +54,6 @@ class ShoppingBuddyListItemWebservice {
             NSLog("Succesfully saved ShoppingListItem to Firebase")
             
             let messagesRef = self.ref.child("messages").childByAutoId()
-            /* Remove and all users will get permanent message
-            for receipt in allShoppingLists[currentShoppingListIndex].members {
-      
-                if receipt.memberID! == Auth.auth().currentUser!.uid { continue }
-                 self.ref.child("message_receipts").child(messagesRef.key).updateChildValues([receipt.memberID!:"receipt"])
-                 self.ref.child("users_messages").child(receipt.memberID!).child(messagesRef.key).setValue(eNotificationType.ListItemAddedBySharedUser.rawValue)
-                
-            }*/
             
             //Add message to messages node  
             let title = String.ListItemAddedTitle
@@ -82,7 +74,7 @@ class ShoppingBuddyListItemWebservice {
             })
             
         }
-    }
+    } 
     
     //MARK: - Delete Functions
     func DeleteShoppingListItemFromFirebase(itemToDelete: ShoppingListItem){

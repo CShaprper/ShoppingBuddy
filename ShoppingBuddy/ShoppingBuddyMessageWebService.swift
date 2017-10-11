@@ -88,7 +88,7 @@ class ShoppingBuddyMessageWebservice {
         
         self.ShowActivityIndicator()
         let msgTitle = String.localizedStringWithFormat(String.ErrandsFinishedAlertTitle)
-        let msgMessage = String.localizedStringWithFormat(String.ErrandsFinishedAlertMessage, user.nickname!, list.name!, list.relatedStore!)
+        let msgMessage = String.localizedStringWithFormat(String.ErrandsFinishedAlertMessage, user.nickname!, list.name!)
         self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ErrandsCompletedMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
             
             if error != nil {
@@ -420,7 +420,7 @@ class ShoppingBuddyMessageWebservice {
     func ObserveMessage(messageID:String) -> Void {
         
         ShowActivityIndicator()
-        ref.child("messages").child(messageID).observeSingleEvent(of: .value, with: { (messageSnap) in
+        ref.child("messages").child(messageID).queryLimited(toLast: 50).observeSingleEvent(of: .value, with: { (messageSnap) in
             
             if messageSnap.value is NSNull { self.HideActivityIndicator(); return }
             
