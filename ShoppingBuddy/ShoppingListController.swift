@@ -1407,7 +1407,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        allShoppingLists[self.currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! && $0.sortNumber! > $0.sortNumber! }
+        allShoppingLists[self.currentShoppingListIndex].items.sort{ $0.sortNumber! < $1.sortNumber! }
+        allShoppingLists[self.currentShoppingListIndex].items.sort{ !$0.isSelected! && $1.isSelected! } //&& $0.sortNumber! > $1.sortNumber!
         self.ShoppingListDetailTableView.reloadData()
         
         

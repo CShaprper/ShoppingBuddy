@@ -153,4 +153,4 @@ ChangedTheListMessageTitle = "List changed!";
 ChangedTheListMessageMessage = "%@ changed the list for store '%@'. Take a look.";
 CustomMessageTitle = "Message from %@";
 ErrandsFinishedAlertTitle = "Errands completed!";
-ErrandsFinishedAlertMessage = "%@ die the errands for '%@' at '%@'.";
+ErrandsFinishedAlertMessage = "%@ did the errands for list '%@'.";

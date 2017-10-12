@@ -45,12 +45,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         //Set standard Map Zoom
-        if UserDefaults.standard.value(forKey: eUserDefaultKey.MapSpan.rawValue) == nil{
+        if let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.MapSpan.rawValue) {
             UserDefaults.standard.set(9000, forKey: eUserDefaultKey.MapSpan.rawValue)
+        }
+        if let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.MonitoredRadius.rawValue) {
+           UserDefaults.standard.set(500, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         }
         
         //Set standard value
-        UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        // UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         
         return true

@@ -343,9 +343,9 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         } else {
             dist -= 1000
             mapSpan = dist
-            guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
+            guard let location = userLocation else { return }
             UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
-            let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            let region = MKCoordinateRegionMakeWithDistance(location, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
             MapView.setRegion(region, animated: false)
         }
         
@@ -353,13 +353,13 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     @objc func btn_DecreaseMapSpan_Pressed(sender: UIButton) -> Void {
         
-        guard let pinnedLocation = ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() else { return }
+        guard let location = userLocation else { return }
         var dist = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         dist += 1000
         mapSpan = abs(dist)
         UserDefaults.standard.set(dist, forKey: eUserDefaultKey.MapSpan.rawValue)
         //UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-         let region = MKCoordinateRegionMakeWithDistance(pinnedLocation.coordinate, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
+         let region = MKCoordinateRegionMakeWithDistance(location, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
         MapView.setRegion(region, animated: false)
         
         
@@ -481,6 +481,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         lbl_ObeservedStores.text = String.lbl_ObeservedStoresText
         lbl_PinnedAddress.attributedText = NSAttributedString(string: String.lbl_PinnedAddress, attributes:
             [NSAttributedStringKey.underlineStyle: NSUnderlineStyle.styleSingle.rawValue])
+        lbl_Address.text = ""
         
         //Notification Listener DahsboardController
         NotificationCenter.default.addObserver(forName: .UserProfileImageDownloadFinished, object: nil, queue: OperationQueue.main, using: UserProfileImageDownloadFinished)
@@ -840,6 +841,9 @@ extension DashboardController: MKMapViewDelegate{
     }
     
     private func ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults() -> CLLocation? {
+        
+        guard let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.HomeLatitude.rawValue) else { return nil }
+        guard let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.HomeLongitude.rawValue) else { return nil }
         
         let latitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLatitude.rawValue)
         let longitude = UserDefaults.standard.double(forKey: eUserDefaultKey.HomeLongitude.rawValue)

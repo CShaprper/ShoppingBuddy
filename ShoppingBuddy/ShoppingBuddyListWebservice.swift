@@ -230,7 +230,7 @@ class ShoppingBuddyListWebservice {
                     guard let user = currentUser else { return }
                     guard let isFullVersionUser = user.isFullVersionUser else { return }
                     
-                    if !isFullVersionUser && newItems.count >= 7 {
+                    if !isFullVersionUser && newItems.count >= 10 {
                         
                         continue
                         
@@ -386,7 +386,7 @@ class ShoppingBuddyListWebservice {
         self.ShowActivityIndicator()
         
         for i in 0..<list.items.count{
-             ref.child("listItems").child(list.items[i].id!).child("sortNumber").setValue(i + 1)
+             ref.child("listItems").child(list.id!).child(list.items[i].id!).child("sortNumber").setValue(i + 1)
         }
         self.HideActivityIndicator()
         
