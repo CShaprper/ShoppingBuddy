@@ -385,42 +385,43 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
 
                     var userData = userSnap.val()
 
-                   // if (userData.key != msgData.senderID) {
+                    console.log("user snap: ",  userData)
+                    console.log("userData.key: ",  listMember.key)
+                    console.log("event.params.messageID: ",  event.params.messageID)
+                    console.log("event.params.messageType: ",  msgData.messageType)
 
-                        return admin.database().ref('users_messages').child(userData.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+                    return admin.database().ref('users_messages').child(listMember.key).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
 
-                            //add receipt to message_receipts node
-                            return admin.database().ref('message_receipts').child(event.params.messageID).child(userData.key).set(msgData.messageType + '_Receipt').then(() => {
+                        //add receipt to message_receipts node
+                        return admin.database().ref('message_receipts').child(event.params.messageID).child(listMember.key).set(msgData.messageType + '_Receipt').then(() => {
 
-                                console.log('sending Push to ' + userData.fcmToken)
+                            console.log('sending Push to ' + userData.fcmToken)
 
-                                //create Notification Payload
-                                var payload = {
-                                    notification: {
-                                        title: msgData.title,
-                                        body: msgData.message,
-                                        badge: '1',
-                                        sound: 'default',
-                                        sbID: String(event.data.key),
-                                        senderID: msgData.senderID,
-                                        listID: msgData.listID,
-                                        receiptID: listMember.key,
-                                        notificationType: String(msgData.messageType),
-                                    }
+                            //create Notification Payload
+                            var payload = {
+                                notification: {
+                                    title: msgData.title,
+                                    body: msgData.message,
+                                    badge: '1',
+                                    sound: 'default',
+                                    sbID: String(event.data.key),
+                                    senderID: msgData.senderID,
+                                    listID: msgData.listID,
+                                    receiptID: listMember.key,
+                                    notificationType: String(msgData.messageType),
                                 }
+                            }
 
-                                return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
+                            return admin.messaging().sendToDevice(userData.fcmToken, payload).then(response => {
 
-                                    console.log(response.results[0].error)
+                                console.log(response.results[0].error)
 
-                                }).catch((err) => { console.log("Error sending Push", err) })
+                            }).catch((err) => { console.log("Error sending Push", err) })
 
-
-                            })
 
                         })
 
-                    //}
+                    })
 
 
                 }))
@@ -437,42 +438,38 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
 
                     var ownerData = ownerSnap.val()
 
-                    //if (ownerData.key != msgData.senderID) {
+                    //Set a node to users Messages for Errands completed message
+                    return admin.database().ref('users_messages').child(owneruid.val()).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
 
-                        //Set a node to users Messages for Errands completed message
-                        return admin.database().ref('users_messages').child(owneruid.val()).child(event.params.messageID).set(String(msgData.messageType)).then(() => {
+                        //add receipt to message_receipts node
+                        return admin.database().ref('message_receipts').child(event.params.messageID).child(owneruid.val()).set(msgData.messageType + '_Receipt').then(() => {
 
-                            //add receipt to message_receipts node
-                            return admin.database().ref('message_receipts').child(event.params.messageID).child(owneruid.val()).set(msgData.messageType + '_Receipt').then(() => {
+                            console.log('sending Push to ' + ownerData.nickname)
 
-                                console.log('sending Push to ' + ownerData.nickname)
-
-                                //create Notification Payload
-                                var payload = {
-                                    notification: {
-                                        title: msgData.title,
-                                        body: msgData.message,
-                                        badge: '1',
-                                        sound: 'default',
-                                        sbID: String(event.data.key),
-                                        senderID: msgData.senderID,
-                                        listID: msgData.listID,
-                                        receiptID: owneruid.val(),
-                                        notificationType: String(msgData.messageType),
-                                    }
+                            //create Notification Payload
+                            var payload = {
+                                notification: {
+                                    title: msgData.title,
+                                    body: msgData.message,
+                                    badge: '1',
+                                    sound: 'default',
+                                    sbID: String(event.data.key),
+                                    senderID: msgData.senderID,
+                                    listID: msgData.listID,
+                                    receiptID: owneruid.val(),
+                                    notificationType: String(msgData.messageType),
                                 }
-
-                            })
-
-                            return admin.messaging().sendToDevice(ownerData.fcmToken, payload).then(response => {
-
-                                console.log(response.results[0].error)
-
-                            }).catch((err) => { console.log("Error sending Push", err) })
+                            }
 
                         })
 
-                   // }
+                        return admin.messaging().sendToDevice(ownerData.fcmToken, payload).then(response => {
+
+                            console.log(response.results[0].error)
+
+                        }).catch((err) => { console.log("Error sending Push", err) })
+
+                    })
 
 
                 })

@@ -888,6 +888,8 @@ extension DashboardController: MKMapViewDelegate{
     }
     func StopMonitoringForOldRegions() -> Void {
         
+        if locationManager == nil { return }
+        
         for region in locationManager.monitoredRegions {
             
             locationManager.stopMonitoring(for: region) 
@@ -958,7 +960,8 @@ extension DashboardController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
         
         NSLog("locationManager failed Monitoring for region \(region!.identifier) with error \(error.localizedDescription)")
-        locationManager.stopMonitoring(for: region!)
+        if region == nil { return }
+        manager.stopMonitoring(for: region!)
         
     }
     

@@ -43,7 +43,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -55,16 +55,16 @@
 	</array>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string></string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Drop Shopper want&apos;s you to pick a profile image.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Drop Shopper want&apos;s you to pick a user image for your profile!</string>
+	<string>Drop Shopper want's you to pick a user image for your profile!</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Drop Shopper want's to inform you when your close to stores of your shopping lists.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Drop Shopper want's to inform you when your close to stores of your shopping lists.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Drop Shopper want's to inform you when your close to stores of your shopping lists.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Drop Shopper want's you to pick a profile image.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Courgette-Regular.ttf</string>
