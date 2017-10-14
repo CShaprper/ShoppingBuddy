@@ -117,6 +117,8 @@ extension String{
     static let CustomMessageTitle = NSLocalizedString("CustomMessageTitle", comment: "")
     static let ErrandsFinishedAlertTitle = NSLocalizedString("ErrandsFinishedAlertTitle", comment: "")
     static let ErrandsFinishedAlertMessage = NSLocalizedString("ErrandsFinishedAlertMessage", comment: "")
+    static let MesageNotPossibleAlertTitle = NSLocalizedString("MesageNotPossibleAlertTitle", comment: "")
+    static let MesageNotPossibleAlertMessage = NSLocalizedString("MesageNotPossibleAlertMessage", comment: "")
     
     //List item Added Message
     static let ListItemAddedTitle = NSLocalizedString("ListItemAddedTitle", comment: "")
@@ -153,4 +155,5 @@ extension String{
     //InfoView Image names
     static let DashboardOnboardingImage = NSLocalizedString("DashboardOnboardingImage", comment: "")
     static let ShoppingListsOnboardiongImage = NSLocalizedString("ShoppingListsOnboardiongImage", comment: "")
+    static let OnboardingListView = NSLocalizedString("OnboardingListView", comment: "")
 }

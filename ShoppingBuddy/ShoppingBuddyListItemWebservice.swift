@@ -53,6 +53,7 @@ class ShoppingBuddyListItemWebservice {
             NotificationCenter.default.post(name: Notification.Name.ListItemSaved, object: nil, userInfo: nil)
             NSLog("Succesfully saved ShoppingListItem to Firebase")
             
+            /* TODO: only necessary if each item add will send push
             let messagesRef = self.ref.child("messages").childByAutoId()
             
             //Add message to messages node  
@@ -72,7 +73,7 @@ class ShoppingBuddyListItemWebservice {
                 }
                 
             })
-            
+            */
         }
     } 
     

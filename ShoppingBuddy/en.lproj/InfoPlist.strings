@@ -8,5 +8,4 @@
 NSLocationAlwaysUsageDescription = "Drop Shopper want's to inform you when your close to stores of your shopping lists.";
 NSLocationAlwaysAndWhenInUseUsageDescription = "Drop Shopper want's to inform you when your close to stores of your shopping lists.";
 NSLocationWhenInUseUsageDescription = "Drop Shopper want's to inform you when your close to stores of your shopping lists.";
-
 NSPhotoLibraryUsageDescription = "We want you to pick a user image for your profile!";

@@ -127,6 +127,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     //Onboarding image
     @IBOutlet var OnboardindInfoView: UIImageView!
+    @IBOutlet var btn_LeftOnboarding: UIButton!
     
     
     
@@ -293,10 +294,66 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         RefreshCardView()
         
     }
+    //MARK: OnboardingView Pan
+    @objc func OnboardingView_Pan(sender: UIPanGestureRecognizer) -> Void {
+        let infoView = sender.view!
+        let point = sender.translation(in: view)
+        let xFromCenter = infoView.center.x - view.center.x
+        let yFromCenter = infoView
+            .center.y - view.center.y
+        let swipeLimitLeft = view.frame.width * 0.4 // left border when the card gets animated off
+        let swipeLimitRight = view.frame.width * 0.6 // right border when the card gets animated off
+        let swipeLimitTop = view.frame.height * 0.5 // top border when the card gets animated off
+        let swipeLimitBottom = view.frame.height * 0.65 // top border when the card gets animated off
+        let ySpin:CGFloat = yFromCenter < 0 ? -200 : 200 // gives the card a spin in y direction
+        let xSpin:CGFloat = xFromCenter < 0 ? -200 : 200 // gives the card a spin in x direction
+        infoView.center = CGPoint(x: view.center.x + point.x, y: view.center.y + point.y)
+        //Rotate card while drag
+        let degree:Double = Double(xFromCenter / ((view.frame.size.width * 0.5) / 40))
+        infoView.transform = CGAffineTransform(rotationAngle: degree.degreesToRadians)
+        
+      
+        //Animate card after drag ended
+        if sender.state == UIGestureRecognizerState.ended{
+            let swipeDuration = 0.3
+            // Move off to the left side if drag reached swipeLimitLeft
+            if infoView.center.x < swipeLimitLeft{
+                
+                SwipeCardOffLeft(swipeDuration: swipeDuration, card: infoView, ySpin: ySpin)
+                return
+                
+            } else if infoView.center.x > swipeLimitRight{
+                
+                SwipeCardOffRight(swipeDuration: swipeDuration, card: infoView, ySpin: ySpin)
+                return
+                
+            } else if infoView.center.y < swipeLimitTop{
+                
+                SwipeCardOffTop(swipeDuration: swipeDuration, card: infoView, xSpin: xSpin)
+                return
+                
+            } else if infoView.center.y > swipeLimitBottom {
+                
+                //Move downways if drag reached swipe limit bottom
+                SwipeInfoViewOffBottom(swipeDuration: swipeDuration, card: infoView, xSpin: xSpin)
+                return
+                
+            } else {
+                
+                // Reset card if no drag limit reached
+                self.ResetInfoViewAfterSwipeOff(card: infoView as! UIImageView)
+                
+            }
+        }
+        
+    }
     
     
     //MARK: - Wired Actions
     //MARK: Buttons
+    @objc func btn_LeftOnboarding_Pressed(sender: UIButton) -> Void {
+        print("predeeede")
+    }
     @IBAction func btn_Info_Pressed(_ sender: UIBarButtonItem) {
         
         if isInfoViewVisible { hideInfoView() }
@@ -316,13 +373,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             view.addSubview(OnboardindInfoView)
             OnboardindInfoView.center = BackgroundImage.center
             OnboardindInfoView.transform = CGAffineTransform(translationX: 0, y: view.frame.height).scaledBy(x: 0.1, y: 0.1)
+            let onboardingPanRecognizer = UIPanGestureRecognizer(target: self, action: #selector(OnboardingView_Pan))
+            OnboardindInfoView.addGestureRecognizer(onboardingPanRecognizer)
             
             UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
                 
                 self.OnboardindInfoView.alpha = 1
                 self.OnboardindInfoView.transform = .identity
                 
-            }, completion: nil)
+            }, completion: nil )
             
         }
     }
@@ -412,6 +471,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
         }
         
+        if allShoppingLists[currentShoppingListIndex].members.isEmpty {
+            
+            let title = String.MesageNotPossibleAlertTitle
+            let message = String.MesageNotPossibleAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
         sbMessageWebService.SendWillGoToStoreMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -429,6 +498,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
+        if allShoppingLists[currentShoppingListIndex].members.isEmpty {
+            
+            let title = String.MesageNotPossibleAlertTitle
+            let message = String.MesageNotPossibleAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
         sbMessageWebService.SendChangedTheListMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -446,6 +525,16 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
+        if allShoppingLists[currentShoppingListIndex].members.isEmpty {
+            
+            let title = String.MesageNotPossibleAlertTitle
+            let message = String.MesageNotPossibleAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
         sbMessageWebService.SendErrandsCompletedMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -479,7 +568,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         //Validate FullVersion
         isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
-        if !isValid && allShoppingLists[currentShoppingListIndex].items.count >= 7 {
+        if !isValid && allShoppingLists[currentShoppingListIndex].items.count >= 15 {
             let title = String.FullVersionNeededAlertTitle
             let message = String.FullVersionNeededArticleAlertMessage
             ShowAlertMessage(title: title, message: message)
@@ -696,7 +785,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             if let index = allShoppingLists.index(where: {$0.id == allShoppingLists[self.currentShoppingListIndex].id!}){
                                 
                                 if allShoppingLists[index].items.isEmpty { return }
-                                SoundPlayer.PlaySound(filename: "crackle", filetype: "wav")
+                                SoundPlayer.PlaySound(filename: "pom", filetype: "wav")
                                 self.sbListItemWebservice.DeleteShoppingListItemFromFirebase(itemToDelete: allShoppingLists[index].items[self.swipedCellIndex])
                                 allShoppingLists[index].items.remove(at: self.swipedCellIndex)
                                 self.ShoppingListDetailTableView.deleteRows(at: [swipedIndexPath], with: .none)
@@ -886,7 +975,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }, completion: { (true) in
             
-            self.ResetCardAfterSwipeOff(card: card)
+            if card == self.OnboardindInfoView {
+                
+                self.ResetInfoViewAfterSwipeOff(card: card as! UIImageView)
+                
+            } else {
+            
+                self.ResetCardAfterSwipeOff(card: card)
+                
+            }
             
         })
     }
@@ -901,7 +998,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }, completion: { (true) in
             
-            self.ResetCardAfterSwipeOff(card: card)
+            if card == self.OnboardindInfoView {
+                
+                self.ResetInfoViewAfterSwipeOff(card: card as! UIImageView)
+                
+            } else {
+                
+                self.ResetCardAfterSwipeOff(card: card)
+                
+            }
             
         })
     }
@@ -916,7 +1021,31 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }, completion: { (true) in
             
-            self.ResetCardAfterSwipeOff(card: card)
+            if card == self.OnboardindInfoView {
+                
+                self.ResetInfoViewAfterSwipeOff(card: card as! UIImageView)
+                
+            } else {
+                
+                self.ResetCardAfterSwipeOff(card: card)
+                
+            }
+            
+        })
+    }
+    private func SwipeInfoViewOffBottom(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat) -> Void{
+        
+         SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
+        
+        
+        UIView.animate(withDuration: swipeDuration, animations: {
+            
+            card.center.y = card.center.y + self.view.frame.size.height
+            card.center.x = card.center.x + xSpin
+            
+        }, completion: { (true) in
+            
+            self.ResetInfoViewAfterSwipeOff(card: card as! UIImageView)
             
         })
     }
@@ -977,6 +1106,27 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             }
         })
+    }
+    var infoviewCounter:Int = 0
+    private func ResetInfoViewAfterSwipeOff(card: UIImageView) -> Void {
+        
+        if infoviewCounter == 0{
+            
+            infoviewCounter += 1
+            card.image = UIImage(named: String.OnboardingListView)
+            
+        } else {
+            
+            infoviewCounter = 0
+            card.image = UIImage(named: String.ShoppingListsOnboardiongImage)
+            
+        }
+        
+        card.alpha = 0
+        card.transform = .identity
+        card.center = view.center
+        card.Arise(duration: 0.7, delay: 0, options:  [.allowUserInteraction], toAlpha: 1)
+        
     }
     private func ResetCardAfterSwipeOff(card: UIView) -> Void {
         
@@ -1143,6 +1293,17 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let title = String.FullVersionNeededAlertTitle
                 let message = String.FullVersionNeededMessagesAlertMessage
                 self.ShowAlertMessage(title: title, message: message)
+                self.view.endEditing(true)
+                return true
+                
+            }
+            
+            if allShoppingLists[currentShoppingListIndex].members.isEmpty {
+                
+                let title = String.MesageNotPossibleAlertTitle
+                let message = String.MesageNotPossibleAlertMessage
+                ShowAlertMessage(title: title, message: message)
+                self.view.endEditing(true)
                 return true
                 
             }
@@ -1151,6 +1312,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 return true
             }
             
+            SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
             sbMessageWebService.SendCustomMessage(message: txt_SendMessagePopUp_CustomMessage.text!, list: allShoppingLists[currentShoppingListIndex])
             HideSendMessageBlurrView()
             HideSendMessagePopUp()
@@ -1477,7 +1639,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         view.addSubview(InvitationNotification)
         InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
-        
+        SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
         UIView.animate(withDuration: 2) {
             
             self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)

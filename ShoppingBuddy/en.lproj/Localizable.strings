@@ -105,9 +105,10 @@ SharingDeclinedMessageTitle = "Sharing invite declined";
 SharingDeclinedMessageMessage = "%@ declined your list sharing invitation.";
 LeaveGroupListAlertTitle = "Leave Shared List!";
 LeaveGroupListAlertMessage = "Do you want to leave the shared list '%@'?";
-
 WillGoShoppingMessageTitle = "%@ goes for shopping";
 WillGoShoppingMessageMessage = "%@ goes to '%@' for shopping. Last chance to add articles to group list '%@'.";
+MesageNotPossibleAlertTitle = "No group members!";
+MesageNotPossibleAlertMessage = "There exist no group members. Sending message is not possible.";
 
     //In App Purchases
 PurchaseRestoreAlertTitle = "Purchase Restored";
@@ -115,7 +116,7 @@ PurchaseRestoreAlertMessage = "Thank you %@ your purchase is restored.";
 PurchaseDeniedAlertTitle = "Purchase Denied";
 PurchaseDeniedAlertTitle = "You are not allowed to purchase App Store products!";
 FullVersionNeededAlertTitle = "Premium Version Needed";
-FullVersionNeededArticleAlertMessage = "You need the premium version if you want to save more than seven articles.";
+FullVersionNeededArticleAlertMessage = "You need the premium version if you want to save more than 15 articles.";
 FullVersionNeededSharingAlertMessage = "You need the premium version if you want to share lists with more than one person.";
 FullVersionNeededListCountAlertMessage = "You need the premium version if you want to save more than one list.";
 FullVersionNeededMessagesAlertMessage = "You need the premium version if you want to send messages.";
@@ -139,6 +140,7 @@ DeclineInvitation = "decline";
     //Info Views
 DashboardOnboardingImage = "OnboardingDashboard-EN";
 ShoppingListsOnboardiongImage = "OnboardingShoppinglists-EN";
+OnboardingListView = "OnboardingListView-EN";
 
     //SendMessage PopUp
 lbl_SendMessagePopUp = "Send Message";

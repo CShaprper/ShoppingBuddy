@@ -438,6 +438,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         view.addSubview(InvitationNotification)
         
+        SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
         UIView.animate(withDuration: 2) {
             
             self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)

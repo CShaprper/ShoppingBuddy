@@ -13,6 +13,8 @@
 		CF033B581F57322000684963 /* ShoppingBuddyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B571F57322000684963 /* ShoppingBuddyMessage.swift */; };
 		CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */; };
 		CF053BC21F81ACA400B08C34 /* FullVersionUserValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */; };
+		CF0A1EDA1F91F3B2000A1141 /* pom.wav in Resources */ = {isa = PBXBuildFile; fileRef = CF0A1ED91F91F39B000A1141 /* pom.wav */; };
+		CF0A1EDE1F91F49E000A1141 /* drip.wav in Resources */ = {isa = PBXBuildFile; fileRef = CF0A1EDD1F91F487000A1141 /* drip.wav */; };
 		CF0AFD991F88EF4300C415F7 /* UIViewShadowExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF16344E1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */; };
@@ -44,6 +46,8 @@
 		CFB37C281F657BA700E263CD /* CancelSharingMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB37C271F657BA700E263CD /* CancelSharingMemberCell.swift */; };
 		CFB58FCD1F2BBB0D00325B51 /* ShoppingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */; };
 		CFB635A41F3A2F6E00D8C592 /* ShoppingBuddyUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */; };
+		CFB9F7881F9118A500E55CFB /* pling.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFB9F7871F91189900E55CFB /* pling.wav */; };
+		CFB9F78C1F911E4700E55CFB /* MailSent.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFB9F78B1F911E4200E55CFB /* MailSent.wav */; };
 		CFBE245D1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */; };
 		CFBE245F1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */; };
 		CFC6BCD71F32567100366553 /* IAlertMessageDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */; };
@@ -76,10 +80,8 @@
 		CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */; };
 		CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319451F33742700F91272 /* eUserDefaultKey.swift */; };
 		CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */; };
-		CFFCEA071F869E0900411B47 /* crushing-paper.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA061F869BAD00411B47 /* crushing-paper.wav */; };
 		CFFCEA091F869E3900411B47 /* crackle.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA081F869E3700411B47 /* crackle.wav */; };
-		CFFCEA0B1F869F7300411B47 /* squelch.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA0A1F869F6D00411B47 /* squelch.wav */; };
-		CFFCEA0D1F869FF000411B47 /* drip.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA0C1F869FED00411B47 /* drip.wav */; };
+		CFFCEA0D1F869FF000411B47 /* drip2.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA0C1F869FED00411B47 /* drip2.wav */; };
 		CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */; };
 /* End PBXBuildFile section */
 
@@ -91,6 +93,8 @@
 		CF033B571F57322000684963 /* ShoppingBuddyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessage.swift; sourceTree = "<group>"; };
 		CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessageWebService.swift; sourceTree = "<group>"; };
 		CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullVersionUserValidationService.swift; sourceTree = "<group>"; };
+		CF0A1ED91F91F39B000A1141 /* pom.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pom.wav; sourceTree = "<group>"; };
+		CF0A1EDD1F91F487000A1141 /* drip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip.wav; sourceTree = "<group>"; };
 		CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewShadowExtension.swift; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListItemWebservice.swift; sourceTree = "<group>"; };
@@ -121,10 +125,9 @@
 		CFB2AA641F24B9C800AACB5B /* IdentifierExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierExtension.swift; sourceTree = "<group>"; };
 		CFB37C271F657BA700E263CD /* CancelSharingMemberCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CancelSharingMemberCell.swift; sourceTree = "<group>"; };
 		CFB58FCC1F2BBB0D00325B51 /* ShoppingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingList.swift; sourceTree = "<group>"; };
-		CFB6359B1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
-		CFB6359C1F3A26FA00D8C592 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
-		CFB635A21F3A279000D8C592 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Main.strings; sourceTree = "<group>"; };
 		CFB635A31F3A2F6E00D8C592 /* ShoppingBuddyUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyUser.swift; sourceTree = "<group>"; };
+		CFB9F7871F91189900E55CFB /* pling.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pling.wav; sourceTree = "<group>"; };
+		CFB9F78B1F911E4200E55CFB /* MailSent.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MailSent.wav; sourceTree = "<group>"; };
 		CFBE245C1F4F29A200373CCB /* ShoppingBuddyUserWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyUserWebservice.swift; sourceTree = "<group>"; };
 		CFBE245E1F4F303D00373CCB /* ShoppingBuddyListWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListWebservice.swift; sourceTree = "<group>"; };
 		CFC6BCD61F32567100366553 /* IAlertMessageDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAlertMessageDelegate.swift; sourceTree = "<group>"; };
@@ -166,10 +169,8 @@
 		CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
 		CFF319451F33742700F91272 /* eUserDefaultKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eUserDefaultKey.swift; sourceTree = "<group>"; };
 		CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTabBarControllerDelegate.swift; sourceTree = "<group>"; };
-		CFFCEA061F869BAD00411B47 /* crushing-paper.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "crushing-paper.wav"; sourceTree = "<group>"; };
 		CFFCEA081F869E3700411B47 /* crackle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crackle.wav; sourceTree = "<group>"; };
-		CFFCEA0A1F869F6D00411B47 /* squelch.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = squelch.wav; sourceTree = "<group>"; };
-		CFFCEA0C1F869FED00411B47 /* drip.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip.wav; sourceTree = "<group>"; };
+		CFFCEA0C1F869FED00411B47 /* drip2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip2.wav; sourceTree = "<group>"; };
 		CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		D5B3347F5B99BA03E15EB7B3 /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,11 +226,13 @@
 		CF7A64561F827244006DDC5D /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				CFFCEA0C1F869FED00411B47 /* drip.wav */,
-				CFFCEA0A1F869F6D00411B47 /* squelch.wav */,
+				CFFCEA0C1F869FED00411B47 /* drip2.wav */,
+				CF0A1EDD1F91F487000A1141 /* drip.wav */,
 				CFFCEA081F869E3700411B47 /* crackle.wav */,
 				CF7A64571F827250006DDC5D /* swoosh.wav */,
-				CFFCEA061F869BAD00411B47 /* crushing-paper.wav */,
+				CFB9F78B1F911E4200E55CFB /* MailSent.wav */,
+				CFB9F7871F91189900E55CFB /* pling.wav */,
+				CF0A1ED91F91F39B000A1141 /* pom.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -491,9 +494,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CFC6BCDA1F3264B500366553 /* InfoPlist.strings in Resources */,
-				CFFCEA071F869E0900411B47 /* crushing-paper.wav in Resources */,
-				CFFCEA0B1F869F7300411B47 /* squelch.wav in Resources */,
-				CFFCEA0D1F869FF000411B47 /* drip.wav in Resources */,
+				CFFCEA0D1F869FF000411B47 /* drip2.wav in Resources */,
 				CF7A64581F827534006DDC5D /* swoosh.wav in Resources */,
 				CF7389051F75847700F6D833 /* MarckScript-Regular.ttf in Resources */,
 				CFE9AB1A1F25F43300D0825B /* Artwork.xcassets in Resources */,
@@ -503,9 +504,13 @@
 				CFE4A1D21F23C0DC002A12C7 /* Backgrounds.xcassets in Resources */,
 				CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */,
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
+				CFB9F78C1F911E4700E55CFB /* MailSent.wav in Resources */,
 				CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */,
 				CFFCEA091F869E3900411B47 /* crackle.wav in Resources */,
 				CF7389061F75847900F6D833 /* Pacifico-Regular.ttf in Resources */,
+				CF0A1EDE1F91F49E000A1141 /* drip.wav in Resources */,
+				CF0A1EDA1F91F3B2000A1141 /* pom.wav in Resources */,
+				CFB9F7881F9118A500E55CFB /* pling.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,8 +645,6 @@
 				CFE4A2291F23DA9C002A12C7 /* Base */,
 				CFE4A22B1F23DAB6002A12C7 /* en */,
 				CFE4A2341F23DC3A002A12C7 /* de */,
-				CFB6359B1F3A26FA00D8C592 /* fr */,
-				CFB635A21F3A279000D8C592 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -652,7 +655,6 @@
 				CFE4A1D41F23C0DC002A12C7 /* Base */,
 				CFE4A22F1F23DAD9002A12C7 /* en */,
 				CFE4A2351F23DC3A002A12C7 /* de */,
-				CFB6359C1F3A26FA00D8C592 /* fr */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -698,6 +700,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -756,6 +759,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -785,6 +789,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
@@ -806,6 +811,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ShoppingBuddy/ShoppingBuddy.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 9QCPT3JHZE;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ShoppingBuddy/Info.plist;
