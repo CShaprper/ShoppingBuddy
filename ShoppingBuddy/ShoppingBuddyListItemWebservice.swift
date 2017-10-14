@@ -25,7 +25,22 @@ class ShoppingBuddyListItemWebservice {
     //MARK: - Edit Functions
     func EditIsSelectedOnShoppingListItem(listItem: ShoppingListItem) -> Void {
         
-        listItemRef.child(listItem.listID!).child(listItem.id!).child("isSelected").setValue(listItem.isSelected!)
+        listItemRef.child(listItem.listID!).child(listItem.id!).child("isSelected").setValue(listItem.isSelected!) { (error, dbRef) in
+            
+            if error != nil{
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            self.HideActivityIndicator()
+            NSLog("Succesfully updated siSelected Item status Firebase")
+            
+        }
         
     }
     

@@ -622,6 +622,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         HideListDetailView()
         HideAddItemPopUp()
         RefreshCardView()
+        ShoppingListDetailTableView.isEditing = false
         
     }
     

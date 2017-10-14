@@ -43,7 +43,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -56,13 +56,15 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string></string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
+	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Drop Shopper want&apos;s to inform you when your close to stores of your shopping lists.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Drop Shopper want&apos;s you to pick a profile image.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Drop Shopper want&apos;s you to pick a user image for your profile!</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Courgette-Regular.ttf</string>
@@ -71,7 +73,6 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
 		<string>location</string>
 		<string>remote-notification</string>
 	</array>
