@@ -352,7 +352,7 @@
                     <viewLayoutGuide key="safeArea" id="q4e-w5-oN6"/>
                 </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="1007" y="724"/>
+            <point key="canvasLocation" x="918" y="-427"/>
         </scene>
         <!--Settings-->
         <scene sceneID="0GD-HV-var">
@@ -366,7 +366,7 @@
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                             </imageView>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="iQH-d2-eko" customClass="DesignableUISlider" customModule="ShoppingBuddy" customModuleProvider="target">
-                                <rect key="frame" x="19" y="101" width="337" height="31"/>
+                                <rect key="frame" x="19" y="101" width="337" height="60"/>
                                 <color key="minimumTrackTintColor" red="1" green="0.33940887451171875" blue="0.30029374361038208" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="maximumTrackTintColor" red="0.081623293459415436" green="0.97790521383285522" blue="0.99745064973831177" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="thumbTintColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -387,7 +387,7 @@
                                 </variation>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k0J-GX-gYy" userLabel="Buy Button View">
-                                <rect key="frame" x="37.5" y="186" width="300" height="100"/>
+                                <rect key="frame" x="37.5" y="215" width="300" height="100"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zb2-eg-40t">
                                         <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
@@ -413,7 +413,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lc2-8W-VHs">
-                                <rect key="frame" x="37.5" y="306" width="300" height="100"/>
+                                <rect key="frame" x="37.5" y="335" width="300" height="100"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hky-c9-R9X">
                                         <rect key="frame" x="0.0" y="0.0" width="300" height="100"/>
@@ -438,7 +438,7 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ryd-KK-7dp">
-                                <rect key="frame" x="16" y="139" width="343" height="37"/>
+                                <rect key="frame" x="16" y="168" width="343" height="37"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="off" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9A5-88-vbD">
                                         <rect key="frame" x="0.0" y="0.0" width="60.5" height="37"/>
@@ -574,7 +574,7 @@
                     <viewLayoutGuide key="safeArea" id="KVL-Sh-hcw"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3303.1999999999998" y="1588.1559220389806"/>
+            <point key="canvasLocation" x="5678" y="1654"/>
         </scene>
         <!--Messages-->
         <scene sceneID="zDD-dW-MS0">
@@ -723,7 +723,7 @@
                     <viewLayoutGuide key="safeArea" id="d5c-Ko-j5N"/>
                 </activityIndicatorView>
             </objects>
-            <point key="canvasLocation" x="3302" y="2276"/>
+            <point key="canvasLocation" x="4806" y="1654"/>
         </scene>
         <!--Shopping Lists-->
         <scene sceneID="Swa-ox-URi">
@@ -2156,7 +2156,7 @@
                     <viewLayoutGuide key="safeArea" id="scm-DL-pOp"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="3302" y="724"/>
+            <point key="canvasLocation" x="2593" y="1654"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Nat-6a-auh">
@@ -2531,7 +2531,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </imageView>
             </objects>
-            <point key="canvasLocation" x="3303" y="-433"/>
+            <point key="canvasLocation" x="-170" y="1674"/>
         </scene>
         <!--Custom Tab Bar Controller-->
         <scene sceneID="uWU-cD-cev">
@@ -2551,7 +2551,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Akx-lZ-kmb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1767" y="724"/>
+            <point key="canvasLocation" x="1681" y="-426"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="Fmw-Qx-fXm">
@@ -2581,7 +2581,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C0C-ms-MPp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2558" y="-433"/>
+            <point key="canvasLocation" x="-170" y="373"/>
         </scene>
         <!--Messages-->
         <scene sceneID="nQw-4U-m5w">
@@ -2604,7 +2604,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lqt-fW-sgg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2558" y="2276"/>
+            <point key="canvasLocation" x="4806" y="373"/>
         </scene>
         <!--Stores-->
         <scene sceneID="uIr-tu-t98">
@@ -2629,7 +2629,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cvc-T7-RWj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2558" y="1589"/>
+            <point key="canvasLocation" x="5678" y="373"/>
         </scene>
         <!--Shopping List-->
         <scene sceneID="10c-zs-8Vn">
@@ -2654,7 +2654,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SSd-nU-Khq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2558" y="734"/>
+            <point key="canvasLocation" x="2593" y="373"/>
         </scene>
     </scenes>
     <resources>

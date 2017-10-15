@@ -422,12 +422,48 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     private func cancelSharing() -> Void {
         
+        //No members to cancel sharing
         if allShoppingLists[currentShoppingListIndex].members.count == 0 {
             
             let title = String.ListCurrentlyNotSharedTitle
             let message = String.ListCurrentlyNotSharedMessage
             self.ShowAlertMessage(title: title, message: message)
             return
+            
+        }
+        
+        //Cancel sharing directly in not list owner
+        if allShoppingLists[currentShoppingListIndex].owneruid! != Auth.auth().currentUser!.uid {
+            
+            //Cancel sharing by list member - list member leaves group list
+            
+            // Ask user if user wants to leave the group list
+            let title = String.LeaveGroupListAlertTitle
+            let message = String.LeaveGroupListAlertMessage + currentUser!.nickname!
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
+                
+                self.sbListWebservice.CancelSharingBySharedUserForMember(member: currentUser!, listToCancel: allShoppingLists[self.currentShoppingListIndex])
+                
+                if let index = allShoppingLists[self.currentShoppingListIndex].members.index(where: { $0.memberID == currentUser!.id }) {
+                    
+                    allShoppingLists[self.currentShoppingListIndex].members.remove(at: index)
+                    
+                }
+               
+                //collectionView.deleteItems(at: [indexPath])
+                self.CardOneMembersCollectionView.reloadData()
+                self.CardTwoMembersCollectionView.reloadData()
+                self.hideCanceSharingPopUp()
+                
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) -> Void in
+                
+                self.hideCanceSharingPopUp()
+                
+            }))
+            
+            present(alert, animated: true, completion: nil)
             
         }
         
