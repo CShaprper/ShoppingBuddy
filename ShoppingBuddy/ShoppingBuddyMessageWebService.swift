@@ -454,10 +454,12 @@ class ShoppingBuddyMessageWebservice {
                 if let index = allMessages.index(where: { $0.id == newMsg.id }) {
                     
                     allMessages[index] = newMsg
+                    NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
                     
                 } else {
                     
                     allMessages.append(newMsg)
+                    NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
                     
                 }
                     

@@ -27,6 +27,10 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
     func ConfigureCell(invitation: ShoppingBuddyMessage) -> Void{
         self.backgroundColor = UIColor.clear
         
+        RoundedView.layer.borderColor = tintColor.cgColor
+        RoundedView.layer.borderWidth = 5
+        RoundedView.layer.cornerRadius = 30
+        
         SenderProfileImage.layer.cornerRadius = SenderProfileImage.frame.width * 0.5
         SenderProfileImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         SenderProfileImage.clipsToBounds = true
@@ -45,9 +49,6 @@ class ShoppingBuddyInvitationCell: UITableViewCell {
         lbl_InviteTitle.text = invitation.title != nil ? invitation.title! : ""
         lblMessage.text = invitation.message != nil ? invitation.message! : ""
         lbl_Date.text = invitation.date != nil ? invitation.date! : ""
-        RoundedView.layer.borderColor = tintColor.cgColor
-        RoundedView.layer.borderWidth = 5
-        RoundedView.layer.cornerRadius = 30
         
     }
 

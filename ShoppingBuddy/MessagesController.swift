@@ -85,12 +85,15 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
     //MARK: - Notification listener selectors
     @objc func AllInvitesReceived(notification: Notification) -> Void {
         
-        InvitationsTableView.reloadData()
-        
         for msg in allMessages{
             
             if let _ = allUsers.index(where: { $0.id == msg.senderID }){ }
             else {  sbUserService.ObserveUser(userID: msg.senderID!, dlType: .DownloadForMessagesController) }
+            
+        }
+        OperationQueue.main.addOperation {
+            
+            self.InvitationsTableView.reloadData()
             
         }
         
@@ -101,9 +104,13 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         
     }
     
-    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {
+    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {        
         
-        InvitationsTableView.reloadData()   
+        OperationQueue.main.addOperation {
+            
+            self.InvitationsTableView.reloadData()
+            
+        }
         
     }
 }

@@ -439,10 +439,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
             // Ask user if user wants to leave the group list
             let title = String.LeaveGroupListAlertTitle
-            let message = String.LeaveGroupListAlertMessage + currentUser!.nickname!
+            let message = String.localizedStringWithFormat(String.LeaveGroupListAlertMessage , allShoppingLists[self.currentShoppingListIndex].name!)
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
                 
+                SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
                 self.sbListWebservice.CancelSharingBySharedUserForMember(member: currentUser!, listToCancel: allShoppingLists[self.currentShoppingListIndex])
                 
                 if let index = allShoppingLists[self.currentShoppingListIndex].members.index(where: { $0.memberID == currentUser!.id }) {
@@ -454,17 +455,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 //collectionView.deleteItems(at: [indexPath])
                 self.CardOneMembersCollectionView.reloadData()
                 self.CardTwoMembersCollectionView.reloadData()
-                self.hideCanceSharingPopUp()
                 
             }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) -> Void in
-                
-                self.hideCanceSharingPopUp()
-                
-            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
             
             present(alert, animated: true, completion: nil)
             
+           return
         }
         
         if ShowBlurrView() {
@@ -641,6 +638,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
             
+            SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
             let sbMessageService = ShoppingBuddyMessageWebservice()
             sbMessageService.alertMessageDelegate = self
             sbMessageService.activityAnimationServiceDelegate = self
@@ -687,11 +685,12 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     }
     
     @objc func btn_Store_Pressed(sender: UIButton) -> Void {
-        
+        /* not in use
         let sbMessageService = ShoppingBuddyMessageWebservice()
         sbMessageService.alertMessageDelegate = self
         sbMessageService.activityAnimationServiceDelegate = self
         sbMessageService.SendWillGoToStoreMessage(list: allShoppingLists[currentShoppingListIndex])
+     */
         
     }
     func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -1140,6 +1139,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
+                
+                self.TrashImage.alpha = 0
+                self.TrashImage.transform = .identity
                 
             }
         })
