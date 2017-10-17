@@ -156,4 +156,7 @@ extension String{
     static let DashboardOnboardingImage = NSLocalizedString("DashboardOnboardingImage", comment: "")
     static let ShoppingListsOnboardiongImage = NSLocalizedString("ShoppingListsOnboardiongImage", comment: "")
     static let OnboardingListView = NSLocalizedString("OnboardingListView", comment: "")
+    
+    static let CheckMonitoredRadiusInSettingsAlertTitle = NSLocalizedString("CheckMonitoredRadiusInSettingsAlertTitle", comment: "")
+    static let CheckMonitoredRadiusInSettingsAlertMessage = NSLocalizedString("CheckMonitoredRadiusInSettingsAlertMessage", comment: "")
 }

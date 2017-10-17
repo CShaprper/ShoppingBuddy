@@ -17,7 +17,7 @@ import GoogleMobileAds
 
 var possibleRegionsPerStore:Int = 4
 
-class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAnimationService, UIGestureRecognizerDelegate{
+class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRecognizerDelegate{
     //MARK: - Outlets
     @IBOutlet var BackgroundView: UIImageView!
     @IBOutlet var MapView: MKMapView!
@@ -124,29 +124,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if timer != nil { timer.invalidate() }
-    }
-    
-    
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() -> Void {
-        
-        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
-        ActivityIndicator.center = view.center
-        ActivityIndicator.color = UIColor.green
-        ActivityIndicator.startAnimating()
-        
-        // view.addSubview(ActivityIndicator)
-        
-    }
-    func HideActivityIndicator()  -> Void {
-        
-        if view.subviews.contains(ActivityIndicator) {
-            OperationQueue.main.addOperation {
-                self.ActivityIndicator.removeFromSuperview()                
-            }
-        }
-        
-    }
+    } 
     
     @objc func UserProfileImageTapped(_ sender: UITapGestureRecognizer) {
         
@@ -190,17 +168,18 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
     }
     
-    @objc func UserProfileImageDownloadFinished(notification:Notification)  -> Void {
+    @objc func UserProfileImageDownloadFinished(notification:Notification)  -> Void { 
         
         if let index = allUsers.index(where: { $0.profileImageURL == currentUser!.profileImageURL }) {
             
             OperationQueue.main.addOperation {
+                if allUsers.isEmpty { return }
                 self.UserProfileImage.image = allUsers[index].profileImage
                 self.UserProfileImage.alpha = 1
             }
             
         }
-        HideActivityIndicator()
+        
     }
     
     
@@ -329,7 +308,19 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     }
     @objc func btn_PinHomePosition_Pressed(sender: UIButton) -> Void {
         
-        SaveCurrentLocationAsHomeLocation(coordinate: self.userLocation!)
+        let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        if rad == 0 {
+            
+            let title = String.CheckMonitoredRadiusInSettingsAlertTitle
+            let message = String.CheckMonitoredRadiusInSettingsAlertMessage
+            
+            ShowAlertMessage(title: title, message: message)
+            
+        }
+        
+        guard let loc = self.userLocation else { return }
+        
+        SaveCurrentLocationAsHomeLocation(coordinate: loc)
         GetReverseGeolocation()
         
     }
@@ -419,33 +410,35 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
     
     private func displayNotification() -> Void {
         
-        //Invite Notification View
-        let size = txt_NotificationMessage.sizeThatFits(CGSize(width: txt_NotificationMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
-        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 30
-        InvitationNotification.center.x = view.center.x
-        InvitationNotification.center.y = -InvitationNotification.frame.height
-        InvitationNotification.layer.cornerRadius = 30
-        InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        InvitationNotification.layer.borderWidth = 3
-        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
-        InviteUserImage.clipsToBounds = true
-        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        InviteUserImage.layer.borderWidth = 3
-        InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
-        InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
-        InvitationNotification.layer.shadowOpacity  = 1
-        InvitationNotification.layer.shadowRadius  = 10
-        
-        view.addSubview(InvitationNotification)
-        
-        SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
-        UIView.animate(withDuration: 2) {
+        OperationQueue.main.addOperation {
+            //Invite Notification View
+            let size = self.txt_NotificationMessage.sizeThatFits(CGSize(width: self.txt_NotificationMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+            self.InvitationNotification.frame.size.height = size.height + self.lbl_InviteTitle.frame.height + 30
+            self.InvitationNotification.center.x = self.view.center.x
+            self.InvitationNotification.center.y = -self.InvitationNotification.frame.height
+            self.InvitationNotification.layer.cornerRadius = 30
+            self.InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+            self.InvitationNotification.layer.borderWidth = 3
+            self.InviteUserImage.layer.cornerRadius = self.InviteUserImage.frame.width * 0.5
+            self.InviteUserImage.clipsToBounds = true
+            self.InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+            self.InviteUserImage.layer.borderWidth = 3
+            self.InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
+            self.InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
+            self.InvitationNotification.layer.shadowOpacity  = 1
+            self.InvitationNotification.layer.shadowRadius  = 10
             
-            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+            self.view.addSubview(self.InvitationNotification)
             
+            SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
+            UIView.animate(withDuration: 2) {
+                
+                self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+                
+            }
+            
+            self.timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.HideNotification), userInfo: nil, repeats: false)
         }
-        
-        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(HideNotification), userInfo: nil, repeats: false)
         
     }
     
@@ -502,13 +495,11 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         //Shopping Buddy Message Webservice
         sbMessagesWebService = ShoppingBuddyMessageWebservice()
-        sbMessagesWebService.activityAnimationServiceDelegate = self
         sbMessagesWebService.alertMessageDelegate = self
         
         //Firebase User
         sbUserWebservice = ShoppingBuddyUserWebservice()
         sbUserWebservice.alertMessageDelegate = self
-        sbUserWebservice.activityAnimationServiceDelegate = self
         sbUserWebservice.GetCurrentUser()
         
         //Magnifiying glass shadow
@@ -538,7 +529,6 @@ class DashboardController: UIViewController, IAlertMessageDelegate, IActivityAni
         
         //Load all Stores
         sbListWebservice = ShoppingBuddyListWebservice()
-        sbListWebservice.activityAnimationServiceDelegate = self
         sbListWebservice.alertMessageDelegate = self
         
         MapView.delegate = self
@@ -1005,7 +995,6 @@ extension DashboardController: UIImagePickerControllerDelegate, UINavigationCont
             
             let sbUserService = ShoppingBuddyUserWebservice()
             sbUserService.alertMessageDelegate = self
-            sbUserService.activityAnimationServiceDelegate = self
             sbUserService.changeUserProfileImage(forUserID: Auth.auth().currentUser!.uid, image: image)
             
         }

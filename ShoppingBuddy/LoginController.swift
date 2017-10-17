@@ -62,8 +62,8 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        // Show the navigation bar so it will be there on other view controllers
         self.navigationController?.isNavigationBarHidden = false
+        HideActivityIndicator()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -76,6 +76,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     
     //IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
+        HideActivityIndicator()
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
@@ -92,11 +93,6 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
         // NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedIn, object: nil, userInfo: nil)
         
     }
-    @IBAction func btn_PinHomePosition_pressed(_ sender: Any) {
-    
-    NSLog("Resrrsrsrrsr")
-    }
-    
     
     
     //MARK: - IShoppingBuddyUserWebservice Impementation
@@ -111,7 +107,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             ActivityIndicatior.color = UIColor.ColorPaletteMiddle()
             ActivityIndicatior.center = view.center
             ActivityIndicatior.transform = CGAffineTransform(scaleX: 2, y: 2)
-            BlurrView!.addSubview(ActivityIndicatior)
+            view.addSubview(ActivityIndicatior)
             ActivityIndicatior.startAnimating()
         }
     }
@@ -208,6 +204,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
+                ShowActivityIndicator()
                 sbUserWebservice.LoginFirebaseUser(email: txt_Email.text!, password: txt_Password.text!)
             }
             break
@@ -216,6 +213,7 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             isValid = ValidationFactory.Validate(type: eValidationType.email, validationString: txt_Email.text, alertDelegate: self)
             isValid = ValidationFactory.Validate(type: eValidationType.password, validationString: txt_Password.text, alertDelegate: self)
             if isValid{
+                ShowActivityIndicator()
                 sbUserWebservice.CreateNewFirebaseUser(profileImage:LogInLogoImage.image!, nickname: txt_Nickname.text!, email: txt_Email.text!, password: txt_Password.text!)
             }
             break

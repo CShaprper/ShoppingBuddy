@@ -15,7 +15,6 @@ import FirebaseMessaging
 import FirebaseStorage
 
 class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
-    var activityAnimationServiceDelegate:IActivityAnimationService?
     var alertMessageDelegate: IAlertMessageDelegate?
     
     internal var ref = Database.database().reference()
@@ -27,10 +26,10 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     
     //CurrentUser Download
     func GetCurrentUser(){
-        ShowActivityIndicator()
+
         userRef.child(Auth.auth().currentUser!.uid).observe(.value, with: { (snapshot) in
             
-            if snapshot.value is NSNull { self.HideActivityIndicator(); return }
+            if snapshot.value is NSNull { return }
             
             currentUser!.id = snapshot.key
             currentUser!.email = snapshot.childSnapshot(forPath: "email").value as? String
@@ -49,7 +48,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                 allUsers.append(currentUser!)
                 
             }
-                self.HideActivityIndicator()
                 NotificationCenter.default.post(name: .CurrentUserReceived, object: nil, userInfo: nil)
             
             
@@ -66,10 +64,9 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     
     func ObserveUser(userID: String, dlType:eUserDLType){
         
-        ShowActivityIndicator()
         userRef.child(userID).observeSingleEvent(of: .value, with: { (userSnap) in
             
-            if userSnap.value is NSNull { self.HideActivityIndicator(); return }
+            if userSnap.value is NSNull { return }
             
             let newUser = ShoppingBuddyUser()
             newUser.id = userSnap.key
@@ -88,9 +85,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                
                 allUsers.append(newUser)
                 
-            }
-                self.HideActivityIndicator()
-            
+            }            
             
             
         }) { (error) in
@@ -109,7 +104,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     func LoginFirebaseUser(email: String, password: String) {
         
         //self.isCalled = false
-        self.ShowActivityIndicator()
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             
             if error != nil{
@@ -123,7 +117,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             } else {
                 
                 UserDefaults.standard.set(user!.uid, forKey: eUserDefaultKey.CurrentUserID.rawValue)
-                self.HideActivityIndicator()
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedIn, object: nil, userInfo: nil)
                 NSLog("Succesfully loged user in to Firebase")
                 
@@ -134,11 +127,9 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     //MARK: User Loout
     func LogFirebaseUserOut() {
         
-        self.ShowActivityIndicator()
         let auth = Auth.auth()
         do{
             try  auth.signOut()
-            self.HideActivityIndicator()
             UserDefaults.standard.set("false", forKey: eUserDefaultKey.CurrentUserID.rawValue)
             NSLog("Succesfully logged out")
         }
@@ -154,7 +145,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     //MARK: - Change FullVersionUser
     func ChangeFullVersionUserStatus(status: Bool) -> Void {
         
-        self.ShowActivityIndicator()
         ref.child("users").child(Auth.auth().currentUser!.uid).child("isFullVersionUser").setValue(status)       
         
     }
@@ -188,8 +178,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
             return
         }
         
-        self.ShowActivityIndicator()
-        
         ref.child("users").child(uid).child("fcmToken").setValue(token) { (error, dbRef) in
             
             if error != nil {
@@ -210,7 +198,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
         
         Auth.auth().sendPasswordReset(withEmail: email) { (error) in
             
-            if error == nil {
+            if error != nil {
                 
                 NSLog(error!.localizedDescription)
                 let title = String.OnlineFetchRequestError
@@ -280,7 +268,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                             
                         }
                         
-                        self.HideActivityIndicator()
                         NSLog("Succesfully saved user to Firebase")
                         if let index = allUsers.index(where: { $0.id == forUserID}) {
                             
@@ -302,7 +289,6 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
     //MARK: - Helpers
     private func SaveNewUserWithUIDtoFirebase(shoppingBuddyUser:ShoppingBuddyUser, user: User?) -> Void {
         
-        self.ShowActivityIndicator()
         //Image Upload
         let imagesRef = Storage.storage().reference().child(user!.uid)
         if shoppingBuddyUser.profileImage != nil {
@@ -337,10 +323,8 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                                 return
                                 
                             }
-                                self.HideActivityIndicator()
+                            
                                 NSLog("Succesfully saved user to Firebase")
-                                let promocode = self.ref.child("users").child(user!.uid).childByAutoId()
-                                self.ref.child("users").child(user!.uid).child("promocode").setValue(promocode.key)
                                 NotificationCenter.default.post(name: Notification.Name.CurrentUserCreated, object: nil, userInfo: nil)
                                 
                              
@@ -354,37 +338,21 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
         }
     }
 }
-extension ShoppingBuddyUserWebservice: IAlertMessageDelegate, IActivityAnimationService {
-    
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-            self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingListItem")
-        }
-    }
-    func HideActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-            self.activityAnimationServiceDelegate!.HideActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingListItem")
-        }
-    }
+extension ShoppingBuddyUserWebservice: IAlertMessageDelegate {
     
     //MARK: IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
-        self.HideActivityIndicator()
+        
         if alertMessageDelegate != nil {
+            
             OperationQueue.main.addOperation {
                 self.alertMessageDelegate?.ShowAlertMessage(title: title, message: message)
             }
+            
         } else {
+            
             NSLog("AlertMessageDelegate not set from calling class in ShoppingListItem")
+            
         }
     }
     

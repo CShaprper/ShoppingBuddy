@@ -8,9 +8,8 @@
 
 import StoreKit
 
-class IAPHelper:NSObject, IAlertMessageDelegate, IActivityAnimationService {
+class IAPHelper:NSObject, IAlertMessageDelegate {
     var alertMessageDelegate: IAlertMessageDelegate?
-    var activityAnimationServiceDelegate: IActivityAnimationService?
     var sbUserService:ShoppingBuddyUserWebservice!
     fileprivate var products:[SKProduct]?
     fileprivate var productsRequest: SKProductsRequest?
@@ -20,18 +19,11 @@ class IAPHelper:NSObject, IAlertMessageDelegate, IActivityAnimationService {
         super.init()
         sbUserService = ShoppingBuddyUserWebservice()
         sbUserService.alertMessageDelegate = alertMessageDelegate
-        sbUserService.activityAnimationServiceDelegate = activityAnimationServiceDelegate
     }
 
     func ShowAlertMessage(title: String, message: String) {
         if alertMessageDelegate != nil {
             alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
-        }
-    }
-    
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            activityAnimationServiceDelegate!.ShowActivityIndicator!()
         }
     }
     

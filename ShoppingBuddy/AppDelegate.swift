@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //GMSPlacesClient.provideAPIKey("AIzaSyAg3-8DEQUWdWXznwU7OkIGVFL05f44xLg")
         
         //AdMob
-        GADMobileAds.configure(withApplicationID: "ca-app-pub-6831541133910222~4514978949")
+        //GADMobileAds.configure(withApplicationID: "ca-app-pub-6831541133910222~4514978949")
         
         //Firebase
         FirebaseApp.configure()
@@ -45,11 +45,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UIApplication.shared.applicationIconBadgeNumber = 0
         
         //Set standard Map Zoom
-        if let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.MapSpan.rawValue) {
+        if let ms = UserDefaults.standard.object(forKey: eUserDefaultKey.MapSpan.rawValue) {
+            print(ms)
+            
+        } else {
             UserDefaults.standard.set(9000, forKey: eUserDefaultKey.MapSpan.rawValue)
         }
-        if let _ = UserDefaults.standard.object(forKey: eUserDefaultKey.MonitoredRadius.rawValue) {
-           UserDefaults.standard.set(500, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
+        
+        if let rad = UserDefaults.standard.object(forKey: eUserDefaultKey.MonitoredRadius.rawValue) {
+            print(rad)            
+        }
+        else {
+            UserDefaults.standard.set(500, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         }
         
         //Set standard value

@@ -153,3 +153,7 @@ ChangedTheListMessageMessage = "%@ changed the list '%@'. Take a look.";
 CustomMessageTitle = "Message from %@";
 ErrandsFinishedAlertTitle = "Errands completed!";
 ErrandsFinishedAlertMessage = "%@ did the errands for list '%@'.";
+
+    //Check Monitored Radius
+CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
+CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius not set. Activate the 'Geofence Radius' in at the settings menu to start monitoring stores.";

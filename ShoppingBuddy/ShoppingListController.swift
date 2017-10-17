@@ -10,7 +10,7 @@ import UIKit
 import FirebaseAuth
 import GoogleMobileAds
 
-class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, IActivityAnimationService, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -205,25 +205,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        
-        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
-        ActivityIndicator.center = view.center
-        ActivityIndicator.color = UIColor.green
-        ActivityIndicator.startAnimating()
-        view.addSubview(ActivityIndicator)
-        
-    }
-    
-    func HideActivityIndicator() {
-        
-        if view.subviews.contains(ActivityIndicator) {
-            ActivityIndicator.removeFromSuperview()
-        }
-        
-    }
-    
     
     //MARK: - Notification listener selectors
     @objc func ShoppingBuddyListDataReceived() {
@@ -237,7 +218,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 //download user
                 let sbUserService = ShoppingBuddyUserWebservice()
                 sbUserService.alertMessageDelegate = self
-                sbUserService.activityAnimationServiceDelegate = self
                 sbUserService.ObserveUser(userID: list.owneruid!, dlType: .DownloadForShoppingList)
                 
             }
@@ -250,7 +230,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                     //download user
                     let sbUserService = ShoppingBuddyUserWebservice()
                     sbUserService.alertMessageDelegate = self
-                    sbUserService.activityAnimationServiceDelegate = self
                     sbUserService.ObserveUser(userID: member.memberID!, dlType: .DownloadForShoppingList)
                     
                 }
@@ -641,7 +620,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
             let sbMessageService = ShoppingBuddyMessageWebservice()
             sbMessageService.alertMessageDelegate = self
-            sbMessageService.activityAnimationServiceDelegate = self
             sbMessageService.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: allShoppingLists[currentShoppingListIndex], listOwner: currentUser!)
             HideShareListPopUp()
             
@@ -859,7 +837,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                             self.ShoppingCartImage.alpha = 0
                             self.ShoppingCartImage.transform = .identity
                             swipedCell.transform = .identity
-                            self.HideActivityIndicator()
                             
                         })
                     } else {
@@ -1658,34 +1635,37 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     private func displayNotification() -> Void {
         
-        //Invite Notification View
-        let size = txt_InviteMessage.sizeThatFits(CGSize(width: txt_InviteMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
-        InvitationNotification.frame.size.height = size.height + lbl_InviteTitle.frame.height + 20
-        InvitationNotification.center.x = view.center.x
-        InvitationNotification.center.y = -InvitationNotification.frame.height
-        InvitationNotification.layer.cornerRadius = 30
-        InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        InvitationNotification.layer.borderWidth = 3
-        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
-        InviteUserImage.clipsToBounds = true
-        InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
-        InviteUserImage.layer.borderWidth = 3
-        InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
-        InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
-        InvitationNotification.layer.shadowOpacity  = 1
-        InvitationNotification.layer.shadowRadius  = 10
-        
-        
-        view.addSubview(InvitationNotification)
-        InviteUserImage.layer.cornerRadius = InviteUserImage.frame.width * 0.5
-        SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
-        UIView.animate(withDuration: 2) {
+        OperationQueue.main.addOperation {
             
-            self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+            //Invite Notification View
+            let size = self.txt_InviteMessage.sizeThatFits(CGSize(width: self.txt_InviteMessage.frame.size.width, height: CGFloat.greatestFiniteMagnitude))
+            self.InvitationNotification.frame.size.height = size.height + self.lbl_InviteTitle.frame.height + 20
+            self.InvitationNotification.center.x = self.view.center.x
+            self.InvitationNotification.center.y = -self.InvitationNotification.frame.height
+            self.InvitationNotification.layer.cornerRadius = 30
+            self.InvitationNotification.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+            self.InvitationNotification.layer.borderWidth = 3
+            self.InviteUserImage.layer.cornerRadius = self.InviteUserImage.frame.width * 0.5
+            self.InviteUserImage.clipsToBounds = true
+            self.InviteUserImage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+            self.InviteUserImage.layer.borderWidth = 3
+            self.InvitationNotification.layer.shadowColor  = UIColor.black.cgColor
+            self.InvitationNotification.layer.shadowOffset  = CGSize(width: 30, height:30)
+            self.InvitationNotification.layer.shadowOpacity  = 1
+            self.InvitationNotification.layer.shadowRadius  = 10
             
+            
+            self.view.addSubview(self.InvitationNotification)
+            self.InviteUserImage.layer.cornerRadius = self.InviteUserImage.frame.width * 0.5
+            SoundPlayer.PlaySound(filename: "pling", filetype: "wav")
+            UIView.animate(withDuration: 2) {
+                
+                self.InvitationNotification.transform = CGAffineTransform(translationX: 0, y: self.InvitationNotification.frame.size.height * 2 + self.topLayoutGuide.length)
+                
+            }
+            
+            self.timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(self.HideSharingInvitationNotification), userInfo: nil, repeats: false)
         }
-        
-        timer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(HideSharingInvitationNotification), userInfo: nil, repeats: false)
         
     }
     
@@ -1704,13 +1684,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         //SHoppingBuddyListItemWebService
         sbListItemWebservice = ShoppingBuddyListItemWebservice()
-        sbListItemWebservice.activityAnimationServiceDelegate  = self
         sbListItemWebservice.alertMessageDelegate = self
         
         //Firebase Shopping list
         sbListWebservice = ShoppingBuddyListWebservice()
         sbListWebservice.alertMessageDelegate = self
-        sbListWebservice.activityAnimationServiceDelegate = self
         
         if allShoppingLists.isEmpty {
             
@@ -1906,7 +1884,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
         
         sbMessageWebService = ShoppingBuddyMessageWebservice()
-        sbMessageWebService.activityAnimationServiceDelegate = self
         sbMessageWebService.alertMessageDelegate = self
         
         SendMessagePopUp.layer.shadowColor  = UIColor.black.cgColor
@@ -2180,13 +2157,41 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        let dropHeight = abs((ShoppingListDetailTableView.frame.height))
         if allShoppingLists[currentShoppingListIndex].items.isEmpty { return }
         
-        let row = indexPath.row
-        if allShoppingLists[currentShoppingListIndex].items[row].isSelected == false { return }
-        allShoppingLists[currentShoppingListIndex].items[row].isSelected  = allShoppingLists[currentShoppingListIndex].items[row].isSelected == false ? true : false
-        sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[currentShoppingListIndex].items[row])
+        if allShoppingLists[self.currentShoppingListIndex].items[indexPath.row].isSelected! {
+            
+            SoundPlayer.PlaySound(filename: "drip", filetype: "wav")
+            allShoppingLists[self.self.currentShoppingListIndex].items[indexPath.row].isSelected = false
+            self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[self.currentShoppingListIndex].items[indexPath.row])
+            return
+            
+        }
         
+        //Shake Cart
+        ShoppingCartImage.alpha = 1
+        view.bringSubview(toFront: ShoppingCartImage)
+        UIView.animate(withDuration: 0.2, delay: 0.2, usingSpringWithDamping: 0.2, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+            
+            self.ShoppingCartImage.transform = CGAffineTransform(translationX: 20, y: 0)
+            
+        })
+        //Drop item to cart
+        UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+            
+            tableView.cellForRow(at: indexPath)!.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.9, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+            SoundPlayer.PlaySound(filename: "drip", filetype: "wav")
+            
+        }, completion: { (true) in
+            allShoppingLists[self.currentShoppingListIndex].items[indexPath.row].isSelected =  true
+            self.sbListItemWebservice.EditIsSelectedOnShoppingListItem(listItem: allShoppingLists[self.currentShoppingListIndex].items[indexPath.row])
+            
+            self.ShoppingCartImage.alpha = 0
+            self.ShoppingCartImage.transform = .identity
+            tableView.cellForRow(at: indexPath)!.transform = .identity
+            
+        })
         
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

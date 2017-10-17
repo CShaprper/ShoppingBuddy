@@ -507,6 +507,10 @@ exports.handle_ListStatusUpdate = functions.database.ref('/shoppinglists/{listID
 
                     })
 
+                }).then(() => {
+
+                    return admin.database().ref('shoppinglist_member').child(event.params.listID).set(null)
+
                 })
 
             })

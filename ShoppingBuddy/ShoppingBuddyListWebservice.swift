@@ -14,8 +14,7 @@ import FirebaseMessaging
 import FirebaseStorage
 
 class ShoppingBuddyListWebservice {
-    var alertMessageDelegate: IAlertMessageDelegate?
-    var activityAnimationServiceDelegate: IActivityAnimationService?
+    var alertMessageDelegate: IAlertMessageDelegate? 
     internal var sbUserService:ShoppingBuddyUserWebservice!
     
     internal var ref = Database.database().reference()
@@ -36,7 +35,6 @@ class ShoppingBuddyListWebservice {
      */
     func SaveListToFirebaseDatabase(currentUser:ShoppingBuddyUser, listName:String, relatedStore:String) -> Void {
         
-        self.ShowActivityIndicator()
         let newListRef = ref.child("shoppinglists").childByAutoId()
         newListRef.updateChildValues(["listName":listName, "relatedStore":relatedStore, "owneruid":Auth.auth().currentUser!.uid], withCompletionBlock: { (error, dbRef) in
             
@@ -50,8 +48,6 @@ class ShoppingBuddyListWebservice {
                 
             }
             
-            self.HideActivityIndicator()
-            
         })
     }
     
@@ -61,17 +57,11 @@ class ShoppingBuddyListWebservice {
     func ObserveAllList() -> Void{
         if currentUser == nil { return }
         
-        self.ShowActivityIndicator()
         ref.child("users_shoppinglists").child(Auth.auth().currentUser!.uid).observe(.value, with: { (usersListsSnap) in            
             
             allShoppingLists = []
             
-            if usersListsSnap.value is NSNull {
-                
-                self.HideActivityIndicator()
-                return
-            
-            }
+            if usersListsSnap.value is NSNull { return }
 
             for listSnap in usersListsSnap.children {
                 
@@ -79,7 +69,7 @@ class ShoppingBuddyListWebservice {
                 
                 self.ref.child("shoppinglists").child(list.key).observe(.value, with: { (snapshot) in
                     
-                    if snapshot.value is NSNull { self.HideActivityIndicator(); return }
+                    if snapshot.value is NSNull { return }
                     
                     
                     //Read listData
@@ -109,7 +99,6 @@ class ShoppingBuddyListWebservice {
                     // Read list Items
                     self.ObserveListItems()
                     
-                    self.HideActivityIndicator()
                     NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                     
                     
@@ -117,7 +106,6 @@ class ShoppingBuddyListWebservice {
                     
                 }) { (error) in
                     
-                    self.HideActivityIndicator()
                     NSLog(error.localizedDescription)
                     let title = String.OnlineFetchRequestError
                     let message = error.localizedDescription
@@ -154,7 +142,6 @@ class ShoppingBuddyListWebservice {
     private func ObserveListMembers() -> Void {
         
         if allShoppingLists.isEmpty { return }
-        self.ShowActivityIndicator()
         
         for list in allShoppingLists {
             //Read List members
@@ -188,14 +175,12 @@ class ShoppingBuddyListWebservice {
                     }
                 }
                 
-                self.HideActivityIndicator()
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                 
                 
                 
             }, withCancel: { (error) in
                 
-                self.HideActivityIndicator()
                 NSLog(error.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error.localizedDescription
@@ -209,7 +194,6 @@ class ShoppingBuddyListWebservice {
     
     private func ObserveListItems() -> Void {
         
-        self.ShowActivityIndicator()
         //Read List items
         for list in allShoppingLists {
             
@@ -249,12 +233,10 @@ class ShoppingBuddyListWebservice {
                     
                 }
                 
-                self.HideActivityIndicator()
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyListDataReceived, object: nil, userInfo: nil)
                 
             }, withCancel: { (error) in
                 
-                self.HideActivityIndicator()
                 NSLog(error.localizedDescription)
                 let title = String.OnlineFetchRequestError
                 let message = error.localizedDescription
@@ -268,8 +250,6 @@ class ShoppingBuddyListWebservice {
     }
     
     func CancelSharingByOwnerForUser(userToDelete:ShoppingBuddyUser , listToCancel:ShoppingList) -> Void {
-        
-        self.ShowActivityIndicator()
         
         //Add message for canceled user to messages node
         let title = String.ListOwnerCanceledSharingTitle
@@ -288,13 +268,10 @@ class ShoppingBuddyListWebservice {
             
         })
         
-        self.HideActivityIndicator()
-        
     }
     
     func CancelSharingBySharedUserForMember(member:ShoppingBuddyUser, listToCancel:ShoppingList) -> Void {
         
-        self.ShowActivityIndicator()
         //Add message to messages node
         let title = String.SharedUserCanceledSharingTitle
         let message = String.localizedStringWithFormat(String.SharedUserCanceledSharingMessage, currentUser!.nickname!, listToCancel.name! )
@@ -319,35 +296,24 @@ class ShoppingBuddyListWebservice {
         
         if currentUser?.id == nil { return }
         
-        self.ShowActivityIndicator()
         ref.child("users_shoppinglists").child(Auth.auth().currentUser!.uid).observeSingleEvent(of: .value, with: { (snapshot) in
             
-            if snapshot.value is NSNull {
-                
-                self.HideActivityIndicator()
-                return
-                
-            }
+            if snapshot.value is NSNull { return }
             
             possibleRegionsPerStore = Int(snapshot.childrenCount)
             for lists in snapshot.children {
                 
-                guard let list = lists as? DataSnapshot else {
-                    
-                    self.HideActivityIndicator()
-                    return
-                    
-                }
+                guard let list = lists as? DataSnapshot else { return }
                 
                 self.ref.child("shoppinglists").child(list.key).observeSingleEvent(of: .value, with: { (listSnap) in
                     
                     let store = listSnap.childSnapshot(forPath: "relatedStore").value as? String
                     
-                    if store == nil { self.HideActivityIndicator(); return }
+                    if store == nil { return }
                     
                     self.ref.child("listItems").child(list.key).observeSingleEvent(of: .value, with: { (itemSnap) in
                         
-                        if itemSnap.childrenCount == 0  { self.HideActivityIndicator(); return } // only observe store when list contains open items
+                        if itemSnap.childrenCount == 0  { return } // only observe store when list contains open items
                         
                         var cnt:Int = 0
                         for items in itemSnap.children {
@@ -358,11 +324,10 @@ class ShoppingBuddyListWebservice {
                             
                         }
                         
-                        if cnt == 0 { self.HideActivityIndicator(); return }
+                        if cnt == 0 { return }
                         let userInfo = ["store": store!]
                         
                         NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyStoreReceived, object: nil, userInfo: userInfo)
-                        self.HideActivityIndicator()
                         
                     })
                     
@@ -383,19 +348,15 @@ class ShoppingBuddyListWebservice {
     
     func OrderShoppingListItems(list: ShoppingList) -> Void {
         
-        self.ShowActivityIndicator()
-        
         for i in 0..<list.items.count{
              ref.child("listItems").child(list.id!).child(list.items[i].id!).child("sortNumber").setValue(i + 1)
         }
-        self.HideActivityIndicator()
         
     }
     
     
     //MARK: - Delete Functions
-    func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void {
-        self.ShowActivityIndicator()
+    func DeleteShoppingListFromFirebase(listToDelete: ShoppingList) -> Void { 
         
         ref.child("shoppinglists").child(listToDelete.id!).child("status").setValue("deleted by owner", withCompletionBlock: { (error, dbRef) in
             
@@ -424,37 +385,21 @@ class ShoppingBuddyListWebservice {
 }
 
 
-extension ShoppingBuddyListWebservice: IActivityAnimationService, IAlertMessageDelegate {
+extension ShoppingBuddyListWebservice: IAlertMessageDelegate {
     
     //MARK: - IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
-        HideActivityIndicator()
+        
         if alertMessageDelegate != nil {
+            
             OperationQueue.main.addOperation {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
             }
+            
         } else {
+            
             NSLog("alertMessageDelegate not set from calling class in ShoppingList")
-        }
-    }
-    
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-                self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator() in ShoppingList")
-        }
-    }
-    func HideActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-                self.activityAnimationServiceDelegate!.HideActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator() in ShoppingList")
+            
         }
     }
     

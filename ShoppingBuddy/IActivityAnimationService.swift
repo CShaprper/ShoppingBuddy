@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 @objc protocol IActivityAnimationService {
     @objc optional var activityAnimationServiceDelegate:IActivityAnimationService? { get set }
     @objc optional func ShowActivityIndicator()

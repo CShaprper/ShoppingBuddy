@@ -9,7 +9,7 @@
 import UIKit
 import GoogleMobileAds
 
-class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnimationService {
+class MessagesController: UIViewController, IAlertMessageDelegate {
     //MARK: - Outlets
     @IBOutlet var BackgroundImage: UIImageView!
     @IBOutlet var InvitationsTableView: UITableView!
@@ -37,13 +37,11 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
-        sbMessageWebservice.activityAnimationServiceDelegate = self
         sbMessageWebservice.alertMessageDelegate = self
         sbMessageWebservice.ObserveAllMessages()
         
         //sbUserWebservice
         sbUserService = ShoppingBuddyUserWebservice()
-        sbUserService.activityAnimationServiceDelegate = self
         sbUserService.alertMessageDelegate = self
         
         InvitationsTableView.rowHeight = UITableViewAutomaticDimension
@@ -53,32 +51,20 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         super.viewWillAppear(animated)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        DispatchQueue.main.async {
+            self.InvitationsTableView.reloadData()
+        }
+    }
+    
     //MARK: - IAlertMessageDelegate
     func ShowAlertMessage(title: String, message: String) {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
-        
-    }
-    
-    //MARK: - IActivityAnimationService
-    func ShowActivityIndicator() {
-        
-        ActivityIndicator.activityIndicatorViewStyle = .whiteLarge
-        ActivityIndicator.center = view.center
-        ActivityIndicator.color = UIColor.green
-        ActivityIndicator.startAnimating()
-        view.addSubview(ActivityIndicator)
-        view.bringSubview(toFront:ActivityIndicator)
-        
-    }
-    
-    func HideActivityIndicator() {
-        
-        if view.subviews.contains(ActivityIndicator) {
-            ActivityIndicator.removeFromSuperview()
-        }
         
     }
     
@@ -91,10 +77,8 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
             else {  sbUserService.ObserveUser(userID: msg.senderID!, dlType: .DownloadForMessagesController) }
             
         }
-        OperationQueue.main.addOperation {
-            
+        DispatchQueue.main.async {
             self.InvitationsTableView.reloadData()
-            
         }
         
     }
@@ -104,12 +88,10 @@ class MessagesController: UIViewController, IAlertMessageDelegate, IActivityAnim
         
     }
     
-    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {        
+    @objc func UserProfileImageDownloadFinished(notification: Notification) -> Void {
         
-        OperationQueue.main.addOperation {
-            
+        DispatchQueue.main.async {
             self.InvitationsTableView.reloadData()
-            
         }
         
     }

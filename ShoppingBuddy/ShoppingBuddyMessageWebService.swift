@@ -15,7 +15,6 @@ import FirebaseStorage
 class ShoppingBuddyMessageWebservice {
     
     var alertMessageDelegate: IAlertMessageDelegate?
-    var activityAnimationServiceDelegate: IActivityAnimationService?
     internal var sbUserService:ShoppingBuddyUserWebservice!
     
     var dateFormatter:DateFormatter!
@@ -35,7 +34,6 @@ class ShoppingBuddyMessageWebservice {
     
     func SendWillGoToStoreMessage(list: ShoppingList) -> Void {
         
-        self.ShowActivityIndicator()
         let msgTitle = String.localizedStringWithFormat(String.WillGoShoppingMessageTitle, currentUser!.nickname!)
         let msgMessage = String.localizedStringWithFormat(String.WillGoShoppingMessageMessage, currentUser!.nickname!, list.relatedStore!, list.name!)
         self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.WillGoShoppingMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
@@ -50,7 +48,6 @@ class ShoppingBuddyMessageWebservice {
                 
             }
             
-            self.HideActivityIndicator()
             NSLog("Succesfully added Will Go Shopping to messages")
             
         }
@@ -60,7 +57,6 @@ class ShoppingBuddyMessageWebservice {
         
         guard let user = currentUser else { return }
         
-        self.ShowActivityIndicator()
         let msgTitle = String.localizedStringWithFormat(String.ChangedTheListMessageTitle)
         let msgMessage = String.localizedStringWithFormat(String.ChangedTheListMessageMessage, user.nickname!, list.name!, list.relatedStore!)
         self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ChangedTheListMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
@@ -75,7 +71,6 @@ class ShoppingBuddyMessageWebservice {
                 
             }
             
-            self.HideActivityIndicator()
             NSLog("Succesfully added Will Go Shopping to messages")
             
         }
@@ -86,7 +81,6 @@ class ShoppingBuddyMessageWebservice {
         
         guard let user = currentUser else { return }
         
-        self.ShowActivityIndicator()
         let msgTitle = String.localizedStringWithFormat(String.ErrandsFinishedAlertTitle)
         let msgMessage = String.localizedStringWithFormat(String.ErrandsFinishedAlertMessage, user.nickname!, list.name!)
         self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ErrandsCompletedMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
@@ -101,7 +95,6 @@ class ShoppingBuddyMessageWebservice {
                 
             }
             
-            self.HideActivityIndicator()
             NSLog("Succesfully added Will Go Shopping to messages")
             
         }
@@ -111,8 +104,6 @@ class ShoppingBuddyMessageWebservice {
     func SendCustomMessage(message: String, list: ShoppingList) -> Void {
         
         guard let user = currentUser else { return }
-        
-        self.ShowActivityIndicator()
         
         let msgTitle = String.localizedStringWithFormat(String.CustomMessageTitle, user.nickname!)
         self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":message, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.CustomMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
@@ -127,7 +118,6 @@ class ShoppingBuddyMessageWebservice {
                 
             }
             
-            self.HideActivityIndicator()
             NSLog("Succesfully added Will Go Shopping to messages")
             
         }
@@ -137,8 +127,6 @@ class ShoppingBuddyMessageWebservice {
     
     //Share Functions
     func SendFriendSharingInvitation(friendsEmail:String, list: ShoppingList, listOwner: ShoppingBuddyUser) -> Void {
-        
-        self.ShowActivityIndicator()
         
         userRef.queryOrdered(byChild: "email").queryEqual(toValue: friendsEmail).observe(.value, with: { (snapshot) in
             
@@ -185,7 +173,6 @@ class ShoppingBuddyMessageWebservice {
                             
                         }
                         
-                        self.HideActivityIndicator()
                         NSLog("Succesfully added SharingInvitation to messages")
                         
                     })
@@ -208,7 +195,6 @@ class ShoppingBuddyMessageWebservice {
     
     func AcceptInvitation(invitation: ShoppingBuddyMessage) -> Void {
         
-        self.ShowActivityIndicator()
         let inviteAccepetdMessage = String.localizedStringWithFormat(String.ShareListAcceptedMessage, currentUser!.nickname!)
         
         let msgRef = ref.child("messages").childByAutoId()
@@ -267,7 +253,6 @@ class ShoppingBuddyMessageWebservice {
                                 
                             }
                             
-                            self.HideActivityIndicator()
                             NSLog("Successfully accepted invite node")
                             
                         })
@@ -343,7 +328,6 @@ class ShoppingBuddyMessageWebservice {
                                 
                             }
                             
-                            self.HideActivityIndicator()
                             NSLog("Successfully accepted invite node")
                             
                         })
@@ -362,7 +346,6 @@ class ShoppingBuddyMessageWebservice {
     
     func DeleteMessage(messageID: String) -> Void {
         
-        self.ShowActivityIndicator()
         ref.child("users_messages").child(currentUser!.id!).child(messageID).removeValue { (error, dbRef) in
             
             if error != nil {
@@ -374,7 +357,6 @@ class ShoppingBuddyMessageWebservice {
                 return
                 
             }
-            self.HideActivityIndicator()
             NSLog("Successfully removed invite accepted message")
         }
         
@@ -383,7 +365,6 @@ class ShoppingBuddyMessageWebservice {
     func ObserveAllMessages() -> Void {
         
         if currentUser?.id == nil { return }
-        ShowActivityIndicator()
         
         ref.child("users_messages").child(currentUser!.id!).observe(.value, with: { (alluserMessagesSnap) in
             
@@ -392,7 +373,6 @@ class ShoppingBuddyMessageWebservice {
             if alluserMessagesSnap.value is NSNull {
                 
                 allMessages = []
-                self.HideActivityIndicator()
                 NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
                 return
                 
@@ -419,10 +399,9 @@ class ShoppingBuddyMessageWebservice {
     
     func ObserveMessage(messageID:String) -> Void {
         
-        ShowActivityIndicator()
         ref.child("messages").child(messageID).queryLimited(toLast: 50).observeSingleEvent(of: .value, with: { (messageSnap) in
             
-            if messageSnap.value is NSNull { self.HideActivityIndicator(); return }
+            if messageSnap.value is NSNull { return }
             
             var newMsg = ShoppingBuddyMessage()
             newMsg.id = messageSnap.key
@@ -465,9 +444,6 @@ class ShoppingBuddyMessageWebservice {
                     
                     //all invites received so lets inform userWebservice to download all users
                     NotificationCenter.default.post(name: Notification.Name.AllInvitesReceived, object: nil, userInfo: nil)
-                    
-                
-                self.HideActivityIndicator()
                 
             }, withCancel: { (error) in
                 
@@ -499,37 +475,21 @@ class ShoppingBuddyMessageWebservice {
         }
     }
 }
-extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate, IActivityAnimationService {
-    
-    //MARK: - IActivityAnimationService implementation
-    func ShowActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-                self.activityAnimationServiceDelegate!.ShowActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. ShowActivityIndicator in ShoppingBuddyMessageWebservice")
-        }
-    }
-    func HideActivityIndicator() {
-        if activityAnimationServiceDelegate != nil {
-            OperationQueue.main.addOperation {
-                self.activityAnimationServiceDelegate!.HideActivityIndicator!()
-            }
-        } else {
-            NSLog("activityAnimationServiceDelegate not set from calling class. HideActivityIndicator in ShoppingBuddyMessageWebservice")
-        }
-    }
+extension ShoppingBuddyMessageWebservice: IAlertMessageDelegate {
     
     //MARK: IAlertMessageDelegate implementation
     func ShowAlertMessage(title: String, message: String) {
-        self.HideActivityIndicator()
+        
         if alertMessageDelegate != nil {
+            
             OperationQueue.main.addOperation {
                 self.alertMessageDelegate!.ShowAlertMessage(title: title, message: message)
             }
+            
         } else {
+            
             NSLog("AlertMessageDelegate not set from calling class in ShoppingBuddyMessageWebservice")
+            
         }
     }
     
