@@ -160,4 +160,6 @@ extension String{
     
     static let CheckMonitoredRadiusInSettingsAlertTitle = NSLocalizedString("CheckMonitoredRadiusInSettingsAlertTitle", comment: "")
     static let CheckMonitoredRadiusInSettingsAlertMessage = NSLocalizedString("CheckMonitoredRadiusInSettingsAlertMessage", comment: "")
+    
+    static let txt_SendAnswerPlaceholder = NSLocalizedString("txt_SendAnswerPlaceholder", comment: "")
 }

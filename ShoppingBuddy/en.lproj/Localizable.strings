@@ -155,3 +155,5 @@ ErrandsFinishedAlertMessage = "%@ did the errands for list '%@'.";
     //Check Monitored Radius
 CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
 CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius not set. Activate the 'Geofence Radius' in at the settings menu to start monitoring stores.";
+
+txt_SendAnswerPlaceholder = "send %@ an answer";

@@ -9,16 +9,18 @@
 import UIKit
 import GoogleMobileAds
 
-class MessagesController: UIViewController, IAlertMessageDelegate {
+class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDelegate {
     //MARK: - Outlets
     @IBOutlet var BackgroundImage: UIImageView!
     @IBOutlet var InvitationsTableView: UITableView!
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet var txt_SendAnswer: UITextField!
     
     private var blurrView:UIVisualEffectView!
     internal var sbUserService:ShoppingBuddyUserWebservice!
     internal var sbMessageWebservice:ShoppingBuddyMessageWebservice!
     var bannerView:GADBannerView!
+    var selectedMessage:ShoppingBuddyMessage!
     
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -34,6 +36,8 @@ class MessagesController: UIViewController, IAlertMessageDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AllInvitesReceived), name: NSNotification.Name.AllInvitesReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SharingInviteReceived), name: NSNotification.Name.SharingInviteReceived, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name: .UIKeyboardWillHide, object: nil)
         
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
@@ -46,6 +50,9 @@ class MessagesController: UIViewController, IAlertMessageDelegate {
         
         InvitationsTableView.rowHeight = UITableViewAutomaticDimension
         InvitationsTableView.estimatedRowHeight = 100
+        
+        txt_SendAnswer.delegate = self
+        txt_SendAnswer.alpha = 0
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -57,6 +64,51 @@ class MessagesController: UIViewController, IAlertMessageDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    //MARK: Textfield delegate
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        if textField.returnKeyType == .send {
+            var isValid:Bool
+            isValid = ValidationFactory.Validate(type: .textField, validationString: txt_SendAnswer.text, alertDelegate: self)
+            if isValid {
+                
+                if let index = allShoppingLists.index(where: { $0.id == selectedMessage.listID }) {
+                    
+                    sbMessageWebservice.SendCustomMessage(message: txt_SendAnswer.text!, list: allShoppingLists[index])
+                    SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+                }
+                
+            }
+        }
+        
+        self.view.endEditing(true)
+        return true
+    }
+    
+    @objc func KeyboardWillShow(sender: Notification) -> Void {
+        
+        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            var height = keyboardSize.height
+            if height == 0 { height = 258 }
+            
+            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: -height + 40)
+            
+        }
+        
+    }
+    
+    @objc func KeyboardWillHide(sender: Notification) -> Void {
+        
+        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            var height = keyboardSize.height
+            if height == 0 { height = 258 }
+            
+            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: height - 40)
+            
+        }
+        
     }
     
     //MARK: - IAlertMessageDelegate
@@ -120,7 +172,25 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
+        
+        selectedMessage = allMessages[indexPath.row]
+        if let index = allUsers.index(where: { $0.id == selectedMessage.senderID }){
+            
+            txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  allUsers[index].nickname!)
+        } else {
+            
+            txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  "user")
+        }
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+            self.txt_SendAnswer.alpha = 1
+        }, completion: nil)
+        
+        txt_SendAnswer.becomeFirstResponder()
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        self.view.endEditing(true)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {

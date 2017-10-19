@@ -151,3 +151,5 @@ ErrandsFinishedAlertMessage = "%@ hat die Einkäufe der Liste '%@' erledigt.";
 //Check Monitored Radius
 CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
 CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius ist nicht gesetzt. Aktiviere den Geofence Radius in den Einstellungen um die Shopüberwachung zu starten.";
+
+txt_SendAnswerPlaceholder = "Sende %@ eine Antwort";
