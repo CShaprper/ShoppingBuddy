@@ -334,8 +334,8 @@
 				CFAD85091F274BB500F207E5 /* CustomNavigationController.swift */,
 				CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */,
 				CFE9AB201F262DBE00D0825B /* DashboardController.swift */,
-				CFAD850F1F27AAB500F207E5 /* SettingsController.swift */,
 				CFE824E51F2BC18B00BDB61F /* ShoppingListController.swift */,
+				CFAD850F1F27AAB500F207E5 /* SettingsController.swift */,
 				CF033B531F57214700684963 /* MessagesController.swift */,
 			);
 			name = Controller;

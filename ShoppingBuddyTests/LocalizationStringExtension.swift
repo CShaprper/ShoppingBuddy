@@ -61,6 +61,7 @@ extension String{
     static let lbl_AddItemPopUpTitle = NSLocalizedString("lbl_AddItemPopUpTitle", comment: "")
     static let txt_ItemName_Placeholer = NSLocalizedString("txt_ItemName_Placeholer", comment: "")
     static let CustomAddShoppingListRefreshControlImage = NSLocalizedString("CustomAddShoppingListRefreshControlImage", comment: "")
+    static let txt_AddArticle_PlaceHolder = NSLocalizedString("txt_AddArticle_PlaceHolder", comment: "")
     
     //LocationService
     static let GPSAuthorizationRequestDenied_AlertTitle = NSLocalizedString("GPSAuthorizationRequestDenied_AlertTitle", comment: "")

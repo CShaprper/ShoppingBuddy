@@ -49,14 +49,14 @@ class MessagesController: UIViewController, IAlertMessageDelegate {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         
         DispatchQueue.main.async {
             self.InvitationsTableView.reloadData()
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     //MARK: - IAlertMessageDelegate
@@ -65,6 +65,7 @@ class MessagesController: UIViewController, IAlertMessageDelegate {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+
         
     }
     

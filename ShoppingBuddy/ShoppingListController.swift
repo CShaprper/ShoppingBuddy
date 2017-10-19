@@ -29,6 +29,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CustomAddShoppingListRefreshControlImage: UIImageView!
     @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet var EditListItemsTableViewRows: UIButton!
+    @IBOutlet var txt_AddArticle: UITextField!
     
     //Add Shopping List PopUp
     @IBOutlet var AddShoppingListPopUp: UIView!
@@ -132,6 +133,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     
     //MARK:- Member
+    var lastContentOffset:CGFloat = 0
     private var isInfoViewVisible:Bool!
     var timer:Timer!
     var blurrView:UIVisualEffectView?
@@ -587,11 +589,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             return
         }
         
-        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_ItemName.text, alertDelegate: self)
+        isValid = ValidationFactory.Validate(type: .textField, validationString: txt_AddArticle.text, alertDelegate: self)
         if isValid{
-            
+             
             var newListItem = ShoppingListItem()
-            newListItem.itemName = txt_ItemName.text!
+            newListItem.itemName = txt_AddArticle.text!
             newListItem.listID = allShoppingLists[currentShoppingListIndex].id!
             sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem, currentShoppingListIndex: currentShoppingListIndex)
             
@@ -1301,6 +1303,35 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
+        if textField.returnKeyType == UIReturnKeyType.done {
+            
+            var isValid:Bool = false
+            //Validate FullVersion
+            isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
+            if !isValid && allShoppingLists[currentShoppingListIndex].items.count >= 15 {
+                
+                let title = String.FullVersionNeededAlertTitle
+                let message = String.FullVersionNeededArticleAlertMessage
+                ShowAlertMessage(title: title, message: message)
+                self.view.endEditing(true)
+                return true
+                
+            }
+            
+            isValid = ValidationFactory.Validate(type: .textField, validationString: txt_AddArticle.text, alertDelegate: self)
+            if isValid{
+                
+                var newListItem = ShoppingListItem()
+                newListItem.itemName = txt_AddArticle.text!
+                newListItem.listID = allShoppingLists[currentShoppingListIndex].id!
+                sbListItemWebservice.SaveListItemToFirebaseDatabase(listItem: newListItem, currentShoppingListIndex: currentShoppingListIndex)
+                txt_AddArticle.text = ""
+                self.view.endEditing(true)
+                
+            }
+        }
+        
+        
         if textField.returnKeyType == UIReturnKeyType.send {
             
             guard let user = currentUser else { return true }
@@ -1546,7 +1577,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     func HideAddItemPopUp() -> Void {
         
-        refreshControl.endRefreshing()
+        //refreshControl.endRefreshing()
         if blurrViewListItem != nil {
             blurrViewListItem!.removeFromSuperview()
             blurrViewListItem = nil
@@ -1561,13 +1592,14 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         if ShowBlurrView() {
             
-            ShoppingListDetailView.frame.size.width = view.frame.width * 0.95
-            ShoppingListDetailView.frame.size.height = view.frame.height * 0.78
-            ShoppingListDetailView.center = view.center
-            lbl_ShoppingListDetailTitle.text = allShoppingLists[currentShoppingListIndex].name != nil ? allShoppingLists[currentShoppingListIndex].name : ""
-            view.addSubview(ShoppingListDetailView)
+            ShoppingListDetailView.frame.size.width = BackgroundImage.frame.width * 0.95
+            ShoppingListDetailView.frame.size.height = BackgroundImage.frame.height
+            ShoppingListDetailView.center = BackgroundImage.center 
             ShoppingListDetailTableView.delegate = self
             ShoppingListDetailTableView.dataSource = self
+            
+            lbl_ShoppingListDetailTitle.text = allShoppingLists[currentShoppingListIndex].name != nil ? allShoppingLists[currentShoppingListIndex].name : ""
+            view.addSubview(ShoppingListDetailView)
             SortShoppingListItemsArrayBy_isSelected()
             
         }
@@ -1698,6 +1730,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         }
         AddShoppingListButton.tintColor = UIColor.ColorPaletteTintColor()
         
+        txt_AddArticle.placeholder = String.txt_AddArticle_PlaceHolder
+        txt_AddArticle.delegate = self
         
         //Datasource & Delegate
         ShoppingListDetailTableView.dataSource = self
@@ -1710,16 +1744,18 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         CancelSharingMemberCollectionView.dataSource = self
         CancelSharingMemberCollectionView.delegate = self
         
+        /*
         //RefreshControl AddListItem
         refreshControl = UIRefreshControl() 
         refreshControl.alpha = 0
         refreshControl.addTarget(self, action: #selector(ShoppingListController.ShowAddItemPopUp), for: UIControlEvents.allEvents)
+ 
         
         if #available(iOS 10.0, *){
             ShoppingListDetailTableView.refreshControl = refreshControl
         } else {
             ShoppingListDetailTableView.addSubview(refreshControl)
-        }
+        }*/
         
         //Pan on List Item
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(HandleShoppingItemPan))
@@ -1796,9 +1832,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         txt_ItemName.placeholder = String.txt_ItemName_Placeholer
         txt_ItemName.tintColor = UIColor.black
         btn_SaveItem.addTarget(self, action: #selector(btn_SaveItem_Pressed), for: .touchUpInside)
-        let outsideAddItemPopUpTouch = UITapGestureRecognizer(target: self, action: #selector(AddItemPopUp_OutsideTouch))
-        ShoppingListDetailView.addGestureRecognizer(outsideAddItemPopUpTouch)
-        AddItemPopUp.addGestureRecognizer(outsideAddItemPopUpTouch)
         
         //Shopping bag image
         ShoppingCartImage.alpha = 0
@@ -1813,9 +1846,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         TrashImage.layer.shadowOffset  = CGSize(width: 5, height:5)
         TrashImage.layer.shadowOpacity  = 1
         TrashImage.layer.shadowRadius  = 3
-        
-        //Set Detailtableview bottom constraint
-        DetailTableViewBottomConstraint.constant = view.frame.height * 0.115
         
         ShoppingListCard.center = view.center
         ShoppingListCard2.center = view.center
@@ -2132,7 +2162,26 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
 extension Double {
     var degreesToRadians: CGFloat { return CGFloat(self) * .pi / 180 }
 }
-extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
+extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate{
+    //MARK: UiScrollView Delegate
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.lastContentOffset = scrollView.contentOffset.y
+    }
+    /*
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if self.lastContentOffset < scrollView.contentOffset.y {
+            //Moved up so hide txt_AddArticle
+            txt_AddArticle.isHidden = true
+            ShoppingListDetailTableView.translatesAutoresizingMaskIntoConstraints = false
+            ShoppingListDetailTableView.frame.size.height = ShoppingListDetailView.frame.height * 0.69
+        } else if self.lastContentOffset > scrollView.contentOffset.y {
+            //Moved down so show txt_AddArticle
+            txt_AddArticle.isHidden = false
+            ShoppingListDetailTableView.translatesAutoresizingMaskIntoConstraints = false
+            ShoppingListDetailTableView.frame.size.height = ShoppingListDetailView.frame.height * 0.625
+        }
+    }*/
+    
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -2194,9 +2243,10 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource{
         })
         
     }
+    /*
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.height / 7
-    }
+        return tableView.frame.height / 10
+    }*/
     // conditional rearranging of the table view.
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { 
         return true

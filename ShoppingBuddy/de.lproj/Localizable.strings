@@ -42,12 +42,10 @@ lbl_PinnedAddress = "Gepinnte Adresse:";
     //StoresController
 SettingsControllerTitle = "Einstellungen";
 txt_AddStore_Placeholder = "Shop Name";
-    //AddStorePopUpLogo
-AddStorePopUpLogo_Image = "AddStore-DE-Logo";
 
     //ShoppingListController
-ShoppingListControllerTitle = "Shopping Listen";
-CustomRefreshControlImage = "AddItemRefreshControl-DE";
+ShoppingListControllerTitle = "Shopping Listen"; 
+txt_AddArticle_PlaceHolder = "Artikel eingeben";
 
     //Add Shopping  List PopUp
 lbl_AddListPopUpTitle = "Neue Liste Einfügen";
@@ -149,3 +147,7 @@ ChangedTheListMessageMessage = "%@ hat die Liste '%@' angepasst. Schau mal drüb
 CustomMessageTitle = "Nachricht von %@";
 ErrandsFinishedAlertTitle = "Einkäufe erledigt!";
 ErrandsFinishedAlertMessage = "%@ hat die Einkäufe der Liste '%@' erledigt.";
+
+//Check Monitored Radius
+CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
+CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius ist nicht gesetzt. Aktiviere den Geofence Radius in den Einstellungen um die Shopüberwachung zu starten.";

@@ -45,12 +45,10 @@ lbl_PinnedAddress = "Pinned address:";
     //SettingsController
 SettingsControllerTitle = "Settings";
 txt_AddStore_Placeholder = "store name";
-    //AddStorePopUpLogo
-AddStorePopUpLogo_Image = "AddStore-US-Logo";
 
     //ShoppingListController
 ShoppingListControllerTitle = "Shopping Lists";
-CustomRefreshControlImage = "AddItemRefreshControl-US";
+txt_AddArticle_PlaceHolder = "enter new article";
 
     //Add Shopping  List PopUp
 lbl_AddListPopUpTitle = "Add New List";
