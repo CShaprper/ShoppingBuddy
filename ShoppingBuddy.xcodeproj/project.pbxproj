@@ -14,7 +14,6 @@
 		CF033B5C1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */; };
 		CF053BC21F81ACA400B08C34 /* FullVersionUserValidationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */; };
 		CF0A1EDA1F91F3B2000A1141 /* pom.wav in Resources */ = {isa = PBXBuildFile; fileRef = CF0A1ED91F91F39B000A1141 /* pom.wav */; };
-		CF0A1EDE1F91F49E000A1141 /* drip2.wav in Resources */ = {isa = PBXBuildFile; fileRef = CF0A1EDD1F91F487000A1141 /* drip2.wav */; };
 		CF0AFD991F88EF4300C415F7 /* UIViewShadowExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */; };
 		CF1301F81F30C329002FD4D1 /* Courgette-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */; };
 		CF16344E1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */; };
@@ -56,6 +55,7 @@
 		CFC8CE541F3289400032AA9F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CFC8CE531F3289400032AA9F /* MapKit.framework */; };
 		CFD48DE91F586C5E000B403A /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFD48DE81F586C5E000B403A /* MessageCell.swift */; };
 		CFDB30FD1F7D57DE00415825 /* eUserDLType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */; };
+		CFE2A1E31F99337600112BE1 /* open.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFE2A1E21F99336500112BE1 /* open.wav */; };
 		CFE4A1CB1F23C0DC002A12C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */; };
 		CFE4A1CD1F23C0DC002A12C7 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */; };
 		CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CFE4A1CE1F23C0DC002A12C7 /* Main.storyboard */; };
@@ -81,7 +81,6 @@
 		CFF319441F3328DD00F91272 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */; };
 		CFF319461F33742700F91272 /* eUserDefaultKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF319451F33742700F91272 /* eUserDefaultKey.swift */; };
 		CFF638001F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */; };
-		CFFCEA091F869E3900411B47 /* crackle.wav in Resources */ = {isa = PBXBuildFile; fileRef = CFFCEA081F869E3700411B47 /* crackle.wav */; };
 		CFFE8E091F44995000F62EDA /* SynchronizedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */; };
 /* End PBXBuildFile section */
 
@@ -94,7 +93,6 @@
 		CF033B5B1F5733BE00684963 /* ShoppingBuddyMessageWebService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyMessageWebService.swift; sourceTree = "<group>"; };
 		CF053BC11F81ACA300B08C34 /* FullVersionUserValidationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullVersionUserValidationService.swift; sourceTree = "<group>"; };
 		CF0A1ED91F91F39B000A1141 /* pom.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pom.wav; sourceTree = "<group>"; };
-		CF0A1EDD1F91F487000A1141 /* drip2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = drip2.wav; sourceTree = "<group>"; };
 		CF0AFD981F88EF4300C415F7 /* UIViewShadowExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewShadowExtension.swift; sourceTree = "<group>"; };
 		CF1301F71F30C329002FD4D1 /* Courgette-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courgette-Regular.ttf"; sourceTree = "<group>"; };
 		CF16344D1F505D4C00D4DF5F /* ShoppingBuddyListItemWebservice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingBuddyListItemWebservice.swift; sourceTree = "<group>"; };
@@ -137,6 +135,7 @@
 		CFC8CE531F3289400032AA9F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		CFD48DE81F586C5E000B403A /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CFDB30FC1F7D57DE00415825 /* eUserDLType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = eUserDLType.swift; sourceTree = "<group>"; };
+		CFE2A1E21F99336500112BE1 /* open.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = open.wav; sourceTree = "<group>"; };
 		CFE4A1C71F23C0DC002A12C7 /* ShoppingBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFE4A1CA1F23C0DC002A12C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CFE4A1CC1F23C0DC002A12C7 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
@@ -170,7 +169,6 @@
 		CFF319431F3328DD00F91272 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
 		CFF319451F33742700F91272 /* eUserDefaultKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = eUserDefaultKey.swift; sourceTree = "<group>"; };
 		CFF637FF1F289D3300D388C1 /* ScrollingTabBarControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollingTabBarControllerDelegate.swift; sourceTree = "<group>"; };
-		CFFCEA081F869E3700411B47 /* crackle.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crackle.wav; sourceTree = "<group>"; };
 		CFFE8E081F44995000F62EDA /* SynchronizedArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SynchronizedArray.swift; sourceTree = "<group>"; };
 		D5B3347F5B99BA03E15EB7B3 /* Pods-ShoppingBuddy.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShoppingBuddy.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShoppingBuddy/Pods-ShoppingBuddy.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -226,13 +224,12 @@
 		CF7A64561F827244006DDC5D /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				CF0A1EDD1F91F487000A1141 /* drip2.wav */,
 				CF8E09861F9231890004FE62 /* drip.wav */,
-				CFFCEA081F869E3700411B47 /* crackle.wav */,
 				CF7A64571F827250006DDC5D /* swoosh.wav */,
 				CFB9F78B1F911E4200E55CFB /* MailSent.wav */,
 				CFB9F7871F91189900E55CFB /* pling.wav */,
 				CF0A1ED91F91F39B000A1141 /* pom.wav */,
+				CFE2A1E21F99336500112BE1 /* open.wav */,
 			);
 			name = Sounds;
 			sourceTree = "<group>";
@@ -506,10 +503,9 @@
 				CFE4A1D01F23C0DC002A12C7 /* Main.storyboard in Resources */,
 				CFB9F78C1F911E4700E55CFB /* MailSent.wav in Resources */,
 				CFE4A2361F23DC62002A12C7 /* Localizable.strings in Resources */,
-				CFFCEA091F869E3900411B47 /* crackle.wav in Resources */,
 				CF7389061F75847900F6D833 /* Pacifico-Regular.ttf in Resources */,
-				CF0A1EDE1F91F49E000A1141 /* drip2.wav in Resources */,
 				CF0A1EDA1F91F3B2000A1141 /* pom.wav in Resources */,
+				CFE2A1E31F99337600112BE1 /* open.wav in Resources */,
 				CFB9F7881F9118A500E55CFB /* pling.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

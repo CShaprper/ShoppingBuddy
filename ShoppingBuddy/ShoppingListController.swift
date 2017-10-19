@@ -893,7 +893,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             } else if note.center.y < swipeLimitTop{
                 
-                SwitchCurrentUpperCardIndex()
+                //SwitchCurrentUpperCardIndex()
                 SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
@@ -949,7 +949,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             } else if note.center.y < swipeLimitTop{
                 
-                SwitchCurrentUpperCardIndex()
+                //SwitchCurrentUpperCardIndex()
                 SwipeCardOffTop(swipeDuration: swipeDuration, card: note, xSpin: xSpin)
                 return
                 
@@ -1026,8 +1026,11 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         })
     }
     private func SwipeCardOffTop(swipeDuration: TimeInterval, card: UIView, xSpin: CGFloat){
-        
-        SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
+        if card == self.OnboardindInfoView {
+            SoundPlayer.PlaySound(filename: "swoosh", filetype: "wav")
+        } else {
+            SoundPlayer.PlaySound(filename: "open", filetype: "wav")
+        }
         
         UIView.animate(withDuration: swipeDuration, animations: {
             
@@ -1042,7 +1045,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             } else {
                 
-                self.ResetCardAfterSwipeOff(card: card)
+                self.ResetCardAfterSwipeOffTop(card: card)
+                
+                self.ShowListDetailView()
                 
             }
             
@@ -1145,6 +1150,28 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         card.center = view.center
         card.Arise(duration: 0.7, delay: 0, options:  [.allowUserInteraction], toAlpha: 1)
         
+    }
+    private func ResetCardAfterSwipeOffTop(card: UIView) -> Void {
+   
+        self.RefreshCardView()
+       
+        card.alpha = 0
+        card.center = self.view.center
+        card.Arise(duration: 0.7, delay: 0, options: [.allowUserInteraction], toAlpha: 1)
+        
+        if currentUpperCard == 1{
+            
+            view.bringSubview(toFront: ShoppingListCard)
+            ShoppingListCard2.transform = .identity
+            ShoppingListCard2.transform = CGAffineTransform(rotationAngle: Double(8).degreesToRadians)
+            
+        } else {
+            
+            view.bringSubview(toFront: ShoppingListCard2)
+            ShoppingListCard.transform = .identity
+            ShoppingListCard.transform = CGAffineTransform(rotationAngle: Double(5).degreesToRadians)
+            
+        }
     }
     private func ResetCardAfterSwipeOff(card: UIView) -> Void {
         
