@@ -36,12 +36,16 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     @IBOutlet var lbl_Address: UILabel!
     @IBOutlet var btn_Info: UIBarButtonItem!
     
-    //Onboarding Info View
+    //MARK: Onboarding Info View
     @IBOutlet var OnboardindInfoView: UIImageView!
     
+    //MARK: MapView PopUp
+    @IBOutlet var MapViewPopUp: UIView!
+    @IBOutlet var btn_CloseMapView: UIButton!
+    @IBOutlet var MapView2: MKMapView!
     
     
-    //NotificationView
+    //MARK: NotificationView
     @IBOutlet var InvitationNotification: UIView!
     @IBOutlet var lbl_InviteTitle: UILabel!
     @IBOutlet var txt_NotificationMessage: UITextView!
@@ -124,8 +128,32 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if timer != nil { timer.invalidate() }
-    } 
+    }
     
+    //MARK: - MapViewPopUp Implementation
+    @objc func mapView_tapped(sender: UITapGestureRecognizer) -> Void {
+        
+        showMapViewPopUp()
+        
+        PerformLocalShopSearch(notification: nil)
+        
+    }
+    func showMapViewPopUp() -> Void {
+        
+        MapViewPopUp.frame.size.width = view.bounds.width
+        MapViewPopUp.frame.size.height = view.bounds.height
+        MapViewPopUp.center = view.center
+        view.addSubview(MapViewPopUp)
+        
+    }
+    @objc func btn_CloseMapView_Pressed(sender: UIButton) -> Void {
+        
+        if view.subviews.contains(MapViewPopUp) { MapViewPopUp.removeFromSuperview() }
+        
+    }
+    
+    
+    //MARK: -
     @objc func UserProfileImageTapped(_ sender: UITapGestureRecognizer) {
         
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) == false { return }
@@ -158,10 +186,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
         UserDefaults.standard.removeObject(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         
     }
-    /* wird kurioser Weise mehrmals nacheinander aufgerufen
-    @objc func ShoppingBuddyUserLoggedIn(notification: Notification)  -> Void {
-
-    }*/
+    
     @objc func CurrentUserCreated(notification: Notification) -> Void {
         
         sbUserWebservice.GetCurrentUser()
@@ -200,7 +225,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     }
     
     
-    //MARK: - Notificarion listeners
+    //MARK: - Notification listeners
     @objc func CurrentUserReceived(notification: Notification) -> Void {
         
         if let index = allUsers.index(where: { $0.id == Auth.auth().currentUser!.uid }) {
@@ -446,6 +471,12 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
+        //MapViewPopUp
+        btn_CloseMapView.addTarget(self, action: #selector(btn_CloseMapView_Pressed), for: .touchUpInside)
+        MapView2.delegate = self
+        MapView2.showsUserLocation = true
+        MapView2.userTrackingMode = .follow
+        
         isInfoViewVisible = false
         btn_Info.tintColor = UIColor.ColorPaletteTintColor()
         
@@ -534,6 +565,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
         MapView.delegate = self
         MapView.userTrackingMode = .follow
         MapView.showsUserLocation = true
+        let mapTapGesture = UITapGestureRecognizer(target: self, action: #selector(mapView_tapped))
+        MapView.addGestureRecognizer(mapTapGesture)
         let rad = UserDefaults.standard.double(forKey: eUserDefaultKey.MonitoredRadius.rawValue)
         radiusToMonitore = CLLocationDistance(exactly: rad)
         mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
@@ -542,7 +575,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = CLLocationDistance(exactly: mapSpan * 0.25)!
         self.RequestGPSAuthorization()
         
@@ -652,16 +685,30 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         
-        mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
         self.userLocation = userLocation.coordinate
-        mapView.centerCoordinate = userLocation.coordinate
-        let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
-        mapView.setRegion(region, animated: false)
+        if mapView != MapView2 {
+            
+            mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+            mapView.centerCoordinate = userLocation.coordinate
+            let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            mapView.setRegion(region, animated: false)
+            
+        }
         
         if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
             //Search nearby Shops
             PerformLocalShopSearch(notification: nil)
             UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        }
+    }
+    
+    func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
+        
+        if mapView == MapView2 {
+            
+            mapView.centerCoordinate = self.userLocation!
+            let region = MKCoordinateRegionMakeWithDistance(self.userLocation!, CLLocationDistance(exactly: 10000)!, CLLocationDistance(exactly: 10000)!)
+            mapView.setRegion(region, animated: false)
         }
     }
     
@@ -695,6 +742,7 @@ extension DashboardController: MKMapViewDelegate{
             }
         }
     }
+    
     //MARK: MKMapViewDelegate Helper
     func PerformLocalShopSearch(notification: Notification?) -> Void{
         
@@ -738,7 +786,16 @@ extension DashboardController: MKMapViewDelegate{
         itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.4, maxDistance: mapSpan * 0.6)
         
         if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.6, maxDistance: mapSpan * 3)
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.6, maxDistance: mapSpan * 1)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 1, maxDistance: mapSpan * 2)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 2, maxDistance: mapSpan * 4)
+        
+        if itemsCount == possibleRegionsPerStore { return }
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 4, maxDistance: mapSpan * 8)
         
     }
     private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int {
@@ -781,6 +838,7 @@ extension DashboardController: MKMapViewDelegate{
         
         OperationQueue.main.addOperation {
             
+            //Mangnifier glass Map View
             if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
                 
                 let annotation = CustomMapAnnotation()
@@ -790,6 +848,21 @@ extension DashboardController: MKMapViewDelegate{
                 annotation.subtitle = mapItem.placemark.title
                 self.MapView.addAnnotation(annotation)
                 
+            }
+            
+            //Big MapView
+            if self.view.subviews.contains(self.MapViewPopUp) {
+                
+                if !self.MapView2.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
+                    
+                    let annotation = CustomMapAnnotation()
+                    annotation.image = #imageLiteral(resourceName: "map-Marker-green")
+                    annotation.coordinate = mapItem.placemark.coordinate
+                    annotation.title = mapItem.name
+                    annotation.subtitle = mapItem.placemark.title
+                    self.MapView2.addAnnotation(annotation)
+                    
+                }
             }
             
         }
@@ -858,6 +931,7 @@ extension DashboardController: MKMapViewDelegate{
     
     private func RemoveOldGeofenceOverlays() -> Void {
         
+        //Magnifier Glass Map
         for overlay in self.MapView.overlays {
             
             if overlay is MKUserLocation{ }
@@ -865,13 +939,38 @@ extension DashboardController: MKMapViewDelegate{
             
         }
         
+        //Big Map
+        if self.view.subviews.contains(MapViewPopUp) {
+            
+            for overlay in self.MapView2.overlays {
+                
+                if overlay is MKUserLocation{ }
+                else { MapView2.remove(overlay)}
+                
+            }
+            
+        }
+        
     }
     private func RemoveOldAnnotations() -> Void {
         
+        //Magnifier Glass Map
         for annotation in self.MapView.annotations {
             
             if annotation is MKUserLocation{ }
             else { MapView.removeAnnotation(annotation) }
+            
+        }
+        
+        //Big Map
+        if self.view.subviews.contains(MapViewPopUp) {
+            
+            for annotation in self.MapView2.annotations {
+                
+                if annotation is MKUserLocation{ }
+                else { MapView2.removeAnnotation(annotation) }
+                
+            }
             
         }
         
@@ -886,6 +985,18 @@ extension DashboardController: MKMapViewDelegate{
             
         }
         
+    }
+    
+    func ShowGeofenceCircleMapView2() -> Void {
+        
+        for reg in locationManager.monitoredRegions {
+            
+            if let circ = reg as? CLCircularRegion {
+                let c = MKCircle(center: circ.center, radius: circ.radius)
+                self.MapView2.add(c)
+            }
+            
+        }
     }
 }
 
@@ -923,13 +1034,25 @@ extension DashboardController: CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        if let location = locations.first {
+        if let location = locations.last {
             
             userLocation = location.coordinate
             let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
-            MapView.setRegion(region, animated: false)
+            MapView.setRegion(region, animated: true)
             MapView.centerCoordinate = location.coordinate
             
+        }
+        
+        if view.subviews.contains(MapViewPopUp) {
+            
+            if let location = locations.last {
+                
+                let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: abs(10000))!, CLLocationDistance(exactly: abs(10000))!)
+                MapView2.setRegion(region, animated: true)
+                MapView2.centerCoordinate = location.coordinate
+                manager.stopUpdatingLocation()
+                
+            }
         }
         
     }
@@ -961,7 +1084,17 @@ extension DashboardController: CLLocationManagerDelegate {
         if let circularRegion = region as? CLCircularRegion {
             
             let circle = MKCircle(center: circularRegion.center, radius: circularRegion.radius)
-            self.MapView.add(circle)
+            
+            
+            if self.view.subviews.contains(MapViewPopUp){
+                
+                self.MapView2.add(circle)
+                
+            } else {
+                
+                self.MapView.add(circle)
+                
+            }
             
         }
         

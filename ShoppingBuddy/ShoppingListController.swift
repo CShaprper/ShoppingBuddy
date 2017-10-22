@@ -9,8 +9,9 @@
 import UIKit
 import FirebaseAuth
 import GoogleMobileAds
+import BarcodeScanner
 
-class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BarcodeScannerCodeDelegate, BarcodeScannerErrorDelegate, BarcodeScannerDismissalDelegate{
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -27,9 +28,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var ShoppingListDetailTableView: UITableView!
     @IBOutlet var CustomAddShoppingListRefreshControl: UIView!
     @IBOutlet var CustomAddShoppingListRefreshControlImage: UIImageView!
-    @IBOutlet var DetailTableViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet var EditListItemsTableViewRows: UIButton!
     @IBOutlet var txt_AddArticle: UITextField!
+    @IBOutlet var btn_ScanBarcode: UIButton!
     
     //Add Shopping List PopUp
     @IBOutlet var AddShoppingListPopUp: UIView!
@@ -128,7 +129,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     //Onboarding image
     @IBOutlet var OnboardindInfoView: UIImageView!
-    @IBOutlet var btn_LeftOnboarding: UIButton!
     
     
     
@@ -329,12 +329,33 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
     }
     
+    //MARK: - Barcode Scanner
+    @objc func btn_ScanBarcode_Pressed(sender: UIButton) -> Void {
+        
+        let controller = BarcodeScannerController()
+        controller.codeDelegate = self
+        controller.errorDelegate = self
+        controller.dismissalDelegate = self
+        
+        present(controller, animated: true, completion: nil)
+        
+    }
+    func barcodeScanner(_ controller: BarcodeScannerController, didCaptureCode code: String, type: String) {
+        print(code)
+        print(type)
+        controller.reset(animated: true)
+    }
+    func barcodeScannerDidDismiss(_ controller: BarcodeScannerController) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+    func barcodeScanner(_ controller: BarcodeScannerController, didReceiveError error: Error) {
+        print(error.localizedDescription)
+    }
+    
+    
     
     //MARK: - Wired Actions
     //MARK: Buttons
-    @objc func btn_LeftOnboarding_Pressed(sender: UIButton) -> Void {
-        print("predeeede")
-    }
     @IBAction func btn_Info_Pressed(_ sender: UIBarButtonItem) {
         
         if isInfoViewVisible { hideInfoView() }
@@ -1734,6 +1755,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         isInfoViewVisible = false
         currentShoppingListIndex = 0
         btn_info.tintColor = UIColor.ColorPaletteTintColor()
+        
+        btn_ScanBarcode.addTarget(self, action: #selector(btn_ScanBarcode_Pressed), for: .touchUpInside)
         
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
