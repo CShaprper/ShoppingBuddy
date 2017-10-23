@@ -1846,8 +1846,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         btn_SaveList.addTarget(self, action: #selector(btn_SaveList_Pressed), for: .touchUpInside)
         
         //Detail ListView
-        btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)
+        btn_CloseListDetailView.addTarget(self, action: #selector(btn_CloseListDetailView_Pressed), for: .touchUpInside)        
+        btn_CloseListDetailView.addShadow(color: UIColor.black, size: 4, radius: 4)
         EditListItemsTableViewRows.tintColor = UIColor.ColorPaletteTintColor()
+        EditListItemsTableViewRows.addShadow(color: UIColor.black, size: 4, radius: 4)
         EditListItemsTableViewRows.addTarget(self, action: #selector(EditListItemsTableViewRows_Pressed), for: .touchUpInside)
         
         //Shopping list Cards Shadows

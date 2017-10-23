@@ -502,6 +502,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     //MARK: - Helper Functions
     func ConfigureView() -> Void {
         //MapViewPopUp
+        btn_CloseMapView.addShadow(color: UIColor.black, size: 5, radius: 5)
         btn_CloseMapView.addTarget(self, action: #selector(btn_CloseMapView_Pressed), for: .touchUpInside)
         MapView2.delegate = self
         MapView2.showsUserLocation = true
@@ -929,6 +930,8 @@ extension DashboardController: MKMapViewDelegate{
         if (annotation is MKUserLocation) {
             
             let pin = mapView.view(for: annotation) ?? MKAnnotationView(annotation: annotation, reuseIdentifier: nil)
+            pin.canShowCallout = true
+            pin.addShadow(color: UIColor.black, size: 5, radius: 5)
             pin.image = #imageLiteral(resourceName: "PinShoppingBag")
             return pin
         
@@ -943,14 +946,8 @@ extension DashboardController: MKMapViewDelegate{
             let btn = UIButton(type: .custom)
             btn.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
             btn.setImage(#imageLiteral(resourceName: "icon-List"), for: .normal)
-            btn.titleLabel?.textColor = UIColor.brown
             pinView.rightCalloutAccessoryView = btn
-            pinView.sizeToFit()
-            /*
-            let img = UIImageView(image: #imageLiteral(resourceName: "Map"))
-            img.frame.size.height = 30
-            img.frame.size.width = 30
-            pinView.addSubview(img)*/
+            pinView.sizeToFit() 
         }
         pinView.image =  myAnnotation.image
         return pinView
