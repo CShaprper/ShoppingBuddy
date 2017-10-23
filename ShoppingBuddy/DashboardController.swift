@@ -148,7 +148,37 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     }
     @objc func btn_CloseMapView_Pressed(sender: UIButton) -> Void {
         
-        if view.subviews.contains(MapViewPopUp) { MapViewPopUp.removeFromSuperview() }
+        if view.subviews.contains(MapViewPopUp) {
+            
+            MapViewPopUp.removeFromSuperview()
+            locationManager.startUpdatingLocation()
+            PerformLocalShopSearch(notification: nil)
+            
+        }
+        
+    }
+    @objc func handle_mapView2LongPress(sender: UILongPressGestureRecognizer) -> Void {
+        
+        if sender.state == .began {
+            
+            for anno in MapView2.annotations{
+                if anno.title! == "Position"{
+                MapView2.removeAnnotation(anno)
+                }
+            }
+            
+            let location = sender.location(in: MapView2)
+            let coord = MapView2.convert(location, toCoordinateFrom: MapView2)
+            
+            let annotation = CustomMapAnnotation()
+            annotation.image = #imageLiteral(resourceName: "PinOrange_annotation")
+            annotation.coordinate = coord
+            annotation.title = "Position"
+            annotation.subtitle = "Pin for store search?"
+            annotation.shouldShowCallOut = true
+            self.MapView2.addAnnotation(annotation)
+            
+        }
         
     }
     
@@ -476,6 +506,8 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
         MapView2.delegate = self
         MapView2.showsUserLocation = true
         MapView2.userTrackingMode = .follow
+        let mapView2LongPress = UILongPressGestureRecognizer(target: self, action: #selector(handle_mapView2LongPress))
+        MapView2.addGestureRecognizer(mapView2LongPress)
         
         isInfoViewVisible = false
         btn_Info.tintColor = UIColor.ColorPaletteTintColor()
@@ -685,21 +717,7 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         
-        self.userLocation = userLocation.coordinate
-        if mapView != MapView2 {
-            
-            mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
-            mapView.centerCoordinate = userLocation.coordinate
-            let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
-            mapView.setRegion(region, animated: false)
-            
-        }
         
-        if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
-            //Search nearby Shops
-            PerformLocalShopSearch(notification: nil)
-            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
-        }
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
@@ -838,6 +856,23 @@ extension DashboardController: MKMapViewDelegate{
         
         OperationQueue.main.addOperation {
             
+            if !self.MapView.annotations.contains(where: { $0.title! == "Position" }){
+                
+                let locationToMonitore = self.ReadUsersPinnedHomeLocationToMonitoreFromUserDefaults()
+                
+                if locationToMonitore != nil {
+                
+                let annotation = CustomMapAnnotation()
+                annotation.image = #imageLiteral(resourceName: "PinOrange_annotation")
+                annotation.coordinate = locationToMonitore!.coordinate
+                annotation.title = "Position"
+                annotation.subtitle = "Pin as center for shop search?"
+                self.MapView.addAnnotation(annotation)
+                    
+                }
+                
+            }
+            
             //Mangnifier glass Map View
             if !self.MapView.annotations.contains(where: {$0.subtitle! == mapItem.placemark.title}) {
                 
@@ -891,14 +926,32 @@ extension DashboardController: MKMapViewDelegate{
         
     }
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        if (annotation is MKUserLocation) {  return nil }
+        if (annotation is MKUserLocation) {
+            
+            let pin = mapView.view(for: annotation) ?? MKAnnotationView(annotation: annotation, reuseIdentifier: nil)
+            pin.image = #imageLiteral(resourceName: "PinShoppingBag")
+            return pin
+        
+        }
         
         // try to dequeue an existing pin view first
         let AnnotationIdentifier = "AnnotationIdentifier"
         let myAnnotation = (annotation as! CustomMapAnnotation)
         let pinView = MKAnnotationView(annotation: annotation, reuseIdentifier: AnnotationIdentifier)
         pinView.canShowCallout = true
-        //pinView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+        if myAnnotation.title == "Position" {
+            let btn = UIButton(type: .custom)
+            btn.frame = CGRect(x: 0, y: 0, width: 50, height: 50)
+            btn.setImage(#imageLiteral(resourceName: "icon-List"), for: .normal)
+            btn.titleLabel?.textColor = UIColor.brown
+            pinView.rightCalloutAccessoryView = btn
+            pinView.sizeToFit()
+            /*
+            let img = UIImageView(image: #imageLiteral(resourceName: "Map"))
+            img.frame.size.height = 30
+            img.frame.size.width = 30
+            pinView.addSubview(img)*/
+        }
         pinView.image =  myAnnotation.image
         return pinView
         
@@ -1053,6 +1106,24 @@ extension DashboardController: CLLocationManagerDelegate {
                 manager.stopUpdatingLocation()
                 
             }
+            
+        } else {
+            
+            if let location = locations.last {
+                
+                mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+                MapView.centerCoordinate = location.coordinate
+                let region = MKCoordinateRegionMakeWithDistance(location.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+                MapView.setRegion(region, animated: false)
+                
+            }
+            
+        }
+        
+        if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
+            //Search nearby Shops
+            PerformLocalShopSearch(notification: nil)
+            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         }
         
     }

@@ -11,4 +11,5 @@ import MapKit
 
 class CustomMapAnnotation:MKPointAnnotation {
     var image:UIImage!
+    var shouldShowCallOut:Bool?
 }
