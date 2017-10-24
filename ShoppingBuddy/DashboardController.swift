@@ -57,6 +57,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     
     //MARK: - Member
     var debugcounter:Int = 0 //can be removed in release
+    var hasMapView2Centered:Bool = false
     internal var locationManager:CLLocationManager!
     internal var radiusToMonitore:CLLocationDistance!
     internal var mapSpan:Double!
@@ -153,12 +154,14 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
             MapViewPopUp.removeFromSuperview()
             locationManager.startUpdatingLocation()
             PerformLocalShopSearch(notification: nil)
+            hasMapView2Centered = false
             
         }
         
     }
     @objc func handle_mapView2LongPress(sender: UILongPressGestureRecognizer) -> Void {
         
+        /*
         if sender.state == .began {
             
             for anno in MapView2.annotations{
@@ -178,7 +181,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
             annotation.shouldShowCallOut = true
             self.MapView2.addAnnotation(annotation)
             
-        }
+        }*/
         
     }
     
@@ -718,6 +721,28 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         
+        if view.subviews.contains(MapViewPopUp) && !hasMapView2Centered {
+            
+            let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: abs(10000))!, CLLocationDistance(exactly: abs(10000))!)
+            MapView2.setRegion(region, animated: true)
+            MapView2.centerCoordinate = userLocation.coordinate
+            locationManager.stopUpdatingLocation()
+            hasMapView2Centered = true
+            
+        } else {
+            
+            mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
+            MapView.centerCoordinate = userLocation.coordinate
+            let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)
+            MapView.setRegion(region, animated: false)
+            
+        }
+        
+        if  UserDefaults.standard.bool(forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue){
+            //Search nearby Shops
+            PerformLocalShopSearch(notification: nil)
+            UserDefaults.standard.set(false, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
+        }
         
     }
     
@@ -866,8 +891,8 @@ extension DashboardController: MKMapViewDelegate{
                 let annotation = CustomMapAnnotation()
                 annotation.image = #imageLiteral(resourceName: "PinOrange_annotation")
                 annotation.coordinate = locationToMonitore!.coordinate
-                annotation.title = "Position"
-                annotation.subtitle = "Pin as center for shop search?"
+                annotation.title = self.lbl_PinnedAddress.text!
+                annotation.subtitle = self.lbl_Address.text!
                 self.MapView.addAnnotation(annotation)
                     
                 }
@@ -1084,23 +1109,16 @@ extension DashboardController: CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
-        if let location = locations.last {
-            
-            userLocation = location.coordinate
-            let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: abs(mapSpan))!, CLLocationDistance(exactly: abs(mapSpan))!)
-            MapView.setRegion(region, animated: true)
-            MapView.centerCoordinate = location.coordinate
-            
-        }
-        
-        if view.subviews.contains(MapViewPopUp) {
+        if view.subviews.contains(MapViewPopUp) && !hasMapView2Centered{
             
             if let location = locations.last {
                 
+                userLocation = location.coordinate
                 let region = MKCoordinateRegionMakeWithDistance(userLocation!, CLLocationDistance(exactly: abs(10000))!, CLLocationDistance(exactly: abs(10000))!)
                 MapView2.setRegion(region, animated: true)
                 MapView2.centerCoordinate = location.coordinate
                 manager.stopUpdatingLocation()
+                hasMapView2Centered = true
                 
             }
             
@@ -1108,6 +1126,7 @@ extension DashboardController: CLLocationManagerDelegate {
             
             if let location = locations.last {
                 
+                userLocation = location.coordinate
                 mapSpan = UserDefaults.standard.double(forKey: eUserDefaultKey.MapSpan.rawValue)
                 MapView.centerCoordinate = location.coordinate
                 let region = MKCoordinateRegionMakeWithDistance(location.coordinate, CLLocationDistance(exactly: mapSpan)!, CLLocationDistance(exactly: mapSpan)!)

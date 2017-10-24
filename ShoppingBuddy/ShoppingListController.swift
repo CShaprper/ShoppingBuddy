@@ -1757,6 +1757,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         btn_info.tintColor = UIColor.ColorPaletteTintColor()
         
         btn_ScanBarcode.addTarget(self, action: #selector(btn_ScanBarcode_Pressed), for: .touchUpInside)
+        btn_ScanBarcode.alpha = 0
         
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
@@ -2281,7 +2282,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
         //Drop item to cart
         UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
             
-            tableView.cellForRow(at: indexPath)!.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.9, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
+            tableView.cellForRow(at: indexPath)!.transform = CGAffineTransform.init(translationX: self.view.frame.width * 0.8, y: dropHeight).rotated(by: 45).scaledBy(x: 0.3, y: 0.3)
             SoundPlayer.PlaySound(filename: "drip", filetype: "wav")
             
         }, completion: { (true) in
