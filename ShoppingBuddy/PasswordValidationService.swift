@@ -43,7 +43,7 @@ class PasswordValidationService:IValidationService  {
     }
     private func validateCharactersCountNotBelowSix(validationString: String?) -> Bool{
         if validationString == nil { return false }
-        if validationString!.characters.count < 6 {
+        if validationString!.count < 6 {
             message = String.ValidationPasswordCharactersCountBelowSixAlert_Message
             ShowAlertMessage(title: title, message: message)
             return false

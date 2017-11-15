@@ -45,7 +45,7 @@ class TextfieldValidationService: IValidationService {
     }
     private func validateLessThanTwoCharacters(validationString: String?) -> Bool{
         if validationString == nil { return false }
-        if validationString!.characters.count < 2{
+        if validationString!.count < 2{
             message = String.ValidationTextFieldBelowTwoCharachtersAlert_Message
             ShowAlertMessage(title: title, message: message)
             return false

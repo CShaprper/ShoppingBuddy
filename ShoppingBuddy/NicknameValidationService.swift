@@ -44,7 +44,7 @@ class NicknameValidationService: IValidationService {
     }
     private func validateLessThanSixCharacters(validationString: String?) -> Bool{
         if validationString == nil { return false }
-        if validationString!.characters.count < 6{
+        if validationString!.count < 6{
             message = String.ValidationNicknameShouldContainAtLeastSixCharacters
             ShowAlertMessage(title: title, message: message)
             return false

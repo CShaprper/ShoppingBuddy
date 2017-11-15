@@ -319,8 +319,11 @@ class ShoppingBuddyListWebservice {
                         for items in itemSnap.children {
                             
                             let item = items as! DataSnapshot
-                            let isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool
-                            cnt = isSelected! == false ? cnt + 1 : cnt
+                            if let isSelected = item.childSnapshot(forPath: "isSelected").value as? Bool{
+                                
+                                cnt = isSelected == false ? cnt + 1 : cnt
+                                
+                            }
                             
                         }
                         

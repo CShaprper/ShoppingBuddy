@@ -89,7 +89,7 @@ class EmailValidationService: IValidationService{
         if ending == nil { return false }
         let endOfEnding = ending!.components(separatedBy: ".").last
         if endOfEnding == nil { return false }
-        if endOfEnding!.characters.count < 2 {
+        if endOfEnding!.count < 2 {
             message = String.ValidationEmailEndingInvalid
             ShowAlertMessage(title: title, message: message)
             return false
