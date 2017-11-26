@@ -157,3 +157,7 @@ CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
 CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius not set. Activate the 'Geofence Radius' in at the settings menu to start monitoring stores.";
 
 txt_SendAnswerPlaceholder = "send %@ an answer";
+
+msg_ArticleIsOutTitle = "Article sold out!";
+lbl_SendMessageHeader = "Quick Message";
+quickMessageActionTitle = "%@ is out!";

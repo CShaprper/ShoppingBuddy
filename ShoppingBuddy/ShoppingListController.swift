@@ -111,6 +111,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var SendMessagePopUp_DidTheShopping_StarImage: UIImageView!
     @IBOutlet var HeadingToStoreBubble: DesignableUIView!
     @IBOutlet var ListChangedBubble: DesignableUIView!
+    @IBOutlet var DidTheErrandsBubble: DesignableUIView!
     @IBOutlet var txt_SendMessagePopUp_CustomMessage: UITextField!
     @IBOutlet var lbl_SendMessagePopUp: UILabel!
     
@@ -130,9 +131,19 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //Onboarding image
     @IBOutlet var OnboardindInfoView: UIImageView!
     
+    //ListItemSendMessage popup
+    @IBOutlet var ListItemSendMessagePopUp: UIView!
+    @IBOutlet var ListItemSendMessageHeader: UILabel!
+    @IBOutlet var ListItemSendMessageUser: UIImageView!
+    @IBOutlet var ListItemSendMessageUserStatusImage: UIImageView!
+    @IBOutlet var txt_ListItemSendMessageCustomMessage: UITextField!
+    @IBOutlet var btn_ArticleIsOutMessage: UIButton!
+    @IBOutlet var ArticleIsOutBubble: DesignableUIView!
+    
     
     
     //MARK:- Member
+    var selectedListItemIndex = 0
     var lastContentOffset:CGFloat = 0
     private var isInfoViewVisible:Bool!
     var timer:Timer!
@@ -152,6 +163,10 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if traitCollection.forceTouchCapability == .available {
+            registerForPreviewing(with: self, sourceView: ShoppingListDetailTableView)
+        }
         ConfigureView()
         
     }
@@ -356,6 +371,35 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     //MARK: - Wired Actions
     //MARK: Buttons
+    @objc func btn_ArticleIsOutMessage_Pressed(sender: UIButton) -> Void {
+        
+        guard let user = currentUser else { return }
+        if !user.isFullVersionUser! {
+            
+            let title = String.FullVersionNeededAlertTitle
+            let message = String.FullVersionNeededMessagesAlertMessage
+            self.ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        if allShoppingLists[currentShoppingListIndex].members.isEmpty {
+            
+            let title = String.MesageNotPossibleAlertTitle
+            let message = String.MesageNotPossibleAlertMessage
+            ShowAlertMessage(title: title, message: message)
+            return
+            
+        }
+        
+        SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
+        sbMessageWebService.SendArticleIsOutMessage(list: allShoppingLists[currentShoppingListIndex], itemName: allShoppingLists[currentShoppingListIndex].items[selectedListItemIndex].itemName!)
+        HideSendMessageBlurrView()
+        HideListItemSendMessagePopUp()
+        
+    }
+    
+    
     @IBAction func btn_Info_Pressed(_ sender: UIBarButtonItem) {
         
         if isInfoViewVisible { hideInfoView() }
@@ -445,7 +489,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             let alert = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "OK", style: .destructive, handler: { (action) -> Void in
                 
-                SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+                SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
                 self.sbListWebservice.CancelSharingBySharedUserForMember(member: currentUser!, listToCancel: allShoppingLists[self.currentShoppingListIndex])
                 
                 if let index = allShoppingLists[self.currentShoppingListIndex].members.index(where: { $0.memberID == currentUser!.id }) {
@@ -515,7 +559,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+        SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
         sbMessageWebService.SendWillGoToStoreMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -542,7 +586,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+        SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
         sbMessageWebService.SendChangedTheListMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -569,7 +613,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+        SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
         sbMessageWebService.SendErrandsCompletedMessage(list: allShoppingLists[currentShoppingListIndex])
         HideSendMessageBlurrView()
         HideSendMessagePopUp()
@@ -640,7 +684,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         isValid = ValidationFactory.Validate(type: .email, validationString: txt_ShareListOpponentEmail.text, alertDelegate: self)
         if isValid {
             
-            SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+            SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
             let sbMessageService = ShoppingBuddyMessageWebservice()
             sbMessageService.alertMessageDelegate = self
             sbMessageService.SendFriendSharingInvitation(friendsEmail: txt_ShareListOpponentEmail.text!, list: allShoppingLists[currentShoppingListIndex], listOwner: currentUser!)
@@ -703,6 +747,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         HideAddListPopUp()
         HideShareListPopUp()
+        HideListItemSendMessagePopUp()
         CancelSharingPopUp.removeFromSuperview()
         ShoppingListDetailView.removeFromSuperview()
         
@@ -716,13 +761,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         HideSendMessagePopUp()
         HideSendMessageBlurrView()
+        HideListItemSendMessagePopUp()
         
     }
     private func HideSendMessagePopUp() -> Void {
         
         txt_SendMessagePopUp_CustomMessage.text = ""
-        SendMessagePopUp.removeFromSuperview()
-        
+        if view.subviews.contains(SendMessagePopUp){
+            SendMessagePopUp.removeFromSuperview()
+        }
         
     }
     func AddItemBlurrView_Tapped(sender: UITapGestureRecognizer) -> Void {
@@ -1393,6 +1440,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             }
             
+            //Only send message when list is shared
             if allShoppingLists[currentShoppingListIndex].members.isEmpty {
                 
                 let title = String.MesageNotPossibleAlertTitle
@@ -1403,14 +1451,30 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 
             }
             
-            if txt_SendMessagePopUp_CustomMessage == nil {
-                return true
+            //Send custom message from SendMessagePopUp
+            if view.subviews.contains(SendMessagePopUp){
+                
+                if txt_SendMessagePopUp_CustomMessage == nil || txt_SendMessagePopUp_CustomMessage.text! == "" {
+                    return true
+                }
+                SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
+                sbMessageWebService.SendCustomMessage(message: txt_SendMessagePopUp_CustomMessage.text!, list: allShoppingLists[currentShoppingListIndex])
             }
             
-            SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
-            sbMessageWebService.SendCustomMessage(message: txt_SendMessagePopUp_CustomMessage.text!, list: allShoppingLists[currentShoppingListIndex])
+            //Send custom message from ListItemSendMessagePopup
+            if view.subviews.contains(ListItemSendMessagePopUp) {
+                
+                if txt_ListItemSendMessageCustomMessage == nil || txt_ListItemSendMessageCustomMessage.text! == "" {
+                    return true
+                }
+                SoundPlayer.PlaySound(filename: "mailsent", filetype: "wav")
+                sbMessageWebService.SendCustomMessage(message: txt_ListItemSendMessageCustomMessage.text!, list: allShoppingLists[currentShoppingListIndex])
+                
+            }
+            
             HideSendMessageBlurrView()
             HideSendMessagePopUp()
+            HideListItemSendMessagePopUp()
             
         }
         
@@ -1430,6 +1494,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
             ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
             SendMessagePopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
+            ListItemSendMessagePopUp.transform = CGAffineTransform(translationX: 0, y: -height * 0.33)
             
         }
         
@@ -1442,6 +1507,8 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             AddShoppingListPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
             ShareListPopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
             SendMessagePopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
+            ListItemSendMessagePopUp.transform = CGAffineTransform(translationX: 0, y: keyboardSize.height * 0.33)
+            
         }
         
     }
@@ -1519,6 +1586,23 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         return false
     }
     
+    func ShowListItemSendMessagePopUp() -> Void {
+        
+        if showSendMessageBlurrView() {
+            
+            ListItemSendMessageUser.image = currentUser?.profileImage != nil ? currentUser?.profileImage! : #imageLiteral(resourceName: "userPlaceholder")
+            ListItemSendMessageUserStatusImage.alpha = currentUser!.isFullVersionUser! ? 1 :0
+            ListItemSendMessageHeader.text = String.lbl_SendMessageHeader
+            txt_ListItemSendMessageCustomMessage.placeholder = String.txt_SendMessagePopUp_CustomMessagePalceholder
+            btn_ArticleIsOutMessage.setTitle(String.localizedStringWithFormat(String.quickMessageActionTitle, allShoppingLists[currentShoppingListIndex].items[selectedListItemIndex].itemName!), for: .normal)
+            ListItemSendMessagePopUp.center = view.center
+            view.addSubview(ListItemSendMessagePopUp)
+            ListItemSendMessagePopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
+            
+        }
+        
+    }
+    
     func ShowSendMessagePopUp() -> Void {
         
         if showSendMessageBlurrView() {
@@ -1539,6 +1623,15 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             SendMessagePopUp.bringSubview(toFront:SendMessagePopUp_DidTheShopping_StarImage)
             SendMessagePopUp.HangingEffectBounce(duration: 0.5, delay: 0, spring: 0.3)
             
+        }
+        
+    }
+    
+    func HideListItemSendMessagePopUp() -> Void {
+        
+        HideSendMessageBlurrView()
+        if view.subviews.contains(ListItemSendMessagePopUp){
+            ListItemSendMessagePopUp?.removeFromSuperview()
         }
         
     }
@@ -1564,7 +1657,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     func HideSendMessageBlurrView() -> Void {
         
         blurrViewSendMessage?.removeFromSuperview()
-        blurrViewSendMessage = nil
+        blurrViewSendMessage = nil 
         
     }
     
@@ -1996,6 +2089,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ListChangedBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
         ListChangedBubble.layer.borderWidth = 3
         
+        DidTheErrandsBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        DidTheErrandsBubble.layer.borderWidth = 3
+        
         btn_SendMessagePopUp_ListChanged.setTitle(String.btn_SendMessagePopUp_ListChangedContent, for: .normal)
         btn_SendMessagePopUp_HeadingToStore.setTitle(String.btn_SendMessagePopUp_HeadingToStoreContent, for: .normal)
         btn_SendMessagePopUp_DidTheShopping.setTitle(String.btn_SendMessagePopUp_DidTheShoppingContent, for: .normal)
@@ -2010,6 +2106,28 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         txt_SendMessagePopUp_CustomMessage.layer.borderWidth = 3
         txt_SendMessagePopUp_CustomMessage.delegate = self
         
+        //ListItemSendMessagePopUp
+        ListItemSendMessageUser.layer.cornerRadius = SendMessagePopUp_DidTheShopping_ProfileImage.frame.width * 0.5
+        ListItemSendMessageUser.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        ListItemSendMessageUser.layer.borderWidth = 3
+        ListItemSendMessageUserStatusImage.alpha = 0
+        
+        txt_ListItemSendMessageCustomMessage.placeholder = String.txt_SendMessagePopUp_CustomMessagePalceholder
+        txt_ListItemSendMessageCustomMessage.layer.cornerRadius = 10
+        txt_ListItemSendMessageCustomMessage.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        txt_ListItemSendMessageCustomMessage.layer.borderWidth = 3
+        txt_ListItemSendMessageCustomMessage.delegate = self
+        
+        btn_ArticleIsOutMessage.setTitle(String.quickMessageActionTitle, for: .normal)
+        btn_ArticleIsOutMessage.addTarget(self, action: #selector(btn_ArticleIsOutMessage_Pressed), for: .touchUpInside)
+        
+        ArticleIsOutBubble.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        ArticleIsOutBubble.layer.borderWidth = 3
+        
+        ListItemSendMessagePopUp.layer.shadowColor  = UIColor.black.cgColor
+        ListItemSendMessagePopUp.layer.shadowOffset  = CGSize(width: 30, height:30)
+        ListItemSendMessagePopUp.layer.shadowOpacity  = 1
+        ListItemSendMessagePopUp.layer.shadowRadius  = 10
         
     }
     
@@ -2258,6 +2376,8 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        
+        selectedListItemIndex = indexPath.row
         let dropHeight = abs((ShoppingListDetailTableView.frame.height))
         if allShoppingLists[currentShoppingListIndex].items.isEmpty { return }
         
@@ -2380,4 +2500,32 @@ extension ShoppingListController: GADBannerViewDelegate {
     func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
         print("adViewWillLeaveApplication")
     }
+}
+
+extension ShoppingListController : UIViewControllerPreviewingDelegate {
+    
+    ///PEEK
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        
+        guard let  indexPath = ShoppingListDetailTableView.indexPathForRow(at: location),
+            let cell = ShoppingListDetailTableView.cellForRow(at: indexPath) else { return nil }
+        
+        selectedListItemIndex = indexPath.row
+        
+        guard let listItemMessageVC = storyboard?.instantiateViewController(withIdentifier: "ListItemMessageController") as? ListItemMessageController else { return nil }
+        
+        listItemMessageVC.preferredContentSize = CGSize(width: 0, height: 110)
+        listItemMessageVC.selectedArticle = allShoppingLists[currentShoppingListIndex].items[indexPath.row]
+        previewingContext.sourceRect = cell.frame
+        
+        return listItemMessageVC
+    }
+    
+    ///POP
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        
+        ShowListItemSendMessagePopUp()
+        
+    }
+    
 }

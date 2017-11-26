@@ -101,6 +101,30 @@ class ShoppingBuddyMessageWebservice {
         
     }
     
+    func SendArticleIsOutMessage(list: ShoppingList, itemName: String) -> Void {
+        
+        guard currentUser != nil else { return }
+        
+        let msgTitle = String.localizedStringWithFormat(String.msg_ArticleIsOutTitle)
+        let msgMessage = String.localizedStringWithFormat(String.quickMessageActionTitle, itemName)
+        self.ref.child("messages").childByAutoId().updateChildValues(["senderID":Auth.auth().currentUser!.uid, "message":msgMessage, "title":msgTitle, "listID":list.id!, "messageType":eNotificationType.ArticleIsOutMessage.rawValue, "date":dateFormatter.string(from: Date())]) { (error, dbRef) in
+            
+            if error != nil {
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            NSLog("Succesfully added Article Out to messages")
+            
+        }
+        
+    }
+    
     func SendCustomMessage(message: String, list: ShoppingList) -> Void {
         
         guard let user = currentUser else { return }
@@ -118,7 +142,7 @@ class ShoppingBuddyMessageWebservice {
                 
             }
             
-            NSLog("Succesfully added Will Go Shopping to messages")
+            NSLog("Succesfully added Custom Message to messages")
             
         }
         

@@ -153,3 +153,7 @@ CheckMonitoredRadiusInSettingsAlertTitle = "Geofence Radius!";
 CheckMonitoredRadiusInSettingsAlertMessage = "Geofence Radius ist nicht gesetzt. Aktiviere den Geofence Radius in den Einstellungen um die Shopüberwachung zu starten.";
 
 txt_SendAnswerPlaceholder = "Sende %@ eine Antwort";
+
+msg_ArticleIsOutTitle = "Artikel ausverkauft!";
+lbl_SendMessageHeader = "Schnelle Nachricht"; 
+quickMessageActionTitle = "%@ ist ausverkauft!";
