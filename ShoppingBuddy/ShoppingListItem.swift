@@ -14,6 +14,6 @@ struct ShoppingListItem {
     var listID:String?
     var itemName:String?
     var isSelected:Bool?
-    var sortNumber:Int? 
+    var sortNumber:Int?
     
 }
