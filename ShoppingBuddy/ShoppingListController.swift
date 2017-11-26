@@ -1631,6 +1631,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         
         HideSendMessageBlurrView()
         if view.subviews.contains(ListItemSendMessagePopUp){
+            txt_ListItemSendMessageCustomMessage.text = ""
             ListItemSendMessagePopUp?.removeFromSuperview()
         }
         

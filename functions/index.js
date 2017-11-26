@@ -374,7 +374,7 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
     //*********************************************************************************************************** 
     //handle ErrandsCompletedMessage / WillGoShoppingMessage / ChangedTheListMessage
     //*********************************************************************************************************** 
-    if (String(msgData.messageType) == 'ErrandsCompletedMessage' || String(msgData.messageType) == 'WillGoShoppingMessage' || String(msgData.messageType) == 'ChangedTheListMessage' || String(msgData.messageType) == 'CustomMessage') {
+    if (String(msgData.messageType) == 'ErrandsCompletedMessage' || String(msgData.messageType) == 'WillGoShoppingMessage' || String(msgData.messageType) == 'ChangedTheListMessage' || String(msgData.messageType) == 'CustomMessage' || String(msgData.messageType) == 'ArticleIsOutMessage') {
 
         return admin.database().ref('shoppinglist_member').child(msgData.listID).once('value').then(memberSnap => {
 

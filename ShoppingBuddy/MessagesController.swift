@@ -57,6 +57,25 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        for msg in allMessages {
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd.MM.YYYY HH:mm"
+            if let d = formatter.date(from: msg.date!){
+                
+                if let date = Calendar.current.date(byAdding: .day, value: 7, to: d) {
+                   
+                    if date > Date() {
+                        
+                        sbMessageWebservice.DeleteMessage(messageID: msg.id!)
+                        
+                    }
+                    
+                }
+                
+            }
+        }
+        
         DispatchQueue.main.async {
             self.InvitationsTableView.reloadData()
         }
