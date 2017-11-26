@@ -815,16 +815,7 @@ extension DashboardController: MKMapViewDelegate{
         possibleRegionsPerStore = possibleRegionsPerStore < 4 ? 4: possibleRegionsPerStore
         
         var itemsCount = 0
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: 0, maxDistance: mapSpan * 0.1)
-        
-        if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.1, maxDistance: mapSpan * 0.2)
-        
-        if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.2, maxDistance: mapSpan * 0.3)
-        
-        if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.3, maxDistance: mapSpan * 0.4)
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: 0, maxDistance: mapSpan * 0.4)
         
         if itemsCount == possibleRegionsPerStore { return }
         itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 0.4, maxDistance: mapSpan * 0.6)
@@ -836,10 +827,10 @@ extension DashboardController: MKMapViewDelegate{
         itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 1, maxDistance: mapSpan * 2)
         
         if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 2, maxDistance: mapSpan * 4)
-        
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 2, maxDistance: mapSpan * 5)
+        /*
         if itemsCount == possibleRegionsPerStore { return }
-        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 4, maxDistance: mapSpan * 8)
+        itemsCount = TryMonitoreRegion(mapItems: mapItems, possibleRegionsPerStore: possibleRegionsPerStore, itemsCount: itemsCount, minDistance: mapSpan * 4, maxDistance: mapSpan * 8)*/
         
     }
     private func TryMonitoreRegion(mapItems:[MKMapItem], possibleRegionsPerStore:Int, itemsCount:Int, minDistance:Double, maxDistance:Double) -> Int {
