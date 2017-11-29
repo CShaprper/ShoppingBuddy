@@ -40,14 +40,7 @@ class CustomTabBarController: UITabBarController {
             NSAttributedStringKey.font :normalTitleFont
         ]
         UIBarButtonItem.appearance().setTitleTextAttributes(attributesNormal, for: .normal)
-
-        tabBar.backgroundImage = #imageLiteral(resourceName: "NavBarBottom")
-//        if  UIDevice()
-//        {
-//            tabBar.backgroundImage = #imageLiteral(resourceName: "NavBarBottomIOS11")
-//        } else {
-//
-//        }
+        tabBar.backgroundImage = #imageLiteral(resourceName: "NavBarBottom").resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0 ,right: 0), resizingMode: .stretch)
         
         tabBar.items?[0].title = String.DashboardControllerTitle
         tabBar.items?[1].title = String.ShoppingListControllerTitle
@@ -69,6 +62,7 @@ class CustomTabBarController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
+    
     
     @objc func RefreshMessagesBadgeValue(notification: Notification) -> Void {
         tabBar.items?[2].badgeValue = allMessages.count > 0 ? String(allMessages.count) : nil
@@ -109,4 +103,24 @@ class CustomTabBarController: UITabBarController {
     } 
     
     //MARK: - Helper Functions
+}
+
+extension UITabBar{
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        
+        super.sizeThatFits(size)
+        var mySize:CGSize = size
+        
+        if UIDevice().userInterfaceIdiom == .phone {
+            switch UIScreen.main.nativeBounds.height {
+            case 2436:
+                mySize.height = 105
+                return mySize
+            default:
+                   mySize.height = 44
+                return mySize
+            }
+        }
+        return size
+    }
 }

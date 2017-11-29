@@ -27,18 +27,12 @@ class CustomNavigationController: UINavigationController {
         shadow.shadowColor = UIColor.black
         shadow.shadowBlurRadius = 35
         shadow.shadowOffset =  CGSize(width: -2, height: -2)
-//        let textAttributes = [NSAttributedStringKey.shadow.rawValue: shadow,
-//                              NSAttributedStringKey.foregroundColor: UIColor.ColorPaletteTintColor(),
-//                              NSAttributedStringKey.font: UIFont(name: "Courgette-Regular", size: 20)!] as [AnyHashable : NSObject]
-//        navigationBar.titleTextAttributes = textAttributes as? [NSAttributedStringKey : Any]
-        navigationBar.clipsToBounds = false
         
+        navigationBar.clipsToBounds = false
+        navigationBar.contentMode = .scaleToFill
         navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTop"), for: .default)
-//        if #available(iOS 11, *){
-//            navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTopIOS11"), for: .default)
-//        } else {
-//        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTop"), for: .default)
-//        }
+        navigationBar.setBackgroundImage(#imageLiteral(resourceName: "NavBarTop").resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 0, bottom: 0 ,right: 0), resizingMode: .stretch), for: .default)
+        
     }
     
     override func didReceiveMemoryWarning() {
