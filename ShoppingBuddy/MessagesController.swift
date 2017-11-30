@@ -36,8 +36,8 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
         NotificationCenter.default.addObserver(self, selector: #selector(UserProfileImageDownloadFinished), name: NSNotification.Name.UserProfileImageDownloadFinished, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(AllInvitesReceived), name: NSNotification.Name.AllInvitesReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(SharingInviteReceived), name: NSNotification.Name.SharingInviteReceived, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(KeyboardDidShow), name: .UIKeyboardDidShow, object: nil)
         
         //sbMessageWebservice
         sbMessageWebservice = ShoppingBuddyMessageWebservice()
@@ -97,6 +97,7 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
                     
                     sbMessageWebservice.SendCustomMessage(message: txt_SendAnswer.text!, list: allShoppingLists[index])
                     SoundPlayer.PlaySound(filename: "MailSent", filetype: "wav")
+                    
                 }
                 
             }
@@ -106,25 +107,34 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
         return true
     }
     
-    @objc func KeyboardWillShow(sender: Notification) -> Void {
+    @objc func KeyboardDidShow(sender: Notification) -> Void {
         
-        if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-            var height = keyboardSize.height
-            if height == 0 { height = 258 }
+        if let userInfo = sender.userInfo, let keyboardFrameValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRect = keyboardFrameValue.cgRectValue
+            var height = keyboardRect.height
+            if height == 0 { height = 268 }
             
-            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: -height + 40)
-            
-        }
+            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: CGFloat(height) * CGFloat(-1) + (self.tabBarController?.tabBar.frame.size.height)!)
+        }        
+        
         
     }
+    
     
     @objc func KeyboardWillHide(sender: Notification) -> Void {
         
         if let keyboardSize = (sender.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             var height = keyboardSize.height
-            if height == 0 { height = 258 }
+            if height == 0 { height = 268 }
             
-            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: height - 40)
+            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: height + (self.tabBarController?.tabBar.frame.size.height)!)
+            txt_SendAnswer.alpha = 0
+            
+        } else {
+            
+            let height:CGFloat = 268
+            txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: height)
+            txt_SendAnswer.alpha = 0
             
         }
         
@@ -196,6 +206,7 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
         if let index = allUsers.index(where: { $0.id == selectedMessage.senderID }){
             
             txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  allUsers[index].nickname!)
+            
         } else {
             
             txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  "user")
@@ -234,7 +245,28 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
             
         } else {
             
-            let delete = UITableViewRowAction(style: .destructive, title: "delete", handler: { (action, indexp) in
+            let answer = UITableViewRowAction(style: .default, title: String.AnswerMessage) { (action, indexp) in
+                
+                self.selectedMessage = allMessages[indexPath.row]
+                if let index = allUsers.index(where: { $0.id == self.selectedMessage.senderID }){
+                    
+                    self.txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  allUsers[index].nickname!)
+                    
+                } else {
+                    
+                    self.txt_SendAnswer.placeholder = String.localizedStringWithFormat(String.txt_SendAnswerPlaceholder,  "user")
+                }
+                
+                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: .allowUserInteraction, animations: {
+                    self.txt_SendAnswer.alpha = 1
+                }, completion: nil)
+                
+                self.txt_SendAnswer.becomeFirstResponder()
+                
+            }
+            answer.backgroundColor = UIColor.blue
+            
+            let delete = UITableViewRowAction(style: .destructive, title: String.DeleteMessage, handler: { (action, indexp) in
                 
                 self.sbMessageWebservice.DeleteMessage(messageID: allMessages[indexPath.row].id!)
                 allMessages.remove(at: indexPath.row)
@@ -242,7 +274,7 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
                 tableView.setEditing(false, animated: true)
                 
             })
-            return [delete]
+            return [delete, answer]
             
         } 
     }

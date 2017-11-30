@@ -137,6 +137,8 @@ extension String{
     
     //Messages Controller
     static let MessagesControllerTitle = NSLocalizedString("MessagesControllerTitle", comment: "")
+    static let DeleteMessage = NSLocalizedString("DeleteMessage", comment: "")
+    static let AnswerMessage = NSLocalizedString("AnswerMessage", comment: "")
     
     //Messages TableView EditActions
     static let AcceptInvitation = NSLocalizedString("AcceptInvitation", comment: "")
@@ -166,4 +168,5 @@ extension String{
     static let lbl_SendMessageHeader = NSLocalizedString("lbl_SendMessageHeader", comment: "")
     static let quickMessageActionTitle = NSLocalizedString("quickMessageActionTitle", comment: "")
     static let msg_ArticleIsOutTitle = NSLocalizedString("msg_ArticleIsOutTitle", comment: "")
+    
 }

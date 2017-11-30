@@ -97,7 +97,7 @@ ListItemAddedTitle = "Artikel hinzugefügt!";
 ListItemAddedMessage = "%@ hat '%@' zur Gruppenliste '%@' hinzugefügt.";
 SharingDeclinedMessageTitle = "Einladung Abgelehnt!";
 SharingDeclinedMessageMessage = "%@ hat die Einladung zum Teilen der Deiner Liste abgelehnt.";
-LeaveGroupListAlertTitle = "Gruppenliste verlassen!";
+LeaveGroupListAlertTitle = "Gruppenliste verlassen?";
 LeaveGroupListAlertMessage = "Möchtest Du die Gruppenliste '%@' verlassen?";
 WillGoShoppingMessageTitle = "%@ geht einkaufen!";
 WillGoShoppingMessageMessage = "%@ geht zu '%@'. Deine Chance noch fehlende Artikel zu '%@' hinzuzufügen.";
@@ -130,6 +130,8 @@ OnlineFetchRequestError = "Web Request Error";
 MessagesControllerTitle = "Nachrichten";
 AcceptInvitation = "Annehmen";
 DeclineInvitation = "Ablehnen";
+DeleteMessage = "Löschen";
+AnswerMessage = "Antworten";
 
     //Info Views
 DashboardOnboardingImage = "OnboardingDashboard-DE";

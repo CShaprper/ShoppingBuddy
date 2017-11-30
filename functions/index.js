@@ -259,14 +259,14 @@ exports.send_NotificationOnNewMessage = functions.database.ref('/messages/{messa
                         } else {
 
                             //add receipt to message_receipts node
-                            return admin.database().ref('message_receipts').child(receipt.key).set('CancelSharingMessage_Receipt').then(() => {
+                            return admin.database().ref('message_receipts').child(event.params.messageID).child(receipt.key).set('CancelSharingMessage_Receipt').then(() => {
 
                                 //Send member push
                                 return admin.database().ref('/users/' + receipt.key).once('value').then(usnap => {
 
                                     //Send push to users fcmToken
                                     var userSnap = usnap.val()
-                                    console.log('sending Push to ' + userSnap.fcmToken)
+                                    console.log('sending Push to ' + userSnap.nickname)
 
                                     //create Notification Payload
                                     var payload = {

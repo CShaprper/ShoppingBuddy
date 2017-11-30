@@ -134,6 +134,8 @@ OnlineFetchRequestError = "Web Request Error";
 MessagesControllerTitle = "Messages";
 AcceptInvitation = "accept";
 DeclineInvitation = "decline";
+DeleteMessage = "delete";
+AnswerMessage = "answer";
 
     //Info Views
 DashboardOnboardingImage = "OnboardingDashboard-EN";

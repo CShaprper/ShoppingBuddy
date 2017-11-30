@@ -478,7 +478,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
-        //Cancel sharing directly in not list owner
+        //Cancel sharing directly not list owner
         if allShoppingLists[currentShoppingListIndex].owneruid! != Auth.auth().currentUser!.uid {
             
             //Cancel sharing by list member - list member leaves group list

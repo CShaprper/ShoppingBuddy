@@ -363,10 +363,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="ZRi-cE-IPO">
-                                <rect key="frame" x="0.0" y="68" width="320" height="363"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="iQH-d2-eko" customClass="DesignableUISlider" customModule="ShoppingBuddy" customModuleProvider="target">
-                                <rect key="frame" x="19" y="106.5" width="282" height="31"/>
+                                <rect key="frame" x="19" y="101" width="282" height="31"/>
                                 <color key="minimumTrackTintColor" red="1" green="0.33940887451171875" blue="0.30029374361038208" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="maximumTrackTintColor" red="0.081623293459415436" green="0.97790521383285522" blue="0.99745064973831177" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="thumbTintColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -376,7 +376,7 @@
                                 </userDefinedRuntimeAttributes>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Geofence Radius" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGc-eJ-fvr">
-                                <rect key="frame" x="87" y="73" width="147" height="27"/>
+                                <rect key="frame" x="82.5" y="69" width="156.5" height="25.5"/>
                                 <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
                                 <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -387,7 +387,7 @@
                                 </variation>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k0J-GX-gYy" userLabel="Buy Button View">
-                                <rect key="frame" x="32" y="194" width="256" height="85.5"/>
+                                <rect key="frame" x="32" y="186" width="256" height="85.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zb2-eg-40t">
                                         <rect key="frame" x="0.0" y="0.0" width="256" height="85.5"/>
@@ -413,7 +413,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lc2-8W-VHs">
-                                <rect key="frame" x="32" y="299.5" width="256" height="85"/>
+                                <rect key="frame" x="32" y="291.5" width="256" height="85"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hky-c9-R9X">
                                         <rect key="frame" x="0.0" y="0.0" width="256" height="85"/>
@@ -438,10 +438,10 @@
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ryd-KK-7dp">
-                                <rect key="frame" x="16" y="144.5" width="288" height="39.5"/>
+                                <rect key="frame" x="16" y="139" width="288" height="37"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="off" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9A5-88-vbD">
-                                        <rect key="frame" x="0.0" y="0.0" width="49.5" height="39.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="49.5" height="37"/>
                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="24"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -449,7 +449,7 @@
                                         <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0,5 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p4y-xN-qHm">
-                                        <rect key="frame" x="59.5" y="0.0" width="49.5" height="39.5"/>
+                                        <rect key="frame" x="59.5" y="0.0" width="49.5" height="37"/>
                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="30"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -457,7 +457,7 @@
                                         <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1,0 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mxz-oD-92b">
-                                        <rect key="frame" x="119" y="0.0" width="50" height="39.5"/>
+                                        <rect key="frame" x="119" y="0.0" width="50" height="37"/>
                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="30"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -465,7 +465,7 @@
                                         <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1,5 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FG7-Ih-HZ3">
-                                        <rect key="frame" x="179" y="0.0" width="49.5" height="39.5"/>
+                                        <rect key="frame" x="179" y="0.0" width="49.5" height="37"/>
                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="30"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -473,7 +473,7 @@
                                         <size key="shadowOffset" width="-2" height="-2"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2,0 km" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ULZ-KK-Hbc" userLabel="0 km">
-                                        <rect key="frame" x="238.5" y="0.0" width="49.5" height="39.5"/>
+                                        <rect key="frame" x="238.5" y="0.0" width="49.5" height="37"/>
                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="30"/>
                                         <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -544,13 +544,13 @@
                             </constraints>
                         </imageView>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="749" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="Message text" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OMD-18-AXp">
-                            <rect key="frame" x="90" y="35" width="220" height="135"/>
+                            <rect key="frame" x="90" y="33.5" width="220" height="136.5"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="italicSystem" pointSize="16"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Message Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="17" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dLV-sh-uXf">
-                            <rect key="frame" x="90" y="10" width="220" height="25"/>
+                            <rect key="frame" x="90" y="10" width="220" height="23.5"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -585,10 +585,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="q1X-ER-W7a">
-                                <rect key="frame" x="0.0" y="68" width="320" height="363"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="93" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="JAH-VP-7kQ">
-                                <rect key="frame" x="10" y="78" width="300" height="353"/>
+                                <rect key="frame" x="10" y="74" width="300" height="357"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -747,7 +747,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="v88-Kw-5ww">
-                                <rect key="frame" x="0.0" y="68" width="320" height="363"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="empty shopping cart" translatesAutoresizingMaskIntoConstraints="NO" id="kLt-7S-Zzx">
                                 <rect key="frame" x="198" y="314" width="112" height="112"/>
@@ -803,10 +803,10 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="WOa-p4-jFr" userLabel="List / Open Items Count Stack">
-                                        <rect key="frame" x="41" y="127.5" width="170" height="21.5"/>
+                                        <rect key="frame" x="41" y="127.5" width="170" height="20"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Total items:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ywR-Q5-QtG">
-                                                <rect key="frame" x="0.0" y="0.0" width="55" height="21.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="55" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1" id="JUk-AB-CSL"/>
                                                 </constraints>
@@ -818,7 +818,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="count" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kXx-OZ-e5T">
-                                                <rect key="frame" x="65" y="0.0" width="15" height="21.5"/>
+                                                <rect key="frame" x="65" y="0.0" width="15" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="15" id="MXo-zo-mxT"/>
                                                 </constraints>
@@ -830,7 +830,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Open items:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="es7-yS-ahI">
-                                                <rect key="frame" x="90" y="0.0" width="55" height="21.5"/>
+                                                <rect key="frame" x="90" y="0.0" width="55" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1" id="BT4-tU-6ZM"/>
                                                 </constraints>
@@ -842,7 +842,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Total List items" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nfb-5Q-tGv" userLabel="Open Items Count">
-                                                <rect key="frame" x="155" y="0.0" width="15" height="21.5"/>
+                                                <rect key="frame" x="155" y="0.0" width="15" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="15" id="4R9-wM-Sxb"/>
                                                 </constraints>
@@ -856,7 +856,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="pd2-6R-5if" userLabel="Share Button Stack">
-                                        <rect key="frame" x="58" y="154" width="141" height="36"/>
+                                        <rect key="frame" x="58" y="152.5" width="141" height="36"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qTk-F0-qQE">
                                                 <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
@@ -882,7 +882,7 @@
                                         </constraints>
                                     </stackView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RWf-iR-TY2">
-                                        <rect key="frame" x="30" y="195" width="206" height="102.5"/>
+                                        <rect key="frame" x="30" y="193.5" width="206" height="102.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="q3M-lV-lCa">
                                             <size key="itemSize" width="50" height="50"/>
@@ -1012,10 +1012,10 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fve-ga-iGe" userLabel="List / Open Items Count Stack">
-                                        <rect key="frame" x="41.5" y="127.5" width="170" height="21.5"/>
+                                        <rect key="frame" x="41.5" y="127.5" width="170" height="20"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Total items:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lcn-Pm-tBL">
-                                                <rect key="frame" x="0.0" y="0.0" width="55" height="21.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="55" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1" id="wbl-pq-imc"/>
                                                 </constraints>
@@ -1027,7 +1027,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TaS-fA-dOw">
-                                                <rect key="frame" x="65" y="0.0" width="15" height="21.5"/>
+                                                <rect key="frame" x="65" y="0.0" width="15" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="15" id="D0W-2h-kWR"/>
                                                 </constraints>
@@ -1039,7 +1039,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Open items:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HJB-CT-Nd8">
-                                                <rect key="frame" x="90" y="0.0" width="55" height="21.5"/>
+                                                <rect key="frame" x="90" y="0.0" width="55" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="1" id="JgW-Su-6Gi"/>
                                                 </constraints>
@@ -1051,7 +1051,7 @@
                                                 </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Ebb-Hp-BWJ" userLabel="Open Items Count">
-                                                <rect key="frame" x="155" y="0.0" width="15" height="21.5"/>
+                                                <rect key="frame" x="155" y="0.0" width="15" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="15" id="Wix-Rz-sjx"/>
                                                 </constraints>
@@ -1065,7 +1065,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="iBs-Aa-LXx" userLabel="Share Button Stack">
-                                        <rect key="frame" x="58" y="154" width="141" height="36"/>
+                                        <rect key="frame" x="58" y="152.5" width="141" height="36"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1sy-bZ-94j">
                                                 <rect key="frame" x="0.0" y="0.0" width="35.5" height="36"/>
@@ -1112,7 +1112,7 @@
                                         </variation>
                                     </label>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="tGZ-Xw-gdj">
-                                        <rect key="frame" x="29.5" y="195" width="206" height="102.5"/>
+                                        <rect key="frame" x="29.5" y="193.5" width="206" height="102.5"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="t9I-m0-Cn3">
                                             <size key="itemSize" width="50" height="50"/>
@@ -1436,7 +1436,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send Message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dj-oN-bUr">
-                            <rect key="frame" x="91" y="82" width="138" height="29.5"/>
+                            <rect key="frame" x="85.5" y="82" width="149" height="28"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                             <color key="textColor" red="0.21112695340000001" green="0.99378865959999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -1484,7 +1484,7 @@
                             <rect key="frame" x="0.0" y="50" width="240" height="200"/>
                             <subviews>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="0NB-TM-rp2">
-                                    <rect key="frame" x="10" y="60" width="220" height="130"/>
+                                    <rect key="frame" x="10" y="58.5" width="220" height="131.5"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7I8-9G-DXk">
                                         <size key="itemSize" width="50" height="50"/>
@@ -1542,7 +1542,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cancel Sharing" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PjI-35-lhI">
-                            <rect key="frame" x="48" y="77" width="145.5" height="29.5"/>
+                            <rect key="frame" x="45" y="77" width="152" height="28"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                             <color key="textColor" red="0.21112695340000001" green="0.99378865959999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -1574,7 +1574,7 @@
                             <rect key="frame" x="0.0" y="42" width="300" height="312.5"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J4I-4e-9o7" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
-                                    <rect key="frame" x="10" y="64" width="280" height="60"/>
+                                    <rect key="frame" x="10" y="62.5" width="280" height="60"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kmm-c6-KaV">
                                             <rect key="frame" x="70" y="5.5" width="200" height="50"/>
@@ -1619,7 +1619,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N3e-7X-tmc" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
-                                    <rect key="frame" x="10" y="129" width="280" height="60"/>
+                                    <rect key="frame" x="10" y="127.5" width="280" height="60"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="1wq-59-Ls2">
                                             <rect key="frame" x="70" y="5.5" width="200" height="50"/>
@@ -1664,7 +1664,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k9q-nX-E5z" userLabel="Did the errands bubble" customClass="DesignableUIView" customModule="ShoppingBuddy" customModuleProvider="target">
-                                    <rect key="frame" x="10" y="193.5" width="280" height="60"/>
+                                    <rect key="frame" x="10" y="192" width="280" height="60"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="GdX-HI-ziA">
                                             <rect key="frame" x="70" y="5.5" width="200" height="50"/>
@@ -1709,7 +1709,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </view>
                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter custom message" textAlignment="center" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="lxk-VP-bTL">
-                                    <rect key="frame" x="10" y="258.5" width="280" height="34"/>
+                                    <rect key="frame" x="10" y="257" width="280" height="35.5"/>
                                     <nil key="textColor"/>
                                     <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="15"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" spellCheckingType="yes" returnKeyType="send"/>
@@ -1758,7 +1758,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send Message" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hdJ-1Q-dyh">
-                            <rect key="frame" x="81" y="77" width="138" height="29.5"/>
+                            <rect key="frame" x="75.5" y="77" width="149" height="28"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                             <color key="textColor" red="0.21112695340000001" green="0.99378865959999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
@@ -1794,7 +1794,7 @@
                             </constraints>
                         </imageView>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="749" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="Message text" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0h6-Ut-7F3">
-                            <rect key="frame" x="90" y="35" width="220" height="155"/>
+                            <rect key="frame" x="90" y="33.5" width="220" height="156.5"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <fontDescription key="fontDescription" type="italicSystem" pointSize="16"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -1806,7 +1806,7 @@
                             </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Message Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="17" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aew-6o-zk7">
-                            <rect key="frame" x="90" y="10" width="220" height="25"/>
+                            <rect key="frame" x="90" y="10" width="220" height="23.5"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -1867,7 +1867,7 @@
                             <rect key="frame" x="0.0" y="43" width="280" height="157"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Share list with friend" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BRH-fZ-2gC">
-                                    <rect key="frame" x="36" y="32.5" width="208" height="29.5"/>
+                                    <rect key="frame" x="39" y="34" width="202" height="28"/>
                                     <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                                     <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
@@ -1962,7 +1962,7 @@
                             <rect key="frame" x="0.0" y="43" width="280" height="197"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Shopping List" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ot9-4g-1ti">
-                                    <rect key="frame" x="51.5" y="37.5" width="177" height="29.5"/>
+                                    <rect key="frame" x="47.5" y="39" width="185" height="28"/>
                                     <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                                     <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
@@ -2055,7 +2055,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="280" height="400"/>
                         </imageView>
                         <tableView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="spv-64-59b">
-                            <rect key="frame" x="0.0" y="78" width="280" height="322"/>
+                            <rect key="frame" x="0.0" y="76" width="280" height="324"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2071,7 +2071,7 @@
                                                 <rect key="frame" x="20" y="8" width="28" height="34.5"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Shopping List Item" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1e6-SP-iC2">
-                                                <rect key="frame" x="78" y="9.5" width="187" height="31.5"/>
+                                                <rect key="frame" x="78" y="10.5" width="187" height="29.5"/>
                                                 <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="25"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -2131,14 +2131,14 @@
                             <state key="normal" image="icon-EditPencil"/>
                         </button>
                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter article" textAlignment="center" clearsOnBeginEditing="YES" adjustsFontForContentSizeCategory="YES" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="cCs-OB-pJU">
-                            <rect key="frame" x="62" y="40" width="156" height="36"/>
+                            <rect key="frame" x="64" y="40" width="152.5" height="34"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             <nil key="textColor"/>
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="25"/>
                             <textInputTraits key="textInputTraits" returnKeyType="done"/>
                         </textField>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6hk-7L-kZO">
-                            <rect key="frame" x="8" y="43" width="46" height="30"/>
+                            <rect key="frame" x="10" y="42" width="46" height="30"/>
                             <state key="normal" title="Button"/>
                         </button>
                     </subviews>
@@ -2216,7 +2216,7 @@
                                     <state key="normal" image="icon-Floppy"/>
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add List Item" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GCd-nj-6iB">
-                                    <rect key="frame" x="74.5" y="37.5" width="132" height="29.5"/>
+                                    <rect key="frame" x="74" y="39" width="133" height="28"/>
                                     <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="22"/>
                                     <color key="textColor" red="0.18594804409999999" green="0.97779244180000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
@@ -2391,22 +2391,22 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BackGroundImage" translatesAutoresizingMaskIntoConstraints="NO" id="hd2-aN-rmQ">
-                                <rect key="frame" x="0.0" y="68" width="320" height="363"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                             </imageView>
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="qWh-Ig-8Co">
-                                <rect key="frame" x="224.5" y="73" width="79.5" height="79.5"/>
+                                <rect key="frame" x="224.5" y="69" width="79.5" height="79.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="qWh-Ig-8Co" secondAttribute="height" multiplier="1:1" id="P61-9x-gNJ"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UYz-7Q-cRH" userLabel="Dashboard notes">
-                                <rect key="frame" x="10" y="73" width="209.5" height="126"/>
+                                <rect key="frame" x="10" y="69" width="209.5" height="130"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="88y-vm-Rux">
-                                        <rect key="frame" x="3" y="0.0" width="201.5" height="123"/>
+                                        <rect key="frame" x="3" y="0.0" width="201.5" height="127"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NoteBook" translatesAutoresizingMaskIntoConstraints="NO" id="sZF-GR-UqJ">
-                                                <rect key="frame" x="0.0" y="0.0" width="201.5" height="123"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="201.5" height="127"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2418,13 +2418,13 @@
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="vrK-If-vd1">
-                                        <rect key="frame" x="33.5" y="12" width="140.5" height="99"/>
+                                        <rect key="frame" x="33.5" y="12.5" width="140.5" height="102"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Erh-X7-BvV">
-                                                <rect key="frame" x="0.0" y="0.0" width="140.5" height="16.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="140.5" height="17"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Your lists:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0cO-b0-ujy">
-                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="16.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="17"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2433,7 +2433,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vwc-Ol-XWs">
-                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="16.5"/>
+                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="17"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2447,10 +2447,10 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="7zu-G4-m5g">
-                                                <rect key="frame" x="0.0" y="16.5" width="140.5" height="17"/>
+                                                <rect key="frame" x="0.0" y="17" width="140.5" height="17.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Observed lists:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o9Y-VK-YKH">
-                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="17"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="17.5"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2459,7 +2459,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hLp-Go-buL">
-                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="17"/>
+                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="17.5"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2473,10 +2473,10 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="2lv-X9-D47">
-                                                <rect key="frame" x="0.0" y="33.5" width="140.5" height="16.5"/>
+                                                <rect key="frame" x="0.0" y="34.5" width="140.5" height="17"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Observed stores:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QtR-dv-oLn">
-                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="16.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="126" height="17"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2485,7 +2485,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O9z-mz-Lja">
-                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="16.5"/>
+                                                        <rect key="frame" x="131" y="0.0" width="9.5" height="17"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2499,10 +2499,10 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" verticalCompressionResistancePriority="749" axis="vertical" spacing="-1" translatesAutoresizingMaskIntoConstraints="NO" id="qPM-Yy-lvn">
-                                                <rect key="frame" x="0.0" y="50" width="140.5" height="49"/>
+                                                <rect key="frame" x="0.0" y="51.5" width="140.5" height="50.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pinned address:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zq5-0k-inn" userLabel="Pinned address:">
-                                                        <rect key="frame" x="0.0" y="0.0" width="140.5" height="7.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="140.5" height="11.5"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2511,7 +2511,7 @@
                                                         </variation>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Hochstedenstraße 7-9, 50226 Frechen" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bsa-hC-HdX" userLabel="lblAddress">
-                                                        <rect key="frame" x="0.0" y="6.5" width="140.5" height="42.5"/>
+                                                        <rect key="frame" x="0.0" y="10.5" width="140.5" height="40"/>
                                                         <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
@@ -2623,7 +2623,7 @@
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Star" translatesAutoresizingMaskIntoConstraints="NO" id="lm6-J3-C1J">
-                                <rect key="frame" x="276" y="124" width="28" height="28.5"/>
+                                <rect key="frame" x="276" y="120" width="28" height="28.5"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="lm6-J3-C1J" secondAttribute="height" multiplier="1:1" id="Tip-0h-F3k"/>
                                 </constraints>
@@ -2814,7 +2814,7 @@
                     <tabBarItem key="tabBarItem" title="Dashboard" image="iconTabBar-Dashboard" id="LzV-J4-6U3"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Im1-Yg-asK">
-                        <rect key="frame" x="0.0" y="20" width="320" height="48"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
@@ -2843,7 +2843,7 @@
                 <navigationController id="42Q-ei-PRX" customClass="CustomNavigationController" customModule="ShoppingBuddy" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Messages" image="Message-icon" selectedImage="Message-icon" id="4qF-R5-e6P"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Q1n-WW-4Eo">
-                        <rect key="frame" x="0.0" y="20" width="320" height="48"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>
@@ -2867,7 +2867,7 @@
                     <tabBarItem key="tabBarItem" title="Stores" image="icon-TabBar-Settings" id="54i-OP-ifN"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="MLg-ug-Lr4">
-                        <rect key="frame" x="0.0" y="20" width="320" height="48"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="21"/>
@@ -2892,7 +2892,7 @@
                     <tabBarItem key="tabBarItem" title="Shopping List" image="iconTabbar-List" id="A59-KR-mUP"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Ttc-Wc-O1i">
-                        <rect key="frame" x="0.0" y="20" width="320" height="48"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
                             <fontDescription key="fontDescription" name="Courgette-Regular" family="Courgette" pointSize="20"/>

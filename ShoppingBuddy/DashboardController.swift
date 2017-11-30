@@ -117,6 +117,7 @@ class DashboardController: UIViewController, IAlertMessageDelegate, UIGestureRec
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        HideNotification()
         PerformLocalShopSearch(notification: nil)
         
     }
