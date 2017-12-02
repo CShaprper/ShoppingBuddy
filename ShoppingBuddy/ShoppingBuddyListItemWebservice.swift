@@ -42,6 +42,28 @@ class ShoppingBuddyListItemWebservice {
         
     }
     
+    //MARK: - Edit ListItem
+    func EditListItem(listItem: ShoppingListItem) -> Void {          
+        
+        listItemRef.child(listItem.listID!).child(listItem.id!).child("itemName").setValue(listItem.itemName!) { (error, dbRef) in
+            
+            if error != nil{
+                
+                NSLog(error!.localizedDescription)
+                let title = String.OnlineFetchRequestError
+                let message = error!.localizedDescription
+                self.ShowAlertMessage(title: title, message: message)
+                return
+                
+            }
+            
+            NotificationCenter.default.post(name: Notification.Name.ListItemSaved, object: nil, userInfo: nil)
+            NSLog("Succesfully saved ShoppingListItem to Firebase")
+            
+        }
+        
+    }
+    
     //MARK: - Save functions
     func SaveListItemToFirebaseDatabase(listItem: ShoppingListItem, currentShoppingListIndex:Int) -> Void {
 

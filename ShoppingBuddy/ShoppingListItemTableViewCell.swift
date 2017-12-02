@@ -11,9 +11,8 @@ import UIKit
 class ShoppingListItemTableViewCell: UITableViewCell {
     //MARK: - Outlets
     @IBOutlet var CheckmarkImage: UIImageView!
-    @IBOutlet var lbl_ShoppingListItem: UILabel!    
     @IBOutlet weak var TickImageLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var ListItemLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet var txt_ShoppingListItem: UITextField!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,26 +24,30 @@ class ShoppingListItemTableViewCell: UITableViewCell {
     }
     
     func ConfigureCell(shoppingListItem: ShoppingListItem){
-        TickImageLeadingConstraint.constant = self.contentView.frame.width * 0.03
-        ListItemLabelLeadingConstraint.constant = self.contentView.frame.width * 0.08
         
-        lbl_ShoppingListItem.text = shoppingListItem.itemName != nil ? shoppingListItem.itemName! : ""
+        txt_ShoppingListItem.borderStyle = .none
+        let listitemText = shoppingListItem.itemName != nil ? shoppingListItem.itemName! : ""
         CheckmarkImage.image = (shoppingListItem.isSelected != nil && shoppingListItem.isSelected == false) ? #imageLiteral(resourceName: "TickBox") : #imageLiteral(resourceName: "TRickBox-checked")
         
-        //        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: lbl_ShoppingListItem.text!)
+        //let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: listitemText)
+        //attributeString.addAttribute(NSAttributedStringKey.strikethroughStyle, value: 2, range: NSMakeRange(0, attributeString.length))
+        
         if shoppingListItem.isSelected != nil && shoppingListItem.isSelected == true
         {
-            /* attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 1, range: NSMakeRange(0, attributeString.length))
-             attributeString.addAttribute(NSStrikethroughColorAttributeName, value: UIColor.gray, range: NSMakeRange(0, attributeString.length))
-             textLabel?.attributedText = attributeString*/
-            
-            lbl_ShoppingListItem.alpha = 0.4
+            //txt_ShoppingListItem.attributedText = nil
+            //txt_ShoppingListItem.attributedText = attributeString
+            txt_ShoppingListItem.text = listitemText
+            txt_ShoppingListItem.alpha = 0.4
             CheckmarkImage.alpha = 0.4
+            
         }
         else if shoppingListItem.isSelected != nil && shoppingListItem.isSelected == false
         {
-            lbl_ShoppingListItem.alpha = 1
+            txt_ShoppingListItem.attributedText = nil
+            txt_ShoppingListItem.text = listitemText
+            txt_ShoppingListItem.alpha = 1
             CheckmarkImage.alpha = 1
+            
         }
     }
 }

@@ -29,8 +29,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     @IBOutlet var CustomAddShoppingListRefreshControl: UIView!
     @IBOutlet var CustomAddShoppingListRefreshControlImage: UIImageView!
     @IBOutlet var EditListItemsTableViewRows: UIButton!
-    @IBOutlet var txt_AddArticle: UITextField!
-    @IBOutlet var btn_ScanBarcode: UIButton!
+    @IBOutlet var txt_AddArticle: UITextField! 
     
     //Add Shopping List PopUp
     @IBOutlet var AddShoppingListPopUp: UIView!
@@ -1398,6 +1397,36 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     //MARK: - Textfield Delegate implementation
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
+        if textField.returnKeyType == UIReturnKeyType.default {
+            
+            var isValid:Bool = false
+            //Validate FullVersion
+            isValid = ValidationFactory.Validate(type: .fullVersionUser, validationString: "", alertDelegate: self)
+            if !isValid && allShoppingLists[currentShoppingListIndex].items.count >= 15 {
+                
+                let title = String.FullVersionNeededAlertTitle
+                let message = String.FullVersionNeededArticleAlertMessage
+                ShowAlertMessage(title: title, message: message)
+                self.view.endEditing(true)
+                return true
+                
+            }
+            
+            
+            isValid = ValidationFactory.Validate(type: .textField, validationString: textField.text, alertDelegate: self)
+            if isValid{
+                
+                var listItem = allShoppingLists[currentShoppingListIndex].items[selectedListItemIndex]
+                listItem.itemName = textField.text!
+                sbListItemWebservice.EditListItem(listItem: listItem)
+                self.view.endEditing(true)
+                ShoppingListDetailTableView.reloadData()
+                
+            }
+            
+            
+        }
+        
         if textField.returnKeyType == UIReturnKeyType.done {
             
             var isValid:Bool = false
@@ -1412,6 +1441,7 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
                 return true
                 
             }
+            
             
             isValid = ValidationFactory.Validate(type: .textField, validationString: txt_AddArticle.text, alertDelegate: self)
             if isValid{
@@ -1849,9 +1879,6 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         currentShoppingListIndex = 0
         btn_info.tintColor = UIColor.ColorPaletteTintColor()
         
-        btn_ScanBarcode.addTarget(self, action: #selector(btn_ScanBarcode_Pressed), for: .touchUpInside)
-        btn_ScanBarcode.alpha = 0
-        
         //SetNavigationBar Title
         navigationItem.title = String.ShoppingListControllerTitle
         
@@ -1881,25 +1908,13 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
         ShoppingListDetailTableView.dataSource = self
         ShoppingListDetailTableView.delegate = self
         ShoppingListDetailTableView.isEditing = false
+        ShoppingListDetailTableView.keyboardDismissMode = .onDrag
         CardOneMembersCollectionView.delegate = self
         CardOneMembersCollectionView.dataSource = self
         CardTwoMembersCollectionView.delegate = self
         CardTwoMembersCollectionView.dataSource = self
         CancelSharingMemberCollectionView.dataSource = self
         CancelSharingMemberCollectionView.delegate = self
-        
-        /*
-        //RefreshControl AddListItem
-        refreshControl = UIRefreshControl() 
-        refreshControl.alpha = 0
-        refreshControl.addTarget(self, action: #selector(ShoppingListController.ShowAddItemPopUp), for: UIControlEvents.allEvents)
- 
-        
-        if #available(iOS 10.0, *){
-            ShoppingListDetailTableView.refreshControl = refreshControl
-        } else {
-            ShoppingListDetailTableView.addSubview(refreshControl)
-        }*/
         
         //Pan on List Item
         panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(HandleShoppingItemPan))
@@ -2338,20 +2353,6 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         self.lastContentOffset = scrollView.contentOffset.y
     }
-    /*
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if self.lastContentOffset < scrollView.contentOffset.y {
-            //Moved up so hide txt_AddArticle
-            txt_AddArticle.isHidden = true
-            ShoppingListDetailTableView.translatesAutoresizingMaskIntoConstraints = false
-            ShoppingListDetailTableView.frame.size.height = ShoppingListDetailView.frame.height * 0.69
-        } else if self.lastContentOffset > scrollView.contentOffset.y {
-            //Moved down so show txt_AddArticle
-            txt_AddArticle.isHidden = false
-            ShoppingListDetailTableView.translatesAutoresizingMaskIntoConstraints = false
-            ShoppingListDetailTableView.frame.size.height = ShoppingListDetailView.frame.height * 0.625
-        }
-    }*/
     
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -2371,14 +2372,28 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
         
         let cell = tableView.dequeueReusableCell(withIdentifier: String.ShoppingListItemTableViewCell_Identifier, for: indexPath) as! ShoppingListItemTableViewCell
         cell.selectionStyle = .none
+        cell.txt_ShoppingListItem.delegate = self
         cell.ConfigureCell(shoppingListItem: allShoppingLists[currentShoppingListIndex].items[indexPath.row])
         return cell
         
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         
         selectedListItemIndex = indexPath.row
+        
+        //enable textfield edit in tableview
+        if let cell = tableView.cellForRow(at: indexPath) as? ShoppingListItemTableViewCell {
+            if !cell.txt_ShoppingListItem.isUserInteractionEnabled {
+                
+                cell.txt_ShoppingListItem.isUserInteractionEnabled = true
+                cell.txt_ShoppingListItem.becomeFirstResponder()
+                return
+                
+            }
+        }
+        
         let dropHeight = abs((ShoppingListDetailTableView.frame.height))
         if allShoppingLists[currentShoppingListIndex].items.isEmpty { return }
         
@@ -2416,10 +2431,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
         })
         
     }
-    /*
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return tableView.frame.height / 10
-    }*/
+    
     // conditional rearranging of the table view.
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool { 
         return true
@@ -2446,24 +2458,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
     func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
         return false
     }
-    /*
-     // conditional editing of the table view.
-     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the specified item to be editable.
-     return true
-     }*/
     
-    /*
-     // editing the table view.
-     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-     if editingStyle == .delete {
-     // Delete the row from the data source
-     tableView.deleteRows(at: [indexPath], with: .fade)
-     } else if editingStyle == .insert {
-     // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-     }
-     }
-     */
 }
 extension ShoppingListController: GADBannerViewDelegate {
     /// Tells the delegate an ad request loaded an ad.
@@ -2516,6 +2511,7 @@ extension ShoppingListController : UIViewControllerPreviewingDelegate {
         guard let listItemMessageVC = storyboard?.instantiateViewController(withIdentifier: "ListItemMessageController") as? ListItemMessageController else { return nil }
         
         listItemMessageVC.preferredContentSize = CGSize(width: 0, height: 110)
+        listItemMessageVC.view.backgroundColor = UIColor.clear
         listItemMessageVC.selectedArticle = allShoppingLists[currentShoppingListIndex].items[indexPath.row]
         previewingContext.sourceRect = cell.frame
         
