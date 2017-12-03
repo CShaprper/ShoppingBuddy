@@ -159,3 +159,7 @@ txt_SendAnswerPlaceholder = "Sende %@ eine Antwort";
 msg_ArticleIsOutTitle = "Artikel ausverkauft!";
 lbl_SendMessageHeader = "Schnelle Nachricht"; 
 quickMessageActionTitle = "%@ ist ausverkauft!";
+
+//Contacts Access
+accessDeniedAlertTitle = "Zugriff auf Kontakte";
+accessDeniedAlertMessage = "Bitte genehmige den Zugriff auf Kontakte in den Einstellungen/Datenschutz/Kontakte um eine automatische Auswahl zu ermöglichen!";

@@ -8,6 +8,7 @@
 //
 
 import UIKit
+import StoreKit
 import Firebase
 import UserNotifications
 import FirebaseMessaging
@@ -60,10 +61,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         
         //Set standard value
-        // UserDefaults.standard.set(true, forKey: eUserDefaultKey.NeedToUpdateGeofence.rawValue)
         UserDefaults.standard.set(true, forKey: eUserDefaultKey.isInitialLocationUpdate.rawValue)
         
         return true
+    }
+    
+    func requestReview(){
+        if #available(iOS 10.3, *) {
+            SKStoreReviewController.requestReview()
+        } else {
+            // Fallback on earlier versions
+            let url = "itms-apps://itunes.apple.com/app/id1281336748"
+            UIApplication.shared.openURL(URL(string: url)!)
+        }
     }
 
     

@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import Contacts
+import ContactsUI
 import FirebaseAuth
 import GoogleMobileAds
 import BarcodeScanner
 
-class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BarcodeScannerCodeDelegate, BarcodeScannerErrorDelegate, BarcodeScannerDismissalDelegate{
+class ShoppingListController:UIViewController, CNContactPickerDelegate, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BarcodeScannerCodeDelegate, BarcodeScannerErrorDelegate, BarcodeScannerDismissalDelegate{
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -142,6 +144,9 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     
     //MARK:- Member
+    static let sharedInstance = ShoppingListController()
+    var contactStore = CNContactStore()
+    var parentVC:UIViewController!
     var selectedListItemIndex = 0
     var lastContentOffset:CGFloat = 0
     private var isInfoViewVisible:Bool!
@@ -718,6 +723,20 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
     
     @objc func btn_ShoppingCardShareList_Pressed(sender: UIButton) -> Void {
         ShowShareListPopUp()
+    }
+    
+    func presentSettingsActionSheet() {
+        let alert = UIAlertController(title: "Permission to Contacts", message: "This app needs access to contacts in order to ...", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
+            let url = URL(string: UIApplicationOpenSettingsURLString)!
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url)
+            } else {
+                // Fallback on earlier versions
+            }
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
     }
     
     @objc func btn_ShoppingCard2ShareList_Pressed(sender: UIButton) -> Void {
@@ -1596,6 +1615,65 @@ class ShoppingListController: UIViewController, IAlertMessageDelegate, IValidati
             
         }
         
+        requestForContactsAccess { (accessGranted) in
+            if accessGranted == true{
+                self.parentVC = self;
+                let controller = CNContactPickerViewController()
+                controller.delegate = self
+                self.present(controller,animated: true, completion: nil)
+            }
+        }
+        
+    }
+    
+    //MARK: Contacts access
+    func requestForContactsAccess(completionHandler: @escaping (_ accessGranted: Bool) -> Void) {
+        let authorizationStatus = CNContactStore.authorizationStatus(for: CNEntityType.contacts)
+        
+        switch authorizationStatus {
+        case .authorized:
+            completionHandler(true)
+            
+        case .denied, .notDetermined:
+            self.contactStore.requestAccess(for: CNEntityType.contacts, completionHandler: { (access, accessError) -> Void in
+                if access {
+                    completionHandler(access)
+                }
+                else {
+                    if authorizationStatus == CNAuthorizationStatus.denied {
+                        
+                        let title = String.accessDeniedAlertTitle
+                        let message = "\(accessError!.localizedDescription)\n\n" + String.accessDeniedAlertMessage
+                        
+                        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                            UIApplication.shared.openURL(URL(string: UIApplicationOpenSettingsURLString)!)
+                        }))
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+                        
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                }
+            })
+            
+        default:
+            completionHandler(false)
+        }
+    }
+    
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contactProperty: CNContactProperty) {
+        
+        print(contactProperty.value ?? "empty contact value")
+        ShareListPopUp.transform   = CGAffineTransform(translationX: 0, y: ShareListPopUp.center.y - view.center.y)
+        if let email = contactProperty.value {
+            txt_ShareListOpponentEmail.text = String(describing: email)
+        }
+        
+    }
+    
+    func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
+       
+        print("Cancelled picking a contact")
     }
     
     func showListItemBlurrView() -> Bool {
@@ -2388,7 +2466,7 @@ extension ShoppingListController: UITableViewDelegate, UITableViewDataSource, UI
             if !cell.txt_ShoppingListItem.isUserInteractionEnabled {
                 
                 cell.txt_ShoppingListItem.isUserInteractionEnabled = true
-                cell.txt_ShoppingListItem.becomeFirstResponder()
+                //cell.txt_ShoppingListItem.becomeFirstResponder()
                 return
                 
             }

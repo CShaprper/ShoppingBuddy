@@ -169,4 +169,8 @@ extension String{
     static let quickMessageActionTitle = NSLocalizedString("quickMessageActionTitle", comment: "")
     static let msg_ArticleIsOutTitle = NSLocalizedString("msg_ArticleIsOutTitle", comment: "")
     
+    //Contacts Access
+    static let accessDeniedAlertTitle = NSLocalizedString("accessDeniedAlertTitle", comment: "")
+    static let accessDeniedAlertMessage = NSLocalizedString("accessDeniedAlertMessage", comment: "")
+    
 }

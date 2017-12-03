@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.0</string>
+	<string>1.2.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -34,7 +34,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>1</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -43,6 +43,8 @@
 	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>Drop Shopper want's you to pick a user image for your profile!</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Drop Shopper want to let you to pick a mail address from your contacts.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Drop Shopper want's to inform you when your close to stores of your shopping lists.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

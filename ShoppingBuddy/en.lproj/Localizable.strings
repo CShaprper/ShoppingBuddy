@@ -163,3 +163,7 @@ txt_SendAnswerPlaceholder = "send %@ an answer";
 msg_ArticleIsOutTitle = "Article sold out!";
 lbl_SendMessageHeader = "Quick Message";
 quickMessageActionTitle = "%@ is out!";
+
+    //Contacts Access
+accessDeniedAlertTitle = "Access to Contacts";
+accessDeniedAlertMessage = "Please grant access to contacts in Settings/Privacy/Contacts to allow selection from contacts!";

@@ -10,3 +10,4 @@ NSLocationAlwaysAndWhenInUseUsageDescription = "Drop Shopper möchte Dich gerne 
 NSLocationWhenInUseUsageDescription  = "Drop Shopper möchte Dich gerne informieren wenn Du Dich in der Nähe eines Shops Deiner aktiven Shopping Listen befindest.";
 NSCameraUsageDescription = "Drop Shopper want's you to pick a user image for your profile!";
 NSPhotoLibraryUsageDescription = "Drop Shopper möchte ein User Photo für Dein Profil auswählen.";
+NSContactsUsageDescription = "Drop Shopper möchte Dir ermöglichen eine E-Mail Adresse Deiner Kontakte auszuwählen.";

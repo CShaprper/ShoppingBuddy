@@ -21,6 +21,8 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
     @IBOutlet var lbl_RadiusFour: UILabel!
     @IBOutlet var btn_GetFullVersion: UIButton!
     @IBOutlet var btn_RestorePurchase: UIButton!
+    @IBOutlet var btn_RateMe: UIButton!
+    @IBOutlet var btn_ShareMe: UIButton!
     
     //InviatationNotification
     @IBOutlet var InvitationNotification: UIView!
@@ -75,6 +77,7 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         SetGeofenceRadiusSliderValue(value: value)
         UserDefaults.standard.set(value * 1000, forKey: eUserDefaultKey.MonitoredRadius.rawValue)
     }
+    
     @objc func btn_GetFullVersion_Pressed(sender: UIButton) -> Void {
         
         Analytics.logEvent("UserPressedButton", parameters: [AnalyticsParameterItemID : "btn_GetFullVersion_Pressed" as NSObject] )
@@ -88,7 +91,28 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         
         iapHelper.restorePurchases()
         
-    }    
+    }
+    
+    @objc func btn_RateMe_Pressed(sender: UIButton) -> Void {
+        
+        Analytics.logEvent("UserPressedButton", parameters: [AnalyticsParameterItemID : "btn_RateMe_Pressed" as NSObject] )
+        let appDel = AppDelegate()
+        appDel.requestReview()
+        
+    }
+    
+    @objc func btn_ShareMe_Pressed(sender: UIButton) -> Void {
+        
+         Analytics.logEvent("UserPressedButton", parameters: [AnalyticsParameterItemID : "btn_ShareMe_Pressed" as NSObject] )
+        
+        let url = URL(string: "itms-apps://itunes.apple.com/app/id1281336748")!
+        
+        let activityVC = UIActivityViewController(activityItems: [#imageLiteral(resourceName: "DropShopper_Icon-128"), url], applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        
+        self.present(activityVC, animated: true, completion: nil)
+        
+    }
     
     @objc func HideNotification() -> Void {
         
@@ -175,6 +199,10 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         
         btn_GetFullVersion.addTarget(self, action: #selector(btn_GetFullVersion_Pressed), for: .touchUpInside)
         
+        btn_RateMe.addTarget(self, action: #selector(btn_RateMe_Pressed), for: .touchUpInside)
+        
+        btn_ShareMe.addTarget(self, action: #selector(btn_ShareMe_Pressed), for: .touchUpInside)
+        
         GeofenceRadiusSlider.addTarget(self, action: #selector(GeofenceRadiusSlider_Changed), for: .valueChanged)
         
         let savedSilderValue = UserDefaults.standard.float(forKey: eUserDefaultKey.MonitoredRadius.rawValue) / 1000
@@ -225,42 +253,5 @@ class SettingsController: UIViewController, UITextFieldDelegate, IValidationServ
         default:
             break
         }
-    }
-}
-extension SettingsController: GADBannerViewDelegate {
-    /// Tells the delegate an ad request loaded an ad.
-    func adViewDidReceiveAd(_ bannerView: GADBannerView) {
-        print("adViewDidReceiveAd")
-        UIView.animate(withDuration: 2) {
-            self.bannerView.alpha = 1
-        }
-    }
-    
-    /// Tells the delegate an ad request failed.
-    func adView(_ bannerView: GADBannerView,
-                didFailToReceiveAdWithError error: GADRequestError) {
-        print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
-    }
-    
-    /// Tells the delegate that a full screen view will be presented in response
-    /// to the user clicking on an ad.
-    func adViewWillPresentScreen(_ bannerView: GADBannerView) {
-        print("adViewWillPresentScreen")
-    }
-    
-    /// Tells the delegate that the full screen view will be dismissed.
-    func adViewWillDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewWillDismissScreen")
-    }
-    
-    /// Tells the delegate that the full screen view has been dismissed.
-    func adViewDidDismissScreen(_ bannerView: GADBannerView) {
-        print("adViewDidDismissScreen")
-    }
-    
-    /// Tells the delegate that a user click will open another app (such as
-    /// the App Store), backgrounding the current app.
-    func adViewWillLeaveApplication(_ bannerView: GADBannerView) {
-        print("adViewWillLeaveApplication")
     }
 }
