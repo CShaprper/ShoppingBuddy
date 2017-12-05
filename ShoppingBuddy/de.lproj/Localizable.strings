@@ -163,3 +163,7 @@ quickMessageActionTitle = "%@ ist ausverkauft!";
 //Contacts Access
 accessDeniedAlertTitle = "Zugriff auf Kontakte";
 accessDeniedAlertMessage = "Bitte genehmige den Zugriff auf Kontakte in den Einstellungen/Datenschutz/Kontakte um eine automatische Auswahl zu ermöglichen!";
+sendAppStoreLinkToFriendSubject = "Einladung zu Drop Shopper Einkaufsliste";
+sendAppStoreLinkToFriendBody = "%@ möchte eine Drop Shopper Einkaufsliste mit Dir teilen. Hole Dir Drop Shopper im App Store: %@";
+
+currentLanguage = "DE";

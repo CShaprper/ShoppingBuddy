@@ -34,6 +34,9 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     @IBOutlet var ActivityIndicatior: UIActivityIndicatorView!
     @IBOutlet var LogInLogoImage: UIImageView!
 
+    @IBOutlet var OnboardingMessageContainer: DesignableUIView!
+    @IBOutlet var OnboardingTextEN: UITextView!
+    @IBOutlet var OnboardingTextDE: UITextView!
     
     
     //MARK: Member
@@ -51,6 +54,12 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
          NotificationCenter.default.addObserver(forName: .UIKeyboardWillShow, object: nil, queue: OperationQueue.main, using: KeyboardWillShow)
         NotificationCenter.default.addObserver(forName: .UIKeyboardWillHide, object: nil, queue: OperationQueue.main, using: KeyboardWillHide)
          NotificationCenter.default.addObserver(forName: .ShoppingBuddyUserLoggedIn, object: nil, queue: OperationQueue.main, using: ShoppingBuddyUserLoggedIn)
+         NotificationCenter.default.addObserver(forName: .ShowOnboardingPopUp_LoginController, object: nil, queue: OperationQueue.main, using: ShowOnboardingPopUp_LoginController)
+        
+        OnboardingMessageContainer.layer.borderColor = UIColor.ColorPaletteTintColor().cgColor
+        OnboardingMessageContainer.layer.borderWidth = 5
+        
+        
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -91,7 +100,6 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
     @objc func ShoppingBuddyUserLoggedIn(notification:Notification) {
         
         performSegue(withIdentifier: String.SegueToDashboardController_Identifier, sender: nil)
-        // NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedIn, object: nil, userInfo: nil)
         
     }
     
@@ -120,6 +128,50 @@ class LoginController: UIViewController, UITextFieldDelegate, UIGestureRecognize
             ActivityIndicatior.stopAnimating()
             ActivityIndicatior.removeFromSuperview()
         }
+    }
+    
+    func HideBlurrView() -> Void{
+        
+        BlurrView?.removeFromSuperview()
+        BlurrView = nil
+        
+    }
+    
+    @objc func BlurrViewTouched() -> Void {
+        
+        HideBlurrView()
+        OnboardingMessageContainer.removeFromSuperview()
+        
+    }
+    
+    //MARK: Show Onboarding PopUp
+    @objc func ShowOnboardingPopUp_LoginController(notification: Notification) -> Void {
+        
+        if BlurrView == nil {
+            BlurrView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            BlurrView!.bounds = view.bounds
+            BlurrView!.center = view.center
+            view.addSubview(BlurrView!)
+        }
+        
+        if String.currentLanguage == "DE" {
+            
+            OnboardingTextEN.alpha = 0
+            OnboardingTextDE.alpha = 1
+            
+        } else {
+            
+            OnboardingTextDE.alpha = 0
+            OnboardingTextEN.alpha = 1
+        }
+        OnboardingMessageContainer.frame.size.width = view.frame.width * 0.8
+        OnboardingMessageContainer.frame.size.height = view.frame.height * 0.8
+        OnboardingMessageContainer.center = view.center
+        view.addSubview(OnboardingMessageContainer)
+        OnboardingMessageContainer.DropFromTop(duration: 0.5, delay: 0, spring: 1)
+        
+        let touch = UITapGestureRecognizer(target: self, action: #selector(BlurrViewTouched))
+        OnboardingMessageContainer?.addGestureRecognizer(touch)
     }
     
     

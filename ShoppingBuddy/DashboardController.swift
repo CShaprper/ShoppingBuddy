@@ -722,6 +722,8 @@ extension DashboardController: UNUserNotificationCenterDelegate{
 extension DashboardController: MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         
+        if (userLocation.location?.horizontalAccuracy)! < Double(100) { return }
+        
         if view.subviews.contains(MapViewPopUp) && !hasMapView2Centered {
             
             let region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, CLLocationDistance(exactly: abs(10000))!, CLLocationDistance(exactly: abs(10000))!)
@@ -1100,6 +1102,7 @@ extension DashboardController: CLLocationManagerDelegate {
         
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
         
         if view.subviews.contains(MapViewPopUp) && !hasMapView2Centered{
             

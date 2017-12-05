@@ -167,3 +167,7 @@ quickMessageActionTitle = "%@ is out!";
     //Contacts Access
 accessDeniedAlertTitle = "Access to Contacts";
 accessDeniedAlertMessage = "Please grant access to contacts in Settings/Privacy/Contacts to allow selection from contacts!";
+sendAppStoreLinkToFriendSubject = "Drop Shopper Shopping List Invitation";
+sendAppStoreLinkToFriendBody = "%@ want's to share a Drop Shopper shopping list with you. Get Drop shopper at the iOS App Store: %@";
+
+currentLanguage = "EN";

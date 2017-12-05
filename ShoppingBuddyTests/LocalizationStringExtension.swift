@@ -172,5 +172,8 @@ extension String{
     //Contacts Access
     static let accessDeniedAlertTitle = NSLocalizedString("accessDeniedAlertTitle", comment: "")
     static let accessDeniedAlertMessage = NSLocalizedString("accessDeniedAlertMessage", comment: "")
+    static let sendAppStoreLinkToFriendSubject = NSLocalizedString("sendAppStoreLinkToFriendSubject", comment: "")
+   static let sendAppStoreLinkToFriendBody = NSLocalizedString("sendAppStoreLinkToFriendBody", comment: "")
     
+    static let currentLanguage = NSLocalizedString("currentLanguage", comment: "")
 }

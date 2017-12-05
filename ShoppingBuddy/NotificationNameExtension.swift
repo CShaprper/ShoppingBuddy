@@ -40,4 +40,8 @@ public extension Notification.Name {
     
     //Notification names on UserProfileImageDownloads
     static let UserProfileImageDLForPushNotificationFinished = Notification.Name("UserProfileImageDLForPushNotificationFinished")
+    
+    static let UserEmailNotFoundForSharing = Notification.Name("UserEmailNotFoundForSharing")
+    
+    static let ShowOnboardingPopUp_LoginController = Notification.Name("ShowOnboardingPopUp_LoginController")
 }

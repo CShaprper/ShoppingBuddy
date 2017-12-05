@@ -159,6 +159,8 @@ class ShoppingBuddyMessageWebservice {
                 let title = String.UserEmailNotFoundTitle
                 let message = String.localizedStringWithFormat(String.UserEmailNotFoundMessage, friendsEmail)
                 self.ShowAlertMessage(title: title, message: message)
+                let userInfo = ["Nickname": currentUser!.nickname!, "Email": friendsEmail]
+                NotificationCenter.default.post(name: Notification.Name.UserEmailNotFoundForSharing, object: nil, userInfo: userInfo)
                 return
                 
             }

@@ -12,8 +12,9 @@ import ContactsUI
 import FirebaseAuth
 import GoogleMobileAds
 import BarcodeScanner
+import MessageUI
 
-class ShoppingListController:UIViewController, CNContactPickerDelegate, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BarcodeScannerCodeDelegate, BarcodeScannerErrorDelegate, BarcodeScannerDismissalDelegate{
+class ShoppingListController:UIViewController, MFMailComposeViewControllerDelegate , CNContactPickerDelegate, IAlertMessageDelegate, IValidationService, UIGestureRecognizerDelegate, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, BarcodeScannerCodeDelegate, BarcodeScannerErrorDelegate, BarcodeScannerDismissalDelegate{
     //MARK: - Outlets
     @IBOutlet var ActivityIndicator: UIActivityIndicatorView!
     @IBOutlet var BackgroundImage: UIImageView!
@@ -228,6 +229,34 @@ class ShoppingListController:UIViewController, CNContactPickerDelegate, IAlertMe
     
     
     //MARK: - Notification listener selectors
+    @objc func UserEmailNotFoundForSharing(notification: Notification) -> Void {
+        
+        if let userInfo = notification.userInfo as? [String:AnyObject] {
+            
+            if let email = userInfo["Email"] as? String{
+                
+                let subject = String.sendAppStoreLinkToFriendSubject
+                let body = String.localizedStringWithFormat(String.sendAppStoreLinkToFriendBody, currentUser!.nickname!, "itms-apps://itunes.apple.com/app/id1281336748")
+                
+                let mc = MFMailComposeViewController()
+                mc.mailComposeDelegate = self
+                mc.setSubject(subject)
+                mc.addAttachmentData(UIImageJPEGRepresentation(#imageLiteral(resourceName: "DropShopper_Icon-128"), CGFloat(1))!, mimeType: "image/jpeg", fileName: "DopShopper.jpg")
+                mc.setMessageBody(body, isHTML: false)
+                mc.setToRecipients([email])
+                
+                self.present(mc, animated: true, completion: nil)
+                
+            }
+            
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    
     @objc func ShoppingBuddyListDataReceived() {
         
         //download user if unknown
@@ -2007,6 +2036,7 @@ class ShoppingListController:UIViewController, CNContactPickerDelegate, IAlertMe
         NotificationCenter.default.addObserver(self, selector: #selector(PushNotificationReceived), name: .PushNotificationReceived, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillShow), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardWillHide), name: .UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(UserEmailNotFoundForSharing), name: .UserEmailNotFoundForSharing, object: nil)
         
         
         //Add Shopping List PopUp

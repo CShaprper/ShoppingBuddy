@@ -233,6 +233,7 @@ class ShoppingBuddyUserWebservice:NSObject, URLSessionDelegate {
                 
                 NotificationCenter.default.post(name: Notification.Name.ShoppingBuddyUserLoggedOut, object: nil, userInfo: nil)
                 NotificationCenter.default.post(name: Notification.Name.SegueToLogInController, object: nil, userInfo: nil)
+                NotificationCenter.default.post(name: Notification.Name.ShowOnboardingPopUp_LoginController, object: nil, userInfo: nil)
                 
             }
         }

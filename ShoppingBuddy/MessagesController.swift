@@ -48,8 +48,11 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
         sbUserService = ShoppingBuddyUserWebservice()
         sbUserService.alertMessageDelegate = self
         
+        InvitationsTableView.dataSource = self
+        InvitationsTableView.delegate = self
         InvitationsTableView.rowHeight = UITableViewAutomaticDimension
         InvitationsTableView.estimatedRowHeight = 100
+        view.bringSubview(toFront: InvitationsTableView)
         
         txt_SendAnswer.delegate = self
         txt_SendAnswer.alpha = 0
@@ -60,7 +63,8 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
         for msg in allMessages {
             
             let formatter = DateFormatter()
-            formatter.dateFormat = "dd.MM.YYYY HH:mm"
+            formatter.dateFormat = "dd.MM.YYYY, HH:mm"
+            if msg.date != nil {
             if let d = formatter.date(from: msg.date!){
                 
                 if let date = Calendar.current.date(byAdding: .day, value: 7, to: d) {
@@ -74,11 +78,11 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
                 }
                 
             }
+            }
         }
-        
-        DispatchQueue.main.async {
-            self.InvitationsTableView.reloadData()
-        }
+//        DispatchQueue.main.async {
+//            self.InvitationsTableView.reloadData()
+//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,6 +119,9 @@ class MessagesController: UIViewController, IAlertMessageDelegate, UITextFieldDe
             if height == 0 { height = 268 }
             
             txt_SendAnswer.transform = CGAffineTransform(translationX: 0, y: CGFloat(height) * CGFloat(-1) + (self.tabBarController?.tabBar.frame.size.height)!)
+            txt_SendAnswer.alpha = 1
+            txt_SendAnswer.borderStyle = .line
+            view.bringSubview(toFront: txt_SendAnswer)
         }        
         
         
@@ -191,7 +198,7 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String.InvitationCell_Identifier, for: indexPath) as! ShoppingBuddyInvitationCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "InvitationCell", for: indexPath) as! ShoppingBuddyInvitationCell
         
         let invite = allMessages[indexPath.row]
         
@@ -291,6 +298,6 @@ extension MessagesController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 120
     }
 }

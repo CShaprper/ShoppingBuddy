@@ -117,10 +117,9 @@ extension UITabBar{
                 mySize.height = 105
                 return mySize
             default:
-                   mySize.height = 44
-                return mySize
+                return self.frame.size
             }
         }
-        return size
+        return self.frame.size
     }
 }
